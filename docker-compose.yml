@@ -1,0 +1,40 @@
+services:
+  pantry-db:
+    container_name: pantry-db
+    image: postgres
+    environment:
+      POSTGRES_DB: pantry-db
+      POSTGRES_USER: pantry
+      POSTGRES_PASSWORD: pantry
+      PGDATA: /data/postgres
+    volumes:
+      - pantry-db:/data/postgres
+    ports:
+      - "5432:5432"
+    networks:
+      - postgres
+      - spring
+    restart: always
+  pgadmin:
+      container_name: pgadmin
+      image: dpage/pgadmin4
+      environment:
+        PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-pgadmin4@pgadmin.org}
+        PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-admin}
+        PGADMIN_CONFIG_SERVER_MODE: 'False'
+      volumes:
+        - pgadmin:/var/lib/pgadmin
+      ports:
+        - "5050:80"
+      networks:
+        - postgres
+      restart: unless-stopped
+volumes:
+  pantry-db:
+  pgadmin:
+networks:
+  postgres:
+    driver: bridge
+  spring:
+    driver: bridge
+
