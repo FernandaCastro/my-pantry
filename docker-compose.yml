@@ -16,24 +16,41 @@ services:
       - spring
     restart: always
 
-  pgadmin:
-      container_name: pgadmin
-      image: dpage/pgadmin4
-      environment:
-        PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-pgadmin4@pgadmin.org}
-        PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-admin}
-        PGADMIN_CONFIG_SERVER_MODE: 'False'
-      volumes:
-        - pgadmin:/var/lib/pgadmin
-      ports:
-        - "5050:80"
-      networks:
-        - postgres
-      restart: unless-stopped
+  purchase-db:
+    container_name: purchase-db
+    image: postgres
+    environment:
+      POSTGRES_DB: purchase-db
+      POSTGRES_USER: purchase
+      POSTGRES_PASSWORD: purchase
+      PGDATA: /data/postgres
+    volumes:
+      - purchase-db:/data/postgres
+    ports:
+      - "5433:5432"
+    networks:
+      - postgres
+      - spring
+    restart: always
 
-  kafka:
+  pgadmin:
+    container_name: pgadmin
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-pgadmin4@pgadmin.org}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-admin}
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+    volumes:
+      - pgadmin:/var/lib/pgadmin
+    ports:
+      - "5050:80"
+    networks:
+      - postgres
+    restart: unless-stopped
+
+  kafka-pantry:
         image: wurstmeister/kafka
-        container_name: kafka
+        container_name: kafka-pantry
         ports:
           - "9092:9092"
         environment:
@@ -51,6 +68,7 @@ services:
       - KAFKA_ADVERTISED_HOST_NAME=zookeeper
 volumes:
   pantry-db:
+  purchase-db:
   pgadmin:
 networks:
   postgres:

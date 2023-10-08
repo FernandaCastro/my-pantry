@@ -19,8 +19,8 @@
 
 	<modules>
 		<module>pantry-service</module>
-		<module>order-service</module>
 		<module>purchase-service</module>
+		<module>events</module>
 	</modules>
 
 	<properties>
