@@ -9,7 +9,7 @@ import java.io.Serializable;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class PurchaseEventDto implements Serializable {
+public class ItemDto implements Serializable {
     long pantryId;
     String pantryName;
 
@@ -17,19 +17,19 @@ public class PurchaseEventDto implements Serializable {
     String productDescription;
     String productSize;
 
-    int quantity;
-    boolean isPurchased;
+    int qtyProvisioned;
+    int qtyPurchased;
 
     @Override
     public String toString() {
-        return "PurchaseEventDto{" +
+        return "ItemDto{" +
                 "pantryId=" + pantryId +
                 ", pantryName='" + pantryName + '\'' +
                 ", productId=" + productId +
                 ", productDescription='" + productDescription + '\'' +
                 ", productSize='" + productSize + '\'' +
-                ", quantity=" + quantity +
-                ", isPurchased=" + isPurchased +
+                ", qtyProvisioned=" + qtyProvisioned +
+                ", qtyPurchased=" + qtyPurchased +
                 '}';
     }
 }

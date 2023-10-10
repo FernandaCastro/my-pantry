@@ -1,7 +1,10 @@
 package com.fcastro.purchaseService.purchaseItem;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fcastro.purchaseService.purchase.PurchaseDto;
 import lombok.*;
+
+import java.util.Objects;
 
 @Getter
 @Setter
@@ -10,16 +13,29 @@ import lombok.*;
 @AllArgsConstructor
 public class PurchaseItemDto {
 
-    Long id;
-    Long pantryId;
-    String pantryName;
+    private Long id;
+    private Long pantryId;
+    private String pantryName;
 
-    Long productId;
-    String productDescription;
-    String productSize;
+    private Long productId;
+    private String productDescription;
+    private String productSize;
 
-    int quantity;
-    boolean isPurchased;
+    private int qtyProvisioned;
+    private int qtyPurchased;
 
-    PurchaseDto purchase;
+    @JsonIgnore
+    private PurchaseDto purchase;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof PurchaseItemDto that)) return false;
+        return Objects.equals(getId(), that.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId());
+    }
 }

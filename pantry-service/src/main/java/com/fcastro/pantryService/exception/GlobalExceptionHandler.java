@@ -44,9 +44,9 @@ public class GlobalExceptionHandler {
         exceptionTypes.put(HttpRequestMethodNotSupportedException.class, "method-not-allowed");
 
         exceptionTypes.put(DataAccessException.class, "database-error");
-        exceptionTypes.put(ResourceNotFoundException.class, "application-internal-error");
-        exceptionTypes.put(QuantityNotAvailableException.class, "application-internal-error");
-        exceptionTypes.put(PantryNotActiveException.class, "application-internal-error");
+        exceptionTypes.put(ResourceNotFoundException.class, "application-error");
+        exceptionTypes.put(QuantityNotAvailableException.class, "application-error");
+        exceptionTypes.put(PantryNotActiveException.class, "application-error");
     }
 
     @ExceptionHandler(value = {QuantityNotAvailableException.class,
@@ -165,8 +165,7 @@ public class GlobalExceptionHandler {
                 .timestamp(Clock.systemUTC().millis())
                 .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
                 .errorType(ex.getClass().getSimpleName())
-                .errorMessage("Please contact the support.")
-                .errorDetail(ex.getMessage())
+                .errorMessage("Please contact the support. " + ex.getMessage())
                 .path(request.getRequestURI())
                 .build();
 

@@ -15,6 +15,9 @@ import java.time.LocalDateTime;
 @Entity(name = "pantryItem")
 @Table(name = "PANTRY_ITEM")
 @IdClass(PantryItemKey.class)
+//@NamedEntityGraph(name = "pantryItem.pantry",
+//        attributeNodes = @NamedAttributeNode("pantry")
+//)
 public class PantryItem {
 
     @Id

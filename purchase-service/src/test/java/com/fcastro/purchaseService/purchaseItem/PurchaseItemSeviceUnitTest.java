@@ -1,6 +1,6 @@
 package com.fcastro.purchaseService.purchaseItem;
 
-import com.fcastro.events.PurchaseEventDto;
+import com.fcastro.events.ItemDto;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.*;
@@ -27,14 +27,14 @@ public class PurchaseItemSeviceUnitTest {
     ArgumentCaptor<PurchaseItem> captor;
 
     @Test
-    public void givenPurchaseEventDto_whenProcessPurchaseEvent_thenSuccess() {
+    public void givenItemDto_whenProcessPurchaseCreateEvent_thenSuccess() {
         //given
-        var dto = PurchaseEventDto.builder()
+        var dto = ItemDto.builder()
                 .pantryId(1L)
                 .productId(1L)
                 .pantryName("Product1")
                 .productSize("Size1")
-                .quantity(1)
+                .qtyProvisioned(1)
                 .build();
 
         when(repository.save(captor.capture())).thenReturn(any(PurchaseItem.class));
@@ -44,13 +44,14 @@ public class PurchaseItemSeviceUnitTest {
 
         //then
         var item = captor.getValue();
-        assertThat(item.pantryId).isEqualTo(dto.getPantryId());
-        assertThat(item.pantryName).isEqualTo(dto.getPantryName());
-        assertThat(item.productId).isEqualTo(dto.getProductId());
-        assertThat(item.productDescription).isEqualTo(dto.getProductDescription());
-        assertThat(item.productSize).isEqualTo(dto.getProductSize());
-        assertThat(item.quantity).isEqualTo(dto.getQuantity());
-        assertThat(item.purchase).isNull();
+        assertThat(item.getPantryId()).isEqualTo(dto.getPantryId());
+        assertThat(item.getPantryName()).isEqualTo(dto.getPantryName());
+        assertThat(item.getProductId()).isEqualTo(dto.getProductId());
+        assertThat(item.getProductDescription()).isEqualTo(dto.getProductDescription());
+        assertThat(item.getProductSize()).isEqualTo(dto.getProductSize());
+        assertThat(item.getQtyProvisioned()).isEqualTo(dto.getQtyProvisioned());
+        assertThat(item.getQtyPurchased()).isEqualTo(0);
+        assertThat(item.getPurchase()).isNull();
 
     }
 

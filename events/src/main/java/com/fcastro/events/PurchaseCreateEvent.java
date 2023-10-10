@@ -9,7 +9,7 @@ import java.io.Serializable;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class PurchaseEvent implements Serializable {
+public class PurchaseCreateEvent implements Serializable {
 
-    private PurchaseEventDto item;
+    private ItemDto item;
 }

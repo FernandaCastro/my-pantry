@@ -1,21 +1,40 @@
 package com.fcastro.pantryService.config;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
+import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilderCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+
+import java.time.format.DateTimeFormatter;
 
 @Configuration
 public class PantryServiceConfig {
 
+    private static final String dateTimeFormat = "dd-MM-yyyy HH:mm:ss";
+
+//    @Bean
+//    public MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter() {
+//        ObjectMapper mapper = new ObjectMapper();
+//        mapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
+//        return new MappingJackson2HttpMessageConverter(mapper);
+//    }
+
     @Bean
-    public MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter() {
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
-        return new MappingJackson2HttpMessageConverter(mapper);
+    public Jackson2ObjectMapperBuilderCustomizer jackson2ObjectMapperBuilderCustomizer() {
+
+        return builder -> {
+            // formatter
+            DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(dateTimeFormat);
+
+            // deserializers
+            builder.deserializers(new LocalDateTimeDeserializer(dateTimeFormatter));
+
+            // serializers
+            builder.serializers(new LocalDateTimeSerializer(dateTimeFormatter));
+        };
     }
 
     @Bean

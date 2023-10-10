@@ -1,6 +1,6 @@
 package com.fcastro.pantryService.pantryItem;
 
-import com.fcastro.pantryService.config.PurchaseEventProducer;
+import com.fcastro.pantryService.config.EventProducer;
 import com.fcastro.pantryService.pantry.PantryDto;
 import com.fcastro.pantryService.pantry.PantryService;
 import com.fcastro.pantryService.product.ProductDto;
@@ -27,7 +27,7 @@ public class PantryItemServiceIntegrationTest {
     PantryItemRepository repository;
 
     @Autowired
-    PurchaseEventProducer eventProducer;
+    EventProducer eventProducer;
 
     @Autowired
     PantryService pantryService;

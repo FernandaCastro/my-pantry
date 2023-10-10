@@ -17,7 +17,7 @@ import java.util.List;
 public class Purchase {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
+    private Long id;
 
     private LocalDateTime createdAt;
     private LocalDateTime processedAt;

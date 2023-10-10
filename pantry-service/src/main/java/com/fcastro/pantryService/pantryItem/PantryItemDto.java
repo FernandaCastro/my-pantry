@@ -20,6 +20,7 @@ public class PantryItemDto {
     private int idealQty;
     private int currentQty;
     private int provisionedQty;
+
     private LocalDateTime lastProvisioning;
 
     private PantryDto pantry;

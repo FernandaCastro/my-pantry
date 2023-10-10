@@ -1,7 +1,7 @@
 package com.fcastro.pantryService.pantryItem;
 
-import com.fcastro.events.PurchaseEventDto;
-import com.fcastro.pantryService.config.PurchaseEventProducer;
+import com.fcastro.events.ItemDto;
+import com.fcastro.pantryService.config.EventProducer;
 import com.fcastro.pantryService.exception.PantryNotActiveException;
 import com.fcastro.pantryService.exception.QuantityNotAvailableException;
 import com.fcastro.pantryService.exception.ResourceNotFoundException;
@@ -19,11 +19,11 @@ public class PantryItemService {
 
     private final PantryItemRepository repository;
     private final ModelMapper modelMapper;
-    private final PurchaseEventProducer eventProducer;
+    private final EventProducer eventProducer;
 
     private static final int SEND_PURCHASE_EVENT_THRESHOLD = 50;
 
-    public PantryItemService(PantryItemRepository pantryItemRepository, ModelMapper modelMapper, PurchaseEventProducer eventProducer) {
+    public PantryItemService(PantryItemRepository pantryItemRepository, ModelMapper modelMapper, EventProducer eventProducer) {
         this.repository = pantryItemRepository;
         this.modelMapper = modelMapper;
         this.eventProducer = eventProducer;
@@ -55,7 +55,7 @@ public class PantryItemService {
     //Updates pantryProduct table and send ProductConsumedEvent
     @Transactional
     public PantryItemDto consumePantryItem(PantryItemConsumedDto consumedDto) {
-        var itemEntity = repository.findById(new PantryItemKey(consumedDto.getPantryId(), consumedDto.getProductId()))
+        var itemEntity = repository.findEagerByPantryIdAndProductId(consumedDto.getPantryId(), consumedDto.getProductId())
                 .orElseThrow(() -> new ResourceNotFoundException("Pantry Product not found"));
 
         if (!itemEntity.getPantry().getIsActive()) {
@@ -63,14 +63,14 @@ public class PantryItemService {
         }
 
         if (itemEntity.getCurrentQty() < consumedDto.getQty()) {
-            throw new QuantityNotAvailableException("Only " + itemEntity.getCurrentQty() + " quantity available in the Pantry.");
+            throw new QuantityNotAvailableException(itemEntity.getCurrentQty() + " quantity available in Pantry.");
         }
 
         //Update Pantry Item Inventory
         itemEntity.setCurrentQty(itemEntity.getCurrentQty() - consumedDto.getQty());
 
         //Provision Purchase need
-        var provision = sendPurchaseOrder(itemEntity);
+        var provision = sendPurchaseCreateEvent(itemEntity);
         if (provision > 0) {
             itemEntity.setProvisionedQty(itemEntity.getProvisionedQty() + provision);
             itemEntity.setLastProvisioning(LocalDateTime.now());
@@ -81,10 +81,10 @@ public class PantryItemService {
         return convertToDTO(itemEntity);
     }
 
-    //Calculate the Purchase Need (Send PurchaseEvent)
+    //Calculate the Purchase Need (Send PurchaseCreateEvent)
     // 1. when currentQty is below PURCHASE_THRESHOLD %  AND
     // 2. (currentQty + provisionedQty) < ideal_qty
-    private int sendPurchaseOrder(PantryItem itemEntity) {
+    private int sendPurchaseCreateEvent(PantryItem itemEntity) {
 
         // 1. when currentQty is below PURCHASE_THRESHOLD %
         var currPercentage = (100 * itemEntity.getCurrentQty()) / itemEntity.getIdealQty();
@@ -94,15 +94,38 @@ public class PantryItemService {
         var provision = provisioned < itemEntity.getIdealQty() ? itemEntity.getIdealQty() - provisioned : 0;
 
         if (currPercentage <= SEND_PURCHASE_EVENT_THRESHOLD && provision > 0) {
-            var purchaseDto = PurchaseEventDto.builder().quantity(provision).build();
+            var purchaseDto = ItemDto.builder().qtyProvisioned(provision).build();
             enrichPurchaseItemDto(purchaseDto, itemEntity);
-            eventProducer.send(purchaseDto);
+            eventProducer.sendPurchaseCreateEvent(purchaseDto);
             return provision;
         }
         return 0;
     }
 
-    private void enrichPurchaseItemDto(PurchaseEventDto dto, PantryItem itemEntity) {
+    public void processPurchaseCompleteEvent(List<ItemDto> list) {
+        for (ItemDto item : list) {
+            if (item.getQtyPurchased() > 0) {
+                updatePantryItem(item);
+            }
+        }
+    }
+
+    private void updatePantryItem(ItemDto item) {
+        var entity = repository.findById(PantryItemKey.builder().pantryId(item.getPantryId()).productId(item.getProductId()).build()).get();
+        if (entity == null) return;
+
+        entity.setCurrentQty(entity.getCurrentQty() + item.getQtyPurchased());
+
+        var provisioned = item.getQtyPurchased() >= entity.getProvisionedQty() ? 0 : entity.getProvisionedQty() - item.getQtyPurchased();
+        entity.setProvisionedQty(provisioned);
+
+        if (provisioned == 0) entity.setLastProvisioning(null);
+
+        repository.save(entity);
+    }
+
+
+    private void enrichPurchaseItemDto(ItemDto dto, PantryItem itemEntity) {
         dto.setPantryId(itemEntity.getPantry().getId());
         dto.setPantryName(itemEntity.getPantry().getName());
 

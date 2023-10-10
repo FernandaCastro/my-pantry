@@ -9,25 +9,25 @@ import lombok.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity(name = "purchaseItem")
+@Entity
 @Table(name = "PURCHASE_ITEM")
 public class PurchaseItem {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
+    private Long id;
 
-    Long pantryId;
-    String pantryName;
+    private Long pantryId;
+    private String pantryName;
 
-    Long productId;
-    String productDescription;
-    String productSize;
+    private Long productId;
+    private String productDescription;
+    private String productSize;
 
-    int quantity;
-    boolean isPurchased;
+    private int qtyProvisioned;
+    private int qtyPurchased;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "purchase_id")
-    Purchase purchase;
+    private Purchase purchase;
 }

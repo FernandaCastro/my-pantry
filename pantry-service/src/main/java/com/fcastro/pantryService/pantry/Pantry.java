@@ -12,7 +12,10 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "pantry")
+//@Table(name = "pantry")
+//@NamedEntityGraph(name = "Pantry.items",
+//        attributeNodes = @NamedAttributeNode("items")
+//)
 public class Pantry {
 
     @Id
@@ -22,6 +25,6 @@ public class Pantry {
     private String type;
     private Boolean isActive;
 
-    @OneToMany(mappedBy = "pantry", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "pantry", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<PantryItem> items;
 }

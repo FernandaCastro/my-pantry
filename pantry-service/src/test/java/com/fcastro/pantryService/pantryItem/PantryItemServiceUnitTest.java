@@ -1,7 +1,7 @@
 package com.fcastro.pantryService.pantryItem;
 
-import com.fcastro.events.PurchaseEventDto;
-import com.fcastro.pantryService.config.PurchaseEventProducer;
+import com.fcastro.events.ItemDto;
+import com.fcastro.pantryService.config.EventProducer;
 import com.fcastro.pantryService.exception.PantryNotActiveException;
 import com.fcastro.pantryService.exception.QuantityNotAvailableException;
 import com.fcastro.pantryService.exception.ResourceNotFoundException;
@@ -31,7 +31,7 @@ public class PantryItemServiceUnitTest {
     PantryItemRepository repository;
 
     @Mock
-    PurchaseEventProducer eventProducer;
+    EventProducer eventProducer;
 
     @Spy
     ModelMapper modelMapper;
@@ -145,7 +145,7 @@ public class PantryItemServiceUnitTest {
         //then
         var item = captor.getValue();
         assertThat(item.getCurrentQty()).isEqualTo(9);
-        verify(eventProducer, times(0)).send(any(PurchaseEventDto.class));
+        verify(eventProducer, times(0)).sendPurchaseCreateEvent(any(ItemDto.class));
     }
 
     @Test
@@ -164,7 +164,7 @@ public class PantryItemServiceUnitTest {
 
         given(repository.findById(any(PantryItemKey.class))).willReturn(Optional.of(entity));
         given(repository.save(captor.capture())).willReturn(entity);
-        doNothing().when(eventProducer).send(any(PurchaseEventDto.class));
+        doNothing().when(eventProducer).sendPurchaseCreateEvent(any(ItemDto.class));
 
         //when
         var consumedDto = PantryItemConsumedDto.builder().pantryId(1L).productId(1L).qty(1).build();
@@ -176,15 +176,15 @@ public class PantryItemServiceUnitTest {
         assertThat(item.getProvisionedQty()).isEqualTo(5);
 
 
-        var purchaseDto = PurchaseEventDto.builder()
-                .quantity(5)
+        var purchaseDto = ItemDto.builder()
+                .qtyProvisioned(5)
                 .pantryId(entity.getPantry().getId())
                 .pantryName(entity.getPantry().getName())
                 .productId(entity.getProduct().getId())
                 .productDescription(entity.getProduct().getDescription())
                 .productSize(entity.getProduct().getSize())
                 .build();
-        verify(eventProducer, times(0)).send(purchaseDto);
+        verify(eventProducer, times(0)).sendPurchaseCreateEvent(purchaseDto);
     }
 
     @Test
@@ -198,7 +198,7 @@ public class PantryItemServiceUnitTest {
 
         //then
         verify(repository, times(0)).save(any(PantryItem.class));
-        verify(eventProducer, times(0)).send(any(PurchaseEventDto.class));
+        verify(eventProducer, times(0)).sendPurchaseCreateEvent(any(ItemDto.class));
     }
 
     @Test
@@ -221,7 +221,7 @@ public class PantryItemServiceUnitTest {
 
         //then
         verify(repository, times(0)).save(any(PantryItem.class));
-        verify(eventProducer, times(0)).send(any(PurchaseEventDto.class));
+        verify(eventProducer, times(0)).sendPurchaseCreateEvent(any(ItemDto.class));
     }
 
     @Test
@@ -243,7 +243,7 @@ public class PantryItemServiceUnitTest {
 
         //then
         verify(repository, times(0)).save(any(PantryItem.class));
-        verify(eventProducer, times(0)).send(any(PurchaseEventDto.class));
+        verify(eventProducer, times(0)).sendPurchaseCreateEvent(any(ItemDto.class));
     }
 
 }

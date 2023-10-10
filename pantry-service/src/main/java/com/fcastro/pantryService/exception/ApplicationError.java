@@ -13,7 +13,6 @@ public class ApplicationError {
     private int status;
     private String errorType;
     private String errorMessage;
-    private String errorDetail;
     private String path;
 
 }

@@ -25,6 +25,6 @@ public class Product {
     private String description;
     private String size;
 
-    @OneToMany(mappedBy = "product", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "product", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<PantryItem> items = new HashSet<>();
 }
