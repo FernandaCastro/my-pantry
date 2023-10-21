@@ -1,6 +1,7 @@
 package com.fcastro.purchaseService.config;
 
-import com.fcastro.events.PurchaseCreateEvent;
+import com.fcastro.kafka.config.KafkaConfigData;
+import com.fcastro.kafka.model.PurchaseCreateEvent;
 import com.fcastro.purchaseService.purchaseItem.PurchaseItemService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,14 +15,23 @@ public class EventConsumer {
 
     private final PurchaseItemService purchaseItemService;
 
-    public EventConsumer(PurchaseItemService purchaseItemService) {
+    private final KafkaConfigData kafkaConfigData;
+
+    public EventConsumer(PurchaseItemService purchaseItemService, KafkaConfigData kafkaConfigData) {
         this.purchaseItemService = purchaseItemService;
+        this.kafkaConfigData = kafkaConfigData;
     }
 
-    @KafkaListener(topics = EventConfig.PURCHASE_CREATE_TOPIC, containerFactory = "kafkaListenerContainerFactory")
+    //TODO: HOW TO define <topics> getting value from configuration files?
+    @KafkaListener(topics = "purchaseCreateTopic", containerFactory = "kafkaListenerContainerFactory")
     void listener(PurchaseCreateEvent event) {
 
-        LOGGER.info("Received from {}: {}", EventConfig.PURCHASE_CREATE_TOPIC, event.getItem().toString());
+        if (event.getItem() == null) {
+            LOGGER.error("Event {} received, but attribute data is null.", event.getClass().getSimpleName());
+            return;
+        }
+
+        LOGGER.info("Received from {}: {}", kafkaConfigData.getPurchaseCreateTopic(), event.getItem().toString());
 
         purchaseItemService.processPurchaseEvent(event.getItem());
     }

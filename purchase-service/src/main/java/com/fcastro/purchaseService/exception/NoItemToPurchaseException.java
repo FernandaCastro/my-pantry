@@ -4,9 +4,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(HttpStatus.NOT_FOUND)
-public class NoItemToPurchase extends RuntimeException {
+public class NoItemToPurchaseException extends RuntimeException {
 
-    public NoItemToPurchase(String message) {
+    public NoItemToPurchaseException(String message) {
         super(message);
     }
 }

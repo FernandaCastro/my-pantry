@@ -1,6 +1,6 @@
 package com.fcastro.pantryService.pantryItem;
 
-import com.fcastro.events.ItemDto;
+import com.fcastro.kafka.model.PurchaseItemDto;
 import com.fcastro.pantryService.config.EventProducer;
 import com.fcastro.pantryService.exception.PantryNotActiveException;
 import com.fcastro.pantryService.exception.QuantityNotAvailableException;
@@ -94,23 +94,23 @@ public class PantryItemService {
         var provision = provisioned < itemEntity.getIdealQty() ? itemEntity.getIdealQty() - provisioned : 0;
 
         if (currPercentage <= SEND_PURCHASE_EVENT_THRESHOLD && provision > 0) {
-            var purchaseDto = ItemDto.builder().qtyProvisioned(provision).build();
+            var purchaseDto = PurchaseItemDto.builder().qtyProvisioned(provision).build();
             enrichPurchaseItemDto(purchaseDto, itemEntity);
-            eventProducer.sendPurchaseCreateEvent(purchaseDto);
+            eventProducer.send(purchaseDto);
             return provision;
         }
         return 0;
     }
 
-    public void processPurchaseCompleteEvent(List<ItemDto> list) {
-        for (ItemDto item : list) {
+    public void processPurchaseCompleteEvent(List<PurchaseItemDto> list) {
+        for (PurchaseItemDto item : list) {
             if (item.getQtyPurchased() > 0) {
                 updatePantryItem(item);
             }
         }
     }
 
-    private void updatePantryItem(ItemDto item) {
+    private void updatePantryItem(PurchaseItemDto item) {
         var entity = repository.findById(PantryItemKey.builder().pantryId(item.getPantryId()).productId(item.getProductId()).build()).get();
         if (entity == null) return;
 
@@ -125,7 +125,7 @@ public class PantryItemService {
     }
 
 
-    private void enrichPurchaseItemDto(ItemDto dto, PantryItem itemEntity) {
+    private void enrichPurchaseItemDto(PurchaseItemDto dto, PantryItem itemEntity) {
         dto.setPantryId(itemEntity.getPantry().getId());
         dto.setPantryName(itemEntity.getPantry().getName());
 

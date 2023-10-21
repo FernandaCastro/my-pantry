@@ -1,5 +1,6 @@
 package com.fcastro.pantryService.pantryItem;
 
+import com.fcastro.kafka.config.KafkaConfigData;
 import com.fcastro.pantryService.config.EventProducer;
 import com.fcastro.pantryService.pantry.PantryDto;
 import com.fcastro.pantryService.pantry.PantryService;
@@ -34,6 +35,9 @@ public class PantryItemServiceIntegrationTest {
 
     @Autowired
     ProductService productService;
+
+    @Autowired
+    KafkaConfigData kafkaConfigData;
 
     PantryDto pantry = null;
     ProductDto product = null;

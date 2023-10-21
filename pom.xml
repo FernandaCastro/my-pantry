@@ -11,16 +11,15 @@
 	</parent>
 
 	<groupId>com.fcastro</groupId>
-	<artifactId>pantry-inventory</artifactId>
+	<artifactId>my-pantry</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>pantry-inventory</name>
 	<description>It manages the pantry inventory and creates shopping list</description>
 	<packaging>pom</packaging>
 
 	<modules>
+		<module>common-config-data</module>
 		<module>pantry-service</module>
 		<module>purchase-service</module>
-		<module>events</module>
 	</modules>
 
 	<properties>
@@ -59,11 +58,6 @@
 				<configuration>
 					<release>17</release>
 				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId>
-				<version>3.1.0</version>
 			</plugin>
 		</plugins>
 	</build>

@@ -15,13 +15,6 @@ public class PantryServiceConfig {
 
     private static final String dateTimeFormat = "dd-MM-yyyy HH:mm:ss";
 
-//    @Bean
-//    public MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter() {
-//        ObjectMapper mapper = new ObjectMapper();
-//        mapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
-//        return new MappingJackson2HttpMessageConverter(mapper);
-//    }
-
     @Bean
     public Jackson2ObjectMapperBuilderCustomizer jackson2ObjectMapperBuilderCustomizer() {
 

@@ -1,6 +1,6 @@
 package com.fcastro.purchaseService.purchaseItem;
 
-import com.fcastro.events.ItemDto;
+import com.fcastro.kafka.model.PurchaseItemDto;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.*;
@@ -29,7 +29,7 @@ public class PurchaseItemSeviceUnitTest {
     @Test
     public void givenItemDto_whenProcessPurchaseCreateEvent_thenSuccess() {
         //given
-        var dto = ItemDto.builder()
+        var dto = PurchaseItemDto.builder()
                 .pantryId(1L)
                 .productId(1L)
                 .pantryName("Product1")

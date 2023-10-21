@@ -1,4 +1,4 @@
-package com.fcastro.events;
+package com.fcastro.kafka.model;
 
 import lombok.*;
 
@@ -9,7 +9,7 @@ import java.io.Serializable;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ItemDto implements Serializable {
+public class PurchaseItemDto implements Serializable {
     long pantryId;
     String pantryName;
 

@@ -1,10 +1,10 @@
 package com.fcastro.pantryService.config;
 
-import com.fcastro.events.ItemDto;
-import com.fcastro.events.PurchaseCreateEvent;
+import com.fcastro.kafka.config.KafkaConfigData;
+import com.fcastro.kafka.model.PurchaseCreateEvent;
+import com.fcastro.kafka.model.PurchaseItemDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 
@@ -13,12 +13,20 @@ public class EventProducer {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(EventProducer.class);
 
-    @Autowired
-    private KafkaTemplate<String, PurchaseCreateEvent> kafkaTemplate;
+    private final KafkaConfigData kafkaConfigData;
 
-    public void sendPurchaseCreateEvent(ItemDto dto) {
+    private final KafkaTemplate<String, PurchaseCreateEvent> kafkaTemplate;
+
+    public EventProducer(KafkaConfigData kafkaConfigData, KafkaTemplate<String, PurchaseCreateEvent> kafkaTemplate) {
+        this.kafkaConfigData = kafkaConfigData;
+        this.kafkaTemplate = kafkaTemplate;
+    }
+
+    public void send(PurchaseItemDto dto) {
         var purchaseEvent = PurchaseCreateEvent.builder().item(dto).build();
-        kafkaTemplate.send(EventConfig.PURCHASE_CREATE_TOPIC, purchaseEvent);
-        LOGGER.info("Sent: {}", purchaseEvent.getItem().toString());
+
+        kafkaTemplate.send(kafkaConfigData.getPurchaseCreateTopic(), purchaseEvent);
+
+        LOGGER.info("Sent to {}: {}", kafkaConfigData.getPurchaseCreateTopic(), purchaseEvent.getItem().toString());
     }
 }

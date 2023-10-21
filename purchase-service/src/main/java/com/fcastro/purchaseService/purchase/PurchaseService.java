@@ -1,7 +1,7 @@
 package com.fcastro.purchaseService.purchase;
 
 import com.fcastro.purchaseService.config.EventProducer;
-import com.fcastro.purchaseService.exception.NoItemToPurchase;
+import com.fcastro.purchaseService.exception.NoItemToPurchaseException;
 import com.fcastro.purchaseService.exception.PurchaseAlreadyProcessedException;
 import com.fcastro.purchaseService.exception.ResourceNotFoundException;
 import com.fcastro.purchaseService.purchaseItem.PurchaseItemService;
@@ -36,7 +36,7 @@ public class PurchaseService {
 
         //check existence of items to purchase
         if (purchaseItemService.countPendingPurchase() == 0) {
-            throw new NoItemToPurchase("No items to Purchase at the moment.");
+            throw new NoItemToPurchaseException("No items to Purchase at the moment.");
         }
 
         //create Purchase Order and associate all pending items
