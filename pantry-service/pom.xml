@@ -47,14 +47,29 @@
         </dependency>
     </dependencies>
 
+    <!--This says this module has a Main Class to be used in its jar packaging-->
     <build>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-                <version>3.1.0</version>
             </plugin>
         </plugins>
     </build>
+
+    <!--This says this module is able to be packaged and pushed to docker-->
+    <profiles>
+        <profile>
+            <id>build-docker-image</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>com.google.cloud.tools</groupId>
+                        <artifactId>jib-maven-plugin</artifactId>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 
 </project>

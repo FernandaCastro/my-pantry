@@ -12,5 +12,5 @@ import java.util.List;
 @AllArgsConstructor
 public class PurchaseCompleteEvent implements Serializable {
 
-    private List<PurchaseItemDto> items;
+    private List<PurchaseEventItemDto> items;
 }

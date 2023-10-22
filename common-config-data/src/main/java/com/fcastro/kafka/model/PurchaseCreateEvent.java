@@ -11,5 +11,5 @@ import java.io.Serializable;
 @AllArgsConstructor
 public class PurchaseCreateEvent implements Serializable {
 
-    private PurchaseItemDto item;
+    private PurchaseEventItemDto item;
 }
