@@ -1,0 +1,5 @@
+kafka-config:
+  bootstrap-servers-config: "localhost:9092"
+  purchase-create-topic: "purchaseCreateTopic"
+  purchase-complete-topic: "purchaseCompleteTopic"
+  pantry-group: "pantryGroup"

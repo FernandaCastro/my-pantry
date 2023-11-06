@@ -1,0 +1,29 @@
+server:
+  port: 8080
+kafka-config:
+  bootstrap-servers-config: localhost:9092
+  purchase-create-topic: purchaseCreateTopic
+  purchase-complete-topic: purchaseCompleteTopic
+  pantry-group: pantryGroup
+spring:
+  application:
+    name: pantry-service
+  profiles:
+    active: default
+  datasource:
+    platform: postgres
+    url: jdbc:postgresql://localhost:5432/pantry-db
+    username: pantry
+    password: pantry
+  jpa:
+    hibernate:
+      ddl-auto: none
+      defer-datasource-initialization: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+    show-sql: true
+  sql:
+    init:
+        mode: always
