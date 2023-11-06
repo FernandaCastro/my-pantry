@@ -1,34 +1,38 @@
-# pantry-inventory
+# my-pantry
 
-It manages the pantry inventory and creates shopping list
+It manages pantry inventories and creates shopping lists.
 
-Pantry Service (localhost:8080) :
-  - Manages pantry, pantry items and products. 
-  - Sends events to PurchaseCreateTopic when PantryItem reaches the defined threshold
-  - Listens to PurchaseCompleteTopic and update the pantry when the Purchase is complete
-  - Stores data in Postgres
+Still under development.
 
-Purchase Service (localhost:8081) :
-  - Listens to PurchaseCreateTopic to manage a list of items to purchase
-  - Send events to PurchaseCompleteTopic once the purchase is complete
-  - Stores data in Postgres
+### pantry-service (localhost:8080) :
 
-Pantry Web (localhost:3000) :
-  - Development is still in initial stages, while I learn Reactjs.
-    
+- Manages pantry, pantry items and products.
+- Sends events to PurchaseCreateTopic when PantryItem reaches the defined threshold
+- Listens to PurchaseCompleteTopic and update the pantry when the Purchase is complete
+- Stores data in Postgres
 
+| Request Type |  Path                    | Description          |
+|:-------------|:-------------------------|:---------------------|
+|GET/POST|/pantry|Pantry List & Create|
+|GET/PUT/DELETE|/pantry/{pantryId}|Pantry CRUD|
+|GET/POST|/pantry/{pantryId}/items|Pantry Items List & Create|
+|GET/PUT/DELETE|/pantry/{pantryId}/items/{productId}| Pantry Items CRUD|
+|POST|/pantry/{pantryId}/consume| Consume/Use an Item from a Pantry|
 
+### purchase-service (localhost:8081) :
 
+- Listens to PurchaseCreateTopic to manage a list of items to purchase
+- Send events to PurchaseCompleteTopic once the purchase is complete
+- Stores data in Postgres
 
+| Request Type | Path                     | Description          |
+|:-------------|:-------------------------|:---------------------|
+| GET| /purchases | List Purchase Orders|
+| POST| /purchase-create | Get an existing open Purchase Order or create one|
+| POST| /purchase-close  | Close and complete a Purchase Order|
 
+### pantry-web (localhost:3000) :
 
-
-
-
-
-
-Manage Kafka Topics:
-docker run -p 80:80 -e xeotek_kadeck_free="fcastro.rj@gmail.com" -e xeotek_kadeck_port=80 xeotek/kadeck:4.3.5
-http://localhost:80
-with user & password:
-admin
+- Development is still in initial stages, while I learn `Reactjs`.
+- Home Page and Consume Page available.
+  
