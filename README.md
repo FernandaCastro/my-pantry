@@ -34,5 +34,5 @@ Still under development.
 ### pantry-web (localhost:3000) :
 
 - Development is still in initial stages, while I learn `Reactjs`.
-- Home Page and Consume Page available
+- Home Page and Consume Page available.
   
