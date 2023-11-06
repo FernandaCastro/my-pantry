@@ -1,5 +1,6 @@
 package com.fcastro.purchase.purchase;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fcastro.purchase.purchaseItem.PurchaseItem;
 import jakarta.persistence.*;
 import lombok.*;
@@ -22,6 +23,7 @@ public class Purchase {
     private LocalDateTime createdAt;
     private LocalDateTime processedAt;
 
-    @OneToMany(mappedBy = "purchase")
+    @JsonIgnoreProperties("purchase")
+    @OneToMany(mappedBy = "purchase", fetch = FetchType.LAZY)
     List<PurchaseItem> items;
 }

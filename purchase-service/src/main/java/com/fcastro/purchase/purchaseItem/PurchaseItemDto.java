@@ -1,6 +1,5 @@
 package com.fcastro.purchase.purchaseItem;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fcastro.purchase.purchase.PurchaseDto;
 import lombok.*;
 
@@ -24,7 +23,6 @@ public class PurchaseItemDto {
     private int qtyProvisioned;
     private int qtyPurchased;
 
-    @JsonIgnore
     private PurchaseDto purchase;
 
     @Override

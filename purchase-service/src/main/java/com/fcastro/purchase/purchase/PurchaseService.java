@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 public class PurchaseService {
@@ -24,6 +25,11 @@ public class PurchaseService {
         this.purchaseItemService = purchaseItemService;
         this.modelMapper = modelMapper;
         this.eventProducer = eventProducer;
+    }
+
+    public List<PurchaseDto> listPurchaseOrder() {
+        var entities = repository.findAllOrderByDescCreateAt();
+        return convertToDto(entities);
     }
 
 
@@ -77,5 +83,10 @@ public class PurchaseService {
     private PurchaseDto convertToDto(Purchase entity) {
         if (entity == null) return null;
         return modelMapper.map(entity, PurchaseDto.class);
+    }
+
+    private List<PurchaseDto> convertToDto(List<Purchase> entity) {
+        if (entity == null) return null;
+        return modelMapper.map(entity, List.class);
     }
 }

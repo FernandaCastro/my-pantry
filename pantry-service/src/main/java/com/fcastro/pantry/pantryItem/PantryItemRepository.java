@@ -13,6 +13,7 @@ import java.util.Optional;
 public interface PantryItemRepository extends JpaRepository<PantryItem, PantryItemKey> {
 
     @Query("select p from pantryItem p where p.pantryId = :pantryId")
+    @EntityGraph(attributePaths = {"product"})
     List<PantryItem> findAllByPantryId(@Param("pantryId") Long pantryId);
 
     @EntityGraph(attributePaths = {"pantry"})

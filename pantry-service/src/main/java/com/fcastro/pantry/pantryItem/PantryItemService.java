@@ -5,11 +5,13 @@ import com.fcastro.pantry.config.EventProducer;
 import com.fcastro.pantry.exception.PantryNotActiveException;
 import com.fcastro.pantry.exception.QuantityNotAvailableException;
 import com.fcastro.pantry.exception.ResourceNotFoundException;
+import com.fcastro.pantry.product.ProductDto;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -53,6 +55,17 @@ public class PantryItemService {
     }
 
     //Updates pantryProduct table and send ProductConsumedEvent
+    public List<PantryItemDto> consumePantryItem(Long pantryId, List<PantryItemConsumedDto> list) {
+        var pantryItemConsumedList = new ArrayList<PantryItemDto>();
+        for (PantryItemConsumedDto item : list) {
+            if (item.qty > 0) {
+                item.pantryId = pantryId;
+                pantryItemConsumedList.add(consumePantryItem(item));
+            }
+        }
+        return pantryItemConsumedList;
+    }
+
     @Transactional
     public PantryItemDto consumePantryItem(PantryItemConsumedDto consumedDto) {
         var itemEntity = repository.findEagerByPantryIdAndProductId(consumedDto.getPantryId(), consumedDto.getProductId())
@@ -137,6 +150,16 @@ public class PantryItemService {
     private PantryItemDto convertToDTO(PantryItem entity) {
         if (entity == null) return null;
 
+        ProductDto product = null;
+        if (entity.getProduct() != null) {
+            product = ProductDto.builder()
+                    .id(entity.getProduct().getId())
+                    .code(entity.getProduct().getCode())
+                    .description(entity.getProduct().getDescription())
+                    .size(entity.getProduct().getSize())
+                    .build();
+        }
+
         return PantryItemDto.builder()
                 .pantryId(entity.getPantryId())
                 .productId(entity.getProductId())
@@ -144,6 +167,7 @@ public class PantryItemService {
                 .currentQty(entity.getCurrentQty())
                 .provisionedQty(entity.getProvisionedQty())
                 .lastProvisioning(entity.getLastProvisioning())
+                .product(product)
                 .build();
     }
 

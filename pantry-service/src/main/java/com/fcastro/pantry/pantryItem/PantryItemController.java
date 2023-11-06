@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@CrossOrigin
 @RequestMapping("pantry/{pantryId}")
 public class PantryItemController {
 
@@ -55,10 +56,9 @@ public class PantryItemController {
         return ResponseEntity.noContent().build();
     }
 
-    @PostMapping("/consume-item")
-    public ResponseEntity<PantryItemDto> consumeProduct(@PathVariable Long pantryId, @RequestBody PantryItemConsumedDto dto) {
-        dto.setPantryId(pantryId);
-        var item = service.consumePantryItem(dto);
-        return ResponseEntity.ok().body(item);
+    @PostMapping("/consume")
+    public ResponseEntity<List<PantryItemDto>> consumeProduct(@PathVariable Long pantryId, @RequestBody List<PantryItemConsumedDto> items) {
+        var list = service.consumePantryItem(pantryId, items);
+        return ResponseEntity.ok().body(list);
     }
 }

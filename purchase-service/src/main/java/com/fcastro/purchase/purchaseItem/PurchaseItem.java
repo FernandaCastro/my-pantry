@@ -1,5 +1,6 @@
 package com.fcastro.purchase.purchaseItem;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fcastro.purchase.purchase.Purchase;
 import jakarta.persistence.*;
 import lombok.*;
@@ -27,6 +28,7 @@ public class PurchaseItem {
     private int qtyProvisioned;
     private int qtyPurchased;
 
+    @JsonIgnoreProperties("items")
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "purchase_id")
     private Purchase purchase;
