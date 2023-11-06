@@ -16,6 +16,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -164,13 +165,14 @@ public class PantryItemControllerUnitTest {
     @Test
     public void givenValidIds_whenConsumeProduct_shouldReturnOk() throws Exception {
         //given
-        var dto = PantryItemConsumedDto.builder().pantryId(1L).productId(1L).qty(1).build();
-        given(service.consumePantryItem(any(PantryItemConsumedDto.class))).willReturn(null);
+        var list = new ArrayList<PantryItemConsumedDto>();
+        list.add(PantryItemConsumedDto.builder().pantryId(1L).productId(1L).qty(1).build());
+        given(service.consumePantryItem(anyLong(), any(List.class))).willReturn(null);
 
         //when //then
-        mockMvc.perform(MockMvcRequestBuilders.post("/pantry/1/consume-item")
+        mockMvc.perform(MockMvcRequestBuilders.post("/pantry/1/consume")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(JsonUtil.toJson(dto)))
+                        .content(JsonUtil.toJson(list)))
                 .andExpect(status().isOk());
     }
 
@@ -194,7 +196,7 @@ public class PantryItemControllerUnitTest {
         Mockito.doThrow(QuantityNotAvailableException.class).when(service).consumePantryItem(any(PantryItemConsumedDto.class));
 
         //when //then
-        mockMvc.perform(MockMvcRequestBuilders.post("/pantry/10/consume-item")
+        mockMvc.perform(MockMvcRequestBuilders.post("/pantry/10/consume")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(JsonUtil.toJson(dto)))
                 .andExpect(status().isBadRequest());
@@ -207,7 +209,7 @@ public class PantryItemControllerUnitTest {
         Mockito.doThrow(PantryNotActiveException.class).when(service).consumePantryItem(any(PantryItemConsumedDto.class));
 
         //when //then
-        mockMvc.perform(MockMvcRequestBuilders.post("/pantry/10/consume-item")
+        mockMvc.perform(MockMvcRequestBuilders.post("/pantry/10/consume")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(JsonUtil.toJson(dto)))
                 .andExpect(status().isBadRequest());
