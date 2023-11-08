@@ -7,9 +7,10 @@ export default function Home() {
     const [pantries, setPantries] = useState([])
     const pantry = useContext(PantryContext);
     const setPantry = useContext(SetPantryContext);
+    const URL_GET_PANTRIES = 'http://localhost:8080/pantries';
 
     useEffect(() => {
-        fetch('http://localhost:8080/pantry')
+        fetch(URL_GET_PANTRIES)
             .then((response) => response.json())
             .then((data) => { setPantries(data) })
             .catch((error) => { console.log(error) })

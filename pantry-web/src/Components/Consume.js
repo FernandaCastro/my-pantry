@@ -10,8 +10,8 @@ export default function Consume() {
   const [isPantryEmpty, setIsPantryEmpty] = useState(true);
   const [hasConsumed, setHasConsumed] = useState(false);
 
-  const URL_GET_ITEMS = "http://localhost:8080/pantry/" + pantry.id + "/items";
-  const URL_POST_CONSUME = 'http://localhost:8080/pantry/' + pantry.id + '/consume';
+  const URL_GET_ITEMS = "http://localhost:8080/pantries/" + pantry.id + "/items";
+  const URL_POST_CONSUME = 'http://localhost:8080/pantries/' + pantry.id + '/consume';
   useEffect(() => {
 
     fetch(URL_GET_ITEMS)

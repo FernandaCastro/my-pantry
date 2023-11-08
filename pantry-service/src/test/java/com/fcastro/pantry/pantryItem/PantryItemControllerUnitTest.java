@@ -49,7 +49,7 @@ public class PantryItemControllerUnitTest {
         given(service.get(anyLong(), anyLong())).willReturn(Optional.of(dto));
 
         //when //then
-        mockMvc.perform(MockMvcRequestBuilders.get("/pantry/1/items/1"))
+        mockMvc.perform(MockMvcRequestBuilders.get("/pantries/1/items/1"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.pantry.id", is(1)))
                 .andExpect(jsonPath("$.product.id", is(1)))
@@ -75,7 +75,7 @@ public class PantryItemControllerUnitTest {
         given(service.getAll(anyLong())).willReturn(list);
 
         //when //then
-        mockMvc.perform(MockMvcRequestBuilders.get("/pantry/1/items"))
+        mockMvc.perform(MockMvcRequestBuilders.get("/pantries/1/items"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(2)));
     }
@@ -86,7 +86,7 @@ public class PantryItemControllerUnitTest {
         given(service.get(anyLong(), anyLong())).willReturn(Optional.empty());
 
         //when //then
-        mockMvc.perform(MockMvcRequestBuilders.get("/pantry/1/items/1"))
+        mockMvc.perform(MockMvcRequestBuilders.get("/pantries/1/items/1"))
                 .andExpect(status().isNotFound());
     }
 
@@ -102,7 +102,7 @@ public class PantryItemControllerUnitTest {
         given(service.save(any(PantryItemDto.class))).willReturn(dto);
 
         //when //then
-        mockMvc.perform(MockMvcRequestBuilders.post("/pantry/1/items")
+        mockMvc.perform(MockMvcRequestBuilders.post("/pantries/1/items")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(JsonUtil.toJson(dto)))
                 .andExpect(status().isCreated())
@@ -125,7 +125,7 @@ public class PantryItemControllerUnitTest {
         given(service.save(any(PantryItemDto.class))).willReturn(dto);
 
         //when //then
-        mockMvc.perform(MockMvcRequestBuilders.put("/pantry/1/items/1")
+        mockMvc.perform(MockMvcRequestBuilders.put("/pantries/1/items/1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(JsonUtil.toJson(dto)))
                 .andExpect(status().isOk())
@@ -146,7 +146,7 @@ public class PantryItemControllerUnitTest {
         given(service.get(1L, 1L)).willReturn(Optional.empty());
 
         //when //then
-        mockMvc.perform(MockMvcRequestBuilders.put("/pantry/1/items/1")
+        mockMvc.perform(MockMvcRequestBuilders.put("/pantries/1/items/1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(JsonUtil.toJson(dto)))
                 .andExpect(status().isNotFound());
@@ -158,7 +158,7 @@ public class PantryItemControllerUnitTest {
         doNothing().when(service).delete(1L, 1L);
 
         //when //then
-        mockMvc.perform(MockMvcRequestBuilders.delete("/pantry/1/items/1"))
+        mockMvc.perform(MockMvcRequestBuilders.delete("/pantries/1/items/1"))
                 .andExpect(status().isNoContent());
     }
 
@@ -170,7 +170,7 @@ public class PantryItemControllerUnitTest {
         given(service.consumePantryItem(anyLong(), any(List.class))).willReturn(null);
 
         //when //then
-        mockMvc.perform(MockMvcRequestBuilders.post("/pantry/1/consume")
+        mockMvc.perform(MockMvcRequestBuilders.post("/pantries/1/consume")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(JsonUtil.toJson(list)))
                 .andExpect(status().isOk());
@@ -183,7 +183,7 @@ public class PantryItemControllerUnitTest {
         Mockito.doThrow(ResourceNotFoundException.class).when(service).consumePantryItem(any(PantryItemConsumedDto.class));
 
         //when //then
-        mockMvc.perform(MockMvcRequestBuilders.post("/pantry/10/consume-item")
+        mockMvc.perform(MockMvcRequestBuilders.post("/pantries/10/consume-item")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(JsonUtil.toJson(dto)))
                 .andExpect(status().isNotFound());
@@ -196,7 +196,7 @@ public class PantryItemControllerUnitTest {
         Mockito.doThrow(QuantityNotAvailableException.class).when(service).consumePantryItem(any(PantryItemConsumedDto.class));
 
         //when //then
-        mockMvc.perform(MockMvcRequestBuilders.post("/pantry/10/consume")
+        mockMvc.perform(MockMvcRequestBuilders.post("/pantries/10/consume")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(JsonUtil.toJson(dto)))
                 .andExpect(status().isBadRequest());
@@ -209,7 +209,7 @@ public class PantryItemControllerUnitTest {
         Mockito.doThrow(PantryNotActiveException.class).when(service).consumePantryItem(any(PantryItemConsumedDto.class));
 
         //when //then
-        mockMvc.perform(MockMvcRequestBuilders.post("/pantry/10/consume")
+        mockMvc.perform(MockMvcRequestBuilders.post("/pantries/10/consume")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(JsonUtil.toJson(dto)))
                 .andExpect(status().isBadRequest());

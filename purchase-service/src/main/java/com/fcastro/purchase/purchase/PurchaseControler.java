@@ -1,14 +1,12 @@
 package com.fcastro.purchase.purchase;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
+@RequestMapping("purchases")
 public class PurchaseControler {
 
     private final PurchaseService service;
@@ -17,17 +15,17 @@ public class PurchaseControler {
         this.service = service;
     }
 
-    @GetMapping("/purchases")
+    @GetMapping()
     public ResponseEntity<List<PurchaseDto>> listPurchase() {
         return ResponseEntity.ok(service.listPurchaseOrder());
     }
 
-    @PostMapping("/purchase-create")
+    @PostMapping("/open")
     public ResponseEntity<PurchaseDto> createPurchaseOrder() {
         return ResponseEntity.ok(service.getOrCreatePurchaseOrder());
     }
 
-    @PostMapping("/purchase-close")
+    @PostMapping("/close")
     public ResponseEntity<PurchaseDto> closePurchaseOrder(@RequestBody PurchaseDto dto) {
         return ResponseEntity.ok(service.closePurchaseOrder(dto));
     }

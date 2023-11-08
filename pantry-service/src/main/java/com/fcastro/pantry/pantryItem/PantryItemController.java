@@ -9,7 +9,7 @@ import java.util.List;
 
 @RestController
 @CrossOrigin
-@RequestMapping("pantry/{pantryId}")
+@RequestMapping("pantries/{pantryId}")
 public class PantryItemController {
 
     private final PantryItemService service;
