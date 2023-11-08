@@ -16,13 +16,12 @@ export default function Home() {
     }, []);
 
     function renderItem(item) {
-
         return (
-            <li className="collection-item" key={item.id}>
+            <li className="collection-item black-text" key={item.id}>
                 <label>
                     <input
                         type="radio"
-                        className="with-gap secondary-content"
+                        className="with-gap secondary-content black-text"
                         name="group1"
                         value={item.id}
                         onChange={(e) => handleRadioOnChange(e.target.value)}
@@ -40,9 +39,9 @@ export default function Home() {
     }
 
     function handleRadioOnChange(itemId) {
-        pantries.map((item) => {
+        pantries.forEach((item) => {
             if (item.id === parseInt(itemId)) {
-                setPantry(item);
+                return setPantry(item);
             }
         })
     }

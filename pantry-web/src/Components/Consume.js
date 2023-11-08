@@ -7,21 +7,25 @@ export default function Consume() {
   const pantry = useContext(PantryContext);
   const [pantryItems, setPantryItems] = useState([]);
   const [consumedItems, setConsumedItems] = useState([]);
-  const [hasConsume, setHasConsume] = useState(false);
+  const [isPantryEmpty, setIsPantryEmpty] = useState(true);
+  const [hasConsumed, setHasConsumed] = useState(false);
 
+  const URL_GET_ITEMS = "http://localhost:8080/pantry/" + pantry.id + "/items";
+  const URL_POST_CONSUME = 'http://localhost:8080/pantry/' + pantry.id + '/consume';
   useEffect(() => {
 
-    fetch("http://localhost:8080/pantry/" + pantry.id + "/items")
+    fetch(URL_GET_ITEMS)
       .then((response) => response.json())
       .then((data) => {
         setPantryItems(data);
         loadConsumedItemsList(data);
       })
       .catch((error) => { console.log(error) })
-  }, []);
+  }, [URL_GET_ITEMS]);
 
 
   function loadConsumedItemsList(data) {
+    let emptyPantry = true;
     let copy = [];
 
     data.forEach((item) => {
@@ -30,57 +34,63 @@ export default function Consume() {
         pantryId: item.pantryId,
         productId: item.productId,
         qty: 0
+      }]
+      if (emptyPantry && item.currentQty > 0) {
+        emptyPantry = false;
+
       }
-      ]
     })
-    setHasConsume(false)
+    setIsPantryEmpty(emptyPantry)
+    setHasConsumed(false);
     return setConsumedItems(copy);
   }
 
-  function handleDecrease(index, qty) {
-    if (qty > 0) {
-      const array = consumedItems.map((c, i) => {
-        if (i === index) {
-
-          return c =
-          {
-            ...c,
-            qty: qty - 1
-          };
-        } else {
-
-          return c;
-        }
-      });
-      return setConsumedItems(array);
-    }
-  }
-
-  function handleIncrease(index, qty) {
-    let notZero = false;
-
+  function handleDecrease(index) {
+    let consumed = false;
     const array = consumedItems.map((c, i) => {
-      if (c.qty > 0) {
-        notZero = true;
-      }
 
       if (i === index) {
+
+        if (!consumed && c.qty > 1)
+          consumed = true;
 
         return c =
         {
           ...c,
-          qty: qty + 1
+          qty: c.qty - 1
+        };
+
+      } else {
+
+        if (!consumed && c.qty > 0)
+          consumed = true;
+
+        return c;
+      }
+    });
+    return setConsumedItems(array);
+  }
+
+  function handleIncrease(index) {
+    let consumed = hasConsumed;
+    const array = consumedItems.map((c, i) => {
+      if (i === index) {
+        consumed = true;
+        return c =
+        {
+          ...c,
+          qty: c.qty + 1
         };
       } else {
         return c;
       }
     });
-    setHasConsume(notZero);
+    setHasConsumed(consumed);
     return setConsumedItems(array);
   }
 
   function handleSave() {
-    fetch('http://localhost:8080/pantry/' + pantry.id + '/consume',
+    fetch(URL_POST_CONSUME,
       {
         method: 'POST',
         headers: {
@@ -110,7 +120,7 @@ export default function Consume() {
         <div className="col s4"><span className="title">{item.product.code}</span></div>
         <div className="col s2"><span className="teal-text text-lighten-2" >Current</span></div>
         <div className="col s2"><span className="teal-text text-lighten-2" >Provisioned</span></div>
-        <div className="col s2"><span className="teal-text text-lighten-2" >Last Provisionig</span></div>
+        <div className="col s2"><span className="teal-text text-lighten-2" >Last Provisioning</span></div>
 
         <div className="row">
 
@@ -137,12 +147,12 @@ export default function Consume() {
             <center>
               <a href="#!" className="left waves-effect waves-circle waves-light btn-floating secondary-content-content"
                 style={consumedItem.qty > 0 ? { pointerEvents: "auto" } : { pointerEvents: "none" }}
-                onClick={() => handleDecrease(index, consumedItem.qty)} >
+                onClick={() => handleDecrease(index)} >
                 <i className="material-icons" >remove</i></a>
               <span>{consumedItem.qty}</span>
               <a href="#!" className="right waves-effect waves-circle waves-light btn-floating secondary-content-content"
-                style={consumedItem.qty > 0 ? { pointerEvents: "auto" } : { pointerEvents: "none" }}
-                onClick={() => handleIncrease(index, consumedItem.qty)}>
+                style={item.currentQty > 0 ? { pointerEvents: "auto" } : { pointerEvents: "none" }}
+                onClick={() => handleIncrease(index)}>
                 <i className="material-icons" >add</i></a>
             </center>
           </div>
@@ -170,14 +180,14 @@ export default function Consume() {
       <div className='row'>
         <div className='col 3 offset-s9'>
           <a href="#!" className='waves-effect waves-light btn-small'
-            style={hasConsume ? { pointerEvents: "auto" } : { pointerEvents: "none" }}
+            style={hasConsumed ? { pointerEvents: "auto" } : { pointerEvents: "none" }}
             onClick={() => loadConsumedItemsList(pantryItems)}>
             <i className="material-icons left">clear</i>
             Clear
           </a>
           &nbsp;&nbsp;
           <a href="#!" className="right waves-effect waves-light btn-small"
-            style={hasConsume ? { pointerEvents: "auto" } : { pointerEvents: "none" }}
+            style={isPantryEmpty || !hasConsumed ? { pointerEvents: "none" } : { pointerEvents: "auto" }}
             onClick={handleSave}>
             <i className="material-icons left">done_all</i>
             Save
