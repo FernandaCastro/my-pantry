@@ -3,6 +3,7 @@ package com.fcastro.purchase.purchase;
 import com.fcastro.purchase.config.EventProducer;
 import com.fcastro.purchase.exception.NoItemToPurchaseException;
 import com.fcastro.purchase.exception.PurchaseAlreadyProcessedException;
+import com.fcastro.purchase.exception.PurchaseItemsMissingException;
 import com.fcastro.purchase.exception.ResourceNotFoundException;
 import com.fcastro.purchase.purchaseItem.PurchaseItemService;
 import org.modelmapper.ModelMapper;
@@ -58,6 +59,10 @@ public class PurchaseService {
     }
 
     public PurchaseDto closePurchaseOrder(PurchaseDto dto) {
+        if (dto.getItems() == null || dto.getItems().size() == 0) {
+            throw new PurchaseItemsMissingException("Purchase items list is required to close a Purchase Order.");
+        }
+
         var entity = repository.findById(dto.getId())
                 .orElseThrow(() -> new ResourceNotFoundException("Purchase Order was not found."));
 

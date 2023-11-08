@@ -1,5 +1,6 @@
 package com.fcastro.purchase.purchase;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fcastro.purchase.purchaseItem.PurchaseItemDto;
 import lombok.*;
 
@@ -17,5 +18,6 @@ public class PurchaseDto {
     private LocalDateTime createdAt;
     private LocalDateTime processedAt;
 
+    @JsonIgnoreProperties("purchase")
     List<PurchaseItemDto> items;
 }
