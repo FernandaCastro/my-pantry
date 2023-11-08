@@ -46,11 +46,13 @@ public class GlobalExceptionHandler {
         exceptionTypes.put(DataAccessException.class, "database-error");
         exceptionTypes.put(ResourceNotFoundException.class, "application-error");
         exceptionTypes.put(PurchaseAlreadyProcessedException.class, "application-error");
+        exceptionTypes.put(PurchaseItemsMissingException.class, "application-error");
         exceptionTypes.put(NoItemToPurchaseException.class, "application-error");
     }
 
     @ExceptionHandler(value = {
             PurchaseAlreadyProcessedException.class,
+            PurchaseItemsMissingException.class,
             MissingServletRequestParameterException.class,
             MissingServletRequestPartException.class,
             HttpMessageNotReadableException.class})
