@@ -9,15 +9,15 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
 @Component
-public class EventConsumer {
+public class EventListener {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(EventConsumer.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(EventListener.class);
 
     private final PantryItemService pantryItemService;
 
     private final KafkaConfigData kafkaConfigData;
 
-    public EventConsumer(PantryItemService pantryItemService, KafkaConfigData kafkaConfigData) {
+    public EventListener(PantryItemService pantryItemService, KafkaConfigData kafkaConfigData) {
         this.pantryItemService = pantryItemService;
         this.kafkaConfigData = kafkaConfigData;
     }
@@ -27,11 +27,14 @@ public class EventConsumer {
     protected void listener(PurchaseCompleteEvent event) {
 
         if (event.getItems() == null) {
-            LOGGER.error("Event {} received, but attribute data is null.", event.getClass().getSimpleName());
+            LOGGER.error("purchaseCompleteTopic received, but attribute data is null.");
             return;
         }
 
-        LOGGER.info("Received from {}: {}", kafkaConfigData.getPurchaseCompleteTopic(), event.getItems().toString());
+        LOGGER.info("Event Received: Topic[{}], Data[{}]",
+                kafkaConfigData.getPurchaseCompleteTopic(),
+                event.getItems().toString()
+        );
 
         pantryItemService.processPurchaseCompleteEvent(event.getItems());
     }
