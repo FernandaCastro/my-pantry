@@ -19,4 +19,7 @@ public class KafkaConfigData {
     private String purchaseCompleteTopic;
     private String pantryGroup;
 
+    private Integer numOfPartitions;
+    private Short replicationFactor;
+
 }

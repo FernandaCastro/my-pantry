@@ -9,29 +9,32 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
 @Component
-public class EventConsumer {
+public class EventListener {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(EventConsumer.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(EventListener.class);
 
     private final PurchaseItemService purchaseItemService;
 
     private final KafkaConfigData kafkaConfigData;
 
-    public EventConsumer(PurchaseItemService purchaseItemService, KafkaConfigData kafkaConfigData) {
+    public EventListener(PurchaseItemService purchaseItemService, KafkaConfigData kafkaConfigData) {
         this.purchaseItemService = purchaseItemService;
         this.kafkaConfigData = kafkaConfigData;
     }
 
     //TODO: HOW TO define <topics> getting value from configuration files?
     @KafkaListener(topics = "purchaseCreateTopic", containerFactory = "kafkaListenerContainerFactory")
-    void listener(PurchaseCreateEvent event) {
+    protected void listener(PurchaseCreateEvent event) {
 
         if (event.getItem() == null) {
-            LOGGER.error("Event {} received, but attribute data is null.", event.getClass().getSimpleName());
+            LOGGER.error("PurchaseCreateEvent received, but attribute data is null.");
             return;
         }
 
-        LOGGER.info("Received from {}: {}", kafkaConfigData.getPurchaseCreateTopic(), event.getItem().toString());
+        LOGGER.info("Event Received: Topic[{}], Data[{}]",
+                kafkaConfigData.getPurchaseCreateTopic(),
+                event.toString()
+        );
 
         purchaseItemService.processPurchaseEvent(event.getItem());
     }
