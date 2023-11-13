@@ -9,11 +9,11 @@ import java.util.List;
 public interface PurchaseRepository extends JpaRepository<Purchase, Long> {
 
 
-    @Query("select p from Purchase p where p.processedAt is null")
+    @Query("select p from purchase p where p.processedAt is null")
     @EntityGraph(attributePaths = {"items"})
     Purchase getPending();
 
-    @Query("select p from Purchase p order by p.createdAt desc")
+    @Query("select p from purchase p order by p.createdAt desc")
     List<Purchase> findAllOrderByDescCreateAt();
 
 }

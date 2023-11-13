@@ -11,7 +11,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity
+@Entity(name = "pantry")
 //@Table(name = "pantry")
 //@NamedEntityGraph(name = "Pantry.items",
 //        attributeNodes = @NamedAttributeNode("items")

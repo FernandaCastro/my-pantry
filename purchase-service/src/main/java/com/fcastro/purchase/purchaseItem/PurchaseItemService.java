@@ -4,6 +4,7 @@ import com.fcastro.kafka.model.PurchaseEventItemDto;
 import com.fcastro.purchase.exception.ResourceNotFoundException;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,59 +33,56 @@ public class PurchaseItemService {
         repository.save(entity);
     }
 
-    public int countPendingPurchase() {
-        return repository.countPendingPurchase();
+    public List<PurchaseItemDto> listPendingPurchase() {
+        return convertToDto(repository.listPendingPurchase());
     }
 
-    public int updatePendingPurchaseItems(Long purchaseId) {
-        return repository.updatePendingPurchaseItems(purchaseId);
+    @Transactional
+    public void updatePendingPurchaseItems(Long purchaseId) {
+        repository.updatePendingPurchaseItems(purchaseId);
     }
 
-    public List<com.fcastro.purchase.purchaseItem.PurchaseItemDto> findAllByPurchaseId(Long purchaseId) {
+    public List<PurchaseItemDto> findAllByPurchaseId(Long purchaseId) {
         return convertToDto(repository.findAllByPurchaseId(purchaseId));
     }
 
-    public com.fcastro.purchase.purchaseItem.PurchaseItemDto save(com.fcastro.purchase.purchaseItem.PurchaseItemDto dto) {
+    public PurchaseItemDto save(PurchaseItemDto dto) {
         if (dto == null) return null;
         var entity = repository.save(convertToEntity(dto));
         return convertToDto(entity);
     }
 
-    public List<PurchaseEventItemDto> processPurchasedItems(Long purchaseId, List<PurchaseItemDto> listDto) {
+    public List<PurchaseEventItemDto> processPurchasedItems(Long purchaseId, List<PurchaseItemDto> purchasedItems) {
 
-        var itemDtoList = new ArrayList<PurchaseEventItemDto>();
-        if (listDto == null || listDto.size() == 0) return itemDtoList;
+        var purchaseEventList = new ArrayList<PurchaseEventItemDto>();
+        if (purchasedItems == null || purchasedItems.size() == 0) return purchaseEventList;
 
-        for (PurchaseItemDto dto : listDto) {
+        for (PurchaseItemDto purchasedItem : purchasedItems) {
 
-            var entity = repository.findByIdAndPurchaseId(dto.getId(), purchaseId)
-                    .orElseThrow(() -> new ResourceNotFoundException("Item id: " + dto.getId() + " is not in the Purchase list"));
+            var entity = repository.findByIdAndPurchaseId(purchasedItem.getId(), purchaseId)
+                    .orElseThrow(() -> new ResourceNotFoundException("Item id: " + purchasedItem.getId() + " is not in the Purchase list"));
 
-            if (dto.getQtyPurchased() > 0) {
-                entity.setQtyPurchased(dto.getQtyPurchased());
-                repository.save(entity);
-            }
+            entity.setQtyPurchased(purchasedItem.getQtyPurchased());
+            repository.save(entity);
 
-            processPendingPurchase(entity);
-
-            itemDtoList.add(convertToItemDto(entity));
+            processPendingProvisioning(entity);
+            purchaseEventList.add(convertToItemDto(entity));
         }
 
-        return itemDtoList;
+        return purchaseEventList;
     }
 
-
-    private void processPendingPurchase(PurchaseItem entity) {
-        int qtyMissing = entity.getQtyProvisioned() - entity.getQtyPurchased();
+    private void processPendingProvisioning(PurchaseItem purchasedItem) {
+        int qtyMissing = purchasedItem.getQtyProvisioned() - purchasedItem.getQtyPurchased();
         if (qtyMissing > 0) {
             //Create a new PurchaseItem with the missing quantity
             var newEntity = PurchaseItem.builder()
                     .qtyProvisioned(qtyMissing)
-                    .pantryId(entity.getPantryId())
-                    .pantryName(entity.getPantryName())
-                    .productId(entity.getProductId())
-                    .productDescription(entity.getProductDescription())
-                    .productSize(entity.getProductSize())
+                    .pantryId(purchasedItem.getPantryId())
+                    .pantryName(purchasedItem.getPantryName())
+                    .productId(purchasedItem.getProductId())
+                    .productDescription(purchasedItem.getProductDescription())
+                    .productSize(purchasedItem.getProductSize())
                     .build();
             repository.save(newEntity);
         }
@@ -114,18 +112,18 @@ public class PurchaseItemService {
                 .build();
     }
 
-    private PurchaseItem convertToEntity(com.fcastro.purchase.purchaseItem.PurchaseItemDto dto) {
+    private PurchaseItem convertToEntity(PurchaseItemDto dto) {
         if (dto == null) return null;
         return modelMapper.map(dto, PurchaseItem.class);
     }
 
-    private List<com.fcastro.purchase.purchaseItem.PurchaseItemDto> convertToDto(List<PurchaseItem> entities) {
+    private List<PurchaseItemDto> convertToDto(List<PurchaseItem> entities) {
         if (entities == null) return null;
         return modelMapper.map(entities, List.class);
     }
 
-    private com.fcastro.purchase.purchaseItem.PurchaseItemDto convertToDto(PurchaseItem entity) {
+    private PurchaseItemDto convertToDto(PurchaseItem entity) {
         if (entity == null) return null;
-        return modelMapper.map(entity, com.fcastro.purchase.purchaseItem.PurchaseItemDto.class);
+        return modelMapper.map(entity, PurchaseItemDto.class);
     }
 }

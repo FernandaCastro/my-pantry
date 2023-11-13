@@ -79,60 +79,65 @@ public class PantryItemService {
             throw new QuantityNotAvailableException(itemEntity.getCurrentQty() + " quantity available in Pantry.");
         }
 
-        //Update Pantry Item Inventory
         itemEntity.setCurrentQty(itemEntity.getCurrentQty() - consumedDto.getQty());
 
-        //Provision Purchase need
-        var provision = sendPurchaseCreateEvent(itemEntity);
-        if (provision > 0) {
+        var usagePercentage = calculateUsagePercentage(itemEntity);
+        var provision = calculateProvision(itemEntity);
+
+        if (usagePercentage <= SEND_PURCHASE_EVENT_THRESHOLD && provision > 0) {
+            sendPurchaseCreateEvent(itemEntity, provision);
             itemEntity.setProvisionedQty(itemEntity.getProvisionedQty() + provision);
             itemEntity.setLastProvisioning(LocalDateTime.now());
         }
 
         repository.save(itemEntity);
-
         return convertToDTO(itemEntity);
     }
 
-    //Calculate the Purchase Need (Send PurchaseCreateEvent)
-    // 1. when currentQty is below PURCHASE_THRESHOLD %  AND
-    // 2. (currentQty + provisionedQty) < ideal_qty
-    private int sendPurchaseCreateEvent(PantryItem itemEntity) {
+    private long calculateUsagePercentage(PantryItem itemEntity) {
+        return (100 * itemEntity.getCurrentQty()) / itemEntity.getIdealQty();
+    }
 
-        // 1. when currentQty is below PURCHASE_THRESHOLD %
-        var currPercentage = (100 * itemEntity.getCurrentQty()) / itemEntity.getIdealQty();
-
-        // 2. (currentQty + provisionedQty) < ideal_qty
+    private int calculateProvision(PantryItem itemEntity) {
         var provisioned = itemEntity.getCurrentQty() + itemEntity.getProvisionedQty();
-        var provision = provisioned < itemEntity.getIdealQty() ? itemEntity.getIdealQty() - provisioned : 0;
-
-        if (currPercentage <= SEND_PURCHASE_EVENT_THRESHOLD && provision > 0) {
-            var purchaseDto = PurchaseEventItemDto.builder().qtyProvisioned(provision).build();
-            enrichPurchaseItemDto(purchaseDto, itemEntity);
-            eventProducer.send(purchaseDto);
-            return provision;
-        }
-        return 0;
+        return provisioned < itemEntity.getIdealQty() ? itemEntity.getIdealQty() - provisioned : 0;
     }
 
-    public void processPurchaseCompleteEvent(List<PurchaseEventItemDto> list) {
-        for (PurchaseEventItemDto item : list) {
-            if (item.getQtyPurchased() > 0) {
-                updatePantryItem(item);
-            }
+    private void sendPurchaseCreateEvent(PantryItem itemEntity, int provision) {
+        var purchaseDto = PurchaseEventItemDto.builder().qtyProvisioned(provision).build();
+        enrichPurchaseItemDto(purchaseDto, itemEntity);
+        eventProducer.send(purchaseDto);
+    }
+
+    public void processPurchaseCompleteEvent(List<PurchaseEventItemDto> purchasedList) {
+        for (PurchaseEventItemDto purchasedItem : purchasedList) {
+            updatePantryItem(purchasedItem);
         }
     }
 
-    private void updatePantryItem(PurchaseEventItemDto item) {
-        var entity = repository.findById(PantryItemKey.builder().pantryId(item.getPantryId()).productId(item.getProductId()).build()).get();
+    private void updatePantryItem(PurchaseEventItemDto purchasedItem) {
+        if (purchasedItem.getQtyPurchased() == 0) return;
+
+        var entity = repository.findById(
+                        PantryItemKey.builder()
+                                .pantryId(purchasedItem.getPantryId())
+                                .productId(purchasedItem.getProductId())
+                                .build())
+                .get();
+
+        //TODO: What should be done when the PurchasedItem doesn't exist in the Pantry? Add to the Pantry?
         if (entity == null) return;
 
-        entity.setCurrentQty(entity.getCurrentQty() + item.getQtyPurchased());
+        entity.setCurrentQty(entity.getCurrentQty() + purchasedItem.getQtyPurchased());
 
-        var provisioned = item.getQtyPurchased() >= entity.getProvisionedQty() ? 0 : entity.getProvisionedQty() - item.getQtyPurchased();
-        entity.setProvisionedQty(provisioned);
-
-        if (provisioned == 0) entity.setLastProvisioning(null);
+        //all qty purchased
+        if (purchasedItem.getQtyPurchased() >= entity.getProvisionedQty()) {
+            entity.setProvisionedQty(0);
+            entity.setLastProvisioning(null);
+        } else {
+            //there's still remaining qty to purchase
+            entity.setProvisionedQty(entity.getProvisionedQty() - purchasedItem.getQtyPurchased());
+        }
 
         repository.save(entity);
     }

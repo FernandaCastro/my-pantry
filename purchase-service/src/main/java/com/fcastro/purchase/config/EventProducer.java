@@ -45,6 +45,7 @@ public class EventProducer {
             } else {
                 LOGGER.error("Unable to send PurchaseCompleteEvent to {}: {}", kafkaConfigData.getPurchaseCompleteTopic(), event.toString());
                 throw new KafkaException("Unable to send PurchaseCompleteEvent: " + ex.getMessage(), ex);
+                //TODO: How to treat this async exception? Save to try again later? Kafka has it available?
             }
         });
     }

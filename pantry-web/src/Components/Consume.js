@@ -10,8 +10,8 @@ export default function Consume() {
   const [isPantryEmpty, setIsPantryEmpty] = useState(true);
   const [hasConsumed, setHasConsumed] = useState(false);
 
-  const URL_GET_ITEMS = "http://localhost:8080/pantries/" + pantry.id + "/items";
-  const URL_POST_CONSUME = 'http://localhost:8080/pantries/' + pantry.id + '/consume';
+  const URL_GET_ITEMS = "http://192.168.0.12:8080/pantries/" + pantry.id + "/items";
+  const URL_POST_CONSUME = 'http://192.168.0.12:8080/pantries/' + pantry.id + '/consume';
   useEffect(() => {
 
     fetch(URL_GET_ITEMS)
@@ -115,15 +115,17 @@ export default function Consume() {
 
     return (
       <li className="collection-item avatar" key={item.productId}>
-        <img src="./healthy-food.png" alt="" className="circle" />
-
-        <div className="col s4"><span className="title">{item.product.code}</span></div>
-        <div className="col s2"><span className="teal-text text-lighten-2" >Current</span></div>
-        <div className="col s2"><span className="teal-text text-lighten-2" >Provisioned</span></div>
-        <div className="col s2"><span className="teal-text text-lighten-2" >Last Provisioning</span></div>
-
         <div className="row">
-
+          <div className="col s4">
+            <img src="./healthy-food.png" alt="" className="circle" />
+            <span className="title">{item.product.code}</span>
+          </div>
+          <div className="col s2"><span className="teal-text text-lighten-2" >Current</span></div>
+          <div className="col s2"><span className="teal-text text-lighten-2" >Provisioned</span></div>
+          <div className="col s2"><span className="teal-text text-lighten-2" >Last Provisioning</span></div>
+          <div className="col s2"><span className="teal-text text-lighten-2" >Consumed</span></div>
+        </div>
+        <div className="row">
           <div className="col s4">
             <p>
               {item.product.description} <br />
@@ -178,19 +180,18 @@ export default function Consume() {
         </div>
       </div>
       <div className='row'>
-        <div className='col 3 offset-s9'>
-          <a href="#!" className='waves-effect waves-light btn-small'
-            style={hasConsumed ? { pointerEvents: "auto" } : { pointerEvents: "none" }}
-            onClick={() => loadConsumedItemsList(pantryItems)}>
-            <i className="material-icons left">clear</i>
-            Clear
-          </a>
-          &nbsp;&nbsp;
+        <div className='col s12'>
           <a href="#!" className="right waves-effect waves-light btn-small"
             style={isPantryEmpty || !hasConsumed ? { pointerEvents: "none" } : { pointerEvents: "auto" }}
             onClick={handleSave}>
             <i className="material-icons left">done_all</i>
             Save
+          </a>
+          <a href="#!" className='right waves-effect waves-light btn-small'
+            style={hasConsumed ? { pointerEvents: "auto" } : { pointerEvents: "none" }}
+            onClick={() => loadConsumedItemsList(pantryItems)}>
+            <i className="material-icons left">clear</i>
+            Clear
           </a>
         </div>
       </div>
