@@ -8,8 +8,8 @@ Still under development.
 
 - Manages pantry, pantry items and products.
 - Manages the consumption of the items in the pantry as well as their replenishment
-- Sends events to PurchaseCreateTopic when PantryItem reaches the defined threshold
-- Listens to PurchaseCompleteTopic in order to update the pantry once the Purchase Order is closed
+- Produces an event and sends it to Kafka Topic (PurchaseCreateTopic) when a PantryItem reaches the defined threshold
+- Listens to Kafka Topic (PurchaseCompleteTopic) and updates the pantry once the Purchase Order is closed
 - Stores data in Postgres
 
 | Request Type |  Path                    | Description          |
@@ -23,8 +23,8 @@ Still under development.
 ### purchase-service (localhost:8081) :
 
 - Creates a shopping list to be purchases
-- Listens to PurchaseCreateTopic to manage a list of items to be purchased
-- Send events to PurchaseCompleteTopic once the purchase is closed
+- Listens to Kafka Topic (PurchaseCreateTopic) to manage a list of items to be purchased
+- Produces an event and sends it to Kafka Topic (PurchaseCompleteTopic) once the purchase is closed
 - Stores data in Postgres
 
 | Request Type | Path                     | Description          |
