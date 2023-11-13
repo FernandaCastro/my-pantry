@@ -22,7 +22,7 @@ export default function App() {
   return (
     <PantryContext.Provider value={pantry}>
       <SetPantryContext.Provider value={setPantry}>
-        <div className="container">
+        <div>
           <Router>
             <Routes>
               <Route path="/" element={<Home />} />

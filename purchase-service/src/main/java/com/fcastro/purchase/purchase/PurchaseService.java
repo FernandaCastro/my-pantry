@@ -8,7 +8,6 @@ import com.fcastro.purchase.exception.ResourceNotFoundException;
 import com.fcastro.purchase.purchaseItem.PurchaseItemService;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -33,16 +32,21 @@ public class PurchaseService {
         return convertToDto(entities);
     }
 
+    public PurchaseDto getOpenPurchaseOrder() {
+        //return existing and pending purchase order
+        var entity = repository.getPending();
+        if (entity != null) return convertToDto(entity);
+        return null;
+    }
 
-    @Transactional
-    public PurchaseDto getOrCreatePurchaseOrder() {
+    public PurchaseDto createPurchaseOrder() {
         //return existing and pending purchase order
         var entity = repository.getPending();
         if (entity != null) return convertToDto(entity);
 
-
         //check existence of items to purchase
-        if (purchaseItemService.countPendingPurchase() == 0) {
+        var pendingPurchase = purchaseItemService.listPendingPurchase();
+        if (pendingPurchase == null || pendingPurchase.size() == 0) {
             throw new NoItemToPurchaseException("No items to Purchase at the moment.");
         }
 

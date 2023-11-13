@@ -6,12 +6,13 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@CrossOrigin
 @RequestMapping("purchases")
-public class PurchaseControler {
+public class PurchaseController {
 
     private final PurchaseService service;
 
-    public PurchaseControler(PurchaseService service) {
+    public PurchaseController(PurchaseService service) {
         this.service = service;
     }
 
@@ -20,9 +21,14 @@ public class PurchaseControler {
         return ResponseEntity.ok(service.listPurchaseOrder());
     }
 
-    @PostMapping("/open")
+    @GetMapping("/open")
+    public ResponseEntity<PurchaseDto> getOpenPurchaseOrder() {
+        return ResponseEntity.ofNullable(service.getOpenPurchaseOrder());
+    }
+
+    @PostMapping()
     public ResponseEntity<PurchaseDto> createPurchaseOrder() {
-        return ResponseEntity.ok(service.getOrCreatePurchaseOrder());
+        return ResponseEntity.ok(service.createPurchaseOrder());
     }
 
     @PostMapping("/close")

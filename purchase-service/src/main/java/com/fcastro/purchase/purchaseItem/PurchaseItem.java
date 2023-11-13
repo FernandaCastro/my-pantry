@@ -10,7 +10,7 @@ import lombok.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity
+@Entity(name = "purchaseItem")
 @Table(name = "PURCHASE_ITEM")
 public class PurchaseItem {
 

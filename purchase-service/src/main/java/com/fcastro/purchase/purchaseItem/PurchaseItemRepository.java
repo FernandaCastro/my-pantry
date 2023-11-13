@@ -10,19 +10,19 @@ import java.util.Optional;
 
 public interface PurchaseItemRepository extends JpaRepository<PurchaseItem, Long> {
 
-    @Query("select count(p) from PurchaseItem p where p.purchase.id is null")
-    int countPendingPurchase();
+    @Query("select p from purchaseItem p where p.purchase.id is null")
+    List<PurchaseItem> listPendingPurchase();
 
     @Modifying
-    @Query("update PurchaseItem p set p.purchase.id = :purchaseId where p.purchase.id is null")
-    int updatePendingPurchaseItems(@Param("purchaseId") Long purchaseId);
+    @Query("update purchaseItem set purchase.id = :purchaseId where purchase.id is null")
+    void updatePendingPurchaseItems(@Param("purchaseId") Long purchaseId);
 
-    @Query("select p from PurchaseItem p where p.purchase.id = :purchaseId")
+    @Query("select p from purchaseItem p where p.purchase.id = :purchaseId")
     List<PurchaseItem> findAllByPurchaseId(@Param("purchaseId") Long purchaseId);
 
-    @Query("select p from PurchaseItem p where p.pantryId = :pantryId and p.productId = :productId and p.purchase.id is null")
+    @Query("select p from purchaseItem p where p.pantryId = :pantryId and p.productId = :productId and p.purchase.id is null")
     PurchaseItem findByPantryIdAndProductIdAndPurchaseIdIsNull(Long pantryId, Long productId);
 
-    @Query("select p from PurchaseItem p where p.id = :id and p.purchase.id = :purchaseId")
+    @Query("select p from purchaseItem p where p.id = :id and p.purchase.id = :purchaseId")
     Optional<PurchaseItem> findByIdAndPurchaseId(Long id, Long purchaseId);
 }
