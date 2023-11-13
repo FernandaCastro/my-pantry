@@ -30,8 +30,10 @@ Still under development.
 | Request Type | Path                     | Description          |
 |:-------------|:-------------------------|:---------------------|
 | GET| /purchases | List Purchase Orders|
-| POST| /purchases/open | Get an existing open Purchase Order or create one|
+| POST| /purchases | Create an open Purchase Order|
+| GET| /purchases/open | Get an existing open Purchase Order |
 | POST| /purchases/close  | Close and complete a Purchase Order|
+| GET| /purchases/items | List of items to be purchased, not yet associated to an open order|
 
 ### pantry-web (localhost:3000) :
 
