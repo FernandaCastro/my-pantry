@@ -1,8 +1,8 @@
-import getResponseContent from '../requests/getResponseContent';
-import RequestError from '../requests/RequestError';
-import config from './config_mypantry';
+import getResponseContent from '../requests/getResponseContent.js';
+import RequestError from '../requests/RequestError.js';
+import config from './config_mypantry.js';
 
-const FetchPantry = async function (endpoint: string, method: 'GET' | 'POST' | 'PUT' | 'DELETE', data?: any) {
+const FetchPantry = async function (endpoint, method, data) {
 
     const response = await fetch(`${config.API_URL_PANTRY}/${endpoint}`, {
         method,

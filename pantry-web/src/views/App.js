@@ -1,7 +1,7 @@
 import { BrowserRouter } from "react-router-dom";
 import CustomRoutes from "../routes/CustomRoutes.js";
 import Header from './_components/Header/Header.js';
-import { useState } from 'react';
+import React, { useState } from 'react';
 
 import { PantryContext, SetPantryContext } from '../components/PantryContext.js';
 

@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { getOpenPurchaseOrder, postClosePurchaseOrder, postNewPurchaseOrder, getPendingPurchaseItems } from '../../../services/apis/mypantry/fetch/requests/PurchaseRequests.ts';
+import React, { useState, useEffect } from 'react';
+import { getOpenPurchaseOrder, postClosePurchaseOrder, postNewPurchaseOrder, getPendingPurchaseItems } from '../../../services/apis/mypantry/fetch/requests/PurchaseRequests.js';
 
 export default function Purchase() {
 

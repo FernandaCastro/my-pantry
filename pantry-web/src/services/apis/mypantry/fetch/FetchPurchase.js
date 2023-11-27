@@ -2,7 +2,7 @@ import getResponseContent from '../requests/getResponseContent';
 import RequestError from '../requests/RequestError';
 import config from './config_mypantry';
 
-const FetchPurchase = async function (endpoint: string, method: 'GET' | 'POST' | 'PUT' | 'DELETE', data?: any) {
+const FetchPurchase = async function (endpoint, method, data) {
 
     const response = await fetch(`${config.API_URL_PURCHASE}/${endpoint}`, {
         method,

@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
-import { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { PantryContext, SetPantryContext } from '../../../components/PantryContext.js';
-import { getPantryList } from '../../../services/apis/mypantry/fetch/requests/PantryRequests.ts';
+import { getPantryList } from '../../../services/apis/mypantry/fetch/requests/PantryRequests.js';
 
 export default function Home() {
 

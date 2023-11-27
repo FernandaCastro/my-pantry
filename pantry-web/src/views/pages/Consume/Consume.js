@@ -1,6 +1,6 @@
-import { useState, useContext, useEffect } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { PantryContext } from '../../../components/PantryContext.js';
-import { getPantryItems, postPantryConsume } from '../../../services/apis/mypantry/fetch/requests/PantryRequests.ts';
+import { getPantryItems, postPantryConsume } from '../../../services/apis/mypantry/fetch/requests/PantryRequests.js';
 
 export default function Consume() {
 

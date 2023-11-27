@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { useContext } from 'react';
+import React, { useContext } from 'react';
 import { PantryContext } from '../../../components/PantryContext';
 import '../../../styles/header.css';
 

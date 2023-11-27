@@ -1,4 +1,4 @@
-const getResponseContent = async function (response: any) {
+const getResponseContent = async function (response) {
     if (!response) return;
     const contentType = response.headers.get('Content-Type')
 

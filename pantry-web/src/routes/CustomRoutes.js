@@ -1,3 +1,4 @@
+import React from 'react';
 import { useRoutes } from "react-router-dom";
 
 import NotFound from "../views/pages/NotFound/NotFound";

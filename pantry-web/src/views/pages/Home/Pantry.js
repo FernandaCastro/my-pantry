@@ -1,18 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import M from 'materialize-css';
 import { useParams } from 'react-router';
-import { getPantry } from '../../../services/apis/mypantry/fetch/requests/PantryRequests.ts';
-import { load } from 'mime';
+import { getPantry } from '../../../services/apis/mypantry/fetch/requests/PantryRequests.js';
 
 export default function Pantry() {
 
     let { id } = useParams();
+    let pantry = {};
 
     const [name, setName] = useState("");
     const [type, setType] = useState("");
     const [isActive, setIsActive] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
-    const [pantry, setPantry] = useState({});
 
     useEffect(() => {
         fetchPantry();
@@ -26,10 +25,9 @@ export default function Pantry() {
     }, [])
 
     async function fetchPantry() {
-        const res = await getPantry(id);
-        setPantry(res);
-        setIsLoading(false);
+        pantry = await getPantry(id);
         loadFormData();
+        setIsLoading(false);
     }
 
     function loadFormData() {

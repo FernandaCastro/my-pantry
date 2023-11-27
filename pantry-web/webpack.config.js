@@ -1,9 +1,9 @@
 module.exports = {
-    resolve: {
-        fallback: {
-            path: false,
-            buffer: false,
-            crypto: false
-        },
+    //...
+    output: {
+        hashFunction: require('xxhash64').hashFunction,
     },
+    experiments: {
+        futureDefaults: true,
+    }
 };
