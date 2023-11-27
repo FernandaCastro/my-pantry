@@ -34,9 +34,7 @@ public class PurchaseService {
 
     public PurchaseDto getOpenPurchaseOrder() {
         //return existing and pending purchase order
-        var entity = repository.getPending();
-        if (entity != null) return convertToDto(entity);
-        return null;
+        return convertToDto(repository.getPending());
     }
 
     public PurchaseDto createPurchaseOrder() {

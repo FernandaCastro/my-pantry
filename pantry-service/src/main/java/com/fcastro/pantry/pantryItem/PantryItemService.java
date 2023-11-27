@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -55,18 +54,19 @@ public class PantryItemService {
     }
 
     //Updates pantryProduct table and send ProductConsumedEvent
+    @Transactional
     public List<PantryItemDto> consumePantryItem(Long pantryId, List<PantryItemConsumedDto> list) {
-        var pantryItemConsumedList = new ArrayList<PantryItemDto>();
-        for (PantryItemConsumedDto item : list) {
-            if (item.qty > 0) {
-                item.pantryId = pantryId;
-                pantryItemConsumedList.add(consumePantryItem(item));
-            }
-        }
+
+        var pantryItemConsumedList = list.stream()
+                .filter(item -> item.qty > 0)
+                .map(item -> {
+                    item.pantryId = pantryId;
+                    return consumePantryItem(item);
+                })
+                .collect(Collectors.toList());
         return pantryItemConsumedList;
     }
 
-    @Transactional
     public PantryItemDto consumePantryItem(PantryItemConsumedDto consumedDto) {
         var itemEntity = repository.findEagerByPantryIdAndProductId(consumedDto.getPantryId(), consumedDto.getProductId())
                 .orElseThrow(() -> new ResourceNotFoundException("Pantry Product not found"));
@@ -104,9 +104,9 @@ public class PantryItemService {
     }
 
     private void sendPurchaseCreateEvent(PantryItem itemEntity, int provision) {
-        var purchaseDto = PurchaseEventItemDto.builder().qtyProvisioned(provision).build();
-        enrichPurchaseItemDto(purchaseDto, itemEntity);
-        eventProducer.send(purchaseDto);
+        var purchaseEventItemDto = PurchaseEventItemDto.builder().qtyProvisioned(provision).build();
+        enrichPurchaseItemDto(purchaseEventItemDto, itemEntity);
+        eventProducer.send(purchaseEventItemDto);
     }
 
     public void processPurchaseCompleteEvent(List<PurchaseEventItemDto> purchasedList) {
@@ -148,6 +148,7 @@ public class PantryItemService {
         dto.setPantryName(itemEntity.getPantry().getName());
 
         dto.setProductId(itemEntity.getProduct().getId());
+        dto.setProductCode(itemEntity.getProduct().getCode());
         dto.setProductDescription(itemEntity.getProduct().getDescription());
         dto.setProductSize(itemEntity.getProduct().getSize());
     }

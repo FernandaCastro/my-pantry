@@ -14,6 +14,7 @@ import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
 
+import java.util.ArrayList;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -249,6 +250,34 @@ public class PantryItemServiceUnitTest {
         //then
         verify(repository, times(0)).save(any(PantryItem.class));
         verify(eventProducer, times(0)).send(any(PurchaseEventItemDto.class));
+    }
+
+
+    @Test
+    public void givenListOfValidIds_whenConsumeProduct_shouldCalculateQtyAndPurchase() {
+        //given
+        var entity = PantryItem.builder()
+                .pantryId(1L)
+                .productId(1L)
+                .currentQty(10)
+                .idealQty(10)
+                .pantry(Pantry.builder().id(1L).name("PANTRY1").isActive(true).build())
+                .product(Product.builder().id(1L).description("MILK").size("1L").build())
+                .build();
+
+        given(repository.findEagerByPantryIdAndProductId(anyLong(), anyLong())).willReturn(Optional.of(entity));
+        given(repository.save(captor.capture())).willReturn(entity);
+
+        //when
+        var list = new ArrayList<PantryItemConsumedDto>();
+        list.add(PantryItemConsumedDto.builder().pantryId(1L).productId(1L).qty(2).build());
+        list.add(PantryItemConsumedDto.builder().pantryId(1L).productId(1L).qty(2).build());
+        service.consumePantryItem(1L, list);
+
+        //then
+        var item = captor.getValue();
+        assertThat(item.getCurrentQty()).isEqualTo(6);
+        assertThat(item.getProvisionedQty()).isEqualTo(0);
     }
 
 }

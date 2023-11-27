@@ -14,6 +14,7 @@ public class PurchaseEventItemDto implements Serializable {
     String pantryName;
 
     long productId;
+    String productCode;
     String productDescription;
     String productSize;
 
@@ -26,6 +27,7 @@ public class PurchaseEventItemDto implements Serializable {
                 "pantryId=" + pantryId +
                 ", pantryName='" + pantryName + '\'' +
                 ", productId=" + productId +
+                ", productCode=" + productCode +
                 ", productDescription='" + productDescription + '\'' +
                 ", productSize='" + productSize + '\'' +
                 ", qtyProvisioned=" + qtyProvisioned +

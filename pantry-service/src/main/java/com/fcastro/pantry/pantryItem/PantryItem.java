@@ -40,5 +40,23 @@ public class PantryItem {
     private int currentQty;
     private int provisionedQty;
     private LocalDateTime lastProvisioning;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof PantryItem)) return false;
+
+        PantryItem that = (PantryItem) o;
+
+        if (!getPantryId().equals(that.getPantryId())) return false;
+        return getProductId().equals(that.getProductId());
+    }
+
+    @Override
+    public int hashCode() {
+        int result = getPantryId().hashCode();
+        result = 31 * result + getProductId().hashCode();
+        return result;
+    }
 }
 

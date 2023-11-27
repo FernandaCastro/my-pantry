@@ -16,7 +16,7 @@ public interface PantryItemRepository extends JpaRepository<PantryItem, PantryIt
     @EntityGraph(attributePaths = {"product"})
     List<PantryItem> findAllByPantryId(@Param("pantryId") Long pantryId);
 
-    @EntityGraph(attributePaths = {"pantry"})
+    @EntityGraph(attributePaths = {"pantry", "product"})
     Optional<PantryItem> findEagerByPantryIdAndProductId(Long pantryId, Long productId);
 
 }
