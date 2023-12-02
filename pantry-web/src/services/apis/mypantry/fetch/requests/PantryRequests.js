@@ -7,15 +7,25 @@ export async function getPantryList() {
     return FetchPantry(`pantries`, "GET");
 }
 
-export async function getPantry(pantryId) {
-    return FetchPantry(`pantries/${pantryId}`, "GET");
+export async function getPantry(id) {
+    return FetchPantry(`pantries/${id}`, "GET");
 }
 
-export async function getPantryItems(pantryId) {
-    return FetchPantry(`pantries/${pantryId}/items`, "GET")
+export async function getPantryItems(id) {
+    return FetchPantry(`pantries/${id}/items`, "GET")
 }
 
-export async function postPantryConsume(pantryId, consumedItems) {
-    return FetchPantry(`pantries/${pantryId}/consume`, "POST", consumedItems);
+export async function updatePantry(id, pantry) {
+    return FetchPantry(`pantries/${id}`, "PUT", pantry);
+}
+export async function createPantry(pantry) {
+    return FetchPantry(`pantries`, "POST", pantry);
+}
+export async function deletePantry(id) {
+    return FetchPantry(`pantries/${id}`, "DELETE");
+}
+
+export async function postPantryConsume(id, consumedItems) {
+    return FetchPantry(`pantries/${id}/consume`, "POST", consumedItems);
 }
 

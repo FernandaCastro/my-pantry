@@ -1,12 +1,12 @@
 import React from 'react';
 import { useRoutes } from "react-router-dom";
 
-import NotFound from "../views/pages/NotFound/NotFound";
+import NotFound from "../views/pages/NotFound";
 
-import Home from '../views/pages/Home/Home';
-import Consume from '../views/pages/Consume/Consume';
-import Purchase from '../views/pages/Purchase/Purchase';
-import Pantry from '../views/pages/Home/Pantry';
+import Home from '../views/pages/Home';
+import Consume from '../views/pages/Consume';
+import Purchase from '../views/pages/Purchase';
+import Pantry from '../views/pages/Pantry';
 
 function CustomRoutes() {
     let routes = useRoutes([
@@ -23,7 +23,7 @@ function CustomRoutes() {
             element: <Pantry />
         },
         {
-            path: "/consume",
+            path: "/pantries/:id/consume",
             element: <Consume />
         },
         {

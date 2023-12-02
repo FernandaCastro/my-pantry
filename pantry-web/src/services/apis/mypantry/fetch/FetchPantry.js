@@ -16,7 +16,10 @@ const FetchPantry = async function (endpoint, method, data) {
     const content = await getResponseContent(response)
 
     if (response.ok) return content;
-    throw new RequestError(response.statusText, response.status, content)
+
+    const errorMsg = response.statusText === '' && content ? content.errorMessage : response.statusText;
+    console.log("Fetch API Pantry: $s - $s", response.status, errorMsg);
+    throw new RequestError(errorMsg, response.status, content)
 }
 
 export default FetchPantry;
