@@ -58,7 +58,8 @@ public class PantryItemController {
 
     @PostMapping("/consume")
     public ResponseEntity<List<PantryItemDto>> consumeProduct(@PathVariable Long pantryId, @RequestBody List<PantryItemConsumedDto> items) {
-        var list = service.consumePantryItem(pantryId, items);
+        service.consumePantryItem(pantryId, items);
+        var list = service.getAll(pantryId);
         return ResponseEntity.ok().body(list);
     }
 }

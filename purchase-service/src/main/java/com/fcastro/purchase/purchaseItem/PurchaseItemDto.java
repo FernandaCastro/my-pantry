@@ -18,6 +18,7 @@ public class PurchaseItemDto {
     private String pantryName;
 
     private Long productId;
+    private String productCode;
     private String productDescription;
     private String productSize;
 

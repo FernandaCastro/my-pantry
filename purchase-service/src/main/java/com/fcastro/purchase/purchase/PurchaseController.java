@@ -23,10 +23,10 @@ public class PurchaseController {
 
     @GetMapping("/open")
     public ResponseEntity<PurchaseDto> getOpenPurchaseOrder() {
-        return ResponseEntity.ofNullable(service.getOpenPurchaseOrder());
+        return ResponseEntity.ok(service.getOpenPurchaseOrder());
     }
 
-    @PostMapping()
+    @PostMapping("/new")
     public ResponseEntity<PurchaseDto> createPurchaseOrder() {
         return ResponseEntity.ok(service.createPurchaseOrder());
     }

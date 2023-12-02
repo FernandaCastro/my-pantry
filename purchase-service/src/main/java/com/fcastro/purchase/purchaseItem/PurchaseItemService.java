@@ -81,6 +81,7 @@ public class PurchaseItemService {
                     .pantryId(purchasedItem.getPantryId())
                     .pantryName(purchasedItem.getPantryName())
                     .productId(purchasedItem.getProductId())
+                    .productCode(purchasedItem.getProductCode())
                     .productDescription(purchasedItem.getProductDescription())
                     .productSize(purchasedItem.getProductSize())
                     .build();
@@ -93,6 +94,7 @@ public class PurchaseItemService {
                 .pantryId(entity.getPantryId())
                 .pantryName(entity.getPantryName())
                 .productId(entity.getProductId())
+                .productCode(entity.getProductCode())
                 .productDescription(entity.getProductDescription())
                 .productSize(entity.getProductSize())
                 .qtyProvisioned(entity.getQtyProvisioned())
@@ -105,6 +107,7 @@ public class PurchaseItemService {
                 .pantryId(dto.getPantryId())
                 .pantryName(dto.getPantryName())
                 .productId(dto.getProductId())
+                .productCode(dto.getProductCode())
                 .productDescription(dto.getProductDescription())
                 .productSize(dto.getProductSize())
                 .qtyProvisioned(dto.getQtyProvisioned())
