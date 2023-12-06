@@ -2,6 +2,7 @@ package com.fcastro.pantry.pantry;
 
 import com.fcastro.pantry.exception.ResourceNotFoundException;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -26,7 +27,7 @@ public class PantryService {
 
     //TODO: Pageable
     public List<PantryDto> getAll() {
-        var listEntity = repository.findAll();
+        var listEntity = repository.findAll(Sort.by("name"));
         return listEntity.stream().map(this::convertToDTO).collect(Collectors.toList());
     }
 

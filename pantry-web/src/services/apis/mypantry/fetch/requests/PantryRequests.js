@@ -29,3 +29,19 @@ export async function postPantryConsume(id, consumedItems) {
     return FetchPantry(`pantries/${id}/consume`, "POST", consumedItems);
 }
 
+export async function createPantryItem(id, pantryItem) {
+    return FetchPantry(`pantries/${id}/items`, "POST", pantryItem);
+}
+export async function updatePantryItem(id, productId, pantryItem) {
+    return FetchPantry(`pantries/${id}/items/${productId}`, "PUT", pantryItem);
+}
+export async function deletePantryItem(id, productId) {
+    return FetchPantry(`pantries/${id}/items/${productId}`, "DELETE");
+}
+
+export async function getProductList(type, text) {
+    // const newText = text.replace(/%/g, "%25");
+    // console.log(newText);
+    return FetchPantry(`products?${type}=${text}`, "GET");
+}
+

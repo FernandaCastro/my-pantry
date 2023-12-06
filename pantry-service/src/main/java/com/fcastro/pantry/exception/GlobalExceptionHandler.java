@@ -47,10 +47,12 @@ public class GlobalExceptionHandler {
         exceptionTypes.put(ResourceNotFoundException.class, "application-error");
         exceptionTypes.put(QuantityNotAvailableException.class, "application-error");
         exceptionTypes.put(PantryNotActiveException.class, "application-error");
+        exceptionTypes.put(RequestParamExpectedException.class, "application-error");
     }
 
     @ExceptionHandler(value = {QuantityNotAvailableException.class,
             PantryNotActiveException.class,
+            RequestParamExpectedException.class,
             MissingServletRequestParameterException.class,
             MissingServletRequestPartException.class,
             HttpMessageNotReadableException.class})

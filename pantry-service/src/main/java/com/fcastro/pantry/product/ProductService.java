@@ -4,6 +4,7 @@ import com.fcastro.pantry.exception.ResourceNotFoundException;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -26,8 +27,17 @@ public class ProductService {
     }
 
     //TODO: Pageable
-    public List<ProductDto> getAll() {
-        var listEntity = repository.findAll();
+    public List<ProductDto> getAll(String code, String description) {
+        List<Product> listEntity;
+
+        if (code != null && description == null){
+            listEntity = repository.findAllByCode(code.toLowerCase());
+        }
+        else if (description != null && code == null){
+            listEntity = repository.findAllByDescription(description.toLowerCase());
+        }
+        else return new ArrayList<ProductDto>();
+
         return listEntity.stream().map(this::convertToDTO).collect(Collectors.toList());
     }
 

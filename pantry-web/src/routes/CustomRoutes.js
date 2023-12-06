@@ -19,8 +19,12 @@ function CustomRoutes() {
             element: <Home />
         },
         {
-            path: "/pantries/:id",
-            element: <Pantry />
+            path: "/pantries/:id/edit",
+            element: <Pantry mode="edit" />
+        },
+        {
+            path: "/pantries/new",
+            element: <Pantry mode="new" />
         },
         {
             path: "/pantries/:id/consume",

@@ -3,10 +3,11 @@ import { PantryContext, SetPantryContext } from '../../services/context/PantryCo
 import { getPantryList, deletePantry } from '../../services/apis/mypantry/fetch/requests/PantryRequests.js';
 import Stack from 'react-bootstrap/Stack';
 import ListGroup from 'react-bootstrap/ListGroup';
+import Table from 'react-bootstrap/Table';
 import Button from 'react-bootstrap/Button';
 import { SetAlertContext } from '../../services/context/PantryContext.js';
 import VariantType from '../components/VariantType.js';
-
+import { BsPencil, BsTrash } from "react-icons/bs";
 
 export default function Home() {
 
@@ -21,7 +22,7 @@ export default function Home() {
     useEffect(() => {
         fetchPantries()
         setIsLoading(true)
-    }, [])
+    }, [isLoading])
 
     async function fetchPantries() {
         setIsLoading(true);
@@ -52,15 +53,16 @@ export default function Home() {
 
     function renderItem(item) {
         return (
-            <ListGroup.Item variant="primary" key={item.id}
-                className="d-flex justify-content-between align-items-center"
-                action onClick={(e) => handlePantryClick(item)}>
-                <span className={item.isActive ? "" : "text-black-50"}>{item.name}</span>
-                <Stack direction="horizontal" gap={2} className="d-flex justify-content-end">
-                    <div><Button href={"/pantries/" + item.id} variant="link">Edit</Button></div>
-                    <div><Button onClick={() => handleRemove(item.id)} variant="link">Remove</Button></div>
-                </Stack>
-            </ListGroup.Item>
+            <tr key={item.id} className="border border-primary-subtle">
+                <td className="border-end-0" onClick={(e) => handlePantryClick(item)}>
+                    <span className={item.isActive ? "" : "text-black-50"}>{item.name}</span></td>
+                <td className="border-start-0">
+                    <Stack direction="horizontal" gap={2} className="d-flex justify-content-end">
+                        <div><Button href={"/pantries/" + item.id + "/edit"} variant="link"><BsPencil /></Button></div>
+                        <div><Button onClick={() => handleRemove(item.id)} variant="link"><BsTrash /></Button></div>
+                    </Stack>
+                </td>
+            </tr>
         )
     }
 
@@ -85,15 +87,17 @@ export default function Home() {
             <div>
                 <ListGroup >
                     <ListGroup.Item variant="primary" className="d-flex justify-content-between align-items-center">
-                        Selected: {pantry.name}
-                        <Button variant="primary" size="sm" href={"/pantries/0"} >New Pantry</Button>
+                        <span>Selected: {pantry.name}</span>
+                        <Button variant="primary" size="sm" href={"/pantries/new"} >New Pantry</Button>
                     </ListGroup.Item>
                 </ListGroup>
             </div>
             <div>
-                <ListGroup>
-                    {renderItems()}
-                </ListGroup>
+                <Table variant="primary" className='table table-sm align-middle' hover>
+                    <tbody>
+                        {renderItems()}
+                    </tbody>
+                </Table>
             </div>
         </Stack>
     )
