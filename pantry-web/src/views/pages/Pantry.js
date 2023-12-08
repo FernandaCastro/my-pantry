@@ -12,14 +12,22 @@ export default function Pantry({ mode }) {
 
     let { id } = useParams();
 
-    const [pantry, setPantry] = useState({});
-    const [isLoading, setIsLoading] = useState(true);
+    const [pantry, setPantry] = useState(
+        {
+            id: 0,
+            name: "",
+            type: "",
+            isActive: true
+        });
+
+    const [isLoading, setIsLoading] = useState(false);
     const setAlert = useContext(SetAlertContext);
     const navigate = useNavigate();
+    const [refresh, setRefresh] = useState(false);
 
     useEffect(() => {
         setIsLoading(true);
-        if (mode === 'edit') {
+        if (id && mode === 'edit') {
             fetchPantry();
         }
     }, [])
@@ -48,8 +56,10 @@ export default function Pantry({ mode }) {
 
     async function fetchSavePantryItem(body) {
         setIsLoading(true);
+        setRefresh(true);
         try {
             const res = await createPantryItem(pantry.id, body);
+            setRefresh(false);
             setIsLoading(false);
         } catch (error) {
             showAlert(VariantType.DANGER, error.message);
@@ -68,10 +78,10 @@ export default function Pantry({ mode }) {
         fetchSavePantry(body);
         const message = mode === 'edit' ? "updated!" : "created!";
         showAlert(VariantType.SUCCESS, "Pantry successfully " + message);
-        return navigate("/", { replace: true });
+        //return navigate("/", { replace: true });
     }
 
-    function handleAddAction(product) {
+    function handleAddItem(product) {
         const body = {
             pantryId: pantry.id,
             productId: product.id
@@ -83,15 +93,15 @@ export default function Pantry({ mode }) {
         <Stack gap={3}>
             <div></div>
             <div>
-                {isLoading ?
+                {mode === "edit" && isLoading ?
                     <h6>Loading...</h6> :
                     <PantryForm pantry={pantry} handleSave={handleSave} />}
             </div>
-            <div><ProductSearchBar handleAction={handleAddAction} /></div>
+            <div><ProductSearchBar handleSelectAction={handleAddItem} /></div>
             <div>
-                {isLoading || !pantry ?
+                {isLoading && !pantry ?
                     <h6>Loading...</h6> :
-                    <PantryItemList pantryId={pantry.id} />}
+                    <PantryItemList key={refresh} pantryId={pantry.id} />}
             </div>
         </Stack>
     );

@@ -4,13 +4,12 @@ import com.fcastro.pantry.exception.RequestParamExpectedException;
 import com.fcastro.pantry.exception.ResourceNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@CrossOrigin
+@CrossOrigin(origins = {"http://localhost:3000"})
 @RequestMapping("products")
 public class ProductController {
 
@@ -30,7 +29,7 @@ public class ProductController {
     @GetMapping
     public ResponseEntity<List<ProductDto>> getAll(@RequestParam(required=false) String code,
                                                    @RequestParam(required=false) String description) {
-        if(code == null && description == null) throw new RequestParamExpectedException("Expecting to receive params: code or description");
+        //if(code == null && description == null) throw new RequestParamExpectedException("Expecting to receive params: code or description");
         return ResponseEntity.ok(service.getAll(code, description));
     }
 

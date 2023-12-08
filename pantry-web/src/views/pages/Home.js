@@ -57,7 +57,7 @@ export default function Home() {
                 <td className="border-end-0" onClick={(e) => handlePantryClick(item)}>
                     <span className={item.isActive ? "" : "text-black-50"}>{item.name}</span></td>
                 <td className="border-start-0">
-                    <Stack direction="horizontal" gap={2} className="d-flex justify-content-end">
+                    <Stack direction="horizontal" gap={1} className="d-flex justify-content-end">
                         <div><Button href={"/pantries/" + item.id + "/edit"} variant="link"><BsPencil /></Button></div>
                         <div><Button onClick={() => handleRemove(item.id)} variant="link"><BsTrash /></Button></div>
                     </Stack>
@@ -87,7 +87,7 @@ export default function Home() {
             <div>
                 <ListGroup >
                     <ListGroup.Item variant="primary" className="d-flex justify-content-between align-items-center">
-                        <span>Selected: {pantry.name}</span>
+                        <span>{pantry.name}</span>
                         <Button variant="primary" size="sm" href={"/pantries/new"} >New Pantry</Button>
                     </ListGroup.Item>
                 </ListGroup>

@@ -9,6 +9,8 @@ import Image from 'react-bootstrap/Image';
 import food from '../../images/healthy-food.png'
 import VariantType from '../components/VariantType.js';
 import { SetAlertContext } from '../../services/context/PantryContext.js';
+import { BsCaretDown, BsCaretUp } from "react-icons/bs";
+
 
 export default function Purchase() {
 
@@ -152,7 +154,7 @@ export default function Purchase() {
     function renderPurchaseItem(index, item) {
         if (isLoading) return;
         return (
-            <ListGroup.Item variant="primary" key={item.id}>
+            <ListGroup.Item variant="primary" key={item.id} className="align-items-start">
                 <Row>
                     <Col xs={5}>
                         <Stack direction="horizontal" gap={3}>
@@ -170,17 +172,18 @@ export default function Purchase() {
                 </Row>
                 <Row>
                     <Col xs={5}>
-                        <p className='d-none d-md-block'>
-                            {item.productDescription} <br />
-                            {item.productSize}
+                        <p className='pt-1 d-none d-md-block'>
+                            {item.productDescription} - {item.productSize}
                         </p>
                     </Col>
                     <Col className='d-none d-md-block'>{item.pantryName}</Col>
                     <Col>{item.qtyProvisioned}</Col>
                     <Col>
-                        <Button variant="link" disabled={item.qtyPurchased === 0} onClick={() => handleDecrease(index)}> - </Button>
-                        <span>{item.qtyPurchased}</span>
-                        <Button variant="link" disabled={!hasOpenOrder} onClick={() => handleIncrease(index)}> + </Button>
+                        <Stack direction="horizontal" gap={1} >
+                            <div><Button variant='link' disabled={item.qtyPurchased === 0} onClick={() => handleDecrease(index)} className='m-0 p-0 d-flex align-items-start'><BsCaretDown /></Button></div>
+                            <div><span className='ms-1 me-1 ps-1 pe-1'>{item.qtyPurchased}</span></div>
+                            <div><Button variant='link' disabled={!hasOpenOrder} onClick={() => handleIncrease(index)} className='m-0 p-0 d-flex align-items-start'><BsCaretUp /></Button></div>
+                        </Stack>
                     </Col>
                 </Row>
             </ListGroup.Item>
@@ -246,8 +249,8 @@ export default function Purchase() {
                 </ListGroup>
             </div>
             <Stack direction="horizontal" gap={2} className="d-flex justify-content-end">
-                <div><Button variant="primary" onClick={handleClear} disabled={!hasOpenOrder}>Clear</Button></div>
-                <div><Button variant="primary" onClick={handleSave} disabled={!hasOpenOrder}>Save</Button></div>
+                <div><Button variant="primary" size="sm" onClick={handleClear} disabled={!hasOpenOrder}>Clear</Button></div>
+                <div><Button variant="primary" size="sm" onClick={handleSave} disabled={!hasOpenOrder}>Save</Button></div>
             </Stack>
         </Stack>
 

@@ -1,7 +1,10 @@
 package com.fcastro.pantry.product;
 
+import com.fcastro.pantry.exception.DatabaseConstraintException;
 import com.fcastro.pantry.exception.ResourceNotFoundException;
+import com.fcastro.pantry.pantryItem.PantryItemRepository;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -13,11 +16,13 @@ import java.util.stream.Collectors;
 public class ProductService {
 
     private final ProductRepository repository;
+    private final PantryItemRepository pantryItemRepository;
     private final ModelMapper modelMapper;
 
 
-    public ProductService(ProductRepository repository, ModelMapper modelMapper) {
+    public ProductService(ProductRepository repository, PantryItemRepository pantryItemRepository, ModelMapper modelMapper) {
         this.repository = repository;
+        this.pantryItemRepository = pantryItemRepository;
         this.modelMapper = modelMapper;
     }
 
@@ -36,8 +41,7 @@ public class ProductService {
         else if (description != null && code == null){
             listEntity = repository.findAllByDescription(description.toLowerCase());
         }
-        else return new ArrayList<ProductDto>();
-
+        else listEntity = repository.findAll(Sort.by("code"));
         return listEntity.stream().map(this::convertToDTO).collect(Collectors.toList());
     }
 
@@ -49,6 +53,9 @@ public class ProductService {
     public void delete(long id) {
         repository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Product not found"));
+
+        if (pantryItemRepository.countPantryItem(id) > 0)
+            throw new DatabaseConstraintException("Product can not be removed. It is referred in one or more pantry items.");
 
         repository.deleteById(id);
     }

@@ -15,6 +15,7 @@ export default function Header() {
                 <Nav>
                     <Nav.Link href={"/pantries/" + pantry.id + "/consume"} eventKey="link-consume" disabled={!isPantrySelected} >Consume</Nav.Link>
                     <Nav.Link href="/purchase" eventKey="link-purchase">Purchase</Nav.Link>
+                    <Nav.Link href="/product" eventKey="link-product">Product</Nav.Link>
                 </Nav>
             </Container>
         </Navbar>

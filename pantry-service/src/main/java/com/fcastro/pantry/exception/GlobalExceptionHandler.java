@@ -142,7 +142,7 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
     }
 
-    @ExceptionHandler(value = {DataAccessException.class})
+    @ExceptionHandler(value = {DataAccessException.class, DatabaseConstraintException.class})
     @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
     public ResponseEntity<?> databaseException(final DataAccessException ex, final HttpServletRequest request) {
 

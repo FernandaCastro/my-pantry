@@ -19,7 +19,7 @@ function PantryItemList({ pantryId }) {
     const setAlert = useContext(SetAlertContext);
 
     useEffect(() => {
-        if (pantryId && pantryId != 0 && refresh) {
+        if (pantryId && pantryId > 0 && refresh) {
             fetchPantryItems();
         }
     }, [pantryId, refresh])
@@ -48,6 +48,7 @@ function PantryItemList({ pantryId }) {
     async function fetchUpdatePantryItem(item) {
         try {
             await updatePantryItem(item.pantryId, item.productId, item);
+            setRefresh(true);
         } catch (error) {
             showAlert(VariantType.DANGER, error.message);
         }

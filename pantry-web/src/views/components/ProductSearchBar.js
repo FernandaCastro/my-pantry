@@ -1,19 +1,19 @@
 import Form from 'react-bootstrap/Form';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
 import { useState, useContext } from 'react';
-import { BsEraser, BsCheck2All } from "react-icons/bs";
+import { BsEraser, BsCheck2All, BsChevronDown } from "react-icons/bs";
 import VariantType from '../components/VariantType.js';
-import { getProductList } from '../../services/apis/mypantry/fetch/requests/PantryRequests.js';
+import { getFilteredProductList } from '../../services/apis/mypantry/fetch/requests/PantryRequests.js';
 import { SetAlertContext } from '../../services/context/PantryContext.js';
 import Table from 'react-bootstrap/Table';
 import Accordion from 'react-bootstrap/Accordion';
-import { AccordionHeader, AccordionItem } from 'react-bootstrap';
-import AccordionBody from 'react-bootstrap/esm/AccordionBody.js';
+import { useAccordionButton } from 'react-bootstrap/AccordionButton';
+import Card from 'react-bootstrap/Card';
+import Stack from 'react-bootstrap/Stack';
+
 import '../../styles/ProductSearchBar.css';
 
-function ProductSearchBar({ handleAction }) {
+function ProductSearchBar({ handleSelectAction, handleClearAction }) {
 
     const [type, setType] = useState("code");
     const [text, setText] = useState("");
@@ -21,20 +21,26 @@ function ProductSearchBar({ handleAction }) {
     const setAlert = useContext(SetAlertContext);
 
     function handleSearch(e) {
-        if (e.target.value.length > 2) fetchProduct();
-        setText(e.target.value)
+        if (e.target.value.length < 3 && text.length < 4) setResults([]);
+        if (e.target.value.length > 2) fetchProduct(e.target.value);
+        setText(e.target.value);
     }
-    function handleClear() {
+    function clearSearch() {
         setText("");
         setResults([]);
     }
-    function handleAdd(item) {
-        handleAction(item);
+    function handleClear() {
+        clearSearch();
+        if (handleClearAction) handleClearAction();
+    }
+    function handleSelect(item) {
+        handleSelectAction(item);
+        clearSearch();
     }
 
-    async function fetchProduct() {
+    async function fetchProduct(value) {
         try {
-            const res = await getProductList(type, text);
+            const res = await getFilteredProductList(type, value);
             console.log(res);
             setResults(res);
         } catch (error) {
@@ -48,25 +54,23 @@ function ProductSearchBar({ handleAction }) {
 
     function renderSearchBar() {
         return (
-            <Form id="searchBar">
-                <Row className="align-items-center">
-                    <Col xs={2} className="w-25 pe-0">
-                        <Form.Select size="sm" name="searchType" defaultValue={type}
-                            onChange={(e) => setType(e.target.value)}>
-                            <option value="code">Code</option>
-                            <option value="description">Description</option>
-                        </Form.Select>
-                    </Col>
-                    <Col xs={4} className="w-50 pe-0">
-                        <Form.Control size="sm" type="text" placeholder='Enter your search text here'
-                            value={text}
-                            onChange={(e) => handleSearch(e)} />
-                    </Col>
-                    <Col xs={2} className="ps-0 pe-0">
-                        <Button type="reset" variant="link" onClick={handleClear}><BsEraser /></Button>
-                    </Col>
-                </Row>
-            </Form >
+            <Stack direction="horizontal" gap={2} className="w-100">
+                <div className="pe-0">
+                    <Form.Select size="sm" name="searchType" defaultValue={type}
+                        onChange={(e) => setType(e.target.value)}>
+                        <option value="code">Code</option>
+                        <option value="description">Description</option>
+                    </Form.Select>
+                </div>
+                <div className="w-75 pe-0">
+                    <Form.Control size="sm" type="text" placeholder='Enter your search text here'
+                        value={text}
+                        onChange={(e) => handleSearch(e)} />
+                </div>
+                <div>
+                    <Button className="w-0 p-0" type="reset" variant="link" onClick={handleClear}><BsEraser /></Button>
+                </div>
+            </Stack>
         );
     }
 
@@ -74,11 +78,11 @@ function ProductSearchBar({ handleAction }) {
         return (
             results.map((item) => {
                 return (
-                    <tr key={item.id} className="align-items-center">
-                        <td className="p-0 border-end-0">
+                    <tr key={item.id} className="w-0 p-0">
+                        <td className="w-0 p-0 border-end-0">
                             <span>{item.code} - {item.description}</span></td>
-                        <td className="p-0 border-start-0">
-                            <Button onClick={() => handleAdd(item)} variant="link"><BsCheck2All /></Button>
+                        <td className="w-0 p-0 border-start-0">
+                            <Button onClick={() => handleSelect(item)} variant="link"><BsCheck2All /></Button>
                         </td>
                     </tr>
 
@@ -88,23 +92,35 @@ function ProductSearchBar({ handleAction }) {
     }
 
     return (
-        <Accordion flush defaultActiveKey="" id="search-accordion" className="border border-primary-subtle rounded">
-            <AccordionItem className='rounded'>
-                <AccordionHeader>
-                    {renderSearchBar()}
-                </AccordionHeader>
-                <AccordionBody>
-                    {results ?
-                        <Table responsive="sm" hover>
+        <Accordion flush defaultActiveKey="0" id="search-accordion" className="border border-primary-subtle rounded">
+            <Card.Header className="m-2 d-flex justify-content-between">
+                {renderSearchBar()}
+                <SearchToggle eventKey="0" />
+            </Card.Header>
+            <Accordion.Collapse eventKey="0">
+                <Card.Body className="m-3 mb-0">
+                    {results ? (
+                        <Table className="table table-sm align-middle" hover>
                             <tbody>
                                 {renderResults()}
                             </tbody>
-                        </Table>
-                        : <span />}
-                </AccordionBody>
-            </AccordionItem>
+                        </Table>)
+                        : <span />
+                    }
+                </Card.Body>
+            </Accordion.Collapse>
+
         </Accordion>
 
     );
+
+    function SearchToggle({ children, eventKey }) {
+        const decoratedOnClick = useAccordionButton(eventKey,
+        );
+
+        return (
+            <Button variant="link" onClick={decoratedOnClick} ><BsChevronDown /></Button>
+        );
+    }
 }
 export default ProductSearchBar;
