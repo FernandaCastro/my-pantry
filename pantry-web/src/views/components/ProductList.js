@@ -1,7 +1,7 @@
 import React from 'react';
 import Table from 'react-bootstrap/Table';
 
-function ProductList({ productList }) {
+function ProductList({ productList, handleOnSelection }) {
 
     function renderItems() {
         if (productList && productList.length > 0) return productList.map((item) => renderItem(item))
@@ -9,7 +9,8 @@ function ProductList({ productList }) {
 
     function renderItem(item) {
         return (
-            <tr key={item.pantryId + ":" + item.productId} className="border border-primary-subtle align-middle">
+            <tr key={item.pantryId + ":" + item.productId} className="border border-primary-subtle align-middle"
+                onClick={() => handleOnSelection(item)} >
                 <td><span>{item.code}</span></td>
                 <td><span>{item.description}</span></td>
                 <td><span>{item.size}</span></td>

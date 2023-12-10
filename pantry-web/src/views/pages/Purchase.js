@@ -8,7 +8,7 @@ import Col from 'react-bootstrap/Col';
 import Image from 'react-bootstrap/Image';
 import food from '../../images/healthy-food.png'
 import VariantType from '../components/VariantType.js';
-import { SetAlertContext } from '../../services/context/PantryContext.js';
+import { AlertContext } from '../../services/context/AppContext.js';
 import { BsCaretDown, BsCaretUp } from "react-icons/bs";
 
 
@@ -19,7 +19,7 @@ export default function Purchase() {
     const [isLoading, setIsLoading] = useState(true);
     const [hasOpenOrder, setHasOpenOrder] = useState(false);
 
-    const setAlert = useContext(SetAlertContext);
+    const { alert, setAlert } = useContext(AlertContext);
 
     useEffect(() => {
         fetchOpenPurchaseOrder();

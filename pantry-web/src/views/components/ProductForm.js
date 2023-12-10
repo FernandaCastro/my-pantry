@@ -21,7 +21,6 @@ export default function ProductForm({ product, handleSave }) {
         console.log(formJson);
     }
 
-
     return (
         <Form key={product} onSubmit={handleSubmit}>
             <Row>

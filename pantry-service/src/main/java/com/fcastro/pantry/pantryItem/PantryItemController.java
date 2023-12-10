@@ -62,4 +62,10 @@ public class PantryItemController {
         var list = service.getAll(pantryId);
         return ResponseEntity.ok().body(list);
     }
+
+    @GetMapping("/rebalance")
+    public ResponseEntity<List<PantryItemDto>> consumeProduct(@PathVariable Long pantryId) {
+        var list = service.processPurchaseNeed(pantryId);
+        return ResponseEntity.ok().body(list);
+    }
 }

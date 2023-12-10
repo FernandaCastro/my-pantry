@@ -9,7 +9,7 @@ import Col from 'react-bootstrap/Col';
 import Image from 'react-bootstrap/Image';
 import food from '../../images/healthy-food.png'
 import VariantType from '../components/VariantType.js';
-import { SetAlertContext } from '../../services/context/PantryContext.js';
+import { AlertContext } from '../../services/context/AppContext.js';
 import { BsCaretDown, BsCaretUp } from "react-icons/bs";
 
 export default function Consume() {
@@ -24,7 +24,7 @@ export default function Consume() {
   const [isPantryEmpty, setIsPantryEmpty] = useState(true);
   const [hasConsumed, setHasConsumed] = useState(false);
 
-  const setAlert = useContext(SetAlertContext);
+  const { alert, setAlert } = useContext(AlertContext);
 
   useEffect(() => {
     setIsLoading(true);

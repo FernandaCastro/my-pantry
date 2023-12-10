@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { PantryContext, SetPantryContext } from '../../services/context/PantryContext.js';
+import { PantryContext, SetPantryContext } from '../../services/context/AppContext.js';
 import { getPantryList, deletePantry } from '../../services/apis/mypantry/fetch/requests/PantryRequests.js';
 import Stack from 'react-bootstrap/Stack';
 import ListGroup from 'react-bootstrap/ListGroup';
 import Table from 'react-bootstrap/Table';
 import Button from 'react-bootstrap/Button';
-import { SetAlertContext } from '../../services/context/PantryContext.js';
+import { AlertContext } from '../../services/context/AppContext.js';
 import VariantType from '../components/VariantType.js';
 import { BsPencil, BsTrash } from "react-icons/bs";
 
@@ -14,10 +14,8 @@ export default function Home() {
     const [pantries, setPantries] = useState([])
     const [isLoading, setIsLoading] = useState(true)
 
-    const pantry = useContext(PantryContext);
-    const setPantry = useContext(SetPantryContext);
-
-    const setAlert = useContext(SetAlertContext);
+    const { pantryCtx, setPantryCtx } = useContext(PantryContext);
+    const { alert, setAlert } = useContext(AlertContext);
 
     useEffect(() => {
         fetchPantries()
@@ -71,13 +69,13 @@ export default function Home() {
     }
 
     function handlePantryClick(item) {
-        item.isActive ? setPantry(item) : setPantry({});
+        item.isActive ? setPantryCtx(item) : setPantryCtx({});
     }
 
     function handleRemove(id) {
         fetchDeletePantry(id);
         showAlert(VariantType.SUCCESS, "Pantry removed successfully!");
-        setPantry({})
+        setPantryCtx({})
         fetchPantries();
     }
 
@@ -87,7 +85,7 @@ export default function Home() {
             <div>
                 <ListGroup >
                     <ListGroup.Item variant="primary" className="d-flex justify-content-between align-items-center">
-                        <span>{pantry.name}</span>
+                        <span>{pantryCtx.name}</span>
                         <Button variant="primary" size="sm" href={"/pantries/new"} >New Pantry</Button>
                     </ListGroup.Item>
                 </ListGroup>

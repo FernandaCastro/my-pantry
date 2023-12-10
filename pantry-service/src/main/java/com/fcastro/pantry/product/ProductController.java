@@ -26,11 +26,10 @@ public class ProductController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @GetMapping
-    public ResponseEntity<List<ProductDto>> getAll(@RequestParam(required=false) String code,
-                                                   @RequestParam(required=false) String description) {
-        //if(code == null && description == null) throw new RequestParamExpectedException("Expecting to receive params: code or description");
-        return ResponseEntity.ok(service.getAll(code, description));
+    @GetMapping()
+    public ResponseEntity<List<ProductDto>> getAll(@RequestParam(required = false) String searchParam) {
+        if (searchParam == null) return ResponseEntity.ok(service.getAll());
+        return ResponseEntity.ok(service.getAll(searchParam));
     }
 
     @PostMapping

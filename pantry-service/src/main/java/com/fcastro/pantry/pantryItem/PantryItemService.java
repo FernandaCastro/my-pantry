@@ -81,6 +81,24 @@ public class PantryItemService {
 
         itemEntity.setCurrentQty(itemEntity.getCurrentQty() - consumedDto.getQty());
 
+        itemEntity = processPurchaseNeed(itemEntity);
+
+        repository.save(itemEntity);
+        return convertToDTO(itemEntity);
+    }
+
+    public List<PantryItemDto> processPurchaseNeed(Long pantryId){
+        var items = repository.findAllByPantryId(pantryId);
+        return items.stream().
+                map(item -> {
+                    item = processPurchaseNeed(item);
+                    repository.save(item);
+                    return convertToDTO(item);
+                })
+                .collect(Collectors.toList());
+    }
+
+    private PantryItem processPurchaseNeed(PantryItem itemEntity) {
         var usagePercentage = calculateUsagePercentage(itemEntity);
         var provision = calculateProvision(itemEntity);
 
@@ -89,12 +107,11 @@ public class PantryItemService {
             itemEntity.setProvisionedQty(itemEntity.getProvisionedQty() + provision);
             itemEntity.setLastProvisioning(LocalDateTime.now());
         }
-
-        repository.save(itemEntity);
-        return convertToDTO(itemEntity);
+        return itemEntity;
     }
 
     private long calculateUsagePercentage(PantryItem itemEntity) {
+        if(itemEntity.getCurrentQty() == 0) return 0;
         return (100 * itemEntity.getCurrentQty()) / itemEntity.getIdealQty();
     }
 

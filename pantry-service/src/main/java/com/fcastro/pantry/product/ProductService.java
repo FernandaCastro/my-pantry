@@ -1,6 +1,7 @@
 package com.fcastro.pantry.product;
 
 import com.fcastro.pantry.exception.DatabaseConstraintException;
+import com.fcastro.pantry.exception.RequestParamExpectedException;
 import com.fcastro.pantry.exception.ResourceNotFoundException;
 import com.fcastro.pantry.pantryItem.PantryItemRepository;
 import org.modelmapper.ModelMapper;
@@ -32,16 +33,17 @@ public class ProductService {
     }
 
     //TODO: Pageable
-    public List<ProductDto> getAll(String code, String description) {
+    public List<ProductDto> getAll(String searchParam) {
         List<Product> listEntity;
 
-        if (code != null && description == null){
-            listEntity = repository.findAllByCode(code.toLowerCase());
-        }
-        else if (description != null && code == null){
-            listEntity = repository.findAllByDescription(description.toLowerCase());
-        }
-        else listEntity = repository.findAll(Sort.by("code"));
+        if (searchParam == null) throw new RequestParamExpectedException("Expecting to receive SearchParam: code or description value");
+
+        listEntity = repository.findAllByCodeOrDescription(searchParam.toLowerCase());
+        return listEntity.stream().map(this::convertToDTO).collect(Collectors.toList());
+    }
+
+    public List<ProductDto> getAll() {
+        List<Product> listEntity = repository.findAll(Sort.by("code"));
         return listEntity.stream().map(this::convertToDTO).collect(Collectors.toList());
     }
 

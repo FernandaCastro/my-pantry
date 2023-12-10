@@ -25,6 +25,10 @@ export async function deletePantry(pantryId) {
     return FetchPantry(`pantries/${pantryId}`, "DELETE");
 }
 
+export async function getPantryRebalance(pantryId) {
+    return FetchPantry(`pantries/${pantryId}/rebalance`, "GET");
+}
+
 export async function postPantryConsume(pantryId, body) {
     return FetchPantry(`pantries/${pantryId}/consume`, "POST", body);
 }
@@ -39,10 +43,10 @@ export async function deletePantryItem(pantryId, productId) {
     return FetchPantry(`pantries/${pantryId}/items/${productId}`, "DELETE");
 }
 
-export async function getFilteredProductList(type, text) {
+export async function getFilteredProductList(text) {
     // const newText = text.replace(/%/g, "%25");
     // console.log(newText);
-    return FetchPantry(`products?${type}=${text}`, "GET");
+    return FetchPantry(`products?searchParam=${text}`, "GET");
 }
 
 export async function getProductList() {

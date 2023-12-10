@@ -1,7 +1,4 @@
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
-import { ListGroup } from 'react-bootstrap';
-import { SetAlertContext } from '../../services/context/PantryContext.js';
+import { AlertContext } from '../../services/context/AppContext.js';
 import { getPantryItems, deletePantryItem, updatePantryItem } from '../../services/apis/mypantry/fetch/requests/PantryRequests.js';
 import React, { useEffect, useState, useContext } from 'react';
 import VariantType from '../components/VariantType.js';
@@ -16,7 +13,7 @@ function PantryItemList({ pantryId }) {
     const [isLoading, setIsLoading] = useState(true);
     const [refresh, setRefresh] = useState(true);
     const [pantryItems, setPantryItems] = useState([]);
-    const setAlert = useContext(SetAlertContext);
+    const { alert, setAlert } = useContext(AlertContext);
 
     useEffect(() => {
         if (pantryId && pantryId > 0 && refresh) {
@@ -62,7 +59,7 @@ function PantryItemList({ pantryId }) {
 
     function handleSave(item) {
         fetchUpdatePantryItem(item);
-        showAlert(VariantType.SUCCESS, "Item updated successfully!");
+        //showAlert(VariantType.SUCCESS, "Item updated successfully!");
     }
 
     function showAlert(type, message) {
@@ -78,6 +75,7 @@ function PantryItemList({ pantryId }) {
     }
 
     function renderItem(item) {
+        // <div><Button onClick={() => handleSave(item)} variant="link" className='pt-0 pb-0 ps-0'><BsCheck2All /></Button></div>
         return (
             <tr key={item.pantryId + ":" + item.productId} className="border border-primary-subtle align-middle">
                 <td colSpan="2">
@@ -86,12 +84,12 @@ function PantryItemList({ pantryId }) {
                         <br /> {item.product.description} - {item.product.size}
                     </p>
                 </td>
-                <td><NumericField object={item} attribute="idealQty" /></td>
-                <td><NumericField object={item} attribute="currentQty" /></td>
+                <td><NumericField object={item} attribute="idealQty" onValueChange={handleSave} /></td>
+                <td><NumericField object={item} attribute="currentQty" onValueChange={handleSave} /></td>
                 <td><span>{item.provisionedQty}</span></td>
                 <td>
                     <Stack direction="horizontal" gap={0} className="d-flex justify-content-end align-items-start'">
-                        <div><Button onClick={() => handleSave(item)} variant="link" className='pt-0 pb-0 ps-0'><BsCheck2All /></Button></div>
+
                         <div><Button onClick={() => handleRemove(item)} variant="link" className='pt-0 pb-0 pe-0'><BsTrash /></Button></div>
                     </Stack>
                 </td>

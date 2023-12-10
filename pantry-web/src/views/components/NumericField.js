@@ -4,7 +4,7 @@ import Button from 'react-bootstrap/Button';
 import { useState } from 'react';
 
 
-function NumericField({ object, attribute }) {
+function NumericField({ object, attribute, onValueChange }) {
 
     const [value, setValue] = useState(object[attribute]);
 
@@ -12,6 +12,7 @@ function NumericField({ object, attribute }) {
         let v = value + 1;
         setValue(v);
         object[attribute] = v;
+        onValueChange(object);
     }
 
     function handleDecrease() {
@@ -19,6 +20,7 @@ function NumericField({ object, attribute }) {
         let v = value - 1;
         setValue(v);
         object[attribute] = v;
+        onValueChange(object);
     }
 
     return (

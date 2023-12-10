@@ -2,7 +2,7 @@ import React, { useState, useContext } from 'react';
 import { updateProduct, createProduct, deleteProduct, getProductList } from '../../services/apis/mypantry/fetch/requests/PantryRequests.js';
 import Stack from 'react-bootstrap/Stack';
 import VariantType from '../components/VariantType.js';
-import { SetAlertContext } from '../../services/context/PantryContext.js';
+import { AlertContext } from '../../services/context/AppContext.js';
 import ProductForm from '../components/ProductForm.js';
 import ProductList from '../components/ProductList.js';
 import ProductSearchBar from '../components/ProductSearchBar.js'
@@ -27,7 +27,7 @@ export default function Product() {
     const [productList, setProductList] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [showList, setShowList] = useState(false);
-    const setAlert = useContext(SetAlertContext);
+    const { alert, setAlert } = useContext(AlertContext);
 
     async function fetchSaveProduct(body) {
         try {
@@ -93,6 +93,10 @@ export default function Product() {
         setShowList(true);
     }
 
+    function handleOnListSelection(item) {
+        handleSelectAction(item);
+    }
+
     function showAlert(type, message) {
         setAlert({
             show: true,
@@ -120,7 +124,7 @@ export default function Product() {
                 <div className="me-3 mb-2 d-flex justify-content-end align-items-center">
                     <CloseButton aria-label="Hide" onClick={() => setShowList(false)} />
                 </div>
-                {isLoading ? <h6>Loading...</h6> : <ProductList productList={productList} />}
+                {isLoading ? <h6>Loading...</h6> : <ProductList productList={productList} handleOnSelection={handleOnListSelection} />}
             </div>
         );
     }

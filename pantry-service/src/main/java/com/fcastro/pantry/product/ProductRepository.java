@@ -9,9 +9,6 @@ import java.util.List;
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long> {
 
-    @Query("select p from product p where lower(p.code) like %:code% order by p.code")
-    List<Product> findAllByCode(String code);
-
-    @Query("select p from product p where lower(p.description) like %:description% order by p.code")
-    List<Product> findAllByDescription(String description);
+    @Query("select p from product p where lower(p.code) like %:searchParam% or lower(p.description) like %:searchParam% order by p.code")
+    List<Product> findAllByCodeOrDescription(String searchParam);
 }

@@ -1,33 +1,40 @@
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import { useState, useContext } from 'react';
-import { BsEraser, BsCheck2All, BsChevronDown } from "react-icons/bs";
+import { BsEraser, BsCheck2All, BsChevronDown, BsPlusLg } from "react-icons/bs";
 import VariantType from '../components/VariantType.js';
-import { getFilteredProductList } from '../../services/apis/mypantry/fetch/requests/PantryRequests.js';
-import { SetAlertContext } from '../../services/context/PantryContext.js';
+import { getFilteredProductList, createProduct } from '../../services/apis/mypantry/fetch/requests/PantryRequests.js';
+import { AlertContext } from '../../services/context/AppContext.js';
 import Table from 'react-bootstrap/Table';
 import Accordion from 'react-bootstrap/Accordion';
 import { useAccordionButton } from 'react-bootstrap/AccordionButton';
 import Card from 'react-bootstrap/Card';
 import Stack from 'react-bootstrap/Stack';
-
+import CloseButton from 'react-bootstrap/CloseButton';
 import '../../styles/ProductSearchBar.css';
+import ProductForm from './ProductForm.js';
 
 function ProductSearchBar({ handleSelectAction, handleClearAction }) {
 
-    const [type, setType] = useState("code");
-    const [text, setText] = useState("");
+    const notFound = "No product found";
+    const [searchText, setSearchText] = useState("");
     const [results, setResults] = useState([]);
-    const setAlert = useContext(SetAlertContext);
+    const [notFoundMessage, setNotFoundMessage] = useState("");
+    const [showProductForm, setShowProductForm] = useState(false);
+    const { alert, setAlert } = useContext(AlertContext);
+
+    const [product, setProduct] = useState({});
 
     function handleSearch(e) {
-        if (e.target.value.length < 3 && text.length < 4) setResults([]);
+        setSearchText(e.target.value);
+        if (e.target.value.length < 3 && searchText.length < 4) setResults([]);
         if (e.target.value.length > 2) fetchProduct(e.target.value);
-        setText(e.target.value);
     }
+
     function clearSearch() {
-        setText("");
+        setSearchText("");
         setResults([]);
+        setNotFoundMessage("");
     }
     function handleClear() {
         clearSearch();
@@ -40,8 +47,8 @@ function ProductSearchBar({ handleSelectAction, handleClearAction }) {
 
     async function fetchProduct(value) {
         try {
-            const res = await getFilteredProductList(type, value);
-            console.log(res);
+            const res = await getFilteredProductList(value);
+            setNotFoundMessage(res.length === 0 ? notFound : "");
             setResults(res);
         } catch (error) {
             setAlert({
@@ -55,20 +62,16 @@ function ProductSearchBar({ handleSelectAction, handleClearAction }) {
     function renderSearchBar() {
         return (
             <Stack direction="horizontal" gap={2} className="w-100">
-                <div className="pe-0">
-                    <Form.Select size="sm" name="searchType" defaultValue={type}
-                        onChange={(e) => setType(e.target.value)}>
-                        <option value="code">Code</option>
-                        <option value="description">Description</option>
-                    </Form.Select>
-                </div>
-                <div className="w-75 pe-0">
+                <div className="w-50 pe-0">
                     <Form.Control size="sm" type="text" placeholder='Enter your search text here'
-                        value={text}
+                        value={searchText}
                         onChange={(e) => handleSearch(e)} />
                 </div>
                 <div>
                     <Button className="w-0 p-0" type="reset" variant="link" onClick={handleClear}><BsEraser /></Button>
+                </div>
+                <div>
+                    <Button className="w-0 p-0" variant="link" onClick={handleNewProduct}><BsPlusLg /></Button>
                 </div>
             </Stack>
         );
@@ -91,6 +94,49 @@ function ProductSearchBar({ handleSelectAction, handleClearAction }) {
         );
     }
 
+    function showAlert(type, message) {
+        setAlert({
+            show: true,
+            type: type,
+            message: message
+        })
+    }
+
+    async function fetchSaveProduct(body) {
+        try {
+            const res = await createProduct(body);
+            setProduct(res);
+            return res;
+        } catch (error) {
+            showAlert(VariantType.DANGER, error.message);
+        }
+    }
+
+    function handleNewProduct() {
+        setProduct({ id: 0, code: searchText });
+        setShowProductForm(true);
+    }
+
+    async function handleSaveAndAddNewProduct(jsonProduct) {
+        const res = await fetchSaveProduct(jsonProduct);
+        handleSelect(res);
+        showAlert(VariantType.SUCCESS, "Product saved and added to the list successfully ");
+        setShowProductForm(false);
+    }
+
+    function renderProductForm() {
+        if (showProductForm) {
+            return (
+                <div>
+                    <div className="me-3 d-flex justify-content-end align-items-center">
+                        <CloseButton aria-label="Hide" onClick={() => setShowProductForm(false)} />
+                    </div>
+                    <ProductForm product={product} handleSave={handleSaveAndAddNewProduct} />
+                </div>
+            );
+        }
+    }
+
     return (
         <Accordion flush defaultActiveKey="0" id="search-accordion" className="border border-primary-subtle rounded">
             <Card.Header className="m-2 d-flex justify-content-between">
@@ -99,6 +145,8 @@ function ProductSearchBar({ handleSelectAction, handleClearAction }) {
             </Card.Header>
             <Accordion.Collapse eventKey="0">
                 <Card.Body className="m-3 mb-0">
+                    <span style={{ color: 'red', fontSize: '11px' }}>{notFoundMessage}</span>
+                    {renderProductForm()}
                     {results ? (
                         <Table className="table table-sm align-middle" hover>
                             <tbody>
@@ -110,7 +158,7 @@ function ProductSearchBar({ handleSelectAction, handleClearAction }) {
                 </Card.Body>
             </Accordion.Collapse>
 
-        </Accordion>
+        </Accordion >
 
     );
 
