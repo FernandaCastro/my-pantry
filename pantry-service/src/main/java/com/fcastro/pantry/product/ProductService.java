@@ -8,7 +8,6 @@ import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -69,6 +68,8 @@ public class ProductService {
 
     private Product convertToEntity(ProductDto dto) {
         if (dto == null) return null;
-        return modelMapper.map(dto, Product.class);
+        var entity = modelMapper.map(dto, Product.class);
+        entity.setCode(entity.getCode().toUpperCase());
+        return entity;
     }
 }
