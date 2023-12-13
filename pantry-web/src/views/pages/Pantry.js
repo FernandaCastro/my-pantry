@@ -109,7 +109,7 @@ export default function Pantry({ mode }) {
     function renderPantryList() {
         return (
             <Stack gap={2}>
-                <div className="d-flex justify-content-end"><Button variant="primary" size="sm" onClick={handleRebalance}>Rebalance</Button></div>
+                <div className="d-flex justify-content-end"><Button variant="primary" size="sm" onClick={handleRebalance} title='Analyse and provision items'>Balance Inventory</Button></div>
                 <div><PantryItemList key={refresh} pantryId={pantry.id} /></div>
             </Stack>
         )
@@ -123,7 +123,9 @@ export default function Pantry({ mode }) {
                     <h6>Loading...</h6> :
                     <PantryForm pantry={pantry} handleSave={handleSave} />}
             </div>
-            <div><ProductSearchBar handleSelectAction={handleAddItem} /></div>
+            <div>
+                <ProductSearchBar handleSelectAction={handleAddItem} addButtonVisible={true} />
+            </div>
             <div>
                 {isLoading && !pantry ?
                     <h6>Loading...</h6> : renderPantryList()}

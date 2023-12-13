@@ -14,7 +14,7 @@ import CloseButton from 'react-bootstrap/CloseButton';
 import '../../styles/ProductSearchBar.css';
 import ProductForm from './ProductForm.js';
 
-function ProductSearchBar({ handleSelectAction, handleClearAction }) {
+function ProductSearchBar({ handleSelectAction, handleClearAction, addButtonVisible }) {
 
     const notFound = "No product found";
     const [searchText, setSearchText] = useState("");
@@ -63,15 +63,16 @@ function ProductSearchBar({ handleSelectAction, handleClearAction }) {
         return (
             <Stack direction="horizontal" gap={2} className="w-100">
                 <div className="w-50 pe-0">
-                    <Form.Control size="sm" type="text" placeholder='Enter your search text here'
+                    <Form.Control size="sm" type="text" placeholder='Search for products here'
                         value={searchText}
                         onChange={(e) => handleSearch(e)} />
                 </div>
                 <div>
-                    <Button className="w-0 p-0" type="reset" variant="link" onClick={handleClear}><BsEraser /></Button>
+                    <Button className="w-0 p-0" type="reset" variant="link" onClick={handleClear} title='Clear search text'><BsEraser /></Button>
                 </div>
                 <div>
-                    <Button className="w-0 p-0" variant="link" onClick={handleNewProduct}><BsPlusLg /></Button>
+                    {addButtonVisible === true ?
+                        <Button className="w-0 p-0" variant="link" onClick={handleNewProduct} title='Create new product' disabled={results && results.length > 0}><BsPlusLg /></Button> : <span />}
                 </div>
             </Stack>
         );
@@ -85,7 +86,7 @@ function ProductSearchBar({ handleSelectAction, handleClearAction }) {
                         <td className="w-0 p-0 border-end-0">
                             <span>{item.code} - {item.description}</span></td>
                         <td className="w-0 p-0 border-start-0">
-                            <Button onClick={() => handleSelect(item)} variant="link"><BsCheck2All /></Button>
+                            <Button onClick={() => handleSelect(item)} variant="link" title='Select this product'><BsCheck2All /></Button>
                         </td>
                     </tr>
 
