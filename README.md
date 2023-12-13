@@ -1,14 +1,27 @@
 # my-pantry
 
-It manages pantry inventories and creates shopping lists.
+It manages pantry inventories and creates shopping lists. <br/> It is all based on the consumption of the items of a
+pantry.
 
-Still under development.
+Core functionalities available. Still under development/improvement.
+
+Run as Docker (docker-compose file is available on the root folder): <br />
+```docker compose up -d pantry-web```
+
+### pantry-web (localhost:3000) :
+
+| Path | Description|
+|:-------------|:-------------------------|
+|/| Homepage listing Pantries stored and CRUD for pantry |
+|/consume| After selecting a pantry, you can consume items from it. <br /> Once the consumption of an item reaches 50%, an order to purchase is fired.
+|/purchase| It lists all items (in all pantries) to be purchased. A shopping list is created once you open a new Order. When you close an Order the pantry will be updated with the purchased items.
+|/product| A Products list and CRUD
 
 ### pantry-service (localhost:8080) :
 
 - Manages pantry, pantry items and products.
 - Manages the consumption of the items in the pantry as well as their replenishment
-- Sends events to PurchaseCreateTopic when PantryItem reaches the defined threshold
+- Sends events to PurchaseCreateTopic when PantryItem reaches the defined threshold (50%)
 - Listens to PurchaseCompleteTopic in order to update the pantry once the Purchase Order is closed
 - Stores data in Postgres
 
@@ -19,6 +32,7 @@ Still under development.
 |GET/POST|/pantries/{pantryId}/items|Pantry Items List & Create|
 |GET/PUT/DELETE|/pantries/{pantryId}/items/{productId}| Pantry Items CRUD|
 |POST|/pantries/{pantryId}/consume| Consume/Use an Item from a Pantry|
+|GET|/pantries/{pantryId}/rebalance| Analyse all items in a Pantry and fire an order to purchase when item current qty <= 50% (of the ideal qty)| 
 
 ### purchase-service (localhost:8081) :
 
@@ -33,13 +47,6 @@ Still under development.
 | POST| /purchases/open | Get an existing open Purchase Order or create one|
 | POST| /purchases/close  | Close and complete a Purchase Order|
 
-### pantry-web (localhost:3000) :
 
-- Development is still in initial stages, while I learn `Reactjs`.
-- Home Page and Consume Page available.
 
-/Components/Home.js - Pantry List:
-![img.png](Home-PantryList.png)
 
-/Components/Consume.js
-![img.png](Consume-ItemsList.png)  

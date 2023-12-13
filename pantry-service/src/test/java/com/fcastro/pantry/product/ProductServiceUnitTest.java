@@ -1,6 +1,8 @@
 package com.fcastro.pantry.product;
 
+import com.fcastro.pantry.exception.DatabaseConstraintException;
 import com.fcastro.pantry.exception.ResourceNotFoundException;
+import com.fcastro.pantry.pantryItem.PantryItemRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -26,6 +28,9 @@ public class ProductServiceUnitTest {
 
     @Mock
     ProductRepository repository;
+
+    @Mock
+    PantryItemRepository pantryItemRepository;
 
     @Spy
     ModelMapper modelMapper;
@@ -70,6 +75,7 @@ public class ProductServiceUnitTest {
         //given
         var dto = Product.builder().id(1).code("MILK").description("Integral").size("1L").build();
         given(repository.findById(anyLong())).willReturn(Optional.of(dto));
+        given(pantryItemRepository.countPantryItem(anyLong())).willReturn(0);
         doNothing().when(repository).deleteById(anyLong());
 
         //when //then
@@ -77,6 +83,21 @@ public class ProductServiceUnitTest {
 
         //then
         verify(repository, times(1)).deleteById(1L);
+    }
+
+    @Test
+    public void givenValidId_whenDelete_ShouldReturnDatabaseConstraintException() {
+        //given
+        var dto = Product.builder().id(1).code("MILK").description("Integral").size("1L").build();
+        given(repository.findById(anyLong())).willReturn(Optional.of(dto));
+        given(pantryItemRepository.countPantryItem(anyLong())).willReturn(1);
+
+        //when //then
+        Assertions.assertThrows(DatabaseConstraintException.class,
+                () -> service.delete(1));
+
+        //then
+        verify(repository, times(0)).deleteById(1L);
     }
 
     @Test

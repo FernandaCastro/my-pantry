@@ -107,6 +107,16 @@ services:
       - kafka-broker
       - purchase-db
 
+  pantry-web:
+    container_name: pantry-web
+    image: fernandacastro/pantry-web-localhost:latest
+    ports:
+     - "3000:3000"
+    networks:
+      - spring
+    depends_on:
+      - pantry-service
+      - purchase-service
 volumes:
   pantry-db:
   purchase-db:

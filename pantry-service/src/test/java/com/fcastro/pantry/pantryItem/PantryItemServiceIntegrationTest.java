@@ -47,10 +47,10 @@ public class PantryItemServiceIntegrationTest {
 
     @BeforeAll
     public void setupEnv() {
-        pantry = pantryService.save(PantryDto.builder().name("PANTRY1").isActive(true).type("A").build());
+        pantry = pantryService.save(PantryDto.builder().name("PANTRY_TEST").isActive(true).type("A").build());
 
-        productList.add(productService.save(ProductDto.builder().code("MILK").description("Vollmilch").size("1L").build()));
-        productList.add(productService.save(ProductDto.builder().code("ICE_TEA").description("Ice Tea").size("1L").build()));
+        productList.add(productService.save(ProductDto.builder().code("MILK_TEST").description("Vollmilch").size("1L").build()));
+        productList.add(productService.save(ProductDto.builder().code("ICE_TEA_TEST").description("Ice Tea").size("1L").build()));
     }
 
     @AfterAll
@@ -70,7 +70,7 @@ public class PantryItemServiceIntegrationTest {
         //PantryItem{currentQty = 10 and IdealQty = 10}, PurchaseItem{consumed = 1}
         itemList.add(service.save(PantryItemDto.builder()
                 .pantryId(pantry.getId())
-                .productId(productList.get(0).getId())
+                .productId(productList.get(0).getId()) //MILK_TEST
                 .currentQty(10)
                 .idealQty(10)
                 .provisionedQty(0)
@@ -94,7 +94,7 @@ public class PantryItemServiceIntegrationTest {
         //PantryItem{currentQty = 9 and IdealQty = 10}, PantryItemConsumedDto{qty = 4}
         itemList.add(service.save(PantryItemDto.builder()
                 .pantryId(pantry.getId())
-                .productId(productList.get(0).getId())
+                .productId(productList.get(0).getId()) //MILK_TEST
                 .currentQty(9)
                 .idealQty(10)
                 .provisionedQty(0)
@@ -118,7 +118,7 @@ public class PantryItemServiceIntegrationTest {
         //given
         itemList.add(service.save(PantryItemDto.builder()
                 .pantryId(pantry.getId())
-                .productId(productList.get(0).getId())
+                .productId(productList.get(0).getId()) //MILK_TEST
                 .currentQty(10)
                 .idealQty(10)
                 .provisionedQty(0)
@@ -127,7 +127,7 @@ public class PantryItemServiceIntegrationTest {
 
         itemList.add(service.save(PantryItemDto.builder()
                 .pantryId(pantry.getId())
-                .productId(productList.get(1).getId())
+                .productId(productList.get(1).getId()) //ICE_TEE_TEST
                 .currentQty(10)
                 .idealQty(10)
                 .provisionedQty(0)
@@ -157,7 +157,7 @@ public class PantryItemServiceIntegrationTest {
         //given
         itemList.add(service.save(PantryItemDto.builder()
                 .pantryId(pantry.getId())
-                .productId(productList.get(0).getId())
+                .productId(productList.get(0).getId())  //MILK_TEST
                 .currentQty(10)
                 .idealQty(10)
                 .provisionedQty(0)
@@ -166,7 +166,7 @@ public class PantryItemServiceIntegrationTest {
 
         itemList.add(service.save(PantryItemDto.builder()
                 .pantryId(pantry.getId())
-                .productId(productList.get(1).getId())
+                .productId(productList.get(1).getId())  //ICE_TEE_TEST
                 .currentQty(0)  //This will throw QuantityNotAvailableException
                 .idealQty(10)
                 .provisionedQty(0)

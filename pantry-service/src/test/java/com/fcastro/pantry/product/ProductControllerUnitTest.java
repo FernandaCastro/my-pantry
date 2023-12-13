@@ -61,13 +61,13 @@ public class ProductControllerUnitTest {
         //given
         var list = new ArrayList<ProductDto>();
         list.add(ProductDto.builder().id(1).code("MILK").description("Integral").size("1L").build());
-        list.add(ProductDto.builder().id(2).code("MILK").description("Integral").size("2L").build());
+        list.add(ProductDto.builder().id(2).code("VOLLMILK").description("Integral").size("2L").build());
 
-        given(service.getAll("%MILK%")).willReturn(list);
+        given(service.getAll("MILK")).willReturn(list);
 
         //when //then
         mockMvc.perform(MockMvcRequestBuilders.get("/products")
-                        .param("description", "%MILK%")
+                        .param("searchParam", "MILK")
                 )
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(2)));
