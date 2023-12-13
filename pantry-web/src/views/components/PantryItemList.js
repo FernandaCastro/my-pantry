@@ -3,7 +3,6 @@ import { getPantryItems, deletePantryItem, updatePantryItem } from '../../servic
 import React, { useEffect, useState, useContext } from 'react';
 import VariantType from '../components/VariantType.js';
 import Button from 'react-bootstrap/Button';
-import Stack from 'react-bootstrap/Stack';
 import { BsTrash } from "react-icons/bs";
 import NumericField from '../components/NumericField.js'
 import Table from 'react-bootstrap/Table';
@@ -75,23 +74,19 @@ function PantryItemList({ pantryId }) {
     }
 
     function renderItem(item) {
-        // <div><Button onClick={() => handleSave(item)} variant="link" className='pt-0 pb-0 ps-0'><BsCheck2All /></Button></div>
         return (
-            <tr key={item.pantryId + ":" + item.productId} className="border border-primary-subtle align-middle">
-                <td colSpan="2">
+            <tr key={item.code} className="border border-primary-subtle align-middle">
+                <td>
                     <span>{item.product.code}</span>
-                    <p className='d-none d-md-block'>
-                        <br /> {item.product.description} - {item.product.size}
-                    </p>
+                    <span className='d-none d-md-block' aria-hidden={item.product.description === ''}>
+                        <br /> {item.product.description}  {item.product.size}
+                    </span>
                 </td>
                 <td><NumericField object={item} attribute="idealQty" onValueChange={handleSave} /></td>
                 <td><NumericField object={item} attribute="currentQty" onValueChange={handleSave} /></td>
                 <td><span>{item.provisionedQty}</span></td>
                 <td>
-                    <Stack direction="horizontal" gap={0} className="d-flex justify-content-end align-items-start'">
-
-                        <div><Button onClick={() => handleRemove(item)} variant="link" className='pt-0 pb-0 pe-0'><BsTrash /></Button></div>
-                    </Stack>
+                    <div><Button onClick={() => handleRemove(item)} variant="link" className='pt-0 pb-0 pe-0'><BsTrash /></Button></div>
                 </td>
             </tr >
         )
@@ -101,7 +96,7 @@ function PantryItemList({ pantryId }) {
         <Table variant="primary" hover>
             <tbody>
                 <tr key="0:0" className="border border-primary-subtle align-middle">
-                    <th colSpan="2" scope="col"><span>Code/Desc.</span></th>
+                    <th scope="col"><span>Code/Desc.</span></th>
                     <th scope="col"><span>Ideal</span></th>
                     <th scope="col"><span>Current</span></th>
                     <th scope="col"><span>Prov.</span></th>

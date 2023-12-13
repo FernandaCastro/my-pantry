@@ -135,7 +135,7 @@ export default function Product() {
                     </ListGroup.Item>
                 </ListGroup>
             </div>
-            <div><ProductSearchBar handleSelectAction={handleSelectAction} handleClearAction={handleClearAction} /></div>
+            <div><ProductSearchBar handleSelectAction={handleSelectAction} handleClearAction={handleClearAction} addButtonVisible={false} /></div>
             <div>
                 {renderProductForm()}
             </div>
