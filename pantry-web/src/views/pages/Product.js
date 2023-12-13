@@ -12,15 +12,6 @@ import CloseButton from 'react-bootstrap/CloseButton';
 
 export default function Product() {
 
-    const productObj = {
-        id: 0,
-        code: "",
-        description: "",
-        idealQty: 0,
-        currentQty: 0,
-        provisinedQty: 0
-    }
-
     const [product, setProduct] = useState({});
     const [mode, setMode] = useState("");
     const [productLabel, setProductLabel] = useState("");

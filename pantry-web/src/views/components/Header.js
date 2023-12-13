@@ -6,7 +6,7 @@ import Nav from 'react-bootstrap/Nav';
 
 export default function Header() {
     const { pantryCtx } = useContext(PantryContext);
-    let isPantrySelected = (pantryCtx !== null && pantryCtx.id != 0 && pantryCtx.isActive) ? true : false;
+    let isPantrySelected = (pantryCtx !== null && pantryCtx.id !== 0 && pantryCtx.isActive) ? true : false;
 
     return (
         <Navbar bg="primary" data-bs-theme="dark" collapseOnSelect expand="md">

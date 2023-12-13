@@ -4,7 +4,7 @@ import React, { useEffect, useState, useContext } from 'react';
 import VariantType from '../components/VariantType.js';
 import Button from 'react-bootstrap/Button';
 import Stack from 'react-bootstrap/Stack';
-import { BsCheck2All, BsTrash } from "react-icons/bs";
+import { BsTrash } from "react-icons/bs";
 import NumericField from '../components/NumericField.js'
 import Table from 'react-bootstrap/Table';
 

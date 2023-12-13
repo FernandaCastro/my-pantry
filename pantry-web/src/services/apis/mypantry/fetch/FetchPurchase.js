@@ -1,10 +1,9 @@
 import getResponseContent from '../requests/getResponseContent';
 import RequestError from '../requests/RequestError';
-import config from './config_mypantry';
 
 const FetchPurchase = async function (endpoint, method, data) {
 
-    const response = await fetch(`${config.API_URL_PURCHASE}/${endpoint}`, {
+    const response = await fetch(process.env.REACT_APP_API_URL_PURCHASE + '/' + endpoint, {
         method,
         "headers": {
             'Content-Type': 'application/json',

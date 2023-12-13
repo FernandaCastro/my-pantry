@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext } from 'react';
-import { useParams, useNavigate } from 'react-router';
+import { useParams } from 'react-router';
 import { getPantry, updatePantry, createPantry, createPantryItem, getPantryRebalance } from '../../services/apis/mypantry/fetch/requests/PantryRequests.js';
 import Stack from 'react-bootstrap/Stack';
 import VariantType from '../components/VariantType.js';
@@ -23,7 +23,6 @@ export default function Pantry({ mode }) {
 
     const [isLoading, setIsLoading] = useState(false);
     const { alert, setAlert } = useContext(AlertContext);
-    const navigate = useNavigate();
     const [refresh, setRefresh] = useState(false);
 
     useEffect(() => {
@@ -47,7 +46,7 @@ export default function Pantry({ mode }) {
         setIsLoading(true);
         setRefresh(true);
         try {
-            const res = await getPantryRebalance(id);
+            await getPantryRebalance(id);
             setRefresh(false);
             setIsLoading(false);
         } catch (error) {
@@ -71,7 +70,7 @@ export default function Pantry({ mode }) {
         setIsLoading(true);
         setRefresh(true);
         try {
-            const res = await createPantryItem(pantry.id, body);
+            await createPantryItem(pantry.id, body);
             setRefresh(false);
             setIsLoading(false);
         } catch (error) {

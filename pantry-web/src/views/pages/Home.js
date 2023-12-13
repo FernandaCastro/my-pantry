@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { PantryContext, SetPantryContext } from '../../services/context/AppContext.js';
+import { PantryContext } from '../../services/context/AppContext.js';
 import { getPantryList, deletePantry } from '../../services/apis/mypantry/fetch/requests/PantryRequests.js';
 import Stack from 'react-bootstrap/Stack';
 import ListGroup from 'react-bootstrap/ListGroup';
@@ -11,31 +11,32 @@ import { BsPencil, BsTrash } from "react-icons/bs";
 
 export default function Home() {
 
-    const [pantries, setPantries] = useState([])
-    const [isLoading, setIsLoading] = useState(true)
+    const [pantries, setPantries] = useState([]);
+    const [refresh, setRefresh] = useState(true);
 
     const { pantryCtx, setPantryCtx } = useContext(PantryContext);
     const { alert, setAlert } = useContext(AlertContext);
 
     useEffect(() => {
-        fetchPantries()
-        setIsLoading(true)
-    }, [isLoading])
+        if (refresh) fetchPantries();
+    }, [refresh])
 
     async function fetchPantries() {
-        setIsLoading(true);
+        setRefresh(true);
         try {
             const res = await getPantryList();
-            setPantries(res)
-            setIsLoading(false)
+            setPantries(res);
+            setRefresh(false);
         } catch (error) {
             showAlert(VariantType.DANGER, error.message);
         }
     }
 
     async function fetchDeletePantry(id) {
+        setRefresh(false);
         try {
             await deletePantry(id);
+            setRefresh(true);
         } catch (error) {
             showAlert(VariantType.DANGER, error.message);
         }
@@ -75,8 +76,7 @@ export default function Home() {
     function handleRemove(id) {
         fetchDeletePantry(id);
         showAlert(VariantType.SUCCESS, "Pantry removed successfully!");
-        setPantryCtx({})
-        fetchPantries();
+        if (pantryCtx.id === id) setPantryCtx({})
     }
 
     return (
