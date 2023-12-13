@@ -37,15 +37,17 @@ Run as Docker (docker-compose file is available on the root folder): <br />
 ### purchase-service (localhost:8081) :
 
 - Creates a shopping list to be purchases
-- Listens to PurchaseCreateTopic to manage a list of items to be purchased
-- Send events to PurchaseCompleteTopic once the purchase is closed
+- Listens to Kafka Topic (PurchaseCreateTopic) to manage a list of items to be purchased
+- Produces an event and sends it to Kafka Topic (PurchaseCompleteTopic) once the purchase is closed
 - Stores data in Postgres
 
 | Request Type | Path                     | Description          |
 |:-------------|:-------------------------|:---------------------|
 | GET| /purchases | List Purchase Orders|
-| POST| /purchases/open | Get an existing open Purchase Order or create one|
+| POST| /purchases | Create an open Purchase Order|
+| GET| /purchases/open | Get an existing open Purchase Order |
 | POST| /purchases/close  | Close and complete a Purchase Order|
+| GET| /purchases/items | List of items to be purchased, not yet associated to an open order|
 
 
 
