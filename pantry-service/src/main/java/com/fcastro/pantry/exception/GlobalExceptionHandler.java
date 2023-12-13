@@ -47,10 +47,12 @@ public class GlobalExceptionHandler {
         exceptionTypes.put(ResourceNotFoundException.class, "application-error");
         exceptionTypes.put(QuantityNotAvailableException.class, "application-error");
         exceptionTypes.put(PantryNotActiveException.class, "application-error");
+        exceptionTypes.put(RequestParamExpectedException.class, "application-error");
     }
 
     @ExceptionHandler(value = {QuantityNotAvailableException.class,
             PantryNotActiveException.class,
+            RequestParamExpectedException.class,
             MissingServletRequestParameterException.class,
             MissingServletRequestPartException.class,
             HttpMessageNotReadableException.class})
@@ -140,7 +142,7 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
     }
 
-    @ExceptionHandler(value = {DataAccessException.class})
+    @ExceptionHandler(value = {DataAccessException.class, DatabaseConstraintException.class})
     @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
     public ResponseEntity<?> databaseException(final DataAccessException ex, final HttpServletRequest request) {
 

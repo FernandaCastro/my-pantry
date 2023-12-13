@@ -7,6 +7,8 @@ import Home from '../views/pages/Home';
 import Consume from '../views/pages/Consume';
 import Purchase from '../views/pages/Purchase';
 import Pantry from '../views/pages/Pantry';
+import Product from '../views/pages/Product';
+
 
 function CustomRoutes() {
     let routes = useRoutes([
@@ -19,8 +21,12 @@ function CustomRoutes() {
             element: <Home />
         },
         {
-            path: "/pantries/:id",
-            element: <Pantry />
+            path: "/pantries/:id/edit",
+            element: <Pantry mode="edit" />
+        },
+        {
+            path: "/pantries/new",
+            element: <Pantry mode="new" />
         },
         {
             path: "/pantries/:id/consume",
@@ -29,6 +35,10 @@ function CustomRoutes() {
         {
             path: "/purchase",
             element: <Purchase />
+        },
+        {
+            path: "/product",
+            element: <Product />
         },
     ]);
 

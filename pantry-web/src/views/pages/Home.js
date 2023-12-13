@@ -1,42 +1,42 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { PantryContext, SetPantryContext } from '../../services/context/PantryContext.js';
+import { PantryContext } from '../../services/context/AppContext.js';
 import { getPantryList, deletePantry } from '../../services/apis/mypantry/fetch/requests/PantryRequests.js';
 import Stack from 'react-bootstrap/Stack';
 import ListGroup from 'react-bootstrap/ListGroup';
+import Table from 'react-bootstrap/Table';
 import Button from 'react-bootstrap/Button';
-import { SetAlertContext } from '../../services/context/PantryContext.js';
+import { AlertContext } from '../../services/context/AppContext.js';
 import VariantType from '../components/VariantType.js';
-
+import { BsPencil, BsTrash } from "react-icons/bs";
 
 export default function Home() {
 
-    const [pantries, setPantries] = useState([])
-    const [isLoading, setIsLoading] = useState(true)
+    const [pantries, setPantries] = useState([]);
+    const [refresh, setRefresh] = useState(true);
 
-    const pantry = useContext(PantryContext);
-    const setPantry = useContext(SetPantryContext);
-
-    const setAlert = useContext(SetAlertContext);
+    const { pantryCtx, setPantryCtx } = useContext(PantryContext);
+    const { alert, setAlert } = useContext(AlertContext);
 
     useEffect(() => {
-        fetchPantries()
-        setIsLoading(true)
-    }, [])
+        if (refresh) fetchPantries();
+    }, [refresh])
 
     async function fetchPantries() {
-        setIsLoading(true);
+        setRefresh(true);
         try {
             const res = await getPantryList();
-            setPantries(res)
-            setIsLoading(false)
+            setPantries(res);
+            setRefresh(false);
         } catch (error) {
             showAlert(VariantType.DANGER, error.message);
         }
     }
 
     async function fetchDeletePantry(id) {
+        setRefresh(false);
         try {
             await deletePantry(id);
+            setRefresh(true);
         } catch (error) {
             showAlert(VariantType.DANGER, error.message);
         }
@@ -52,15 +52,16 @@ export default function Home() {
 
     function renderItem(item) {
         return (
-            <ListGroup.Item variant="primary" key={item.id}
-                className="d-flex justify-content-between align-items-center"
-                action onClick={(e) => handlePantryClick(item)}>
-                <span className={item.isActive ? "" : "text-black-50"}>{item.name}</span>
-                <Stack direction="horizontal" gap={2} className="d-flex justify-content-end">
-                    <div><Button href={"/pantries/" + item.id} variant="link">Edit</Button></div>
-                    <div><Button onClick={() => handleRemove(item.id)} variant="link">Remove</Button></div>
-                </Stack>
-            </ListGroup.Item>
+            <tr key={item.id} className="border border-primary-subtle">
+                <td className="border-end-0" onClick={(e) => handlePantryClick(item)}>
+                    <span className={item.isActive ? "" : "text-black-50"}>{item.name}</span></td>
+                <td className="border-start-0">
+                    <Stack direction="horizontal" gap={1} className="d-flex justify-content-end">
+                        <div><Button href={"/pantries/" + item.id + "/edit"} variant="link"><BsPencil /></Button></div>
+                        <div><Button onClick={() => handleRemove(item.id)} variant="link"><BsTrash /></Button></div>
+                    </Stack>
+                </td>
+            </tr>
         )
     }
 
@@ -69,14 +70,13 @@ export default function Home() {
     }
 
     function handlePantryClick(item) {
-        item.isActive ? setPantry(item) : setPantry({});
+        item.isActive ? setPantryCtx(item) : setPantryCtx({});
     }
 
     function handleRemove(id) {
         fetchDeletePantry(id);
         showAlert(VariantType.SUCCESS, "Pantry removed successfully!");
-        setPantry({})
-        fetchPantries();
+        if (pantryCtx.id === id) setPantryCtx({})
     }
 
     return (
@@ -85,15 +85,17 @@ export default function Home() {
             <div>
                 <ListGroup >
                     <ListGroup.Item variant="primary" className="d-flex justify-content-between align-items-center">
-                        Selected: {pantry.name}
-                        <Button variant="primary" size="sm" href={"/pantries/0"} >New Pantry</Button>
+                        <span>{pantryCtx.name}</span>
+                        <Button variant="primary" size="sm" href={"/pantries/new"} >New Pantry</Button>
                     </ListGroup.Item>
                 </ListGroup>
             </div>
             <div>
-                <ListGroup>
-                    {renderItems()}
-                </ListGroup>
+                <Table variant="primary" className='table table-sm align-middle' hover>
+                    <tbody>
+                        {renderItems()}
+                    </tbody>
+                </Table>
             </div>
         </Stack>
     )

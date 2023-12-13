@@ -6,6 +6,7 @@ import com.fcastro.pantry.exception.PantryNotActiveException;
 import com.fcastro.pantry.exception.QuantityNotAvailableException;
 import com.fcastro.pantry.exception.ResourceNotFoundException;
 import com.fcastro.pantry.product.ProductDto;
+import org.hibernate.LazyInitializationException;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -57,14 +58,13 @@ public class PantryItemService {
     @Transactional
     public List<PantryItemDto> consumePantryItem(Long pantryId, List<PantryItemConsumedDto> list) {
 
-        var pantryItemConsumedList = list.stream()
+        return list.stream()
                 .filter(item -> item.qty > 0)
                 .map(item -> {
                     item.pantryId = pantryId;
                     return consumePantryItem(item);
                 })
                 .collect(Collectors.toList());
-        return pantryItemConsumedList;
     }
 
     public PantryItemDto consumePantryItem(PantryItemConsumedDto consumedDto) {
@@ -81,6 +81,24 @@ public class PantryItemService {
 
         itemEntity.setCurrentQty(itemEntity.getCurrentQty() - consumedDto.getQty());
 
+        itemEntity = processPurchaseNeed(itemEntity);
+
+        repository.save(itemEntity);
+        return convertToDTO(itemEntity);
+    }
+
+    public List<PantryItemDto> processPurchaseNeed(Long pantryId){
+        var items = repository.findAllByPantryId(pantryId);
+        return items.stream().
+                map(item -> {
+                    item = processPurchaseNeed(item);
+                    repository.save(item);
+                    return convertToDTO(item);
+                })
+                .collect(Collectors.toList());
+    }
+
+    private PantryItem processPurchaseNeed(PantryItem itemEntity) {
         var usagePercentage = calculateUsagePercentage(itemEntity);
         var provision = calculateProvision(itemEntity);
 
@@ -89,12 +107,11 @@ public class PantryItemService {
             itemEntity.setProvisionedQty(itemEntity.getProvisionedQty() + provision);
             itemEntity.setLastProvisioning(LocalDateTime.now());
         }
-
-        repository.save(itemEntity);
-        return convertToDTO(itemEntity);
+        return itemEntity;
     }
 
     private long calculateUsagePercentage(PantryItem itemEntity) {
+        if(itemEntity.getCurrentQty() == 0) return 0;
         return (100 * itemEntity.getCurrentQty()) / itemEntity.getIdealQty();
     }
 
@@ -157,12 +174,18 @@ public class PantryItemService {
         if (entity == null) return null;
 
         ProductDto product = null;
-        if (entity.getProduct() != null) {
+        try {
+            if (entity.getProduct() != null) {
+                product = ProductDto.builder()
+                        .id(entity.getProduct().getId())
+                        .code(entity.getProduct().getCode())
+                        .description(entity.getProduct().getDescription())
+                        .size(entity.getProduct().getSize())
+                        .build();
+            }
+        } catch (LazyInitializationException ex) {
             product = ProductDto.builder()
-                    .id(entity.getProduct().getId())
-                    .code(entity.getProduct().getCode())
-                    .description(entity.getProduct().getDescription())
-                    .size(entity.getProduct().getSize())
+                    .id(entity.getProductId())
                     .build();
         }
 

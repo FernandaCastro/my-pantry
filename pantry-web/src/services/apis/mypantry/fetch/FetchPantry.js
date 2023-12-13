@@ -1,11 +1,11 @@
 import getResponseContent from '../requests/getResponseContent.js';
 import RequestError from '../requests/RequestError.js';
-import config from './config_mypantry.js';
 
 const FetchPantry = async function (endpoint, method, data) {
 
-    const response = await fetch(`${config.API_URL_PANTRY}/${endpoint}`, {
+    const response = await fetch(process.env.REACT_APP_API_URL_PANTRY + '/' + endpoint, {
         method,
+        //mode: 'no-cors',
         "headers": {
             'Content-Type': 'application/json',
             'Accept': 'application/json',

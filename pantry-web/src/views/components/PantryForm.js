@@ -29,37 +29,37 @@ export default function PantryForm({ pantry, handleSave }) {
     return (
         <Form onSubmit={handleSubmit}>
             <Row>
-                <Form.Group as={Col} className="mb-3" controlId="formId">
-                    <Form.Label>Id</Form.Label>
-                    <Form.Control type="text" name="id" defaultValue={pantry.id} disabled />
+                <Form.Group className="mb-2 w-25" controlId="formId">
+                    <Form.Label size="sm">Id</Form.Label>
+                    <Form.Control size="sm" type="text" name="id" defaultValue={pantry.id} disabled />
                 </Form.Group>
-                <Form.Group as={Col} className="mb-3" controlId="formName">
-                    <Form.Label>Name</Form.Label>
-                    <Form.Control type="text" name="name" defaultValue={pantry.name} />
+                <Form.Group as={Col} className="mb-2" controlId="formName">
+                    <Form.Label size="sm">Name</Form.Label>
+                    <Form.Control size="sm" type="text" name="name" defaultValue={pantry.name} />
                 </Form.Group>
             </Row>
             <Row>
-                <Form.Group as={Col} className="mb-3" controlId="formType">
-                    <Form.Label>Type</Form.Label>
-                    <Form.Select name="type" defaultValue={pantry.type}>
-                        <option value='' disabled >Select a type</option>
-                        <option value='R'>Recurring</option>
-                        <option value='S'>Single</option>
-                    </Form.Select>
-                </Form.Group>
-                <Form.Group as={Col} className="mb-3" controlId="formIsActive">
-                    <Form.Label></Form.Label>
-                    <Form.Check
+                <Form.Group className="mb-2 w-25" controlId="formIsActive">
+                    <Form.Label size="sm"></Form.Label>
+                    <Form.Check size="sm"
                         name="isActive"
                         defaultChecked={pantry.isActive}
                         onClick={e => setIsActiveLabel(e.target.checked ? "Active" : "Inactive")}
                         label={isActiveLabel} />
                 </Form.Group>
+                <Form.Group as={Col} className="mb-2" controlId="formType">
+                    <Form.Label size="sm">Type</Form.Label>
+                    <Form.Select size="sm" name="type" defaultValue={pantry.type}>
+                        <option value='' disabled >Select a type</option>
+                        <option value='R'>Recurring</option>
+                        <option value='S'>Single</option>
+                    </Form.Select>
+                </Form.Group>
             </Row>
             <Row>
-                <Stack direction="horizontal" gap={2} className="d-flex justify-content-end">
-                    <div><Button variant="primary" type="reset">Clear</Button></div>
-                    <div><Button variant="primary" type="submit">Save</Button></div>
+                <Stack direction="horizontal" gap={2} className="mb-3 d-flex justify-content-end">
+                    <div><Button variant="primary" type="reset" size="sm">Clear</Button></div>
+                    <div><Button variant="primary" type="submit" size="sm">Save</Button></div>
                 </Stack>
             </Row>
         </Form>

@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@CrossOrigin
+@CrossOrigin()
 @RequestMapping("products")
 public class ProductController {
 
@@ -25,9 +25,10 @@ public class ProductController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @GetMapping
-    public ResponseEntity<List<ProductDto>> getAll() {
-        return ResponseEntity.ok(service.getAll());
+    @GetMapping()
+    public ResponseEntity<List<ProductDto>> getAll(@RequestParam(required = false) String searchParam) {
+        if (searchParam == null) return ResponseEntity.ok(service.getAll());
+        return ResponseEntity.ok(service.getAll(searchParam));
     }
 
     @PostMapping

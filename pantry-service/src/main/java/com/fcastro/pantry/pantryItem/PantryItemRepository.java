@@ -12,11 +12,13 @@ import java.util.Optional;
 @Repository
 public interface PantryItemRepository extends JpaRepository<PantryItem, PantryItemKey> {
 
-    @Query("select p from pantryItem p where p.pantryId = :pantryId")
+    @Query("select p from pantryItem p where p.pantryId = :pantryId order by product.code")
     @EntityGraph(attributePaths = {"product"})
     List<PantryItem> findAllByPantryId(@Param("pantryId") Long pantryId);
 
     @EntityGraph(attributePaths = {"pantry", "product"})
     Optional<PantryItem> findEagerByPantryIdAndProductId(Long pantryId, Long productId);
 
+    @Query("select count(p) from pantryItem p where p.productId = :productId")
+    Integer countPantryItem(Long productId);
 }

@@ -9,6 +9,7 @@ import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Sort;
 
 import java.util.ArrayList;
 import java.util.Optional;
@@ -56,7 +57,7 @@ public class PantryServiceUnitTest {
         list.add(Pantry.builder().id(1L).name("Base Inventory").isActive(true).type("R").build());
         list.add(Pantry.builder().id(2L).name("Base Inventory").isActive(true).type("R").build());
 
-        given(repository.findAll()).willReturn(list);
+        given(repository.findAll(Sort.by("name"))).willReturn(list);
 
         //when
         var result = service.getAll();

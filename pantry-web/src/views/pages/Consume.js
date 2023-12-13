@@ -9,7 +9,8 @@ import Col from 'react-bootstrap/Col';
 import Image from 'react-bootstrap/Image';
 import food from '../../images/healthy-food.png'
 import VariantType from '../components/VariantType.js';
-import { SetAlertContext } from '../../services/context/PantryContext.js';
+import { AlertContext } from '../../services/context/AppContext.js';
+import { BsCaretDown, BsCaretUp } from "react-icons/bs";
 
 export default function Consume() {
 
@@ -23,7 +24,7 @@ export default function Consume() {
   const [isPantryEmpty, setIsPantryEmpty] = useState(true);
   const [hasConsumed, setHasConsumed] = useState(false);
 
-  const setAlert = useContext(SetAlertContext);
+  const { alert, setAlert } = useContext(AlertContext);
 
   useEffect(() => {
     setIsLoading(true);
@@ -152,29 +153,30 @@ export default function Consume() {
         <Row>
           <Col xs={5}>
             <Stack direction="horizontal" gap={3}>
-              <div><Image src={food} width={25} height={25} rounded /></div>
+              <div><Image src={food} width={20} height={20} rounded /></div>
               <div><span>{item.product.code}</span></div>
             </Stack>
           </Col>
           <Col><span>Current</span></Col>
           <Col className='d-none d-md-block'><span>Provisioned</span></Col>
-          <Col className='d-none d-md-block'><span>Last Provisioning</span></Col>
+          <Col className='d-none d-md-block'><span>Prov. on</span></Col>
           <Col><span>Consumed</span></Col>
         </Row>
         <Row>
           <Col xs={5}>
-            <p className='d-none d-md-block'>
-              {item.product.description} <br />
-              {item.product.size}
+            <p className='pt-1 d-none d-md-block'>
+              {item.product.description} - {item.product.size}
             </p>
           </Col>
           <Col><span>{item.currentQty}</span></Col>
           <Col className='d-none d-md-block'><span>{item.provisionedQty}</span></Col>
           <Col className='d-none d-md-block'><span>{item.lastProvisioning}</span></Col>
           <Col>
-            <Button variant="link" disabled={consumedItem.qty === 0} onClick={() => handleDecrease(index)}> - </Button>
-            <span>{consumedItem.qty}</span>
-            <Button variant="link" disabled={item.currentQty === 0 || item.currentQty === consumedItem.qty} onClick={() => handleIncrease(index)}> + </Button>
+            <Stack direction="horizontal" gap={1} >
+              <div><Button variant='link' disabled={consumedItem.qty === 0} onClick={() => handleDecrease(index)} className='m-0 p-0 d-flex align-items-start'><BsCaretDown /></Button></div>
+              <div><span className='ms-1 me-1 ps-1 pe-1'>{consumedItem.qty}</span></div>
+              <div><Button variant='link' disabled={item.currentQty === 0 || item.currentQty === consumedItem.qty} onClick={() => handleIncrease(index)} className='m-0 p-0 d-flex align-items-start'><BsCaretUp /></Button></div>
+            </Stack>
           </Col>
         </Row>
       </ListGroup.Item>
@@ -208,8 +210,8 @@ export default function Consume() {
         </ListGroup>
       </div>
       <Stack direction="horizontal" gap={2} className="d-flex justify-content-end">
-        <div><Button variant="primary" onClick={handleClear} active={hasConsumed}>Clear</Button></div>
-        <div><Button variant="primary" onClick={handleSave} active={!isPantryEmpty && hasConsumed}>Save</Button></div>
+        <div><Button variant="primary" size="sm" onClick={handleClear} active={hasConsumed}>Clear</Button></div>
+        <div><Button variant="primary" size="sm" onClick={handleSave} active={!isPantryEmpty && hasConsumed}>Save</Button></div>
       </Stack>
     </Stack>
   )
