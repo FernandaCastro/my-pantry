@@ -82,13 +82,10 @@ export default function Home() {
     return (
         <Stack gap={3}>
             <div></div>
-            <div>
-                <ListGroup >
-                    <ListGroup.Item variant="primary" className="d-flex justify-content-between align-items-center">
-                        <span>{pantryCtx.name}</span>
-                        <Button variant="primary" size="sm" href={"/pantries/new"} >New Pantry</Button>
-                    </ListGroup.Item>
-                </ListGroup>
+            <div className="d-flex justify-content-end align-items-center">
+
+                <Button variant="primary" size="sm" href={"/pantries/new"} >New Pantry</Button>
+
             </div>
             <div>
                 <Table variant="primary" className='table table-sm align-middle' hover>

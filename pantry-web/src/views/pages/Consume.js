@@ -10,7 +10,9 @@ import Image from 'react-bootstrap/Image';
 import food from '../../images/healthy-food.png'
 import VariantType from '../components/VariantType.js';
 import { AlertContext } from '../../services/context/AppContext.js';
-import { BsCaretDown, BsCaretUp } from "react-icons/bs";
+import Form from 'react-bootstrap/Form';
+import NumericField from '../components/NumericField.js'
+
 
 export default function Consume() {
 
@@ -18,45 +20,51 @@ export default function Consume() {
 
   const [pantry, setPantry] = useState({});
   const [pantryItems, setPantryItems] = useState([]);
-  const [isLoading, setIsLoading] = useState(true)
-
+  const [filteredItems, setFilteredItems] = useState([]);
   const [consumedItems, setConsumedItems] = useState([]);
-  const [isPantryEmpty, setIsPantryEmpty] = useState(true);
-  const [hasConsumed, setHasConsumed] = useState(false);
 
+  const [searchText, setSearchText] = useState("");
+  const [isPantryEmpty, setIsPantryEmpty] = useState(true);
+
+  const [isLoading, setIsLoading] = useState(true)
   const { alert, setAlert } = useContext(AlertContext);
 
   useEffect(() => {
-    setIsLoading(true);
     fetchPantryData();
-    setIsLoading(false);
   }, [])
+
+  useEffect(() => {
+    filter(searchText);
+  }, [pantryItems])
 
   async function fetchPantryData() {
     try {
+      setIsLoading(true);
       let res = await getPantry(id);
       setPantry(res);
 
       if (res != null && Object.keys(res).length > 0) { //Not null
         res = await getPantryItems(res.id);
         setPantryItems(res);
-
         loadConsumedItems(res);
       }
     } catch (error) {
       showAlert(VariantType.DANGER, error.message);
+    } finally {
+      setIsLoading(false);
     }
   }
 
   async function fetchPantryConsume() {
-    setIsLoading(true);
     try {
+      setIsLoading(true);
       const res = await postPantryConsume(pantry.id, consumedItems);
       setPantryItems(res);
       loadConsumedItems(res);
-      setIsLoading(false);
     } catch (error) {
       showAlert(VariantType.DANGER, error.message);
+    } finally {
+      setIsLoading(false);
     }
   }
 
@@ -71,13 +79,9 @@ export default function Consume() {
         productId: item.productId,
         qty: 0
       }]
-      if (emptyPantry && item.currentQty > 0) {
-        emptyPantry = false;
-
-      }
+      if (emptyPantry && item.currentQty > 0) { emptyPantry = false }
     })
     setIsPantryEmpty(emptyPantry)
-    setHasConsumed(false);
     return setConsumedItems(copy);
   }
 
@@ -98,55 +102,21 @@ export default function Consume() {
     loadConsumedItems(consumedItems);
   }
 
-  function handleDecrease(index) {
-    let consumed = false;
-    const array = consumedItems.map((c, i) => {
-
-      if (i === index) {
-
-        if (!consumed && c.qty > 1)
-          consumed = true;
-
-        return c =
-        {
-          ...c,
-          qty: c.qty - 1
-        };
-
-      } else {
-
-        if (!consumed && c.qty > 0)
-          consumed = true;
-
-        return c;
-      }
-    });
-    return setConsumedItems(array);
+  function getConsumedItem(pantryId, productId) {
+    return consumedItems.find(item => item.pantryId === pantryId && item.productId === productId);
   }
 
-  function handleIncrease(index) {
-    let consumed = hasConsumed;
-    const array = consumedItems.map((c, i) => {
-      if (i === index) {
-        consumed = true;
-        return c =
-        {
-          ...c,
-          qty: c.qty + 1
-        };
-      } else {
-        return c;
-      }
-    });
-    setHasConsumed(consumed);
-    return setConsumedItems(array);
+  function updateConsumedItem(item) {
+    const array = consumedItems.map((c) => {
+      return (c.pantryId === item.pantryId && c.productId === item.productId) ?
+        c = { ...c, qty: c.qty } : c;
+    })
+    setConsumedItems(array);
   }
 
-  function renderItem(index, item) {
+  function renderItem(item) {
 
-    if (isLoading) return;
-
-    let consumedItem = consumedItems[index];
+    let consumedItem = getConsumedItem(item.pantryId, item.productId);
 
     return (
       <ListGroup.Item variant="primary" key={item.productId}>
@@ -172,11 +142,7 @@ export default function Consume() {
           <Col className='d-none d-md-block'><span>{item.provisionedQty}</span></Col>
           <Col className='d-none d-md-block'><span>{item.lastProvisioning}</span></Col>
           <Col>
-            <Stack direction="horizontal" gap={1} >
-              <div><Button variant='link' disabled={consumedItem.qty === 0} onClick={() => handleDecrease(index)} className='m-0 p-0 d-flex align-items-start'><BsCaretDown /></Button></div>
-              <div><span className='ms-1 me-1 ps-1 pe-1'>{consumedItem.qty}</span></div>
-              <div><Button variant='link' disabled={item.currentQty === 0 || item.currentQty === consumedItem.qty} onClick={() => handleIncrease(index)} className='m-0 p-0 d-flex align-items-start'><BsCaretUp /></Button></div>
-            </Stack>
+            <NumericField object={consumedItem} attribute="qty" onValueChange={updateConsumedItem} disabled={isPantryEmpty} />
           </Col>
         </Row>
       </ListGroup.Item>
@@ -184,34 +150,35 @@ export default function Consume() {
   }
 
   function renderItems() {
-    if (isLoading) {
-      return [...Array(1)].map((item) => renderItem(1, item))
+    return filteredItems.map(item => renderItem(item))
+  }
 
-    } else if (pantryItems && pantryItems.length) {
-      let index = 0;
-      return (pantryItems.map((item) => renderItem(index++, item)))
-
+  function filter(text) {
+    if (text && text.length > 2) {
+      setFilteredItems(pantryItems.filter(item => item.product.code.toUpperCase().includes(text.toUpperCase())));
+    } else {
+      setFilteredItems(pantryItems);
     }
-    return "Not Found";
+    setSearchText(text);
   }
 
   return (
     <Stack gap={3}>
       <div>
       </div>
+      <Stack direction="horizontal" gap={2} className="d-flex justify-content-end">
+        <div><Button variant="primary" size="sm" onClick={handleClear}>Clear</Button></div>
+        <div><Button variant="primary" size="sm" onClick={handleSave} >Save</Button></div>
+      </Stack>
       <div>
+        <Form.Control size="sm" type="text" id="search" className="form-control mb-1" placeholder="Seacrh for items here" value={searchText} onChange={(e) => filter(e.target.value)} />
         <ListGroup>
-          <ListGroup.Item variant="primary"><h6>{pantry.name}</h6></ListGroup.Item>
-        </ListGroup>
-      </div>
-      <div>
-        <ListGroup>
-          {renderItems()}
+          {isLoading ? <h6>Loading...</h6> : renderItems()}
         </ListGroup>
       </div>
       <Stack direction="horizontal" gap={2} className="d-flex justify-content-end">
-        <div><Button variant="primary" size="sm" onClick={handleClear} active={hasConsumed}>Clear</Button></div>
-        <div><Button variant="primary" size="sm" onClick={handleSave} active={!isPantryEmpty && hasConsumed}>Save</Button></div>
+        <div><Button variant="primary" size="sm" onClick={handleClear}>Clear</Button></div>
+        <div><Button variant="primary" size="sm" onClick={handleSave}>Save</Button></div>
       </Stack>
     </Stack>
   )

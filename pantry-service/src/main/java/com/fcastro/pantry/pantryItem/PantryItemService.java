@@ -76,7 +76,7 @@ public class PantryItemService {
         }
 
         if (itemEntity.getCurrentQty() < consumedDto.getQty()) {
-            throw new QuantityNotAvailableException(itemEntity.getCurrentQty() + " quantity available in Pantry.");
+            throw new QuantityNotAvailableException(itemEntity.getProduct().getCode() + ": Only " + itemEntity.getCurrentQty() + " available in Pantry.");
         }
 
         itemEntity.setCurrentQty(itemEntity.getCurrentQty() - consumedDto.getQty());

@@ -6,6 +6,7 @@ import Button from 'react-bootstrap/Button';
 import { BsTrash } from "react-icons/bs";
 import NumericField from '../components/NumericField.js'
 import Table from 'react-bootstrap/Table';
+import Form from 'react-bootstrap/Form';
 
 function PantryItemList({ pantryId }) {
 
@@ -13,6 +14,7 @@ function PantryItemList({ pantryId }) {
     const [refresh, setRefresh] = useState(true);
     const [pantryItems, setPantryItems] = useState([]);
     const { alert, setAlert } = useContext(AlertContext);
+    const [items, setItems] = useState([]);
 
     useEffect(() => {
         if (pantryId && pantryId > 0 && refresh) {
@@ -25,6 +27,7 @@ function PantryItemList({ pantryId }) {
             setIsLoading(true);
             const res = await getPantryItems(pantryId);
             setPantryItems(res);
+            setItems(res);
             setRefresh(false);
             setIsLoading(false);
         } catch (error) {
@@ -70,7 +73,7 @@ function PantryItemList({ pantryId }) {
     }
 
     function renderItems() {
-        if (pantryItems && pantryItems.length > 0) return pantryItems.map((item) => renderItem(item))
+        if (items && items.length > 0) return items.map((item) => renderItem(item))
     }
 
     function renderItem(item) {
@@ -92,19 +95,29 @@ function PantryItemList({ pantryId }) {
         )
     }
 
+    function filter(text) {
+        if (text && text.length > 0)
+            setItems(pantryItems.filter(item => item.product.code.toUpperCase().includes(text.toUpperCase())));
+        else
+            setItems(pantryItems);
+    }
+
     return (
-        <Table variant="primary" hover>
-            <tbody>
-                <tr key="0:0" className="border border-primary-subtle align-middle">
-                    <th scope="col"><span>Code/Desc.</span></th>
-                    <th scope="col"><span>Ideal</span></th>
-                    <th scope="col"><span>Current</span></th>
-                    <th scope="col"><span>Prov.</span></th>
-                    <th scope="col"><span /></th>
-                </tr>
-                {renderItems()}
-            </tbody>
-        </Table>
+        <div>
+            <Form.Control size="sm" type="text" id="search" className="form-control mb-1" placeholder="Seacrh for items here" onChange={(e) => filter(e.target.value)} />
+            <Table variant="primary" hover>
+                <tbody>
+                    <tr key="0:0" className="border border-primary-subtle align-middle">
+                        <th scope="col"><span>Code/Desc.</span></th>
+                        <th scope="col"><span>Ideal</span></th>
+                        <th scope="col"><span>Current</span></th>
+                        <th scope="col"><span>Prov.</span></th>
+                        <th scope="col"><span /></th>
+                    </tr>
+                    {renderItems()}
+                </tbody>
+            </Table>
+        </div>
     );
 }
 

@@ -113,7 +113,7 @@ export default function Purchase() {
     function handleRefresh() {
         fetchPendingPurchaseItems();
         if (isNull(purchaseItems) || purchaseItems.length === 0) {
-            showAlert(VariantType.DANGER, "No item to purchase at the moment.");
+            showAlert(VariantType.INFO, "No item to purchase at the moment.");
         }
     }
 
