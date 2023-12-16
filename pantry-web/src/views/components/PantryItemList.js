@@ -6,12 +6,15 @@ import Button from 'react-bootstrap/Button';
 import { BsTrash } from "react-icons/bs";
 import NumericField from '../components/NumericField.js'
 import Table from 'react-bootstrap/Table';
+import Form from 'react-bootstrap/Form';
 
 function PantryItemList({ pantryId }) {
 
     const [isLoading, setIsLoading] = useState(true);
     const [refresh, setRefresh] = useState(true);
     const [pantryItems, setPantryItems] = useState([]);
+    const [filteredItems, setFilteredItems] = useState([]);
+    const [searchText, setSearchText] = useState("");
     const { alert, setAlert } = useContext(AlertContext);
 
     useEffect(() => {
@@ -19,6 +22,10 @@ function PantryItemList({ pantryId }) {
             fetchPantryItems();
         }
     }, [pantryId, refresh])
+
+    useEffect(() => {
+        filter(searchText);
+    }, [pantryItems])
 
     async function fetchPantryItems() {
         try {
@@ -70,12 +77,12 @@ function PantryItemList({ pantryId }) {
     }
 
     function renderItems() {
-        if (pantryItems && pantryItems.length > 0) return pantryItems.map((item) => renderItem(item))
+        return filteredItems.map((item) => renderItem(item))
     }
 
     function renderItem(item) {
         return (
-            <tr key={item.code} className="border border-primary-subtle align-middle">
+            <tr key={item.productId} className="border border-primary-subtle align-middle">
                 <td>
                     <span>{item.product.code}</span>
                     <span className='d-none d-md-block' aria-hidden={item.product.description === ''}>
@@ -92,19 +99,31 @@ function PantryItemList({ pantryId }) {
         )
     }
 
+    function filter(text) {
+        if (text && text.length > 0)
+            setFilteredItems(pantryItems.filter(item => item.product.code.toUpperCase().includes(text.toUpperCase())));
+        else
+            setFilteredItems(pantryItems);
+
+        setSearchText(text);
+    }
+
     return (
-        <Table variant="primary" hover>
-            <tbody>
-                <tr key="0:0" className="border border-primary-subtle align-middle">
-                    <th scope="col"><span>Code/Desc.</span></th>
-                    <th scope="col"><span>Ideal</span></th>
-                    <th scope="col"><span>Current</span></th>
-                    <th scope="col"><span>Prov.</span></th>
-                    <th scope="col"><span /></th>
-                </tr>
-                {renderItems()}
-            </tbody>
-        </Table>
+        <div>
+            <Form.Control size="sm" type="text" id="search" className="form-control mb-1" value={searchText} placeholder="Seacrh for items here" onChange={(e) => filter(e.target.value)} />
+            <Table variant="primary" hover>
+                <tbody>
+                    <tr key="0:0" className="border border-primary-subtle align-middle">
+                        <th scope="col"><span>Code/Desc.</span></th>
+                        <th scope="col"><span>Ideal</span></th>
+                        <th scope="col"><span>Current</span></th>
+                        <th scope="col"><span>Prov.</span></th>
+                        <th scope="col"><span /></th>
+                    </tr>
+                    {renderItems()}
+                </tbody>
+            </Table>
+        </div>
     );
 }
 

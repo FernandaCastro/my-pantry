@@ -9,16 +9,18 @@ import Image from 'react-bootstrap/Image';
 import food from '../../images/healthy-food.png'
 import VariantType from '../components/VariantType.js';
 import { AlertContext } from '../../services/context/AppContext.js';
-import { BsCaretDown, BsCaretUp } from "react-icons/bs";
-
+import Form from 'react-bootstrap/Form';
+import NumericField from '../components/NumericField.js'
 
 export default function Purchase() {
 
     const [purchase, setPurchase] = useState({});
     const [purchaseItems, setPurchaseItems] = useState([]);
+    const [filteredItems, setFilteredItems] = useState([]);
+
     const [isLoading, setIsLoading] = useState(true);
     const [hasOpenOrder, setHasOpenOrder] = useState(false);
-
+    const [searchText, setSearchText] = useState("");
     const { alert, setAlert } = useContext(AlertContext);
 
     useEffect(() => {
@@ -26,8 +28,13 @@ export default function Purchase() {
         if (!hasOpenOrder) fetchPendingPurchaseItems();
     }, []);
 
+    useEffect(() => {
+        filter(searchText);
+    }, [purchaseItems])
+
     async function fetchOpenPurchaseOrder() {
         try {
+            setIsLoading(true);
             const res = await getOpenPurchaseOrder();
             if (!res) return;
             setPurchase(res);
@@ -41,6 +48,7 @@ export default function Purchase() {
 
     async function fetchClosePurchaseOrder(body) {
         try {
+            setIsLoading(true);
             const res = await postClosePurchaseOrder(body);
             if (!res) return;
             setPurchase(res);
@@ -54,6 +62,7 @@ export default function Purchase() {
 
     async function fetchNewPurchaseOrder() {
         try {
+            setIsLoading(true);
             const res = await postNewPurchaseOrder();
             if (isNull(res)) return;
             setPurchase(res);
@@ -67,6 +76,7 @@ export default function Purchase() {
 
     async function fetchPendingPurchaseItems() {
         try {
+            setIsLoading(true);
             const res = await getPendingPurchaseItems();
             if (isNull(res) || res.length === 0) return;
             setPurchaseItems(res);
@@ -113,45 +123,38 @@ export default function Purchase() {
     function handleRefresh() {
         fetchPendingPurchaseItems();
         if (isNull(purchaseItems) || purchaseItems.length === 0) {
-            showAlert(VariantType.DANGER, "No item to purchase at the moment.");
+            showAlert(VariantType.INFO, "No item to purchase at the moment.");
         }
-    }
-
-    function handleDecrease(index) {
-        const array = purchaseItems.map((c, i) => {
-            if (i === index) {
-                return c =
-                {
-                    ...c,
-                    qtyPurchased: c.qtyPurchased - 1
-                };
-            } else {
-                return c;
-            }
-        });
-        return setPurchaseItems(array);
-    }
-
-    function handleIncrease(index) {
-        const array = purchaseItems.map((c, i) => {
-            if (i === index) {
-                return c =
-                {
-                    ...c,
-                    qtyPurchased: c.qtyPurchased + 1
-                };
-            } else {
-                return c;
-            }
-        });
-        return setPurchaseItems(array);
     }
 
     function handleClear() {
         return setPurchaseItems(purchase.items);
     }
 
-    function renderPurchaseItem(index, item) {
+    function renderPurchaseItems() {
+        if (isLoading || isNull(purchaseItems)) return;
+
+        return (filteredItems.map((item) => renderPurchaseItem(item)))
+    }
+
+    function filter(text) {
+        if (text && text.length > 0) {
+            setFilteredItems(purchaseItems.filter(item => item.productCode.toUpperCase().includes(text.toUpperCase())));
+        } else {
+            setFilteredItems(purchaseItems);
+        }
+        setSearchText(text);
+    }
+
+    function updatePurchasedItem(item) {
+        const array = purchaseItems.map((c) => {
+            return (c.pantryId === item.pantryId && c.productId === item.productId) ?
+                c = { ...c, qtyPurchased: c.qtyPurchased } : c;
+        })
+        setPurchaseItems(array);
+    }
+
+    function renderPurchaseItem(item) {
         if (isLoading) return;
         return (
             <ListGroup.Item variant="primary" key={item.id} className="align-items-start">
@@ -179,22 +182,17 @@ export default function Purchase() {
                     <Col className='d-none d-md-block'>{item.pantryName}</Col>
                     <Col>{item.qtyProvisioned}</Col>
                     <Col>
-                        <Stack direction="horizontal" gap={1} >
-                            <div><Button variant='link' disabled={item.qtyPurchased === 0} onClick={() => handleDecrease(index)} className='m-0 p-0 d-flex align-items-start'><BsCaretDown /></Button></div>
-                            <div><span className='ms-1 me-1 ps-1 pe-1'>{item.qtyPurchased}</span></div>
-                            <div><Button variant='link' disabled={!hasOpenOrder} onClick={() => handleIncrease(index)} className='m-0 p-0 d-flex align-items-start'><BsCaretUp /></Button></div>
-                        </Stack>
+                        <NumericField object={item} attribute="qtyPurchased" onValueChange={updatePurchasedItem} disabled={!hasOpenOrder} />
                     </Col>
                 </Row>
             </ListGroup.Item>
         )
-    }
 
-    function renderPurchaseItems() {
-        if (isLoading || isNull(purchaseItems)) return;
-
-        let index = 0;
-        return (purchaseItems.map((item) => renderPurchaseItem(index++, item)))
+        //     <Stack direction="horizontal" gap={1} >
+        //     <div><Button variant='link' disabled={item.qtyPurchased === 0} onClick={() => handleDecrease(index)} className='m-0 p-0 d-flex align-items-start'><BsCaretDown /></Button></div>
+        //     <div><span className='ms-1 me-1 ps-1 pe-1'>{item.qtyPurchased}</span></div>
+        //     <div><Button variant='link' disabled={!hasOpenOrder} onClick={() => handleIncrease(index)} className='m-0 p-0 d-flex align-items-start'><BsCaretUp /></Button></div>
+        // </Stack>
     }
 
     function renderPurchaseOrder() {
@@ -244,6 +242,7 @@ export default function Purchase() {
                 </ListGroup>
             </div>
             <div>
+                <Form.Control hidden={isNull(purchaseItems) || purchaseItems.length === 0} size="sm" type="text" id="search" className="form-control mb-1" placeholder="Seacrh for items here" value={searchText} onChange={(e) => filter(e.target.value)} />
                 <ListGroup>
                     {renderPurchaseItems()}
                 </ListGroup>

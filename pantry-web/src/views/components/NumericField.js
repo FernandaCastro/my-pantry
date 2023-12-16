@@ -4,7 +4,7 @@ import Button from 'react-bootstrap/Button';
 import { useState } from 'react';
 
 
-function NumericField({ object, attribute, onValueChange }) {
+function NumericField({ object, attribute, onValueChange, disabled }) {
 
     const [value, setValue] = useState(object[attribute]);
 
@@ -25,9 +25,9 @@ function NumericField({ object, attribute, onValueChange }) {
 
     return (
         <Stack direction="horizontal" gap={1} >
-            <div><Button variant='link' onClick={handleDecrease} className='m-0 p-0 d-flex align-items-start'><BsCaretDown /></Button></div>
+            <div><Button variant='link' onClick={handleDecrease} disabled={disabled || value === 0} className='m-0 p-0 d-flex align-items-start'><BsCaretDown /></Button></div>
             <div><span className='ms-1 me-1 ps-1 pe-1'>{value}</span></div>
-            <div><Button variant='link' onClick={handleIncrease} className='m-0 p-0 d-flex align-items-start'><BsCaretUp /></Button></div>
+            <div><Button variant='link' onClick={handleIncrease} disabled={disabled} className='m-0 p-0 d-flex align-items-start'><BsCaretUp /></Button></div>
         </Stack>
     )
 }
