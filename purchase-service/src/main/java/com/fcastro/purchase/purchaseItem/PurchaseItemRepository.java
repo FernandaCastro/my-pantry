@@ -10,7 +10,7 @@ import java.util.Optional;
 
 public interface PurchaseItemRepository extends JpaRepository<PurchaseItem, Long> {
 
-    @Query("select p from purchaseItem p where p.purchase.id is null")
+    @Query("select p from purchaseItem p where p.purchase.id is null order by p.productCode")
     List<PurchaseItem> listPendingPurchase();
 
     @Modifying

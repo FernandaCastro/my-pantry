@@ -13,8 +13,9 @@ function PantryItemList({ pantryId }) {
     const [isLoading, setIsLoading] = useState(true);
     const [refresh, setRefresh] = useState(true);
     const [pantryItems, setPantryItems] = useState([]);
+    const [filteredItems, setFilteredItems] = useState([]);
+    const [searchText, setSearchText] = useState("");
     const { alert, setAlert } = useContext(AlertContext);
-    const [items, setItems] = useState([]);
 
     useEffect(() => {
         if (pantryId && pantryId > 0 && refresh) {
@@ -22,12 +23,15 @@ function PantryItemList({ pantryId }) {
         }
     }, [pantryId, refresh])
 
+    useEffect(() => {
+        filter(searchText);
+    }, [pantryItems])
+
     async function fetchPantryItems() {
         try {
             setIsLoading(true);
             const res = await getPantryItems(pantryId);
             setPantryItems(res);
-            setItems(res);
             setRefresh(false);
             setIsLoading(false);
         } catch (error) {
@@ -73,12 +77,12 @@ function PantryItemList({ pantryId }) {
     }
 
     function renderItems() {
-        if (items && items.length > 0) return items.map((item) => renderItem(item))
+        return filteredItems.map((item) => renderItem(item))
     }
 
     function renderItem(item) {
         return (
-            <tr key={item.code} className="border border-primary-subtle align-middle">
+            <tr key={item.productId} className="border border-primary-subtle align-middle">
                 <td>
                     <span>{item.product.code}</span>
                     <span className='d-none d-md-block' aria-hidden={item.product.description === ''}>
@@ -97,14 +101,16 @@ function PantryItemList({ pantryId }) {
 
     function filter(text) {
         if (text && text.length > 0)
-            setItems(pantryItems.filter(item => item.product.code.toUpperCase().includes(text.toUpperCase())));
+            setFilteredItems(pantryItems.filter(item => item.product.code.toUpperCase().includes(text.toUpperCase())));
         else
-            setItems(pantryItems);
+            setFilteredItems(pantryItems);
+
+        setSearchText(text);
     }
 
     return (
         <div>
-            <Form.Control size="sm" type="text" id="search" className="form-control mb-1" placeholder="Seacrh for items here" onChange={(e) => filter(e.target.value)} />
+            <Form.Control size="sm" type="text" id="search" className="form-control mb-1" value={searchText} placeholder="Seacrh for items here" onChange={(e) => filter(e.target.value)} />
             <Table variant="primary" hover>
                 <tbody>
                     <tr key="0:0" className="border border-primary-subtle align-middle">

@@ -43,11 +43,10 @@ export default function Consume() {
       let res = await getPantry(id);
       setPantry(res);
 
-      if (res != null && Object.keys(res).length > 0) { //Not null
-        res = await getPantryItems(res.id);
-        setPantryItems(res);
-        loadConsumedItems(res);
-      }
+      res = await getPantryItems(res.id);
+      if (res != null && Object.keys(res).length === 0) return showAlert(VariantType.INFO, "Pantry is empty. There is no item to consume.");
+      setPantryItems(res);
+      loadConsumedItems(res);
     } catch (error) {
       showAlert(VariantType.DANGER, error.message);
     } finally {
@@ -149,12 +148,17 @@ export default function Consume() {
     )
   }
 
+  function isNull(object) {
+    if (!object || (Object.keys(object).length === 0 && object.constructor === Object)) return true;
+    return false;
+  }
+
   function renderItems() {
     return filteredItems.map(item => renderItem(item))
   }
 
   function filter(text) {
-    if (text && text.length > 2) {
+    if (text && text.length > 0) {
       setFilteredItems(pantryItems.filter(item => item.product.code.toUpperCase().includes(text.toUpperCase())));
     } else {
       setFilteredItems(pantryItems);
@@ -163,7 +167,7 @@ export default function Consume() {
   }
 
   return (
-    <Stack gap={3}>
+    <Stack gap={3} hidden={isNull(pantryItems) || pantryItems.length === 0}>
       <div>
       </div>
       <Stack direction="horizontal" gap={2} className="d-flex justify-content-end">
