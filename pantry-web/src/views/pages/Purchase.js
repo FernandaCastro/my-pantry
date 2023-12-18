@@ -51,10 +51,10 @@ export default function Purchase() {
         try {
             setIsLoading(true);
             const res = await postClosePurchaseOrder(body);
-            if (!res) return;
             setPurchase(res);
             setPurchaseItems([]);
             setHasOpenOrder(false);
+
             showAlert(VariantType.SUCCESS, "Purchase Order closed successfully!");
         } catch (error) {
             showAlert(VariantType.DANGER, error.message);
@@ -84,7 +84,9 @@ export default function Purchase() {
             setIsLoading(true);
             const res = await getPendingPurchaseItems();
 
-            if (isNull(res) || res.length === 0) return showAlert(VariantType.INFO, "No item to purchase at the moment.");
+            if (isNull(res) || res.length === 0) {
+                return showAlert(VariantType.INFO, "No item to purchase at the moment.");
+            }
 
             setPurchaseItems(res);
             setHasOpenOrder(false);

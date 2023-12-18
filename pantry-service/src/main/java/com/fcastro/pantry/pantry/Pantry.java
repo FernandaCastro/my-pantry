@@ -27,7 +27,6 @@ public class Pantry {
     private String name;
     @NotBlank(message = "Type is mandatory")
     private String type;
-    @NotBlank(message = "IsActive is mandatory")
     private Boolean isActive;
 
     @OneToMany(mappedBy = "pantry", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
