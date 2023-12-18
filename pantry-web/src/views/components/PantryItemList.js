@@ -7,6 +7,9 @@ import { BsTrash } from "react-icons/bs";
 import NumericField from '../components/NumericField.js'
 import Table from 'react-bootstrap/Table';
 import Form from 'react-bootstrap/Form';
+import Image from 'react-bootstrap/Image';
+import food from '../../images/healthy-food.png'
+import Stack from 'react-bootstrap/Stack';
 
 function PantryItemList({ pantryId }) {
 
@@ -84,16 +87,19 @@ function PantryItemList({ pantryId }) {
         return (
             <tr key={item.productId} className="border border-primary-subtle align-middle">
                 <td>
-                    <span>{item.product.code}</span>
-                    <span className='d-none d-md-block' aria-hidden={item.product.description === ''}>
-                        <br /> {item.product.description}  {item.product.size}
-                    </span>
+                    <Stack direction="horizontal" gap={2}>
+                        <div><Image src={food} width={20} height={20} rounded /></div>
+                        <div><span>{item.product.code}</span></div>
+                    </Stack>
+                    <p className='d-none d-md-block ms-4 mb-0' hidden={item.product.description === ''}>
+                        {item.product.description}  {item.product.size}
+                    </p>
                 </td>
                 <td><NumericField object={item} attribute="idealQty" onValueChange={handleSave} /></td>
                 <td><NumericField object={item} attribute="currentQty" onValueChange={handleSave} /></td>
-                <td><span>{item.provisionedQty}</span></td>
-                <td>
-                    <div><Button onClick={() => handleRemove(item)} variant="link" className='pt-0 pb-0 pe-0'><BsTrash /></Button></div>
+                <td className='ms-0 pe-0'><span>{item.provisionedQty}</span></td>
+                <td className='ms-0 ps-0 me-2 pe-2'>
+                    <Button onClick={() => handleRemove(item)} variant="link" className='pt-0 pb-0 pe-0'><BsTrash /></Button>
                 </td>
             </tr >
         )
@@ -111,14 +117,14 @@ function PantryItemList({ pantryId }) {
     return (
         <div>
             <Form.Control size="sm" type="text" id="search" className="form-control mb-1" value={searchText} placeholder="Seacrh for items here" onChange={(e) => filter(e.target.value)} />
-            <Table variant="primary" hover>
-                <tbody>
-                    <tr key="0:0" className="border border-primary-subtle align-middle">
+            <Table variant="primary" className="rounded-2 overflow-hidden " hover>
+                <tbody >
+                    <tr key="0:0" className="border border-primary-subtle align-middle" style={{ borderRadius: '6px', overflow: 'hidden' }}>
                         <th scope="col"><span>Code/Desc.</span></th>
                         <th scope="col"><span>Ideal</span></th>
                         <th scope="col"><span>Current</span></th>
-                        <th scope="col"><span>Prov.</span></th>
-                        <th scope="col"><span /></th>
+                        <th scope="col" className='ms-0 ps-0'><span>Prov.</span></th>
+                        <th scope="col" className='ms-0 ps-0 me-2 pe-2'><span /></th>
                     </tr>
                     {renderItems()}
                 </tbody>

@@ -44,6 +44,7 @@ public class GlobalExceptionHandler {
         exceptionTypes.put(HttpRequestMethodNotSupportedException.class, "method-not-allowed");
 
         exceptionTypes.put(DataAccessException.class, "database-error");
+        exceptionTypes.put(DatabaseConstraintException.class, "application-error");
         exceptionTypes.put(ResourceNotFoundException.class, "application-error");
         exceptionTypes.put(QuantityNotAvailableException.class, "application-error");
         exceptionTypes.put(PantryNotActiveException.class, "application-error");
@@ -55,7 +56,8 @@ public class GlobalExceptionHandler {
             RequestParamExpectedException.class,
             MissingServletRequestParameterException.class,
             MissingServletRequestPartException.class,
-            HttpMessageNotReadableException.class})
+            HttpMessageNotReadableException.class,
+            DatabaseConstraintException.class})
     public ResponseEntity<?> badRequest(final Exception ex, final HttpServletRequest request) {
 
         final var error = ApplicationError.builder()
@@ -119,7 +121,7 @@ public class GlobalExceptionHandler {
                 .timestamp(Clock.systemUTC().millis())
                 .status(HttpStatus.BAD_REQUEST.value())
                 .errorType(exceptionTypes.get(ex.getClass()))
-                .errorMessage(ex.getMessage())
+                .errorMessage(errorMessages)
                 .path(request.getRequestURI())
                 .build();
 
@@ -142,7 +144,7 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
     }
 
-    @ExceptionHandler(value = {DataAccessException.class, DatabaseConstraintException.class})
+    @ExceptionHandler(value = {DataAccessException.class})
     @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
     public ResponseEntity<?> databaseException(final DataAccessException ex, final HttpServletRequest request) {
 

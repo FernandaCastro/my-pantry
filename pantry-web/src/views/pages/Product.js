@@ -1,13 +1,11 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { updateProduct, createProduct, deleteProduct, getProductList } from '../../services/apis/mypantry/fetch/requests/PantryRequests.js';
 import Stack from 'react-bootstrap/Stack';
 import VariantType from '../components/VariantType.js';
 import { AlertContext } from '../../services/context/AppContext.js';
 import ProductForm from '../components/ProductForm.js';
 import ProductList from '../components/ProductList.js';
-import ProductSearchBar from '../components/ProductSearchBar.js'
 import Button from 'react-bootstrap/Button';
-import ListGroup from 'react-bootstrap/ListGroup';
 import CloseButton from 'react-bootstrap/CloseButton';
 
 export default function Product() {
@@ -15,34 +13,18 @@ export default function Product() {
     const [product, setProduct] = useState({});
     const [mode, setMode] = useState("");
     const [productLabel, setProductLabel] = useState("");
-    const [productList, setProductList] = useState([]);
+    const [refresh, setRefresh] = useState(0);
     const [isLoading, setIsLoading] = useState(true);
-    const [showList, setShowList] = useState(false);
     const { alert, setAlert } = useContext(AlertContext);
+    const [showForm, setShowForm] = useState(false);
 
     async function fetchSaveProduct(body) {
         try {
+            setRefresh(0);
             const res = mode === 'new' ? await createProduct(body) : await updateProduct(product.id, body);
             setProduct(res);
-        } catch (error) {
-            showAlert(VariantType.DANGER, error.message);
-        }
-    }
-
-    async function fetchDeleteProduct(productId) {
-        try {
-            await deleteProduct(productId);
-        } catch (error) {
-            showAlert(VariantType.DANGER, error.message);
-        }
-    }
-
-    async function fetchProductList() {
-        try {
-            setIsLoading(true);
-            const res = await getProductList();
-            setProductList(res);
-            setIsLoading(false);
+            setRefresh(res.id);
+            showAlert(VariantType.SUCCESS, "Product saved successfully ");
         } catch (error) {
             showAlert(VariantType.DANGER, error.message);
         }
@@ -52,36 +34,33 @@ export default function Product() {
         setMode("edit");
         setProduct(selectedProduct);
         setProductLabel(selectedProduct.code);
+        return setShowForm(true);
     }
+
     function handleClearAction() {
-        setMode("");
+        setMode(m => { "" });
         setProduct({});
         setProductLabel("");
+        return setShowForm(false);
     }
+
 
     function handleNew() {
         setMode("new");
         setProduct({});
         setProductLabel("");
+        return setShowForm(true);
     }
 
     function handleSave(jsonProduct) {
         fetchSaveProduct(jsonProduct);
-        showAlert(VariantType.SUCCESS, "Product saved successfully ");
         handleClearAction();
-        if (showList) fetchProductList();
     }
 
-    function handleRemove() {
-        fetchDeleteProduct(product.id);
-        showAlert(VariantType.SUCCESS, "Product removed successfully ");
-        handleClearAction();
-        if (showList) fetchProductList();
-    }
-
-    function handleListAll() {
-        fetchProductList();
-        setShowList(true);
+    function handleRemove(productId) {
+        if (showForm && productId === product.id) {
+            handleClearAction();
+        }
     }
 
     function handleOnListSelection(item) {
@@ -97,7 +76,6 @@ export default function Product() {
     }
 
     function renderProductForm() {
-        if (mode === "") return;
         return (
             <div>
                 <div className="me-3 d-flex justify-content-end align-items-center">
@@ -108,39 +86,20 @@ export default function Product() {
         );
     }
 
-    function renderProductList() {
-        if (!showList) return;
-        return (
-            <div>
-                <div className="me-3 mb-2 d-flex justify-content-end align-items-center">
-                    <CloseButton aria-label="Hide" onClick={() => setShowList(false)} />
-                </div>
-                {isLoading ? <h6>Loading...</h6> : <ProductList productList={productList} handleOnSelection={handleOnListSelection} />}
-            </div>
-        );
-    }
-
     return (
         <Stack gap={3}>
             <div></div>
             <div>
-                <ListGroup >
-                    <ListGroup.Item variant="primary" className="d-flex justify-content-between align-items-center">
-                        <span>{productLabel}</span>
-                        <div className='justify-content-end'>
-                            <Button variant="primary" size="sm" onClick={handleNew} className='me-2' disabled={(mode === "edit") || (product && Object.keys(product) > 0)}>New</Button>
-                            <Button variant="primary" size="sm" onClick={handleRemove} className='me-2' disabled={!(mode === "edit") || !product || Object.keys(product) === 0}>Remove</Button>
-                            <Button variant="primary" size="sm" onClick={handleListAll} >List All</Button>
-                        </div>
-                    </ListGroup.Item>
-                </ListGroup>
+                <Stack direction="horizontal" gap={2} className='d-flex justify-content-between'>
+                    <h6 className="text-start fs-6 lh-lg text-primary">{productLabel} </h6>
+                    <Button variant="primary" size="sm" onClick={handleNew} className='me-2' disabled={(mode === "edit") || (product && Object.keys(product) > 0)}>New Product</Button>
+                </Stack>
             </div>
-            <div><ProductSearchBar handleSelectAction={handleSelectAction} handleClearAction={handleClearAction} addButtonVisible={false} /></div>
-            <div>
+            <div hidden={!showForm}>
                 {renderProductForm()}
             </div>
             <div>
-                {renderProductList()}
+                <ProductList key={refresh} disabled={showForm} onEdit={handleOnListSelection} onRemove={handleRemove} />
             </div>
             <div></div>
         </Stack>
