@@ -18,7 +18,6 @@ public class PantryDto {
     private String name;
     @NotBlank(message = "Type is mandatory")
     private String type;
-    @NotBlank(message = "IsActive is mandatory")
     private Boolean isActive;
 
     private List<PantryItemDto> products;
