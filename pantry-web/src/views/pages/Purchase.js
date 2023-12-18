@@ -11,6 +11,7 @@ import VariantType from '../components/VariantType.js';
 import { AlertContext } from '../../services/context/AppContext.js';
 import Form from 'react-bootstrap/Form';
 import NumericField from '../components/NumericField.js'
+import Table from 'react-bootstrap/Table';
 
 export default function Purchase() {
 
@@ -54,9 +55,12 @@ export default function Purchase() {
             setPurchase(res);
             setPurchaseItems([]);
             setHasOpenOrder(false);
-            setIsLoading(false);
+            showAlert(VariantType.SUCCESS, "Purchase Order closed successfully!");
         } catch (error) {
             showAlert(VariantType.DANGER, error.message);
+
+        } finally {
+            setIsLoading(false);
         }
     }
 
@@ -64,13 +68,14 @@ export default function Purchase() {
         try {
             setIsLoading(true);
             const res = await postNewPurchaseOrder();
-            if (isNull(res)) return;
             setPurchase(res);
             setPurchaseItems(res.items);
             setHasOpenOrder(true);
-            setIsLoading(false);
+            showAlert(VariantType.SUCCESS, "Purchase Order created successfully!");
         } catch (error) {
             showAlert(VariantType.DANGER, error.message);
+        } finally {
+            setIsLoading(false);
         }
     }
 
@@ -78,12 +83,16 @@ export default function Purchase() {
         try {
             setIsLoading(true);
             const res = await getPendingPurchaseItems();
-            if (isNull(res) || res.length === 0) return;
+
+            if (isNull(res) || res.length === 0) return showAlert(VariantType.INFO, "No item to purchase at the moment.");
+
             setPurchaseItems(res);
             setHasOpenOrder(false);
             setIsLoading(false);
         } catch (error) {
             showAlert(VariantType.DANGER, error.message);
+        } finally {
+            setIsLoading(false);
         }
     }
 
@@ -101,30 +110,21 @@ export default function Purchase() {
     }
 
     function handleSave() {
-        try {
-            let order = purchase;
-            order = {
-                ...order,
-                items: purchaseItems
-            }
-
-            fetchClosePurchaseOrder(order);
-            showAlert(VariantType.SUCCESS, "Purchase Order closed successfully!");
-        } catch (error) {
-            showAlert(VariantType.DANGER, error.message);
+        let order = purchase;
+        order = {
+            ...order,
+            items: purchaseItems
         }
+
+        fetchClosePurchaseOrder(order);
     }
 
     function handleNewOrder() {
         fetchNewPurchaseOrder();
-        showAlert(VariantType.SUCCESS, "Purchase Order created successfully!");
     }
 
     function handleRefresh() {
         fetchPendingPurchaseItems();
-        if (isNull(purchaseItems) || purchaseItems.length === 0) {
-            showAlert(VariantType.INFO, "No item to purchase at the moment.");
-        }
     }
 
     function handleClear() {
@@ -157,42 +157,21 @@ export default function Purchase() {
     function renderPurchaseItem(item) {
         if (isLoading) return;
         return (
-            <ListGroup.Item variant="primary" key={item.id} className="align-items-start">
-                <Row>
-                    <Col xs={5}>
-                        <Stack direction="horizontal" gap={3}>
-                            <div>
-                                <Image src={food} width={25} height={25} rounded />
-                            </div>
-                            <div>
-                                <span>{item.productCode}</span>
-                            </div>
-                        </Stack>
-                    </Col>
-                    <Col className='d-none d-md-block'><span>Pantry</span></Col>
-                    <Col><span>Provisioned</span></Col>
-                    <Col><span>Purchased</span></Col>
-                </Row>
-                <Row>
-                    <Col xs={5}>
-                        <p className='pt-1 d-none d-md-block'>
-                            {item.productDescription} - {item.productSize}
-                        </p>
-                    </Col>
-                    <Col className='d-none d-md-block'>{item.pantryName}</Col>
-                    <Col>{item.qtyProvisioned}</Col>
-                    <Col>
-                        <NumericField object={item} attribute="qtyPurchased" onValueChange={updatePurchasedItem} disabled={!hasOpenOrder} />
-                    </Col>
-                </Row>
-            </ListGroup.Item>
+            <tr key={item.id} className="border border-primary-subtle align-middle">
+                <td>
+                    <Stack direction="horizontal" gap={2}>
+                        <div><Image src={food} width={20} height={20} rounded /></div>
+                        <div><span>{item.productCode}</span></div>
+                    </Stack>
+                    <span className='d-none d-md-block' hidden={item.productDescriptionn === ''}>
+                        <br /> {item.productDescriptionn}  {item.productSize}
+                    </span>
+                </td>
+                <td><span className='d-none d-md-block'>{item.pantryName}</span></td>
+                <td><span>{item.qtyProvisioned}</span></td>
+                <td><NumericField object={item} attribute="qtyPurchased" onValueChange={updatePurchasedItem} disabled={!hasOpenOrder} /></td>
+            </tr>
         )
-
-        //     <Stack direction="horizontal" gap={1} >
-        //     <div><Button variant='link' disabled={item.qtyPurchased === 0} onClick={() => handleDecrease(index)} className='m-0 p-0 d-flex align-items-start'><BsCaretDown /></Button></div>
-        //     <div><span className='ms-1 me-1 ps-1 pe-1'>{item.qtyPurchased}</span></div>
-        //     <div><Button variant='link' disabled={!hasOpenOrder} onClick={() => handleIncrease(index)} className='m-0 p-0 d-flex align-items-start'><BsCaretUp /></Button></div>
-        // </Stack>
     }
 
     function renderPurchaseOrder() {
@@ -201,18 +180,17 @@ export default function Purchase() {
         return (
             <ListGroup.Item variant="primary" key={purchase.id}>
                 <Row>
-                    <Col xs={2}><span>Id</span></Col>
+                    <Col xs={1}><span className='pb-2'>Id</span></Col>
                     <Col><span>Open Date</span></Col>
                     <Col><span>Close Date</span></Col>
                 </Row>
-                <Row>
-                    <Col xs={2}><span>{purchase.id}</span></Col>
+                <Row className='pt-2'>
+                    <Col xs={1}><span className='mt-2'>{purchase.id}</span></Col>
                     <Col><span>{purchase.createdAt}</span></Col>
                     <Col><span>{purchase.processedAt}</span></Col>
                 </Row>
             </ListGroup.Item>
         )
-
     }
 
     return (
@@ -222,13 +200,9 @@ export default function Purchase() {
             <div>
                 <ListGroup>
                     <ListGroup.Item variant="primary" className="d-flex justify-content-between align-items-start">
-                        <h6>Open Purchase Order</h6>
+                        <h6 className='text-primary'>Open Purchase Order</h6>
                         <Button variant="primary" size="sm" onClick={handleNewOrder} disabled={hasOpenOrder}>New Order</Button>
                     </ListGroup.Item>
-                </ListGroup>
-            </div>
-            <div>
-                <ListGroup>
                     {renderPurchaseOrder()}
                 </ListGroup>
             </div>
@@ -236,16 +210,24 @@ export default function Purchase() {
             <div>
                 <ListGroup>
                     <ListGroup.Item variant="primary" className="d-flex justify-content-between align-items-start">
-                        <h6>Items to Purchase</h6>
+                        <h6 className='text-primary'>Items to Purchase</h6>
                         <Button variant="primary" size="sm" onClick={handleRefresh} disabled={hasOpenOrder}>Refresh</Button>
                     </ListGroup.Item>
                 </ListGroup>
             </div>
             <div>
                 <Form.Control hidden={isNull(purchaseItems) || purchaseItems.length === 0} size="sm" type="text" id="search" className="form-control mb-1" placeholder="Seacrh for items here" value={searchText} onChange={(e) => filter(e.target.value)} />
-                <ListGroup>
-                    {renderPurchaseItems()}
-                </ListGroup>
+                <Table variant="primary" className="rounded-2 overflow-hidden " hover>
+                    <tbody >
+                        <tr key="0:0" className="border border-primary-subtle align-middle" style={{ borderRadius: '6px', overflow: 'hidden' }}>
+                            <th scope="col"><span>Code/Desc.</span></th>
+                            <th scope="col"><span className='d-none d-md-block'>Pantry</span></th>
+                            <th scopy="col"><span>Provis.</span></th>
+                            <th scope="col"><span>Purchase</span></th>
+                        </tr>
+                        {renderPurchaseItems()}
+                    </tbody>
+                </Table>
             </div>
             <Stack direction="horizontal" gap={2} className="d-flex justify-content-end">
                 <div><Button variant="primary" size="sm" onClick={handleClear} disabled={!hasOpenOrder}>Clear</Button></div>

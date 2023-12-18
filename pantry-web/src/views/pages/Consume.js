@@ -1,18 +1,15 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useParams } from 'react-router';
 import { getPantry, getPantryItems, postPantryConsume } from '../../services/apis/mypantry/fetch/requests/PantryRequests.js';
-import { ListGroup } from 'react-bootstrap';
 import Button from 'react-bootstrap/Button';
 import Stack from 'react-bootstrap/Stack';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
+import Table from 'react-bootstrap/Table';
 import Image from 'react-bootstrap/Image';
 import food from '../../images/healthy-food.png'
 import VariantType from '../components/VariantType.js';
 import { AlertContext } from '../../services/context/AppContext.js';
 import Form from 'react-bootstrap/Form';
 import NumericField from '../components/NumericField.js'
-
 
 export default function Consume() {
 
@@ -44,7 +41,10 @@ export default function Consume() {
       setPantry(res);
 
       res = await getPantryItems(res.id);
-      if (res != null && Object.keys(res).length === 0) return showAlert(VariantType.INFO, "Pantry is empty. There is no item to consume.");
+      if (res != null && Object.keys(res).length === 0) {
+        return showAlert(VariantType.INFO, "Pantry is empty. There is no item to consume.");
+      }
+
       setPantryItems(res);
       loadConsumedItems(res);
     } catch (error) {
@@ -60,6 +60,8 @@ export default function Consume() {
       const res = await postPantryConsume(pantry.id, consumedItems);
       setPantryItems(res);
       loadConsumedItems(res);
+
+      showAlert(VariantType.SUCCESS, "Pantry updated successfully!");
     } catch (error) {
       showAlert(VariantType.DANGER, error.message);
     } finally {
@@ -94,7 +96,6 @@ export default function Consume() {
 
   function handleSave() {
     fetchPantryConsume();
-    showAlert(VariantType.SUCCESS, "Pantry updated successfully!");
   }
 
   function handleClear() {
@@ -118,33 +119,21 @@ export default function Consume() {
     let consumedItem = getConsumedItem(item.pantryId, item.productId);
 
     return (
-      <ListGroup.Item variant="primary" key={item.productId}>
-        <Row>
-          <Col xs={5}>
-            <Stack direction="horizontal" gap={3}>
-              <div><Image src={food} width={20} height={20} rounded /></div>
-              <div><span>{item.product.code}</span></div>
-            </Stack>
-          </Col>
-          <Col><span>Current</span></Col>
-          <Col className='d-none d-md-block'><span>Provisioned</span></Col>
-          <Col className='d-none d-md-block'><span>Prov. on</span></Col>
-          <Col><span>Consumed</span></Col>
-        </Row>
-        <Row>
-          <Col xs={5}>
-            <p className='pt-1 d-none d-md-block'>
-              {item.product.description} - {item.product.size}
-            </p>
-          </Col>
-          <Col><span>{item.currentQty}</span></Col>
-          <Col className='d-none d-md-block'><span>{item.provisionedQty}</span></Col>
-          <Col className='d-none d-md-block'><span>{item.lastProvisioning}</span></Col>
-          <Col>
-            <NumericField object={consumedItem} attribute="qty" onValueChange={updateConsumedItem} disabled={isPantryEmpty} />
-          </Col>
-        </Row>
-      </ListGroup.Item>
+      <tr key={item.productId} className="border border-primary-subtle align-middle">
+        <td>
+          <Stack direction="horizontal" gap={2}>
+            <div><Image src={food} width={20} height={20} rounded /></div>
+            <div><span>{item.product.code}</span></div>
+          </Stack>
+          <span className='d-none d-md-block' hidden={item.product.description === ''}>
+            <br /> {item.product.description}  {item.product.size}
+          </span>
+        </td>
+        <td><span>{item.currentQty}</span></td>
+        <td><span className='d-none d-md-block align-center'>{item.provisionedQty}</span></td>
+        <td><span className='d-none d-md-block'>{item.lastProvisioning}</span></td>
+        <td><NumericField object={consumedItem} attribute="qty" onValueChange={updateConsumedItem} disabled={isPantryEmpty} /></td>
+      </tr>
     )
   }
 
@@ -170,15 +159,28 @@ export default function Consume() {
     <Stack gap={3} hidden={isNull(pantryItems) || pantryItems.length === 0}>
       <div>
       </div>
-      <Stack direction="horizontal" gap={2} className="d-flex justify-content-end">
-        <div><Button variant="primary" size="sm" onClick={handleClear}>Clear</Button></div>
-        <div><Button variant="primary" size="sm" onClick={handleSave} >Save</Button></div>
-      </Stack>
+      <div variant="primary">
+        <Stack direction="horizontal" gap={2} className='d-flex'>
+          <div className="me-auto"><h6 className="text-start fs-6 lh-lg text-primary">Consume {pantry.name}</h6></div>
+          <div><Button variant="primary" size="sm" onClick={handleClear}>Clear</Button></div>
+          <div><Button variant="primary" size="sm" onClick={handleSave} >Save</Button></div>
+        </Stack>
+      </div>
       <div>
         <Form.Control size="sm" type="text" id="search" className="form-control mb-1" placeholder="Seacrh for items here" value={searchText} onChange={(e) => filter(e.target.value)} />
-        <ListGroup>
-          {isLoading ? <h6>Loading...</h6> : renderItems()}
-        </ListGroup>
+        <Table variant="primary" className="rounded-2 overflow-hidden " hover>
+          <tbody >
+            <tr key="0:0" className="border border-primary-subtle align-middle" style={{ borderRadius: '6px', overflow: 'hidden' }}>
+              <th scope="col"><span>Code/Desc.</span></th>
+              <th scope="col"><span>Current</span></th>
+              <th scope="col"><span className='d-none d-md-block'>Provisioned</span></th>
+              <th scope="col"><span className='d-none d-md-block'>Prov. on</span></th>
+              <th scope="col"><span>Consume</span></th>
+            </tr>
+            {renderItems()}
+          </tbody>
+        </Table>
+        {isLoading ? <h6>Loading...</h6> : <span />}
       </div>
       <Stack direction="horizontal" gap={2} className="d-flex justify-content-end">
         <div><Button variant="primary" size="sm" onClick={handleClear}>Clear</Button></div>

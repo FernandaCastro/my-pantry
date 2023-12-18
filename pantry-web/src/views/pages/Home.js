@@ -2,7 +2,6 @@ import React, { useState, useEffect, useContext } from 'react';
 import { PantryContext } from '../../services/context/AppContext.js';
 import { getPantryList, deletePantry } from '../../services/apis/mypantry/fetch/requests/PantryRequests.js';
 import Stack from 'react-bootstrap/Stack';
-import ListGroup from 'react-bootstrap/ListGroup';
 import Table from 'react-bootstrap/Table';
 import Button from 'react-bootstrap/Button';
 import { AlertContext } from '../../services/context/AppContext.js';
@@ -83,9 +82,7 @@ export default function Home() {
         <Stack gap={3}>
             <div></div>
             <div className="d-flex justify-content-end align-items-center">
-
                 <Button variant="primary" size="sm" href={"/pantries/new"} >New Pantry</Button>
-
             </div>
             <div>
                 <Table variant="primary" className='table table-sm align-middle' hover>

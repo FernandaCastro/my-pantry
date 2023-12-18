@@ -69,7 +69,7 @@ public class ProductService {
     private Product convertToEntity(ProductDto dto) {
         if (dto == null) return null;
         var entity = modelMapper.map(dto, Product.class);
-        entity.setCode(entity.getCode().toUpperCase());
+        if (entity.getCode() != null) entity.setCode(entity.getCode().toUpperCase());
         return entity;
     }
 }

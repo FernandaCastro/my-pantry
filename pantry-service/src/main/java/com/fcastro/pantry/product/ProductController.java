@@ -1,6 +1,7 @@
 package com.fcastro.pantry.product;
 
 import com.fcastro.pantry.exception.ResourceNotFoundException;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -32,12 +33,12 @@ public class ProductController {
     }
 
     @PostMapping
-    public ResponseEntity<ProductDto> create(@RequestBody ProductDto newDto) {
+    public ResponseEntity<ProductDto> create(@Valid @RequestBody ProductDto newDto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(service.save(newDto));
     }
 
     @PutMapping("/{id}")
-    ResponseEntity<ProductDto> replace(@RequestBody ProductDto newDto, @PathVariable Long id) {
+    ResponseEntity<ProductDto> replace(@Valid @RequestBody ProductDto newDto, @PathVariable Long id) {
 
         var dto = service.get(id)
                 .map(resource -> {

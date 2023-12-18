@@ -109,7 +109,7 @@ services:
 
   pantry-web:
     container_name: pantry-web
-    image: fernandacastro/pantry-web-localhost:latest
+    image: fernandacastro/pantry-web:latest
     ports:
      - "3000:3000"
     networks:

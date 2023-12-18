@@ -3,6 +3,7 @@ import { PantryContext } from '../../services/context/AppContext';
 import Container from 'react-bootstrap/Container';
 import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
+import { Stack } from 'react-bootstrap';
 
 export default function Header() {
     const { pantryCtx } = useContext(PantryContext);
@@ -12,13 +13,15 @@ export default function Header() {
         <Navbar bg="primary" data-bs-theme="dark" collapseOnSelect expand="md">
             < Container className="d-flex justify-content-between">
                 <Navbar.Brand href="/">My Pantry</Navbar.Brand>
-                <Nav><Nav.Link href={"/pantries/" + pantryCtx.id + "/edit"}>Pantry: {pantryCtx.name}</Nav.Link></Nav>
+                <Nav><Nav.Link href={"/pantries/" + pantryCtx.id + "/edit"}><span>{pantryCtx.name}</span></Nav.Link></Nav>
                 <Navbar.Toggle />
-                <Navbar.Collapse className="justify-content-end">
+                <Navbar.Collapse>
                     <Nav>
-                        <Nav.Item><Nav.Link href={"/pantries/" + pantryCtx.id + "/consume"} eventKey="link-consume" disabled={!isPantrySelected} >Consume</Nav.Link></Nav.Item>
-                        <Nav.Item><Nav.Link href="/purchase" eventKey="link-purchase">Purchase</Nav.Link></Nav.Item>
-                        <Nav.Item><Nav.Link href="/product" eventKey="link-product">Product</Nav.Link></Nav.Item>
+                        <Stack direction="horizontal" gap={4} className="d-flex justify-content-center">
+                            <Nav.Item><Nav.Link href={"/pantries/" + pantryCtx.id + "/consume"} eventKey="link-consume" disabled={!isPantrySelected} >Consume</Nav.Link></Nav.Item>
+                            <Nav.Item><Nav.Link href="/purchase" eventKey="link-purchase">Purchase</Nav.Link></Nav.Item>
+                            <Nav.Item><Nav.Link href="/product" eventKey="link-product">Product</Nav.Link></Nav.Item>
+                        </Stack>
                     </Nav>
                 </Navbar.Collapse>
             </Container >

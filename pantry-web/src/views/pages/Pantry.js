@@ -26,19 +26,21 @@ export default function Pantry({ mode }) {
     const [refresh, setRefresh] = useState(false);
 
     useEffect(() => {
-        setIsLoading(true);
         if (id && mode === 'edit') {
             fetchPantry();
         }
     }, [])
 
     async function fetchPantry() {
+        setIsLoading(true);
         try {
             const res = await getPantry(id);
             setPantry(res);
-            setIsLoading(false);
+
         } catch (error) {
             showAlert(VariantType.DANGER, error.message);
+        } finally {
+            setIsLoading(false);
         }
     }
 
@@ -47,10 +49,13 @@ export default function Pantry({ mode }) {
         setRefresh(true);
         try {
             await getPantryRebalance(id);
-            setRefresh(false);
-            setIsLoading(false);
+
+            showAlert(VariantType.SUCCESS, "Pantry rebalanced successfully! ");
         } catch (error) {
             showAlert(VariantType.DANGER, error.message);
+        } finally {
+            setRefresh(false);
+            setIsLoading(false);
         }
     }
 
@@ -58,11 +63,15 @@ export default function Pantry({ mode }) {
         setIsLoading(true);
         try {
             const res = mode === 'new' ? await createPantry(body) : await updatePantry(id, body);
-            if (!res) return;
             setPantry(res);
-            setIsLoading(false);
+
+            const msg = mode === 'edit' ? "updated!" : "created!";
+            showAlert(VariantType.SUCCESS, "Pantry successfully " + msg);
+
         } catch (error) {
             showAlert(VariantType.DANGER, error.message);
+        } finally {
+            setIsLoading(false);
         }
     }
 
@@ -71,10 +80,12 @@ export default function Pantry({ mode }) {
         setRefresh(true);
         try {
             await createPantryItem(pantry.id, body);
-            setRefresh(false);
-            setIsLoading(false);
+
         } catch (error) {
             showAlert(VariantType.DANGER, error.message);
+        } finally {
+            setRefresh(false);
+            setIsLoading(false);
         }
     }
 
@@ -88,9 +99,6 @@ export default function Pantry({ mode }) {
 
     function handleSave(body) {
         fetchSavePantry(body);
-        const message = mode === 'edit' ? "updated!" : "created!";
-        showAlert(VariantType.SUCCESS, "Pantry successfully " + message);
-        //return navigate("/", { replace: true });
     }
 
     function handleAddItem(product) {
@@ -103,7 +111,6 @@ export default function Pantry({ mode }) {
 
     function handleRebalance() {
         fetchPantryRebalance();
-        showAlert(VariantType.SUCCESS, "Pantry rebalanced successfully! ");
     }
 
     function renderPantryList() {
