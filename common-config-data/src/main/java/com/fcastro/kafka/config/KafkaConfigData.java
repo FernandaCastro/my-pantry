@@ -17,6 +17,7 @@ public class KafkaConfigData {
     private String bootstrapServersConfig;
     private String purchaseCreateTopic;
     private String purchaseCompleteTopic;
+    private String productTopic;
     private String pantryGroup;
 
     private Integer numOfPartitions;

@@ -1,5 +1,6 @@
 package com.fcastro.pantry.product;
 
+import com.fcastro.model.ProductDto;
 import com.fcastro.pantry.exception.DatabaseConstraintException;
 import com.fcastro.pantry.exception.ResourceNotFoundException;
 import com.fcastro.pantry.pantryItem.PantryItemRepository;

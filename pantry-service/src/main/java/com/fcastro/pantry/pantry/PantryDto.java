@@ -20,5 +20,5 @@ public class PantryDto {
     private String type;
     private Boolean isActive;
 
-    private List<PantryItemDto> products;
+    private List<PantryItemDto> items;
 }

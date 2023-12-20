@@ -1,5 +1,6 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { updateProduct, createProduct, deleteProduct, getProductList } from '../../services/apis/mypantry/fetch/requests/PantryRequests.js';
+import { getProperty } from '../../services/apis/mypantry/fetch/requests/PurchaseRequests.js';
 import Stack from 'react-bootstrap/Stack';
 import VariantType from '../components/VariantType.js';
 import { AlertContext } from '../../services/context/AppContext.js';
@@ -17,6 +18,31 @@ export default function Product() {
     const [isLoading, setIsLoading] = useState(true);
     const { alert, setAlert } = useContext(AlertContext);
     const [showForm, setShowForm] = useState(false);
+    const [categories, setCategories] = useState([{}]);
+
+    useEffect(() => {
+        fetchCategories();
+    }, []);
+
+    async function fetchCategories() {
+        try {
+            const res = await getProperty("product.categories");
+
+            const resCategories = JSON.parse(res.propertyValue);
+            var list = [];
+            resCategories.categories.forEach(category => {
+                list = [...list,
+                {
+                    value: category,
+                    label: category
+                }]
+            });
+
+            setCategories(list);
+        } catch (error) {
+            showAlert(VariantType.DANGER, "Unable to load categories: " + error.message);
+        }
+    }
 
     async function fetchSaveProduct(body) {
         try {
@@ -81,7 +107,7 @@ export default function Product() {
                 <div className="me-3 d-flex justify-content-end align-items-center">
                     <CloseButton aria-label="Hide" onClick={handleClearAction} />
                 </div>
-                <ProductForm key={productLabel} product={product} handleSave={handleSave} />
+                <ProductForm key={productLabel} product={product} categories={categories} handleSave={handleSave} />
             </div>
         );
     }

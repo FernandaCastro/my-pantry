@@ -1,6 +1,7 @@
 package com.fcastro.purchase.purchaseItem;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fcastro.purchase.product.Product;
 import com.fcastro.purchase.purchase.Purchase;
 import jakarta.persistence.*;
 import lombok.*;
@@ -21,10 +22,9 @@ public class PurchaseItem {
     private Long pantryId;
     private String pantryName;
 
-    private Long productId;
-    private String productCode;
-    private String productDescription;
-    private String productSize;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "product_id")
+    private Product product;
 
     private int qtyProvisioned;
     private int qtyPurchased;

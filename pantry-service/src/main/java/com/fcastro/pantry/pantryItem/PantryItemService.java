@@ -1,17 +1,20 @@
 package com.fcastro.pantry.pantryItem;
 
-import com.fcastro.kafka.model.PurchaseEventItemDto;
-import com.fcastro.pantry.config.EventProducer;
+import com.fcastro.kafka.event.PurchaseEventDto;
+import com.fcastro.kafka.exception.EventProcessingException;
+import com.fcastro.model.ProductDto;
+import com.fcastro.pantry.config.PurchaseCreateEventProducer;
 import com.fcastro.pantry.exception.PantryNotActiveException;
 import com.fcastro.pantry.exception.QuantityNotAvailableException;
 import com.fcastro.pantry.exception.ResourceNotFoundException;
-import com.fcastro.pantry.product.ProductDto;
 import org.hibernate.LazyInitializationException;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -21,11 +24,11 @@ public class PantryItemService {
 
     private final PantryItemRepository repository;
     private final ModelMapper modelMapper;
-    private final EventProducer eventProducer;
+    private final PurchaseCreateEventProducer eventProducer;
 
     private static final int SEND_PURCHASE_EVENT_THRESHOLD = 50;
 
-    public PantryItemService(PantryItemRepository pantryItemRepository, ModelMapper modelMapper, EventProducer eventProducer) {
+    public PantryItemService(PantryItemRepository pantryItemRepository, ModelMapper modelMapper, PurchaseCreateEventProducer eventProducer) {
         this.repository = pantryItemRepository;
         this.modelMapper = modelMapper;
         this.eventProducer = eventProducer;
@@ -49,7 +52,7 @@ public class PantryItemService {
     public void delete(long pantryId, long productId) {
         var pk = new PantryItemKey(pantryId, productId);
         repository.findById(pk)
-                .orElseThrow(() -> new ResourceNotFoundException("Pantry Product not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Pantry Item not found"));
 
         repository.deleteById(pk);
     }
@@ -69,7 +72,7 @@ public class PantryItemService {
 
     public PantryItemDto consumePantryItem(PantryItemConsumedDto consumedDto) {
         var itemEntity = repository.findEagerByPantryIdAndProductId(consumedDto.getPantryId(), consumedDto.getProductId())
-                .orElseThrow(() -> new ResourceNotFoundException("Pantry Product not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Pantry Item not found"));
 
         if (!itemEntity.getPantry().getIsActive()) {
             throw new PantryNotActiveException("Pantry is not active.");
@@ -121,18 +124,29 @@ public class PantryItemService {
     }
 
     private void sendPurchaseCreateEvent(PantryItem itemEntity, int provision) {
-        var purchaseEventItemDto = PurchaseEventItemDto.builder().qtyProvisioned(provision).build();
+        var purchaseEventItemDto = PurchaseEventDto.builder().qtyProvisioned(provision).build();
         enrichPurchaseItemDto(purchaseEventItemDto, itemEntity);
         eventProducer.send(purchaseEventItemDto);
     }
 
-    public void processPurchaseCompleteEvent(List<PurchaseEventItemDto> purchasedList) {
-        for (PurchaseEventItemDto purchasedItem : purchasedList) {
-            updatePantryItem(purchasedItem);
-        }
+    public void processPurchaseCompleteEvent(List<PurchaseEventDto> purchasedList) {
+
+        var exceptions = new HashMap<Serializable, Throwable>();
+        purchasedList.stream().forEach(
+                (purchasedItem) -> {
+                    try {
+                        updatePantryItem(purchasedItem);
+                    } catch (Exception ex) {
+                        exceptions.put(purchasedItem, ex);
+                    }
+                }
+        );
+
+        if (exceptions.size() > 0)
+            throw new EventProcessingException("Error occurred while processing a PurchaseCompleteEvent", exceptions);
     }
 
-    private void updatePantryItem(PurchaseEventItemDto purchasedItem) {
+    private void updatePantryItem(PurchaseEventDto purchasedItem) {
         if (purchasedItem.getQtyPurchased() == 0) return;
 
         var entity = repository.findById(
@@ -140,10 +154,7 @@ public class PantryItemService {
                                 .pantryId(purchasedItem.getPantryId())
                                 .productId(purchasedItem.getProductId())
                                 .build())
-                .get();
-
-        //TODO: What should be done when the PurchasedItem doesn't exist in the Pantry? Add to the Pantry?
-        if (entity == null) return;
+                .orElseThrow(() -> new ResourceNotFoundException("Pantry Item not found"));
 
         entity.setCurrentQty(entity.getCurrentQty() + purchasedItem.getQtyPurchased());
 
@@ -160,14 +171,10 @@ public class PantryItemService {
     }
 
 
-    private void enrichPurchaseItemDto(PurchaseEventItemDto dto, PantryItem itemEntity) {
+    private void enrichPurchaseItemDto(PurchaseEventDto dto, PantryItem itemEntity) {
         dto.setPantryId(itemEntity.getPantry().getId());
         dto.setPantryName(itemEntity.getPantry().getName());
-
         dto.setProductId(itemEntity.getProduct().getId());
-        dto.setProductCode(itemEntity.getProduct().getCode());
-        dto.setProductDescription(itemEntity.getProduct().getDescription());
-        dto.setProductSize(itemEntity.getProduct().getSize());
     }
 
     private PantryItemDto convertToDTO(PantryItem entity) {

@@ -24,6 +24,6 @@ public class Purchase {
     private LocalDateTime processedAt;
 
     @JsonIgnoreProperties("purchase")
-    @OneToMany(mappedBy = "purchase", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "purchase", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     List<PurchaseItem> items;
 }

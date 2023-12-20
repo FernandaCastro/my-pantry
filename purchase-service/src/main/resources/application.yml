@@ -4,6 +4,7 @@ kafka-config:
   bootstrap-servers-config: localhost:9092
   purchase-create-topic: purchaseCreateTopic
   purchase-complete-topic: purchaseCompleteTopic
+  product-topic: productTopic
   pantry-group: pantryGroup
 spring:
   application:

@@ -1,4 +1,4 @@
-package com.fcastro.pantry.product;
+package com.fcastro.purchase.properties;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
@@ -10,11 +10,10 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProductDto {
+public class PropertiesDto {
 
-    private long id;
-    @NotBlank(message = "Code is mandatory")
-    private String code;
-    private String description;
-    private String size;
+    private String propertyKey;
+
+    @NotBlank(message = "Property Value is mandatory")
+    private String propertyValue;
 }

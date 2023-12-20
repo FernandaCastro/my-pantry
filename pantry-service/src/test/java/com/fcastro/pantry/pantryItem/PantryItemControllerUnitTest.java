@@ -1,11 +1,11 @@
 package com.fcastro.pantry.pantryItem;
 
+import com.fcastro.model.ProductDto;
 import com.fcastro.pantry.JsonUtil;
 import com.fcastro.pantry.exception.PantryNotActiveException;
 import com.fcastro.pantry.exception.QuantityNotAvailableException;
 import com.fcastro.pantry.exception.ResourceNotFoundException;
 import com.fcastro.pantry.pantry.PantryDto;
-import com.fcastro.pantry.product.ProductDto;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;

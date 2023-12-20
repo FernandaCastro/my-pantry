@@ -1,7 +1,7 @@
 package com.fcastro.purchase.config;
 
 import com.fcastro.kafka.config.KafkaConfigData;
-import com.fcastro.kafka.model.PurchaseCreateEvent;
+import com.fcastro.kafka.event.PurchaseCreateEvent;
 import com.fcastro.purchase.purchaseItem.PurchaseItemService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,15 +9,15 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
 @Component
-public class EventListener {
+public class PurchaseCreateEventListener {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(EventListener.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(PurchaseCreateEventListener.class);
 
     private final PurchaseItemService purchaseItemService;
 
     private final KafkaConfigData kafkaConfigData;
 
-    public EventListener(PurchaseItemService purchaseItemService, KafkaConfigData kafkaConfigData) {
+    public PurchaseCreateEventListener(PurchaseItemService purchaseItemService, KafkaConfigData kafkaConfigData) {
         this.purchaseItemService = purchaseItemService;
         this.kafkaConfigData = kafkaConfigData;
     }

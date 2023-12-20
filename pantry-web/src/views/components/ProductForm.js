@@ -3,8 +3,12 @@ import Stack from 'react-bootstrap/Stack';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
+import Select from 'react-select';
+import { useState } from 'react';
 
-export default function ProductForm({ product, handleSave }) {
+export default function ProductForm({ product, categories, handleSave }) {
+
+    const [categoryOption, setCategoryOption] = useState({ value: product.category, label: product.category });
 
     function handleSubmit(e) {
         // Prevent the browser from reloading the page
@@ -15,6 +19,10 @@ export default function ProductForm({ product, handleSave }) {
         const formData = new FormData(form);
 
         let formJson = Object.fromEntries(formData.entries());
+        formJson = {
+            ...formJson,
+            category: categoryOption.value
+        }
 
         handleSave(formJson);
 
@@ -38,7 +46,14 @@ export default function ProductForm({ product, handleSave }) {
                     <Form.Label size="sm">Size</Form.Label>
                     <Form.Control size="sm" type="text" name="size" defaultValue={product.size} />
                 </Form.Group>
-                <Form.Group as={Col} className="mb-2" controlId="formDescription">
+                <Form.Group as={Col} className="mb-2" controlId="formCategory" size="sm">
+                    <Form.Label size="sm">Category</Form.Label>
+                    <Select name="category" defaultValue={categoryOption} options={categories}
+                        onChange={setCategoryOption} />
+                </Form.Group>
+            </Row>
+            <Row>
+                <Form.Group as={Col} className="mb-2" controlId="formDescription" size="sm">
                     <Form.Label size="sm">Description</Form.Label>
                     <Form.Control size="sm" type="text" name="description" defaultValue={product.description} />
                 </Form.Group>

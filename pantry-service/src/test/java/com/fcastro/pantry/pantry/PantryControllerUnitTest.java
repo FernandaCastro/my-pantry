@@ -1,8 +1,8 @@
 package com.fcastro.pantry.pantry;
 
+import com.fcastro.model.ProductDto;
 import com.fcastro.pantry.JsonUtil;
 import com.fcastro.pantry.pantryItem.PantryItemDto;
-import com.fcastro.pantry.product.ProductDto;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -42,7 +42,7 @@ public class PantryControllerUnitTest {
                 .idealQty(5)
                 .currentQty(5).build());
 
-        var pantry = PantryDto.builder().id(1L).name("Base Inventory").isActive(true).type("R").products(products).build();
+        var pantry = PantryDto.builder().id(1L).name("Base Inventory").isActive(true).type("R").items(products).build();
 
         given(pantryService.get(anyLong())).willReturn(Optional.of(pantry));
 

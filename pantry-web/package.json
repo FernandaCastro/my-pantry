@@ -50,6 +50,7 @@
     ]
   },
   "dependencies": {
+    "react-select": "^5.8.0",
     "serve": "^14.2.1"
   }
 }

@@ -141,7 +141,7 @@ export default function Purchase() {
 
     function filter(text) {
         if (text && text.length > 0) {
-            setFilteredItems(purchaseItems.filter(item => item.productCode.toUpperCase().includes(text.toUpperCase())));
+            setFilteredItems(purchaseItems.filter(item => item.product.code.toUpperCase().includes(text.toUpperCase())));
         } else {
             setFilteredItems(purchaseItems);
         }
@@ -150,7 +150,7 @@ export default function Purchase() {
 
     function updatePurchasedItem(item) {
         const array = purchaseItems.map((c) => {
-            return (c.pantryId === item.pantryId && c.productId === item.productId) ?
+            return (c.pantryId === item.pantryId && c.product.id === item.product.id) ?
                 c = { ...c, qtyPurchased: c.qtyPurchased } : c;
         })
         setPurchaseItems(array);
@@ -163,10 +163,10 @@ export default function Purchase() {
                 <td>
                     <Stack direction="horizontal" gap={2}>
                         <div><Image src={food} width={20} height={20} rounded /></div>
-                        <div><span>{item.productCode}</span></div>
+                        <div><span>{item.product.code}</span></div>
                     </Stack>
                     <span className='d-none d-md-block' hidden={item.productDescriptionn === ''}>
-                        <br /> {item.productDescriptionn}  {item.productSize}
+                        <br /> {item.product.descriptionn}  {item.product.size}
                     </span>
                 </td>
                 <td><span className='d-none d-md-block'>{item.pantryName}</span></td>
