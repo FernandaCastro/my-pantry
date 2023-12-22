@@ -4,6 +4,7 @@ kafka-config:
   bootstrap-servers-config: kafka-broker:29092
   purchase-create-topic: purchaseCreateTopic
   purchase-complete-topic: purchaseCompleteTopic
+  product-topic: productTopic
   pantry-group: pantryGroup
 spring:
   application:
@@ -25,3 +26,7 @@ spring:
   sql:
     init:
       mode: always
+  flyway:
+    baselineOnMigrate: true  #Needed when schema is not empty
+    baselineVersion: 0
+    encoding: ISO-8859-1

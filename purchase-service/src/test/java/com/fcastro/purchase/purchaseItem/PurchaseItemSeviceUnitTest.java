@@ -1,6 +1,6 @@
 package com.fcastro.purchase.purchaseItem;
 
-import com.fcastro.kafka.model.PurchaseEventItemDto;
+import com.fcastro.kafka.event.PurchaseEventDto;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.*;
@@ -28,11 +28,10 @@ public class PurchaseItemSeviceUnitTest {
     @Test
     public void givenItemDto_whenProcessPurchaseCreateEvent_thenSuccess() {
         //given
-        var dto = PurchaseEventItemDto.builder()
+        var dto = PurchaseEventDto.builder()
                 .pantryId(1L)
-                .productId(1L)
                 .pantryName("Product1")
-                .productSize("Size1")
+                .productId(1L)
                 .qtyProvisioned(1)
                 .build();
 
@@ -45,9 +44,7 @@ public class PurchaseItemSeviceUnitTest {
         var item = captor.getValue();
         assertThat(item.getPantryId()).isEqualTo(dto.getPantryId());
         assertThat(item.getPantryName()).isEqualTo(dto.getPantryName());
-        assertThat(item.getProductId()).isEqualTo(dto.getProductId());
-        assertThat(item.getProductDescription()).isEqualTo(dto.getProductDescription());
-        assertThat(item.getProductSize()).isEqualTo(dto.getProductSize());
+        assertThat(item.getProduct().getId()).isEqualTo(dto.getProductId());
         assertThat(item.getQtyProvisioned()).isEqualTo(dto.getQtyProvisioned());
         assertThat(item.getQtyPurchased()).isEqualTo(0);
         assertThat(item.getPurchase()).isNull();

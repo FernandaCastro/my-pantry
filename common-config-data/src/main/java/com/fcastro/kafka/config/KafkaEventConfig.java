@@ -77,4 +77,9 @@ public class KafkaEventConfig<V extends Serializable> {
     public NewTopic purchaseCreateTopic() {
         return TopicBuilder.name(kafkaConfigData.getPurchaseCreateTopic()).build();
     }
+
+    @Bean
+    public NewTopic productTopic() {
+        return TopicBuilder.name(kafkaConfigData.getProductTopic()).build();
+    }
 }

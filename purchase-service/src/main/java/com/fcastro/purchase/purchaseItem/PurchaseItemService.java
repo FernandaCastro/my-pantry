@@ -1,7 +1,8 @@
 package com.fcastro.purchase.purchaseItem;
 
-import com.fcastro.kafka.model.PurchaseEventItemDto;
+import com.fcastro.kafka.event.PurchaseEventDto;
 import com.fcastro.purchase.exception.ResourceNotFoundException;
+import com.fcastro.purchase.product.Product;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,7 +21,7 @@ public class PurchaseItemService {
         this.modelMapper = modelMapper;
     }
 
-    public void processPurchaseEvent(PurchaseEventItemDto dto) {
+    public void processPurchaseEvent(PurchaseEventDto dto) {
         if (dto == null) return;
 
         var entity = repository.findByPantryIdAndProductIdAndPurchaseIdIsNull(dto.getPantryId(), dto.getProductId());
@@ -52,9 +53,9 @@ public class PurchaseItemService {
         return convertToDto(entity);
     }
 
-    public List<PurchaseEventItemDto> processPurchasedItems(Long purchaseId, List<PurchaseItemDto> purchasedItems) {
+    public List<PurchaseEventDto> processPurchasedItems(Long purchaseId, List<PurchaseItemDto> purchasedItems) {
 
-        var purchaseEventList = new ArrayList<PurchaseEventItemDto>();
+        var purchaseEventList = new ArrayList<PurchaseEventDto>();
         if (purchasedItems == null || purchasedItems.size() == 0) return purchaseEventList;
 
         for (PurchaseItemDto purchasedItem : purchasedItems) {
@@ -80,36 +81,28 @@ public class PurchaseItemService {
                     .qtyProvisioned(qtyMissing)
                     .pantryId(purchasedItem.getPantryId())
                     .pantryName(purchasedItem.getPantryName())
-                    .productId(purchasedItem.getProductId())
-                    .productCode(purchasedItem.getProductCode())
-                    .productDescription(purchasedItem.getProductDescription())
-                    .productSize(purchasedItem.getProductSize())
+                    //.productId(purchasedItem.getProductId())
+                    .product(Product.builder().id(purchasedItem.getProduct().getId()).build())
                     .build();
             repository.save(newEntity);
         }
     }
 
-    private PurchaseEventItemDto convertToItemDto(PurchaseItem entity) {
-        return PurchaseEventItemDto.builder()
+    private PurchaseEventDto convertToItemDto(PurchaseItem entity) {
+        return PurchaseEventDto.builder()
                 .pantryId(entity.getPantryId())
                 .pantryName(entity.getPantryName())
-                .productId(entity.getProductId())
-                .productCode(entity.getProductCode())
-                .productDescription(entity.getProductDescription())
-                .productSize(entity.getProductSize())
+                .productId(entity.getProduct().getId())
                 .qtyProvisioned(entity.getQtyProvisioned())
                 .qtyPurchased(entity.getQtyPurchased())
                 .build();
     }
 
-    private PurchaseItem convertToEntity(PurchaseEventItemDto dto) {
+    private PurchaseItem convertToEntity(PurchaseEventDto dto) {
         return PurchaseItem.builder()
                 .pantryId(dto.getPantryId())
                 .pantryName(dto.getPantryName())
-                .productId(dto.getProductId())
-                .productCode(dto.getProductCode())
-                .productDescription(dto.getProductDescription())
-                .productSize(dto.getProductSize())
+                .product(Product.builder().id(dto.getProductId()).build())
                 .qtyProvisioned(dto.getQtyProvisioned())
                 .qtyPurchased(dto.getQtyPurchased())
                 .build();

@@ -1,11 +1,11 @@
 package com.fcastro.pantry.pantryItem;
 
 import com.fcastro.kafka.config.KafkaConfigData;
-import com.fcastro.pantry.config.EventProducer;
+import com.fcastro.model.ProductDto;
+import com.fcastro.pantry.config.PurchaseCreateEventProducer;
 import com.fcastro.pantry.exception.QuantityNotAvailableException;
 import com.fcastro.pantry.pantry.PantryDto;
 import com.fcastro.pantry.pantry.PantryService;
-import com.fcastro.pantry.product.ProductDto;
 import com.fcastro.pantry.product.ProductService;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +30,7 @@ public class PantryItemServiceIntegrationTest {
     PantryItemRepository repository;
 
     @Autowired
-    EventProducer eventProducer;
+    PurchaseCreateEventProducer eventProducer;
 
     @Autowired
     PantryService pantryService;

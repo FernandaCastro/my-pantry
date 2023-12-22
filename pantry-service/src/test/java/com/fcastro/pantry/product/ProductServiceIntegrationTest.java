@@ -1,12 +1,12 @@
 package com.fcastro.pantry.product;
 
 import com.fcastro.kafka.config.KafkaConfigData;
-import com.fcastro.pantry.config.EventProducer;
+import com.fcastro.model.ProductDto;
+import com.fcastro.pantry.config.PurchaseCreateEventProducer;
 import com.fcastro.pantry.exception.DatabaseConstraintException;
 import com.fcastro.pantry.pantry.PantryDto;
 import com.fcastro.pantry.pantry.PantryService;
 import com.fcastro.pantry.pantryItem.PantryItemDto;
-import com.fcastro.pantry.pantryItem.PantryItemRepository;
 import com.fcastro.pantry.pantryItem.PantryItemService;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +31,7 @@ public class ProductServiceIntegrationTest {
     PantryItemService pantryItemService;
 
     @Autowired
-    EventProducer eventProducer;
+    PurchaseCreateEventProducer eventProducer;
 
     @Autowired
     PantryService pantryService;

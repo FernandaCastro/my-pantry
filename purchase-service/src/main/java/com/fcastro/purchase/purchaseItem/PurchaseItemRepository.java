@@ -10,7 +10,7 @@ import java.util.Optional;
 
 public interface PurchaseItemRepository extends JpaRepository<PurchaseItem, Long> {
 
-    @Query("select p from purchaseItem p where p.purchase.id is null order by p.productCode")
+    @Query("select i, p from purchaseItem i, product p where i.product.id = p.id and i.purchase.id is null order by p.code")
     List<PurchaseItem> listPendingPurchase();
 
     @Modifying
@@ -20,7 +20,7 @@ public interface PurchaseItemRepository extends JpaRepository<PurchaseItem, Long
     @Query("select p from purchaseItem p where p.purchase.id = :purchaseId")
     List<PurchaseItem> findAllByPurchaseId(@Param("purchaseId") Long purchaseId);
 
-    @Query("select p from purchaseItem p where p.pantryId = :pantryId and p.productId = :productId and p.purchase.id is null")
+    @Query("select p from purchaseItem p where p.pantryId = :pantryId and p.product.id = :productId and p.purchase.id is null")
     PurchaseItem findByPantryIdAndProductIdAndPurchaseIdIsNull(Long pantryId, Long productId);
 
     @Query("select p from purchaseItem p where p.id = :id and p.purchase.id = :purchaseId")

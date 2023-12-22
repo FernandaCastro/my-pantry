@@ -1,6 +1,7 @@
 package com.fcastro.purchase.purchaseItem;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fcastro.model.ProductDto;
 import com.fcastro.purchase.purchase.PurchaseDto;
 import lombok.*;
 
@@ -18,9 +19,7 @@ public class PurchaseItemDto {
     private String pantryName;
 
     private Long productId;
-    private String productCode;
-    private String productDescription;
-    private String productSize;
+    private ProductDto product;
 
     private int qtyProvisioned;
     private int qtyPurchased;

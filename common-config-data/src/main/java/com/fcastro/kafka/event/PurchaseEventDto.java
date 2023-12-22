@@ -1,4 +1,4 @@
-package com.fcastro.kafka.model;
+package com.fcastro.kafka.event;
 
 import lombok.*;
 
@@ -9,27 +9,19 @@ import java.io.Serializable;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class PurchaseEventItemDto implements Serializable {
+public class PurchaseEventDto implements Serializable {
     long pantryId;
     String pantryName;
-
     long productId;
-    String productCode;
-    String productDescription;
-    String productSize;
-
     int qtyProvisioned;
     int qtyPurchased;
 
     @Override
     public String toString() {
-        return "ItemDto{" +
+        return "PurchaseEventDto{" +
                 "pantryId=" + pantryId +
                 ", pantryName='" + pantryName + '\'' +
                 ", productId=" + productId +
-                ", productCode=" + productCode +
-                ", productDescription='" + productDescription + '\'' +
-                ", productSize='" + productSize + '\'' +
                 ", qtyProvisioned=" + qtyProvisioned +
                 ", qtyPurchased=" + qtyPurchased +
                 '}';

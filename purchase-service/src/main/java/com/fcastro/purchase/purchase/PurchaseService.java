@@ -1,6 +1,6 @@
 package com.fcastro.purchase.purchase;
 
-import com.fcastro.purchase.config.EventProducer;
+import com.fcastro.purchase.config.PurchaseCompleteEventProducer;
 import com.fcastro.purchase.exception.NoItemToPurchaseException;
 import com.fcastro.purchase.exception.PurchaseAlreadyProcessedException;
 import com.fcastro.purchase.exception.PurchaseItemsMissingException;
@@ -18,9 +18,9 @@ public class PurchaseService {
     private final PurchaseRepository repository;
     private final PurchaseItemService purchaseItemService;
     private final ModelMapper modelMapper;
-    private final EventProducer eventProducer;
+    private final PurchaseCompleteEventProducer eventProducer;
 
-    public PurchaseService(PurchaseRepository repository, PurchaseItemService purchaseItemService, ModelMapper modelMapper, EventProducer eventProducer) {
+    public PurchaseService(PurchaseRepository repository, PurchaseItemService purchaseItemService, ModelMapper modelMapper, PurchaseCompleteEventProducer eventProducer) {
         this.repository = repository;
         this.purchaseItemService = purchaseItemService;
         this.modelMapper = modelMapper;

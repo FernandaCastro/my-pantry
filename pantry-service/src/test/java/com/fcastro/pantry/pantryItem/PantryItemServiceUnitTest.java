@@ -1,7 +1,8 @@
 package com.fcastro.pantry.pantryItem;
 
-import com.fcastro.kafka.model.PurchaseEventItemDto;
-import com.fcastro.pantry.config.EventProducer;
+import com.fcastro.kafka.event.PurchaseEventDto;
+import com.fcastro.kafka.exception.EventProcessingException;
+import com.fcastro.pantry.config.PurchaseCreateEventProducer;
 import com.fcastro.pantry.exception.PantryNotActiveException;
 import com.fcastro.pantry.exception.QuantityNotAvailableException;
 import com.fcastro.pantry.exception.ResourceNotFoundException;
@@ -32,7 +33,7 @@ public class PantryItemServiceUnitTest {
     PantryItemRepository repository;
 
     @Mock
-    EventProducer eventProducer;
+    PurchaseCreateEventProducer eventProducer;
 
     @Spy
     ModelMapper modelMapper;
@@ -145,7 +146,7 @@ public class PantryItemServiceUnitTest {
         //then
         var item = captor.getValue();
         assertThat(item.getCurrentQty()).isEqualTo(9);
-        verify(eventProducer, times(0)).send(any(PurchaseEventItemDto.class));
+        verify(eventProducer, times(0)).send(any(PurchaseEventDto.class));
     }
 
     @Test
@@ -164,7 +165,7 @@ public class PantryItemServiceUnitTest {
 
         given(repository.findEagerByPantryIdAndProductId(anyLong(), anyLong())).willReturn(Optional.of(entity));
         given(repository.save(captor.capture())).willReturn(entity);
-        doNothing().when(eventProducer).send(any(PurchaseEventItemDto.class));
+        doNothing().when(eventProducer).send(any(PurchaseEventDto.class));
 
         //when
         var consumedDto = PantryItemConsumedDto.builder().pantryId(1L).productId(1L).qty(1).build();
@@ -176,13 +177,11 @@ public class PantryItemServiceUnitTest {
         assertThat(item.getProvisionedQty()).isEqualTo(5);
 
 
-        var purchaseEventDto = PurchaseEventItemDto.builder()
+        var purchaseEventDto = PurchaseEventDto.builder()
                 .qtyProvisioned(5)
                 .pantryId(entity.getPantry().getId())
                 .pantryName(entity.getPantry().getName())
                 .productId(entity.getProduct().getId())
-                .productDescription(entity.getProduct().getDescription())
-                .productSize(entity.getProduct().getSize())
                 .build();
         verify(eventProducer, times(0)).send(purchaseEventDto);
     }
@@ -198,7 +197,7 @@ public class PantryItemServiceUnitTest {
 
         //then
         verify(repository, times(0)).save(any(PantryItem.class));
-        verify(eventProducer, times(0)).send(any(PurchaseEventItemDto.class));
+        verify(eventProducer, times(0)).send(any(PurchaseEventDto.class));
     }
 
     @Test
@@ -224,7 +223,7 @@ public class PantryItemServiceUnitTest {
 
         //then
         verify(repository, times(0)).save(any(PantryItem.class));
-        verify(eventProducer, times(0)).send(any(PurchaseEventItemDto.class));
+        verify(eventProducer, times(0)).send(any(PurchaseEventDto.class));
     }
 
     @Test
@@ -249,7 +248,7 @@ public class PantryItemServiceUnitTest {
 
         //then
         verify(repository, times(0)).save(any(PantryItem.class));
-        verify(eventProducer, times(0)).send(any(PurchaseEventItemDto.class));
+        verify(eventProducer, times(0)).send(any(PurchaseEventDto.class));
     }
 
 
@@ -278,6 +277,22 @@ public class PantryItemServiceUnitTest {
         var item = captor.getValue();
         assertThat(item.getCurrentQty()).isEqualTo(6);
         assertThat(item.getProvisionedQty()).isEqualTo(0);
+    }
+
+    @Test
+    public void givenInvalidPurchaseEventDtoList_whenProcessPurchaseCompleteEvent_shouldEventProcessingException() {
+        //given
+        var eventDtoList = new ArrayList<PurchaseEventDto>();
+        eventDtoList.add(PurchaseEventDto.builder().pantryId(999).productId(999).qtyPurchased(2).build());
+        eventDtoList.add(PurchaseEventDto.builder().pantryId(999).productId(999).qtyPurchased(2).build());
+        eventDtoList.add(PurchaseEventDto.builder().pantryId(999).productId(999).qtyPurchased(2).build());
+        given(repository.findById(any(PantryItemKey.class))).willReturn(Optional.ofNullable(null));
+
+        //when then
+        var ex = Assertions.assertThrows(EventProcessingException.class, () -> service.processPurchaseCompleteEvent(eventDtoList));
+
+        assertThat(ex.getThrowableMap()).isNotNull();
+        assertThat(ex.getThrowableMap().size()).isEqualTo(3);
     }
 
 }

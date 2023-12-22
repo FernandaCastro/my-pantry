@@ -1,8 +1,8 @@
 package com.fcastro.purchase.config;
 
 import com.fcastro.kafka.config.KafkaConfigData;
-import com.fcastro.kafka.model.PurchaseCompleteEvent;
-import com.fcastro.kafka.model.PurchaseEventItemDto;
+import com.fcastro.kafka.event.PurchaseCompleteEvent;
+import com.fcastro.kafka.event.PurchaseEventDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.kafka.KafkaException;
@@ -14,20 +14,20 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 @Component
-public class EventProducer {
+public class PurchaseCompleteEventProducer {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(EventProducer.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(PurchaseCompleteEventProducer.class);
 
     private final KafkaTemplate<String, PurchaseCompleteEvent> kafkaTemplate;
 
     private final KafkaConfigData kafkaConfigData;
 
-    public EventProducer(KafkaTemplate<String, PurchaseCompleteEvent> kafkaTemplate, KafkaConfigData kafkaConfigData) {
+    public PurchaseCompleteEventProducer(KafkaTemplate<String, PurchaseCompleteEvent> kafkaTemplate, KafkaConfigData kafkaConfigData) {
         this.kafkaTemplate = kafkaTemplate;
         this.kafkaConfigData = kafkaConfigData;
     }
 
-    public void sendPurchaseCompleteEvent(List<PurchaseEventItemDto> items) {
+    public void sendPurchaseCompleteEvent(List<PurchaseEventDto> items) {
 
         var event = PurchaseCompleteEvent.builder().items(items).build();
 

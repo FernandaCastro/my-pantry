@@ -1,5 +1,6 @@
 package com.fcastro.pantry.product;
 
+import com.fcastro.model.ProductDto;
 import com.fcastro.pantry.exception.ResourceNotFoundException;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -45,6 +46,7 @@ public class ProductController {
                     resource.setCode(newDto.getCode());
                     resource.setDescription(newDto.getDescription());
                     resource.setSize(newDto.getSize());
+                    resource.setCategory(newDto.getCategory());
                     return service.save(resource);
                 })
                 .orElseThrow(() -> new ResourceNotFoundException("Product not found"));

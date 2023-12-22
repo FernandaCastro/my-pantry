@@ -1,5 +1,9 @@
 package com.fcastro.pantry.product;
 
+import com.fcastro.kafka.event.ProductEventDto;
+import com.fcastro.model.Action;
+import com.fcastro.model.ProductDto;
+import com.fcastro.pantry.config.ProductEventProducer;
 import com.fcastro.pantry.exception.DatabaseConstraintException;
 import com.fcastro.pantry.exception.RequestParamExpectedException;
 import com.fcastro.pantry.exception.ResourceNotFoundException;
@@ -17,12 +21,14 @@ public class ProductService {
 
     private final ProductRepository repository;
     private final PantryItemRepository pantryItemRepository;
+    private final ProductEventProducer productEventProducer;
     private final ModelMapper modelMapper;
 
 
-    public ProductService(ProductRepository repository, PantryItemRepository pantryItemRepository, ModelMapper modelMapper) {
+    public ProductService(ProductRepository repository, PantryItemRepository pantryItemRepository, ProductEventProducer productEventProducer, ModelMapper modelMapper) {
         this.repository = repository;
         this.pantryItemRepository = pantryItemRepository;
+        this.productEventProducer = productEventProducer;
         this.modelMapper = modelMapper;
     }
 
@@ -48,6 +54,18 @@ public class ProductService {
 
     public ProductDto save(ProductDto dto) {
         var entity = repository.save(convertToEntity(dto));
+
+        productEventProducer.send(ProductEventDto.builder()
+                .action(Action.UPDATE)
+                .product(ProductDto.builder()
+                        .id(entity.getId())
+                        .code(entity.getCode())
+                        .description(entity.getDescription())
+                        .size(entity.getSize())
+                        .category(entity.getCategory())
+                        .build())
+                .build());
+
         return convertToDTO(entity);
     }
 
@@ -59,6 +77,13 @@ public class ProductService {
             throw new DatabaseConstraintException("Product can not be removed. It is referred in one or more pantry items.");
 
         repository.deleteById(id);
+
+        productEventProducer.send(ProductEventDto.builder()
+                .action(Action.DELETE)
+                .product(ProductDto.builder()
+                        .id(id)
+                        .build())
+                .build());
     }
 
     private ProductDto convertToDTO(Product entity) {

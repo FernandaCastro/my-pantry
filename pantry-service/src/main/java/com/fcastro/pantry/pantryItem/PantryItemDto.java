@@ -1,7 +1,7 @@
 package com.fcastro.pantry.pantryItem;
 
+import com.fcastro.model.ProductDto;
 import com.fcastro.pantry.pantry.PantryDto;
-import com.fcastro.pantry.product.ProductDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

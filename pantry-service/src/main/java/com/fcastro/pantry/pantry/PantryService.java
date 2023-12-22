@@ -45,7 +45,11 @@ public class PantryService {
 
     private PantryDto convertToDTO(Pantry entity) {
         if (entity == null) return null;
-        return modelMapper.map(entity, PantryDto.class);
+        return PantryDto.builder()
+                .id(entity.getId())
+                .name(entity.getName())
+                .type(entity.getType())
+                .isActive(entity.getIsActive()).build();
     }
 
     private Pantry convertToEntity(PantryDto dto) {

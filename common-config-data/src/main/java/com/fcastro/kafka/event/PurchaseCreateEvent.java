@@ -1,4 +1,4 @@
-package com.fcastro.kafka.model;
+package com.fcastro.kafka.event;
 
 import lombok.*;
 
@@ -11,5 +11,5 @@ import java.io.Serializable;
 @AllArgsConstructor
 public class PurchaseCreateEvent implements Serializable {
 
-    private PurchaseEventItemDto item;
+    private PurchaseEventDto item;
 }

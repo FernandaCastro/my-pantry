@@ -18,3 +18,7 @@ export async function postNewPurchaseOrder() {
 export async function postClosePurchaseOrder(purchasedItems) {
     return FetchPurchase(`purchases/close`, "POST", purchasedItems);
 }
+
+export async function getProperty(key) {
+    return FetchPurchase(`properties/${key}`, "GET");
+}
