@@ -53,7 +53,7 @@ public class PantryControllerUnitTest {
                 .andExpect(jsonPath("$.name", is("Base Inventory")))
                 .andExpect(jsonPath("$.isActive", is(true)))
                 .andExpect(jsonPath("$.type", is("R")))
-                .andExpect(jsonPath("$.products", hasSize(1)));
+                .andExpect(jsonPath("$.items", hasSize(1)));
     }
 
     @Test

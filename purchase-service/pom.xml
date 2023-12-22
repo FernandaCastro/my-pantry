@@ -44,6 +44,10 @@
             <artifactId>common-config-data</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.flywaydb</groupId>
+            <artifactId>flyway-core</artifactId>
+        </dependency>
     </dependencies>
 
     <!--This says this module has a Main Class to be used in its jar packaging-->
