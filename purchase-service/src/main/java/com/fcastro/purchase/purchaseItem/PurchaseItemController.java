@@ -1,10 +1,7 @@
 package com.fcastro.purchase.purchaseItem;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -20,7 +17,8 @@ public class PurchaseItemController {
     }
 
     @GetMapping("/items")
-    public ResponseEntity<List<PurchaseItemDto>> listPendingPurchase() {
-        return ResponseEntity.ok(service.listPendingPurchase());
+    public ResponseEntity<List<PurchaseItemDto>> listPendingPurchase(@RequestParam(required = false) String supermarket) {
+        return ResponseEntity.ok(service.listPendingPurchaseByCategory(supermarket));
     }
+
 }

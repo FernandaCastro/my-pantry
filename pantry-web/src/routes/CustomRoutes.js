@@ -1,13 +1,13 @@
 import React from 'react';
 import { useRoutes } from "react-router-dom";
 
-import NotFound from "../views/pages/NotFound";
+import NotFound from "../pages/NotFound";
 
-import Home from '../views/pages/Home';
-import Consume from '../views/pages/Consume';
-import Purchase from '../views/pages/Purchase';
-import Pantry from '../views/pages/Pantry';
-import Product from '../views/pages/Product';
+import Home from '../pages/Home';
+import Consume from '../pages/Consume';
+import Purchase from '../pages/Purchase';
+import Pantry from '../pages/Pantry';
+import Product from '../pages/Product';
 
 
 function CustomRoutes() {
