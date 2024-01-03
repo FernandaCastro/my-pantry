@@ -24,13 +24,13 @@ public class PurchaseItemService {
     private final PurchaseItemRepository repository;
     private final PropertiesService propertiesService;
     private final ModelMapper modelMapper;
-    private final ObjectMapper jsonMapper;
+    private ObjectMapper jsonMapper;
 
-    public PurchaseItemService(PurchaseItemRepository repository, PropertiesService propertiesService, ModelMapper modelMapper, ObjectMapper jsonMapper) {
+    public PurchaseItemService(PurchaseItemRepository repository, PropertiesService propertiesService, ModelMapper modelMapper) {
         this.repository = repository;
         this.propertiesService = propertiesService;
         this.modelMapper = modelMapper;
-        this.jsonMapper = jsonMapper;
+        this.jsonMapper = new ObjectMapper();
     }
 
     public void processPurchaseEvent(PurchaseEventDto dto) {
