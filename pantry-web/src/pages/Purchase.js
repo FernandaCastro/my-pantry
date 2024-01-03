@@ -357,10 +357,12 @@ export default function Purchase() {
                     {renderPurchaseItems()}
                 </Table>
             </div>
-            <Stack direction="horizontal" gap={2} className="d-flex justify-content-end">
-                <Button bsPrefix="btn-custom" size="sm" onClick={handleClear} disabled={!hasOpenOrder}>Clear</Button>
-                <Button bsPrefix="btn-custom" size="sm" onClick={handleSave} disabled={!hasOpenOrder}>Save</Button>
-            </Stack >
+            <div>
+                <Stack direction="horizontal" gap={2} className="d-flex justify-content-end">
+                    <Button bsPrefix="btn-custom" size="sm" onClick={handleClear} disabled={!hasOpenOrder}>Clear</Button>
+                    <Button bsPrefix="btn-custom" size="sm" onClick={handleSave} disabled={!hasOpenOrder}>Save</Button>
+                </Stack >
+            </div>
 
         </Stack >
 

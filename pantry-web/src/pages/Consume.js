@@ -163,7 +163,7 @@ export default function Consume() {
       </div>
       <div>
         <Stack direction="horizontal" gap={2} className='d-flex'>
-          <div className="me-auto"><h6 className="text-start fs-6 lh-lg title">Consume {pantry.name}</h6></div>
+          <div className="me-auto"><h6 className="text-start fs-6 lh-lg title">Consume</h6></div>
           <Button bsPrefix="btn-custom" size="sm" onClick={handleClear}>Clear</Button>
           <Button bsPrefix="btn-custom" size="sm" onClick={handleSave} >Save</Button>
         </Stack>
