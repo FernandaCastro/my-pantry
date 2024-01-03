@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fcastro.kafka.event.PurchaseEventDto;
 import com.fcastro.purchase.exception.ResourceNotFoundException;
+import com.fcastro.purchase.exception.ResourceNotValidException;
 import com.fcastro.purchase.product.Product;
 import com.fcastro.purchase.properties.PropertiesService;
 import com.fcastro.purchase.properties.PropertyKey;
@@ -23,11 +24,13 @@ public class PurchaseItemService {
     private final PurchaseItemRepository repository;
     private final PropertiesService propertiesService;
     private final ModelMapper modelMapper;
+    private final ObjectMapper jsonMapper;
 
-    public PurchaseItemService(PurchaseItemRepository repository, PropertiesService propertiesService, ModelMapper modelMapper) {
+    public PurchaseItemService(PurchaseItemRepository repository, PropertiesService propertiesService, ModelMapper modelMapper, ObjectMapper jsonMapper) {
         this.repository = repository;
         this.propertiesService = propertiesService;
         this.modelMapper = modelMapper;
+        this.jsonMapper = jsonMapper;
     }
 
     public void processPurchaseEvent(PurchaseEventDto dto) {
@@ -52,19 +55,21 @@ public class PurchaseItemService {
         if (supermarket == null || Strings.isEmpty(supermarket)) return list;
 
         var map = list.stream()
-                .collect(Collectors.groupingBy((item) -> item.getProduct().getCategory()));
+                .collect(Collectors.groupingBy((item) ->
+                        item.getProduct().getCategory() == null || item.getProduct().getCategory() == "" ?
+                                "Other" : item.getProduct().getCategory()
+                ));
 
         String propertyKey = supermarket.toLowerCase() + "." + PropertyKey.SUPERMARKET_CATEGORIES.key;
         var property = propertiesService.get(propertyKey)
                 .orElseThrow(() -> new ResourceNotFoundException("Property " + propertyKey + " not found."));
 
         List<String> categories = new ArrayList<String>();
-        ;
+
         try {
-            var mapper = new ObjectMapper();
-            categories = Arrays.asList(mapper.readValue(property.getPropertyValue(), String[].class));
+            categories = Arrays.asList(jsonMapper.readValue(property.getPropertyValue(), String[].class));
         } catch (JsonProcessingException e) {
-            e.printStackTrace();
+            throw new ResourceNotValidException("Invalid Json value for property: " + PropertyKey.SUPERMARKET_CATEGORIES.key);
         }
 
         var categorized = new ArrayList<PurchaseItemDto>();
@@ -74,7 +79,7 @@ public class PurchaseItemService {
                 map.remove(c);
             }
         });
-        map.values().stream().map(l -> categorized.addAll(l));
+        map.values().forEach(l -> categorized.addAll(l));
 
         return categorized;
     }

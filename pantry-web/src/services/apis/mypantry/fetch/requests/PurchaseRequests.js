@@ -8,7 +8,7 @@ export async function getOpenPurchaseOrder() {
 }
 
 export async function getPendingPurchaseItems(supermarket) {
-    return !supermarket || supermarket === '' ?
+    return !supermarket || supermarket === '' || supermarket === '-' ?
         FetchPurchase(`purchases/items`, "GET") :
         FetchPurchase(`purchases/items?supermarket=${supermarket}`, "GET");
 }
