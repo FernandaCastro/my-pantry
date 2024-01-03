@@ -1,0 +1,13 @@
+.accordion-button {
+    background-color: transparent !important;
+}
+
+.accordion-button:focus {
+    box-shadow: none;
+    color: grey;
+}
+
+.accordion-header:focus {
+    box-shadow: none;
+    color: grey;
+}
