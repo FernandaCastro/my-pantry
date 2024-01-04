@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useParams } from 'react-router';
-import { getPantry, getPantryItems, postPantryConsume } from '../services/apis/mypantry/fetch/requests/PantryRequests.js';
+import { getPantry, getPantryItemsConsume, postPantryConsume } from '../services/apis/mypantry/fetch/requests/PantryRequests.js';
 import Button from 'react-bootstrap/Button';
 import Stack from 'react-bootstrap/Stack';
 import Table from 'react-bootstrap/Table';
@@ -44,7 +44,7 @@ export default function Consume() {
       let res = await getPantry(id);
       setPantry(res);
 
-      res = await getPantryItems(res.id);
+      res = await getPantryItemsConsume(res.id);
       if (res != null && Object.keys(res).length === 0) {
         return showAlert(VariantType.INFO, "Pantry is empty. There is no item to consume.");
       }
@@ -170,24 +170,28 @@ export default function Consume() {
       </div>
       <div>
         <Form.Control size="sm" type="text" id="search" className="form-control mb-1" placeholder="Seacrh for items here" value={searchText} onChange={(e) => filter(e.target.value)} />
-        <Table hover>
-          <tbody>
-            <tr key="0:0" className="align-middle">
-              <th><h6 className="title"> Code/Desc.</h6></th>
-              <th><h6 className="title">Current</h6></th>
-              <th><h6 className="title d-none d-md-block">Prov.</h6></th>
-              <th><h6 className="title d-none d-md-block">Prov. on</h6></th>
-              <th><h6 className="title">Consume</h6></th>
-            </tr>
-            {renderItems()}
-          </tbody>
-        </Table>
-        {isLoading ? <h6>Loading...</h6> : <span />}
+        <div className='scroll-consume'>
+          <Table>
+            <thead>
+              <tr key="0:0" className="align-middle">
+                <th><h6 className="title"> Code/Desc.</h6></th>
+                <th><h6 className="title">Current</h6></th>
+                <th><h6 className="title d-none d-md-block">Prov.</h6></th>
+                <th><h6 className="title d-none d-md-block">Prov. on</h6></th>
+                <th><h6 className="title">Consume</h6></th>
+              </tr>
+            </thead>
+            <tbody>
+              {renderItems()}
+            </tbody>
+          </Table>
+          {isLoading ? <h6>Loading...</h6> : <span />}
+        </div>
       </div>
       <Stack direction="horizontal" gap={2} className="d-flex justify-content-end">
         <Button bsPrefix="btn-custom" size="sm" onClick={handleClear}>Clear</Button>
         <Button bsPrefix="btn-custom" size="sm" onClick={handleSave}>Save</Button>
       </Stack>
-    </Stack>
+    </Stack >
   )
 }

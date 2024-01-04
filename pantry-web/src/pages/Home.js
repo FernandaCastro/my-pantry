@@ -51,10 +51,10 @@ export default function Home() {
 
     function renderItem(item) {
         return (
-            <tr key={item.id} className="border border-primary-subtle">
-                <td className="border-end-0" onClick={(e) => handlePantryClick(item)}>
-                    <span className={item.isActive ? "" : "text-black-50"}>{item.name}</span></td>
-                <td className="border-start-0">
+            <tr key={item.id} className="align-middle">
+                <td onClick={(e) => handlePantryClick(item)}>
+                    <span className={item.isActive ? "" : "disabled"}>{item.name}</span></td>
+                <td>
                     <Stack direction="horizontal" gap={1} className="d-flex justify-content-end">
                         <div><Button href={"/pantries/" + item.id + "/edit"} variant="link"><BsPencil /></Button></div>
                         <div><Button onClick={() => handleRemove(item.id)} variant="link"><BsTrash /></Button></div>
@@ -81,11 +81,12 @@ export default function Home() {
     return (
         <Stack gap={3}>
             <div></div>
-            <div className="d-flex justify-content-end align-items-center">
-                <Button bsPrefix="btn-custom" size="sm" href={"/pantries/new"} >New Pantry</Button>
+            <div className="d-flex justify-content-between align-items-center">
+                <h6 className='title'>Pantry List</h6>
+                <Button bsPrefix="btn-custom" size="sm" href={"/pantries/new"} className="pe-2 ps-2">New Pantry</Button>
             </div>
             <div>
-                <Table className="table-sm align-middle table-custom" hover>
+                <Table className='bordered'>
                     <tbody>
                         {renderItems()}
                     </tbody>

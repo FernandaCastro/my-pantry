@@ -118,18 +118,22 @@ function PantryItemList({ pantryId }) {
     return (
         <div>
             <Form.Control size="sm" type="text" id="search" className="form-control mb-1" value={searchText} placeholder="Seacrh for items here" onChange={(e) => filter(e.target.value)} />
-            <Table hover>
-                <tbody >
-                    <tr key="0:0" className="align-middle">
-                        <th><span className='title'>Code/Desc.</span></th>
-                        <th><span className='title'>Ideal</span></th>
-                        <th ><span className='title'>Current</span></th>
-                        <th className='ms-0 ps-0 title'><span>Prov.</span></th>
-                        <th className='ms-0 ps-0 me-2 pe-2 title'><span /></th>
-                    </tr>
-                    {renderItems()}
-                </tbody>
-            </Table>
+            <div className='scroll-pantryItems'>
+                <Table>
+                    <thead>
+                        <tr key="0:0" className="align-middle">
+                            <th><span className='title'>Code/Desc.</span></th>
+                            <th><span className='title'>Ideal</span></th>
+                            <th ><span className='title'>Current</span></th>
+                            <th className='ms-0 ps-0'><span className="title">Prov.</span></th>
+                            <th className='ms-0 ps-0 me-2 pe-2'><span /></th>
+                        </tr>
+                    </thead>
+                    <tbody >
+                        {renderItems()}
+                    </tbody>
+                </Table>
+            </div>
         </div>
     );
 }

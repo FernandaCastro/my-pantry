@@ -32,9 +32,7 @@ export default function Purchase() {
 
     useEffect(() => {
         fetchOpenPurchaseOrder();
-        if (!hasOpenOrder && !supermarketOption.value) fetchPendingPurchaseItems(supermarketOption.value);
         fetchSupermarketOptions();
-        populateCategories();
     }, []);
 
     useEffect(() => {
@@ -73,7 +71,10 @@ export default function Purchase() {
         try {
             setIsLoading(true);
             const res = await getOpenPurchaseOrder();
-            if (!res) return;
+            if (!res) {
+                fetchPendingPurchaseItems();
+                return;
+            }
             setPurchase(res);
             setPurchaseItems(res.items);
             setHasOpenOrder(true);
@@ -265,7 +266,7 @@ export default function Purchase() {
         if (isLoading || isNull(purchase)) return;
 
         return (
-            <Table >
+            <Table className="bordered">
                 <thead >
                     <tr key="order:0" className="align-middle">
                         <th><h6 className='title'>Id</h6></th>
@@ -344,18 +345,19 @@ export default function Purchase() {
             </div>
             <div>
                 <Form.Control hidden={isNull(purchaseItems) || purchaseItems.length === 0} size="sm" type="text" id="search" className="form-control mb-1" placeholder="Seacrh for items here" value={searchText} onChange={(e) => filter(e.target.value)} />
-                <Table>
-                    <thead >
-                        <tr key="item:0" className="align-middle">
-                            <th><h6 className="title">Code/Desc.</h6></th>
-                            <th><h6 className="title d-none d-md-block ">Pantry</h6></th>
-                            <th><h6 className="title">Provis.</h6></th>
-                            <th><h6 className="title">Purchased</h6></th>
-                        </tr>
-                    </thead>
-
-                    {renderPurchaseItems()}
-                </Table>
+                <div className='scroll-purchase'>
+                    <Table>
+                        <thead >
+                            <tr key="item:0" className="align-middle">
+                                <th><h6 className="title">Code/Desc.</h6></th>
+                                <th><h6 className="title d-none d-md-block ">Pantry</h6></th>
+                                <th><h6 className="title">Provis.</h6></th>
+                                <th><h6 className="title">Purchased</h6></th>
+                            </tr>
+                        </thead>
+                        {renderPurchaseItems()}
+                    </Table>
+                </div>
             </div>
             <div>
                 <Stack direction="horizontal" gap={2} className="d-flex justify-content-end">

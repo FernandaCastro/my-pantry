@@ -15,6 +15,10 @@ export async function getPantryItems(pantryId) {
     return FetchPantry(`pantries/${pantryId}/items`, "GET")
 }
 
+export async function getPantryItemsConsume(pantryId) {
+    return FetchPantry(`pantries/${pantryId}/items/consume`, "GET")
+}
+
 export async function updatePantry(pantryId, body) {
     return FetchPantry(`pantries/${pantryId}`, "PUT", body);
 }
@@ -26,11 +30,11 @@ export async function deletePantry(pantryId) {
 }
 
 export async function getPantryRebalance(pantryId) {
-    return FetchPantry(`pantries/${pantryId}/rebalance`, "GET");
+    return FetchPantry(`pantries/${pantryId}/items/balancing`, "GET");
 }
 
 export async function postPantryConsume(pantryId, body) {
-    return FetchPantry(`pantries/${pantryId}/consume`, "POST", body);
+    return FetchPantry(`pantries/${pantryId}/items/consume`, "POST", body);
 }
 
 export async function createPantryItem(pantryId, body) {

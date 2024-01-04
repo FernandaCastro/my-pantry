@@ -100,15 +100,19 @@ function ProductList({ disabled, onEdit, onRemove }) {
     return (
         <div>
             <Form.Control size="sm" type="text" id="search" className="form-control mb-1" value={searchText} placeholder="Seacrh for items here" onChange={(e) => filter(e.target.value)} />
-            <Table hover>
-                <tbody>
-                    <tr key="0:0" className="align-middle">
-                        <th><h6 className='title'>Products</h6></th>
-                        <th />
-                    </tr>
-                    {renderItems()}
-                </tbody>
-            </Table>
+            <div className="scroll-product">
+                <Table>
+                    <thead>
+                        <tr key="0:0" className="align-middle">
+                            <th><h6 className='title'>Products</h6></th>
+                            <th />
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {renderItems()}
+                    </tbody>
+                </Table>
+            </div>
         </div>
     );
 }

@@ -34,13 +34,14 @@ Button:disabled {
     background-color: $btn-disabled-color;
 }
 
-Table {
-    overflow: hidden;
-    border: 1px solid;
-    border-radius: 5px;
-    border-color: $border-color;
+table {
     background-color: $border-color;
     color: $text-color;
+
+    thead {
+        position: sticky;
+        top: 0;
+    }
 
     th {
         border-color: $border-color;
@@ -61,15 +62,31 @@ Table {
         background: darken($background, 5%) !important;
     }
 
+    :hover {
+
+        >td,
+        >tr,
+        >th {
+            background-color: $hover-background !important;
+        }
+    }
+
+}
+
+table.bordered {
+    overflow: hidden;
+    border: 1px solid;
+    border-radius: 5px;
+    border-color: $border-color;
 }
 
 .table-hover {
     :hover {
-        background-color: $hover-background;
 
         >td,
+        >tr,
         >th {
-            background-color: $hover-background;
+            background-color: $hover-background !important;
         }
     }
 }
@@ -102,6 +119,10 @@ span {
     color: $text-color;
 }
 
+span.disabled {
+    color: lighten($text-color, 5%);
+}
+
 p {
     color: $text-color;
 }
@@ -122,5 +143,97 @@ div.category {
 
     button {
         padding: 0px;
+    }
+}
+
+div.scroll-pantryItems {
+    overflow-y: auto;
+    border: 1px solid;
+    border-radius: 5px;
+    border-color: $border-color;
+
+    @media (max-height: 575px) {
+        max-height: 300px;
+    }
+
+    @media (min-height: 576px) {
+        max-height: 400px;
+    }
+
+    @media (min-height: 768px) {
+        max-height: 450px;
+    }
+
+    @media (min-height: 992px) {
+        max-height: 700px;
+    }
+}
+
+div.scroll-consume {
+    overflow-y: auto;
+    border: 1px solid;
+    border-radius: 5px;
+    border-color: $border-color;
+
+    @media (max-height: 575px) {
+        max-height: 300px;
+    }
+
+    @media (min-height: 576px) {
+        max-height: 400px;
+    }
+
+    @media (min-height: 768px) {
+        max-height: 660px;
+    }
+
+    @media (min-height: 992px) {
+        max-height: 850px;
+    }
+}
+
+div.scroll-purchase {
+    overflow-y: auto;
+    border: 1px solid;
+    border-radius: 5px;
+    border-color: $border-color;
+
+    @media (min-height: 575px) {
+        max-height: 250px;
+    }
+
+    @media (min-height: 576px) {
+        max-height: 350px;
+    }
+
+    @media (min-height: 768px) {
+        max-height: 450px;
+    }
+
+    @media (min-height: 992px) {
+        max-height: 550px;
+    }
+}
+
+div.scroll-product {
+    overflow-y: auto;
+    border: 1px solid;
+    border-radius: 5px;
+    border-color: $border-color;
+
+    @media (max-height: 575px) {
+        max-height: 300px;
+    }
+
+    @media (min-height: 576px) {
+        max-height: 400px;
+    }
+
+    @media (min-height: 768px) {
+        max-height: 600px;
+    }
+
+    @media (min-height: 992px) {
+        max-height: 700px;
     }
 }
