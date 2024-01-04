@@ -44,6 +44,11 @@ public class PantryItemService {
         return listEntity.stream().map(this::convertToDTO).collect(Collectors.toList());
     }
 
+    public List<PantryItemDto> getAllConsume(long pantryId) {
+        var listEntity = repository.findAllToConsumeByPantryId(pantryId);
+        return listEntity.stream().map(this::convertToDTO).collect(Collectors.toList());
+    }
+
     public PantryItemDto save(PantryItemDto dto) {
         var entity = repository.save(convertToEntity(dto));
         return convertToDTO(entity);

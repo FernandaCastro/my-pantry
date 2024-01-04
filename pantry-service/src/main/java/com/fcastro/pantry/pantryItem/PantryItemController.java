@@ -30,6 +30,11 @@ public class PantryItemController {
         return ResponseEntity.ok(service.getAll(pantryId));
     }
 
+    @GetMapping("/items/consume")
+    public ResponseEntity<List<PantryItemDto>> getAllConsume(@PathVariable long pantryId) {
+        return ResponseEntity.ok(service.getAllConsume(pantryId));
+    }
+
     @PostMapping("/items")
     public ResponseEntity<PantryItemDto> create(@RequestBody PantryItemDto newDto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(service.save(newDto));
@@ -56,14 +61,14 @@ public class PantryItemController {
         return ResponseEntity.noContent().build();
     }
 
-    @PostMapping("/consume")
+    @PostMapping("items/consume")
     public ResponseEntity<List<PantryItemDto>> consumeProduct(@PathVariable Long pantryId, @RequestBody List<PantryItemConsumedDto> items) {
         service.consumePantryItem(pantryId, items);
         var list = service.getAll(pantryId);
         return ResponseEntity.ok().body(list);
     }
 
-    @GetMapping("/rebalance")
+    @GetMapping("/balancing")
     public ResponseEntity<List<PantryItemDto>> consumeProduct(@PathVariable Long pantryId) {
         var list = service.processPurchaseNeed(pantryId);
         return ResponseEntity.ok().body(list);
