@@ -34,7 +34,7 @@ function LoginButton() {
         );
 
         return (
-            <OverlayTrigger placement="bottom-start" trigger="click" overlay={popoverProfile} onToggle={(e) => setShowProfile(e)} show={showProfile}>
+            <OverlayTrigger placement="auto" trigger="click" overlay={popoverProfile} onToggle={(e) => setShowProfile(e)} show={showProfile}>
                 <Button variant='link'><Image width={30} height={30} roundedCircle referrerPolicy="no-referrer" src={profileCtx.pictureUrl} /></Button>
             </OverlayTrigger>
         )
@@ -50,7 +50,7 @@ function LoginButton() {
         );
 
         return (
-            <OverlayTrigger placement="bottom-start" trigger="click" overlay={popoverSignIn} onToggle={(e) => setShowLogin(e)} show={showLogin}>
+            <OverlayTrigger placement="auto" trigger="click" overlay={popoverSignIn} onToggle={(e) => setShowLogin(e)} show={showLogin}>
                 <Button variant='link'>
                     <Image width={30} height={30} roundedCircle referrerPolicy="no-referrer" src={iAccount} />
                 </Button>
