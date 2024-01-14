@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import Table from 'react-bootstrap/Table';
-import { getProductList, deleteProduct } from '../services/apis/mypantry/fetch/requests/PantryRequests.js';
+import { getProductList, deleteProduct } from '../services/apis/mypantry/requests/PantryRequests.js';
 import { AlertContext } from '../services/context/AppContext.js';
 import VariantType from './VariantType.js';
 import Form from 'react-bootstrap/Form';
@@ -99,7 +99,7 @@ function ProductList({ disabled, onEdit, onRemove }) {
 
     return (
         <div>
-            <Form.Control size="sm" type="text" id="search" className="form-control mb-1" value={searchText} placeholder="Seacrh for items here" onChange={(e) => filter(e.target.value)} />
+            <Form.Control size="sm" type="text" id="search" className="form-control mb-1 input-custom" value={searchText} placeholder="Seacrh for items here" onChange={(e) => filter(e.target.value)} />
             <div className="scroll-product">
                 <Table>
                     <thead>

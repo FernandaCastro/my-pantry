@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { PantryContext } from '../services/context/AppContext.js';
-import { getPantryList, deletePantry } from '../services/apis/mypantry/fetch/requests/PantryRequests.js';
+import { getPantryList, deletePantry } from '../services/apis/mypantry/requests/PantryRequests.js';
 import Stack from 'react-bootstrap/Stack';
 import Table from 'react-bootstrap/Table';
 import Button from 'react-bootstrap/Button';

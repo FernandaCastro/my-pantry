@@ -10,7 +10,7 @@ import { AlertContext } from '../services/context/AppContext.js';
 import Form from 'react-bootstrap/Form';
 import NumericField from '../components/NumericField.js'
 import Table from 'react-bootstrap/Table';
-import Select from 'react-select';
+import Select from '../components/Select.js';
 import { camelCase } from '../services/Utils.js';
 import { BsArrow90DegRight, BsChevronDown } from "react-icons/bs";
 import Collapse from 'react-bootstrap/Collapse';
@@ -365,7 +365,7 @@ export default function Purchase() {
     }
 
     return (
-        <Stack gap={3}>
+        <Stack gap={2}>
             <div>
             </div>
             <div className="item d-flex justify-content-between align-items-start" onClick={() => setShowOrder(!showOrder)}>

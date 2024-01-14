@@ -20,6 +20,7 @@
 		<module>common-config-data</module>
 		<module>pantry-service</module>
 		<module>purchase-service</module>
+		<module>account-service</module>
 	</modules>
 
 	<properties>

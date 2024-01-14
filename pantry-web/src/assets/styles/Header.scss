@@ -4,61 +4,146 @@ $primary-background: #383d46;
 $secondary-text-color: #1c1d1f;
 $secondary_background: lavender;
 
+// div {
+//     border: 1px solid blue;
+// }
+
 .header {
     background-image: linear-gradient(to bottom right, dodgerblue, purple);
-    padding: 10px;
-    padding-left: 15px;
+    padding: 8px;
+    //padding-left: 15px;
 
     nav a {
-        color: white;
-    }
-
-    nav button {
-        border-color: white;
-        color: white;
-        padding: 4px;
+        color: lavender;
+        padding: 0px;
+        width: auto;
     }
 
     .toggle-btn {
         width: auto;
         height: auto;
-        color: white;
+        color: lavender;
+        border-color: lavender;
+        padding: 4px;
+    }
+
+    .icon:hover {
+        border-color: lavender !important;
+        border-radius: 5px;
     }
 
     .navbar-brand {
-        width: 15%;
+        width: min-content;
+        margin-right: 5px;
+        color: lavender;
     }
 
     .navbar-nav {
-        width: 40%;
-        justify-content: center;
+        width: auto;
+        justify-content: space-between;
+    }
+
+    .navbar-collape {
+        flex-grow: unset;
     }
 }
 
+.fix-pantry-name {
+    justify-content: center !important;
+    width: auto !important;
+    padding-left: 0px !important;
+    padding-right: 0px !important;
+
+    @media (max-width: 575px) {
+        min-width: fit-content !important;
+        max-width: 300px !important;
+    }
+
+    @media (min-width: 576px) and (max-width: 768px) {
+        min-width: 300px !important;
+        max-width: 400px !important;
+    }
+}
+
+.fix-toggle-btn {
+    margin-left: 5px;
+    margin-right: 5px;
+    display: block;
+
+    @media (min-width: 769px) {
+        display: none;
+    }
+
+    .btn {
+        padding: 0;
+    }
+}
+
+.fix-login-btn-before {
+    width: min-content;
+    display: none;
+
+    @media (max-width: 767px) {
+        width: min-content;
+        margin-right: 5px;
+        display: block;
+    }
+
+    .btn {
+        padding: 0;
+    }
+}
+
+.fix-login-btn-after {
+    width: min-content;
+    display: none;
+
+    @media (min-width: 768px) {
+        width: min-content;
+        margin-right: 5px;
+        display: block;
+    }
+
+    .btn {
+        padding: 0;
+    }
+}
+
+.navbar-collapse.collapse {
+    justify-content: end;
+    flex-grow: unset;
+}
 
 .menu {
     display: flex;
     direction: row;
     align-items: center;
     justify-content: center;
-    gap: 20px;
-    padding-top: 15px;
-    width: 100%;
+    gap: 30px;
+    margin-right: 30px;
+    //padding-top: 5px;
+    //width: 100%;
 
     .menuItem {
-        width: 30%;
-        height: 30px;
-        color: white;
-        text-decoration: none;
-        background-color: $primary-text-color;
-        border: 1px solid $primary-color;
-        border-radius: 5px;
+        //height: fit-content;
+        //color: lavender;
         align-items: center;
         text-align: center;
         pointer-events: all;
+        // padding: 2px;
+        // background-color: $primary-text-color;
+        // border: 1px solid $primary-color;
+        // border-radius: 5px;
     }
 
-    a {
-        padding: 0px;
+    .menuItem:hover {
+        border: 1px solid lavender;
+        border-radius: 5px;
+        padding: 2px;
     }
+}
+
+.icon {
+    width: 25px;
+    height: 25px;
 }
