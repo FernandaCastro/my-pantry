@@ -33,7 +33,7 @@ export function LoginWithGoogle({ setShowLogin }) {
         // https://developers.google.com/identity/gsi/web/reference/js-reference#google.accounts.id.renderButton
         window.google.accounts.id.renderButton(
             GoogleSignInButton.current,
-            { theme: 'filled_blue', size: 'small', text: 'signin_with' }, // customization attributes
+            { theme: 'outlined', size: 'large', text: 'signin' }, // customization attributes
         );
     });
 

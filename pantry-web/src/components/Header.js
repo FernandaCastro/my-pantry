@@ -31,20 +31,24 @@ export default function Header() {
                 </Container>
                 <Navbar.Collapse>
                     <div className="menu">
-                        <OverlayTrigger placement="top" delay={{ show: 250, hide: 400 }} overlay={<Tooltip id="button-tooltip">Consume</Tooltip>}>
+                        <OverlayTrigger placement="auto" delay={{ show: 250, hide: 400 }} overlay={<Tooltip id="button-tooltip">Consume from Pantry</Tooltip>}>
                             <Nav.Item className="menuItem"><Nav.Link href={"/pantries/" + pantryCtx.id + "/consume"} eventKey="link-consume" disabled={!isPantrySelected} >
                                 <Image src={iconConsume} className="icon" /></Nav.Link>
                             </Nav.Item>
                         </OverlayTrigger>
-                        <Nav.Item className="menuItem">
-                            <Nav.Link href="/purchase" eventKey="link-purchase">
-                                <Image src={iconPurchase} className="icon" />
+                        <OverlayTrigger placement="auto" delay={{ show: 250, hide: 400 }} overlay={<Tooltip id="button-tooltip">Shopping List</Tooltip>}>
+                            <Nav.Item className="menuItem">
+                                <Nav.Link href="/purchase" eventKey="link-purchase">
+                                    <Image src={iconPurchase} className="icon" />
+                                </Nav.Link>
+                            </Nav.Item>
+                        </OverlayTrigger>
+                        <OverlayTrigger placement="auto" delay={{ show: 250, hide: 400 }} overlay={<Tooltip id="button-tooltip">Products</Tooltip>}>
+                            <Nav.Item className="menuItem"><Nav.Link href="/product" eventKey="link-product">
+                                <Image src={iconProduct} className="icon" />
                             </Nav.Link>
-                        </Nav.Item>
-                        <Nav.Item className="menuItem"><Nav.Link href="/product" eventKey="link-product">
-                            <Image src={iconProduct} className="icon" />
-                        </Nav.Link>
-                        </Nav.Item>
+                            </Nav.Item>
+                        </OverlayTrigger>
                     </div>
                 </Navbar.Collapse>
                 <Container bsPrefix='fix-login-btn-after'>
