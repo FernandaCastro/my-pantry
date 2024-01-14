@@ -64,4 +64,6 @@ build/
 *.json
 
 *.yml
-.env*
+.env
+
+docker-compose.yml
