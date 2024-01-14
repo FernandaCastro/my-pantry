@@ -59,3 +59,9 @@ build/
 
 ### MAC
 .DS_Store
+
+### JSON
+*.json
+
+*.yml
+.env*

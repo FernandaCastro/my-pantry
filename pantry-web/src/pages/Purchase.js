@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { getOpenPurchaseOrder, postClosePurchaseOrder, postNewPurchaseOrder, getPendingPurchaseItems, getAllProperty } from '../services/apis/mypantry/fetch/requests/PurchaseRequests.js';
+import { getOpenPurchaseOrder, postClosePurchaseOrder, postNewPurchaseOrder, getPendingPurchaseItems, getAllProperty } from '../services/apis/mypantry/requests/PurchaseRequests.js';
 import { FormGroup } from 'react-bootstrap';
 import Button from 'react-bootstrap/Button';
 import Stack from 'react-bootstrap/Stack';
@@ -10,7 +10,7 @@ import { AlertContext } from '../services/context/AppContext.js';
 import Form from 'react-bootstrap/Form';
 import NumericField from '../components/NumericField.js'
 import Table from 'react-bootstrap/Table';
-import Select from 'react-select';
+import Select from '../components/Select.js';
 import { camelCase } from '../services/Utils.js';
 import { BsArrow90DegRight } from "react-icons/bs";
 import Collapse from 'react-bootstrap/Collapse';
@@ -322,7 +322,7 @@ export default function Purchase() {
     }
 
     return (
-        <Stack gap={3}>
+        <Stack gap={2}>
             <div>
             </div>
             <div className="item d-flex justify-content-between align-items-start">

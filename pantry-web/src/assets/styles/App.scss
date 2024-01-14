@@ -8,7 +8,12 @@ $title-text-color: indigo;
 $hover-background: darken($background, 5%);
 $link-color: rgb(63, 6, 250);
 
+// div {
+//     border: 1px solid blue;
+// }
+
 a:hover {
+    border-color: $link-color !important;
     color: $link-color !important;
 }
 
@@ -26,12 +31,26 @@ a:hover {
     pointer-events: all;
 }
 
-Button:hover {
+.btn-custom :hover {
+    border-color: $link-color !important;
     color: $link-color !important;
 }
 
 Button:disabled {
     background-color: $btn-disabled-color;
+}
+
+input.input-custom {
+    border: 1px solid $border-color !important;
+    box-shadow: none;
+}
+
+input.input-custom:hover {
+    border-color: $link-color !important;
+}
+
+input.hidden {
+    border: 0px !important;
 }
 
 table {
@@ -119,6 +138,10 @@ span {
     color: $text-color;
 }
 
+.text-small {
+    font-size: small;
+}
+
 span.disabled {
     color: lighten($text-color, 5%);
 }
@@ -145,6 +168,17 @@ div.category {
         padding: 0px;
     }
 }
+
+.card-login-profile {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    border: 1px solid $border-color;
+    border-radius: 8px;
+    background-color: $background !important;
+}
+
 
 div.scroll-pantryItems {
     overflow-y: auto;
