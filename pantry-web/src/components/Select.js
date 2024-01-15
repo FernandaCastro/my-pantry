@@ -44,11 +44,12 @@ const customStyles = {
     }),
 };
 
-export default ({ name, placeholder, options, onChange }) =>
+export default ({ name, placeholder, options, onChange, defaultValue }) =>
 (<Select styles={customStyles}
     name={name}
     placeholder={placeholder}
     options={options}
-    onChange={onChange} />
+    onChange={onChange}
+    defaultValue={defaultValue} />
 );
 
