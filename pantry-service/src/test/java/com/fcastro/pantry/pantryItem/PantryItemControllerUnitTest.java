@@ -170,7 +170,7 @@ public class PantryItemControllerUnitTest {
         given(service.consumePantryItem(anyLong(), any(List.class))).willReturn(null);
 
         //when //then
-        mockMvc.perform(MockMvcRequestBuilders.post("/pantries/1/consume")
+        mockMvc.perform(MockMvcRequestBuilders.post("/pantries/1/items/consume")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(JsonUtil.toJson(list)))
                 .andExpect(status().isOk());
@@ -196,7 +196,7 @@ public class PantryItemControllerUnitTest {
         Mockito.doThrow(QuantityNotAvailableException.class).when(service).consumePantryItem(any(PantryItemConsumedDto.class));
 
         //when //then
-        mockMvc.perform(MockMvcRequestBuilders.post("/pantries/10/consume")
+        mockMvc.perform(MockMvcRequestBuilders.post("/pantries/10/items/consume")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(JsonUtil.toJson(dto)))
                 .andExpect(status().isBadRequest());
@@ -209,7 +209,7 @@ public class PantryItemControllerUnitTest {
         Mockito.doThrow(PantryNotActiveException.class).when(service).consumePantryItem(any(PantryItemConsumedDto.class));
 
         //when //then
-        mockMvc.perform(MockMvcRequestBuilders.post("/pantries/10/consume")
+        mockMvc.perform(MockMvcRequestBuilders.post("/pantries/10/items/consume")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(JsonUtil.toJson(dto)))
                 .andExpect(status().isBadRequest());

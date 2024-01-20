@@ -22,7 +22,7 @@ export default function Pantry({ mode }) {
         });
 
     const [isLoading, setIsLoading] = useState(false);
-    const { alert, setAlert } = useContext(AlertContext);
+    const { setAlert } = useContext(AlertContext);
     const [refresh, setRefresh] = useState(false);
 
     useEffect(() => {

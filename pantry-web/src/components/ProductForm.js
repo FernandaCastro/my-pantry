@@ -60,8 +60,8 @@ export default function ProductForm({ product, categories, handleSave }) {
             </Row>
             <Row>
                 <Stack direction="horizontal" gap={2} className="mb-3 d-flex justify-content-end">
-                    <div><Button variant="primary" type="reset" size="sm">Clear</Button></div>
-                    <div><Button variant="primary" type="submit" size="sm">Save</Button></div>
+                    <div><Button bsPrefix='btn-custom' type="reset" size="sm">Clear</Button></div>
+                    <div><Button bsPrefix='btn-custom' type="submit" size="sm">Save</Button></div>
                 </Stack>
             </Row>
         </Form>

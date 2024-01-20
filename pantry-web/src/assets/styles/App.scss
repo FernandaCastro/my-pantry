@@ -37,6 +37,7 @@ Button:disabled {
 table {
     background-color: $border-color;
     color: $text-color;
+    width: 100%;
 
     thead {
         position: sticky;
@@ -127,11 +128,30 @@ p {
     color: $text-color;
 }
 
-.accordion {
-    overflow: hidden;
-    border: 1px solid;
-    border-radius: 5px;
-    border-color: $border-color;
+.icon {
+    color: $title-text-color;
+}
+
+.custom-card {
+    padding-top: 5px;
+    border-bottom: 0.8px solid $border-color;
+
+    .card {
+        border: 1.5px solid $border-color !important;
+        background-color: $border-color !important;
+        border-radius: 8px !important;
+    }
+
+    .card-header {
+        background-color: darken($background, 5%);
+    }
+
+    .card-body {
+        background-color: $background;
+        border-bottom-left-radius: 5px;
+        border-bottom-right-radius: 5px;
+    }
+
 }
 
 div.category {
@@ -236,4 +256,11 @@ div.scroll-product {
     @media (min-height: 992px) {
         max-height: 700px;
     }
+}
+
+.border-custom {
+    border: 1px solid;
+    border-radius: 5px;
+    border-color: $border-color;
+    padding: 10px 20px 5px 20px; //t, r, b, l
 }

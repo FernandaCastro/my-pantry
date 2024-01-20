@@ -51,5 +51,16 @@ public class PurchaseItemSeviceUnitTest {
 
     }
 
+//    @Test
+//    public void whenListPendingPurchaseByCategory_thenCategorizeOk(){
+//        var beverageCategory = "beverage";
+//        var cleaningCategory = "cleaning";
+//        var groceryCategory = "grocery";
+//        var listPendingItems = List.of(
+//                PurchaseItem.builder().build()
+//        )
+//        when(repository.listPendingPurchase()).thenReturn(listPendingItems);
+//    }
+
 
 }

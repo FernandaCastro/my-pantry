@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from 'react';
-import { updateProduct, createProduct, deleteProduct, getProductList } from '../services/apis/mypantry/fetch/requests/PantryRequests.js';
+import { updateProduct, createProduct } from '../services/apis/mypantry/fetch/requests/PantryRequests.js';
 import { getProperty } from '../services/apis/mypantry/fetch/requests/PurchaseRequests.js';
 import Stack from 'react-bootstrap/Stack';
 import VariantType from '../components/VariantType.js';
@@ -15,8 +15,7 @@ export default function Product() {
     const [mode, setMode] = useState("");
     const [productLabel, setProductLabel] = useState("");
     const [refresh, setRefresh] = useState(0);
-    const [isLoading, setIsLoading] = useState(true);
-    const { alert, setAlert } = useContext(AlertContext);
+    const { setAlert } = useContext(AlertContext);
     const [showForm, setShowForm] = useState(false);
     const [categories, setCategories] = useState([{}]);
 
@@ -103,7 +102,7 @@ export default function Product() {
 
     function renderProductForm() {
         return (
-            <div>
+            <div className='border-custom'>
                 <div className="me-3 d-flex justify-content-end align-items-center">
                     <CloseButton aria-label="Hide" onClick={handleClearAction} />
                 </div>

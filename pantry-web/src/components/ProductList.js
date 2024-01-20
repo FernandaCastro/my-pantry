@@ -18,7 +18,7 @@ function ProductList({ disabled, onEdit, onRemove }) {
     const [productList, setProductList] = useState([]);
     const [filteredItems, setFilteredItems] = useState([]);
     const [searchText, setSearchText] = useState("");
-    const { alert, setAlert } = useContext(AlertContext);
+    const { setAlert } = useContext(AlertContext);
 
     useEffect(() => {
         if (refresh) fetchProductList();
@@ -89,8 +89,8 @@ function ProductList({ disabled, onEdit, onRemove }) {
                 </td>
                 <td className="border-start-0">
                     <Stack direction="horizontal" gap={1} className="d-flex justify-content-end">
-                        <div><Button onClick={() => onEdit(item)} variant="link" disabled={disabled}><BsPencil /></Button></div>
-                        <div><Button onClick={() => handleRemove(item.id)} variant="link" disabled={disabled}><BsTrash /></Button></div>
+                        <div><Button onClick={() => onEdit(item)} variant="link" disabled={disabled}><BsPencil className='icon' /></Button></div>
+                        <div><Button onClick={() => handleRemove(item.id)} variant="link" disabled={disabled}><BsTrash className='icon' /></Button></div>
                     </Stack>
                 </td>
             </tr >

@@ -21,4 +21,9 @@ public class PurchaseItemController {
         return ResponseEntity.ok(service.listPendingPurchaseByCategory(supermarket));
     }
 
+    @GetMapping("/{id}/items")
+    public ResponseEntity<List<PurchaseItemDto>> listPendingPurchase(@PathVariable Long id, @RequestParam(required = false) String supermarket) {
+        return ResponseEntity.ok(service.listPurchaseByCategory(id, supermarket));
+    }
+
 }

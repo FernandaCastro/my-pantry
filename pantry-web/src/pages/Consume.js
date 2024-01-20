@@ -26,7 +26,7 @@ export default function Consume() {
 
   const [isLoading, setIsLoading] = useState(true);
   const [reload, setReload] = useState(false);
-  const { alert, setAlert } = useContext(AlertContext);
+  const { setAlert } = useContext(AlertContext);
 
   useEffect(() => {
     fetchPantryData();

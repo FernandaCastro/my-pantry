@@ -34,7 +34,12 @@ public class PurchaseService {
 
     public PurchaseDto getOpenPurchaseOrder() {
         //return existing and pending purchase order
-        return convertToDto(repository.getPending());
+        var purchase = convertToDto(repository.getPending());
+        if (purchase != null) {
+            var items = purchaseItemService.listPurchaseByCategory(purchase.getId(), null);
+            purchase.setItems(items);
+        }
+        return purchase;
     }
 
     public PurchaseDto createPurchaseOrder() {

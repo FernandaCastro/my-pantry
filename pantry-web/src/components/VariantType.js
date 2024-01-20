@@ -1,9 +1,5 @@
-const SUCCESS = 'success';
-const DANGER = 'danger';
-const INFO = 'info';
-
 export default {
-    SUCCESS,
-    DANGER,
-    INFO
+    SUCCESS: 'success',
+    DANGER: 'danger',
+    INFO: 'info'
 }

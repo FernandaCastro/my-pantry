@@ -13,6 +13,12 @@ export async function getPendingPurchaseItems(supermarket) {
         FetchPurchase(`purchases/items?supermarket=${supermarket}`, "GET");
 }
 
+export async function getPurchaseItems(id, supermarket) {
+    return !supermarket || supermarket === '' || supermarket === '-' ?
+        FetchPurchase(`purchases/${id}/items`, "GET") :
+        FetchPurchase(`purchases/${id}/items?supermarket=${supermarket}`, "GET");
+}
+
 export async function postNewPurchaseOrder() {
     return FetchPurchase(`purchases/new`, "POST", {});
 }

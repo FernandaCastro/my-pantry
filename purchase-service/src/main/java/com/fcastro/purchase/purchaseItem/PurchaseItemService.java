@@ -54,6 +54,19 @@ public class PurchaseItemService {
         var list = convertToDto(repository.listPendingPurchase());
         if (supermarket == null || Strings.isEmpty(supermarket)) return list;
 
+        var categorized = categorize(list, supermarket);
+        return categorized;
+    }
+
+    public List<PurchaseItemDto> listPurchaseByCategory(Long purchaseId, String supermarket) {
+        var list = convertToDto(repository.findAllByPurchaseId(purchaseId));
+        if (supermarket == null || Strings.isEmpty(supermarket)) return list;
+
+        var categorized = categorize(list, supermarket);
+        return categorized;
+    }
+
+    private List<PurchaseItemDto> categorize(List<PurchaseItemDto> list, String supermarket) {
         var map = list.stream()
                 .collect(Collectors.groupingBy((item) ->
                         item.getProduct().getCategory() == null || item.getProduct().getCategory() == "" ?

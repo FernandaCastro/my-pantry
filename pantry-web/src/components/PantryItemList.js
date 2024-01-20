@@ -19,9 +19,10 @@ function PantryItemList({ pantryId }) {
     const [pantryItems, setPantryItems] = useState([]);
     const [filteredItems, setFilteredItems] = useState([]);
     const [searchText, setSearchText] = useState("");
-    const { alert, setAlert } = useContext(AlertContext);
+    const { setAlert } = useContext(AlertContext);
 
     useEffect(() => {
+        setIsLoading(true);
         if (pantryId && pantryId > 0 && refresh) {
             fetchPantryItems();
         }
@@ -33,7 +34,6 @@ function PantryItemList({ pantryId }) {
 
     async function fetchPantryItems() {
         try {
-            setIsLoading(true);
             const res = await getPantryItems(pantryId);
             setPantryItems(res);
             setRefresh(false);
@@ -100,7 +100,7 @@ function PantryItemList({ pantryId }) {
                 <td><NumericField object={item} attribute="currentQty" onValueChange={handleSave} /></td>
                 <td className='ms-0 pe-0'><span>{item.provisionedQty}</span></td>
                 <td className='ms-0 ps-0 me-2 pe-2'>
-                    <Button onClick={() => handleRemove(item)} variant="link" className='pt-0 pb-0 pe-0'><BsTrash /></Button>
+                    <Button onClick={() => handleRemove(item)} variant="link" className='pt-0 pb-0 pe-0'><BsTrash className='icon' /></Button>
                 </td>
             </tr >
         )
