@@ -4,11 +4,40 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
 import Select from 'react-select';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { getProperty } from '../services/apis/mypantry/fetch/requests/PurchaseRequests.js';
 
 export default function ProductForm({ product, categories, handleSave }) {
 
     const [categoryOption, setCategoryOption] = useState({ value: product.category, label: product.category });
+    const [categoryList, setCategoryList] = useState([{}]);
+
+    useEffect(() => {
+        if (!categories || Object.keys(categories).length === 0)
+            fetchCategories();
+        else
+            setCategoryList(categories);
+    }, []);
+
+    async function fetchCategories() {
+        try {
+            const res = await getProperty("product.categories");
+
+            const resCategories = JSON.parse(res.propertyValue);
+            var list = [];
+            resCategories.forEach(category => {
+                list = [...list,
+                {
+                    value: category,
+                    label: category
+                }]
+            });
+
+            setCategoryList(list);
+        } catch (error) {
+            console.error("Unable to load categories: " + error.message);
+        }
+    }
 
     function handleSubmit(e) {
         // Prevent the browser from reloading the page
@@ -48,7 +77,7 @@ export default function ProductForm({ product, categories, handleSave }) {
                 </Form.Group>
                 <Form.Group as={Col} className="mb-2" controlId="formCategory" size="sm">
                     <Form.Label size="sm">Category</Form.Label>
-                    <Select name="category" defaultValue={categoryOption} options={categories}
+                    <Select name="category" defaultValue={categoryOption} options={categoryList}
                         onChange={setCategoryOption} />
                 </Form.Group>
             </Row>
@@ -60,8 +89,8 @@ export default function ProductForm({ product, categories, handleSave }) {
             </Row>
             <Row>
                 <Stack direction="horizontal" gap={2} className="mb-3 d-flex justify-content-end">
-                    <div><Button variant="primary" type="reset" size="sm">Clear</Button></div>
-                    <div><Button variant="primary" type="submit" size="sm">Save</Button></div>
+                    <div><Button bsPrefix='btn-custom' type="reset" size="sm">Clear</Button></div>
+                    <div><Button bsPrefix='btn-custom' type="submit" size="sm">Save</Button></div>
                 </Stack>
             </Row>
         </Form>

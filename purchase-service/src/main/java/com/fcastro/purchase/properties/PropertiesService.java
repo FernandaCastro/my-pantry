@@ -15,7 +15,6 @@ public class PropertiesService {
     private final PropertiesRepository repository;
     private final ModelMapper modelMapper;
 
-
     public PropertiesService(PropertiesRepository repository, ModelMapper modelMapper) {
         this.repository = repository;
         this.modelMapper = modelMapper;
@@ -24,6 +23,11 @@ public class PropertiesService {
     public Optional<PropertiesDto> get(String key) {
         return repository.findById(key)
                 .map(this::convertToDTO);
+    }
+
+    public List<PropertiesDto> getAll(String key) {
+        List<Properties> listEntity = repository.findAllLikeId(key);
+        return listEntity.stream().map(this::convertToDTO).collect(Collectors.toList());
     }
 
     public List<PropertiesDto> getAll() {

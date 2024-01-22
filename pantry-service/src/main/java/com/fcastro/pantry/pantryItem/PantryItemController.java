@@ -1,5 +1,6 @@
 package com.fcastro.pantry.pantryItem;
 
+import com.fcastro.pantry.exception.DatabaseConstraintException;
 import com.fcastro.pantry.exception.ResourceNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,8 +31,16 @@ public class PantryItemController {
         return ResponseEntity.ok(service.getAll(pantryId));
     }
 
+    @GetMapping("/items/consume")
+    public ResponseEntity<List<PantryItemDto>> getAllConsume(@PathVariable long pantryId) {
+        return ResponseEntity.ok(service.getAllConsume(pantryId));
+    }
+
     @PostMapping("/items")
     public ResponseEntity<PantryItemDto> create(@RequestBody PantryItemDto newDto) {
+        if (service.get(newDto.getPantryId(), newDto.getProductId()).isPresent())
+            throw new DatabaseConstraintException("This item is already in the pantry. It shouldn't be added again.");
+
         return ResponseEntity.status(HttpStatus.CREATED).body(service.save(newDto));
     }
 
@@ -56,14 +65,14 @@ public class PantryItemController {
         return ResponseEntity.noContent().build();
     }
 
-    @PostMapping("/consume")
+    @PostMapping("items/consume")
     public ResponseEntity<List<PantryItemDto>> consumeProduct(@PathVariable Long pantryId, @RequestBody List<PantryItemConsumedDto> items) {
         service.consumePantryItem(pantryId, items);
         var list = service.getAll(pantryId);
         return ResponseEntity.ok().body(list);
     }
 
-    @GetMapping("/rebalance")
+    @GetMapping("/balancing")
     public ResponseEntity<List<PantryItemDto>> consumeProduct(@PathVariable Long pantryId) {
         var list = service.processPurchaseNeed(pantryId);
         return ResponseEntity.ok().body(list);

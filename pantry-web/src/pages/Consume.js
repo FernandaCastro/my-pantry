@@ -1,15 +1,16 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useParams } from 'react-router';
-import { getPantry, getPantryItems, postPantryConsume } from '../../services/apis/mypantry/fetch/requests/PantryRequests.js';
+import { getPantry, getPantryItemsConsume, postPantryConsume } from '../services/apis/mypantry/fetch/requests/PantryRequests.js';
 import Button from 'react-bootstrap/Button';
 import Stack from 'react-bootstrap/Stack';
 import Table from 'react-bootstrap/Table';
 import Image from 'react-bootstrap/Image';
-import food from '../../images/healthy-food.png'
+import food from '../assets/images/healthy-food.png'
 import VariantType from '../components/VariantType.js';
-import { AlertContext } from '../../services/context/AppContext.js';
+import { AlertContext } from '../services/context/AppContext.js';
 import Form from 'react-bootstrap/Form';
 import NumericField from '../components/NumericField.js'
+import { camelCase } from '../services/Utils.js';
 
 export default function Consume() {
 
@@ -23,8 +24,9 @@ export default function Consume() {
   const [searchText, setSearchText] = useState("");
   const [isPantryEmpty, setIsPantryEmpty] = useState(true);
 
-  const [isLoading, setIsLoading] = useState(true)
-  const { alert, setAlert } = useContext(AlertContext);
+  const [isLoading, setIsLoading] = useState(true);
+  const [reload, setReload] = useState(false);
+  const { setAlert } = useContext(AlertContext);
 
   useEffect(() => {
     fetchPantryData();
@@ -32,6 +34,8 @@ export default function Consume() {
 
   useEffect(() => {
     filter(searchText);
+    loadConsumedItems(pantryItems);
+    setReload(!reload);
   }, [pantryItems])
 
   async function fetchPantryData() {
@@ -40,13 +44,12 @@ export default function Consume() {
       let res = await getPantry(id);
       setPantry(res);
 
-      res = await getPantryItems(res.id);
+      res = await getPantryItemsConsume(res.id);
       if (res != null && Object.keys(res).length === 0) {
         return showAlert(VariantType.INFO, "Pantry is empty. There is no item to consume.");
       }
 
       setPantryItems(res);
-      loadConsumedItems(res);
     } catch (error) {
       showAlert(VariantType.DANGER, error.message);
     } finally {
@@ -59,7 +62,6 @@ export default function Consume() {
       setIsLoading(true);
       const res = await postPantryConsume(pantry.id, consumedItems);
       setPantryItems(res);
-      loadConsumedItems(res);
 
       showAlert(VariantType.SUCCESS, "Pantry updated successfully!");
     } catch (error) {
@@ -119,20 +121,20 @@ export default function Consume() {
     let consumedItem = getConsumedItem(item.pantryId, item.productId);
 
     return (
-      <tr key={item.productId} className="border border-primary-subtle align-middle">
+      <tr key={item.productId} className="align-middle">
         <td>
           <Stack direction="horizontal" gap={2}>
-            <div><Image src={food} width={20} height={20} rounded /></div>
-            <div><span>{item.product.code}</span></div>
+            <Image src={food} width={20} height={20} rounded />
+            <span>{camelCase(item.product.code)}</span>
           </Stack>
           <span className='d-none d-md-block' hidden={item.product.description === ''}>
-            <br /> {item.product.description}  {item.product.size}
+            {item.product.description}  {item.product.size}
           </span>
         </td>
         <td><span>{item.currentQty}</span></td>
         <td><span className='d-none d-md-block align-center'>{item.provisionedQty}</span></td>
         <td><span className='d-none d-md-block'>{item.lastProvisioning}</span></td>
-        <td><NumericField object={consumedItem} attribute="qty" onValueChange={updateConsumedItem} disabled={isPantryEmpty} /></td>
+        <td><NumericField key={reload} object={consumedItem} attribute="qty" onValueChange={updateConsumedItem} disabled={isPantryEmpty} /></td>
       </tr>
     )
   }
@@ -159,33 +161,37 @@ export default function Consume() {
     <Stack gap={3} hidden={isNull(pantryItems) || pantryItems.length === 0}>
       <div>
       </div>
-      <div variant="primary">
+      <div>
         <Stack direction="horizontal" gap={2} className='d-flex'>
-          <div className="me-auto"><h6 className="text-start fs-6 lh-lg text-primary">Consume {pantry.name}</h6></div>
-          <div><Button variant="primary" size="sm" onClick={handleClear}>Clear</Button></div>
-          <div><Button variant="primary" size="sm" onClick={handleSave} >Save</Button></div>
+          <div className="me-auto"><h6 className="text-start fs-6 lh-lg title">Consume</h6></div>
+          <Button bsPrefix="btn-custom" size="sm" onClick={handleClear}>Clear</Button>
+          <Button bsPrefix="btn-custom" size="sm" onClick={handleSave} >Save</Button>
         </Stack>
       </div>
       <div>
         <Form.Control size="sm" type="text" id="search" className="form-control mb-1" placeholder="Seacrh for items here" value={searchText} onChange={(e) => filter(e.target.value)} />
-        <Table variant="primary" className="rounded-2 overflow-hidden " hover>
-          <tbody >
-            <tr key="0:0" className="border border-primary-subtle align-middle" style={{ borderRadius: '6px', overflow: 'hidden' }}>
-              <th scope="col"><span>Code/Desc.</span></th>
-              <th scope="col"><span>Current</span></th>
-              <th scope="col"><span className='d-none d-md-block'>Provisioned</span></th>
-              <th scope="col"><span className='d-none d-md-block'>Prov. on</span></th>
-              <th scope="col"><span>Consume</span></th>
-            </tr>
-            {renderItems()}
-          </tbody>
-        </Table>
-        {isLoading ? <h6>Loading...</h6> : <span />}
+        <div className='scroll-consume'>
+          <Table>
+            <thead>
+              <tr key="0:0" className="align-middle">
+                <th><h6 className="title"> Code/Desc.</h6></th>
+                <th><h6 className="title">Current</h6></th>
+                <th><h6 className="title d-none d-md-block">Prov.</h6></th>
+                <th><h6 className="title d-none d-md-block">Prov. on</h6></th>
+                <th><h6 className="title">Consume</h6></th>
+              </tr>
+            </thead>
+            <tbody>
+              {renderItems()}
+            </tbody>
+          </Table>
+          {isLoading ? <h6>Loading...</h6> : <span />}
+        </div>
       </div>
       <Stack direction="horizontal" gap={2} className="d-flex justify-content-end">
-        <div><Button variant="primary" size="sm" onClick={handleClear}>Clear</Button></div>
-        <div><Button variant="primary" size="sm" onClick={handleSave}>Save</Button></div>
+        <Button bsPrefix="btn-custom" size="sm" onClick={handleClear}>Clear</Button>
+        <Button bsPrefix="btn-custom" size="sm" onClick={handleSave}>Save</Button>
       </Stack>
-    </Stack>
+    </Stack >
   )
 }

@@ -48,6 +48,8 @@ public class GlobalExceptionHandler {
         exceptionTypes.put(PurchaseAlreadyProcessedException.class, "application-error");
         exceptionTypes.put(PurchaseItemsMissingException.class, "application-error");
         exceptionTypes.put(NoItemToPurchaseException.class, "application-error");
+        exceptionTypes.put(ResourceNotValidException.class, "application-error");
+
     }
 
     @ExceptionHandler(value = {

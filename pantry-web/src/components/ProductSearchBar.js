@@ -2,17 +2,16 @@ import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import { useState, useContext } from 'react';
 import { BsEraser, BsCheck2All, BsChevronDown, BsPlusLg } from "react-icons/bs";
-import VariantType from '../components/VariantType.js';
-import { getFilteredProductList, createProduct } from '../../services/apis/mypantry/fetch/requests/PantryRequests.js';
-import { AlertContext } from '../../services/context/AppContext.js';
-import Table from 'react-bootstrap/Table';
-import Accordion from 'react-bootstrap/Accordion';
-import { useAccordionButton } from 'react-bootstrap/AccordionButton';
+import VariantType from './VariantType.js';
+import { getFilteredProductList, createProduct } from '../services/apis/mypantry/fetch/requests/PantryRequests.js';
+import { AlertContext } from '../services/context/AppContext.js';
 import Card from 'react-bootstrap/Card';
 import Stack from 'react-bootstrap/Stack';
 import CloseButton from 'react-bootstrap/CloseButton';
-import '../../styles/ProductSearchBar.css';
+import '../assets/styles/ProductSearchBar.css';
 import ProductForm from './ProductForm.js';
+import { camelCase } from '../services/Utils.js';
+import Collapse from 'react-bootstrap/Collapse';
 
 function ProductSearchBar({ handleSelectAction, handleClearAction, addButtonVisible }) {
 
@@ -21,7 +20,8 @@ function ProductSearchBar({ handleSelectAction, handleClearAction, addButtonVisi
     const [results, setResults] = useState([]);
     const [notFoundMessage, setNotFoundMessage] = useState("");
     const [showProductForm, setShowProductForm] = useState(false);
-    const { alert, setAlert } = useContext(AlertContext);
+    const [show, setShow] = useState(true);
+    const { setAlert } = useContext(AlertContext);
 
     const [product, setProduct] = useState({});
 
@@ -62,17 +62,17 @@ function ProductSearchBar({ handleSelectAction, handleClearAction, addButtonVisi
     function renderSearchBar() {
         return (
             <Stack direction="horizontal" gap={2} className="w-100">
-                <div className="w-50 pe-0">
+                <div className="w-75 pe-0">
                     <Form.Control size="sm" type="text" placeholder='Search for products here'
                         value={searchText}
                         onChange={(e) => handleSearch(e)} />
                 </div>
                 <div>
-                    <Button className="w-0 p-0" type="reset" variant="link" onClick={handleClear} title='Clear search text'><BsEraser /></Button>
+                    <Button className="w-0 p-0" type="reset" variant="link" onClick={handleClear} title='Clear search text'><BsEraser className='icon' /></Button>
                 </div>
                 <div>
                     {addButtonVisible === true ?
-                        <Button className="w-0 p-0" variant="link" onClick={handleNewProduct} title='Create new product' disabled={results && results.length > 0}><BsPlusLg /></Button> : <span />}
+                        <Button className="w-0 p-0" variant="link" onClick={handleNewProduct} title='Create new product' disabled={results && results.length > 0}><BsPlusLg className='icon' /></Button> : <span />}
                 </div>
             </Stack>
         );
@@ -82,11 +82,11 @@ function ProductSearchBar({ handleSelectAction, handleClearAction, addButtonVisi
         return (
             results.map((item) => {
                 return (
-                    <tr key={item.id} className="w-0 p-0">
-                        <td className="w-0 p-0 border-end-0">
-                            <span>{item.code} - {item.description}</span></td>
-                        <td className="w-0 p-0 border-start-0">
-                            <Button onClick={() => handleSelect(item)} variant="link" title='Select this product'><BsCheck2All /></Button>
+                    <tr key={item.id} className="w-0 p-0 colorfy">
+                        <td className="w-0 p-0 border-end-0 colorfy">
+                            <span>{camelCase(item.code)} {item.description === "" ? "" : ' - ' + item.description}</span></td>
+                        <td className="w-0 p-0 border-start-0 colorfy">
+                            <Button onClick={() => handleSelect(item)} variant="link" title='Select this product'><BsCheck2All className='icon' /></Button>
                         </td>
                     </tr>
 
@@ -139,37 +139,35 @@ function ProductSearchBar({ handleSelectAction, handleClearAction, addButtonVisi
     }
 
     return (
-        <Accordion flush defaultActiveKey="0" id="search-accordion" className="border border-primary-subtle rounded">
-            <Card.Header className="m-2 d-flex justify-content-between">
-                {renderSearchBar()}
-                <SearchToggle eventKey="0" />
-            </Card.Header>
-            <Accordion.Collapse eventKey="0">
-                <Card.Body className="m-3 mb-0">
-                    <span style={{ color: 'red', fontSize: '11px' }}>{notFoundMessage}</span>
-                    {renderProductForm()}
-                    {results ? (
-                        <Table className="table table-sm align-middle" hover>
-                            <tbody>
-                                {renderResults()}
-                            </tbody>
-                        </Table>)
-                        : <span />
-                    }
-                </Card.Body>
-            </Accordion.Collapse>
+        <>
+            <div onClick={() => setShow(!show)} className="d-flex justify-content-start gap-3 align-items-center">
+                <h6 className='title'> Add Product to Pantry</h6>
+                <BsChevronDown className='icon' />
+            </div>
+            <div className='custom-card'>
+                <Collapse in={show} >
+                    <Card>
+                        <Card.Header className="m-0 p-2 d-flex justify-content-between">
+                            {renderSearchBar()}
+                        </Card.Header>
+                        <Card.Body className="m-0 p-2">
+                            <span style={{ color: 'red', fontSize: '11px' }}>{notFoundMessage}</span>
+                            {renderProductForm()}
+                            {results ? (
+                                <table hover>
+                                    <tbody>
+                                        {renderResults()}
+                                    </tbody>
+                                </table>)
+                                : <span />
+                            }
+                        </Card.Body>
+                    </Card>
 
-        </Accordion >
+                </Collapse>
+            </div>
+        </>
 
     );
-
-    function SearchToggle({ children, eventKey }) {
-        const decoratedOnClick = useAccordionButton(eventKey,
-        );
-
-        return (
-            <Button variant="link" onClick={decoratedOnClick} ><BsChevronDown /></Button>
-        );
-    }
 }
 export default ProductSearchBar;

@@ -1,9 +1,9 @@
 import React, { useState, useContext, useEffect } from 'react';
-import { updateProduct, createProduct, deleteProduct, getProductList } from '../../services/apis/mypantry/fetch/requests/PantryRequests.js';
-import { getProperty } from '../../services/apis/mypantry/fetch/requests/PurchaseRequests.js';
+import { updateProduct, createProduct } from '../services/apis/mypantry/fetch/requests/PantryRequests.js';
+import { getProperty } from '../services/apis/mypantry/fetch/requests/PurchaseRequests.js';
 import Stack from 'react-bootstrap/Stack';
 import VariantType from '../components/VariantType.js';
-import { AlertContext } from '../../services/context/AppContext.js';
+import { AlertContext } from '../services/context/AppContext.js';
 import ProductForm from '../components/ProductForm.js';
 import ProductList from '../components/ProductList.js';
 import Button from 'react-bootstrap/Button';
@@ -15,8 +15,7 @@ export default function Product() {
     const [mode, setMode] = useState("");
     const [productLabel, setProductLabel] = useState("");
     const [refresh, setRefresh] = useState(0);
-    const [isLoading, setIsLoading] = useState(true);
-    const { alert, setAlert } = useContext(AlertContext);
+    const { setAlert } = useContext(AlertContext);
     const [showForm, setShowForm] = useState(false);
     const [categories, setCategories] = useState([{}]);
 
@@ -30,7 +29,7 @@ export default function Product() {
 
             const resCategories = JSON.parse(res.propertyValue);
             var list = [];
-            resCategories.categories.forEach(category => {
+            resCategories.forEach(category => {
                 list = [...list,
                 {
                     value: category,
@@ -103,7 +102,7 @@ export default function Product() {
 
     function renderProductForm() {
         return (
-            <div>
+            <div className='border-custom'>
                 <div className="me-3 d-flex justify-content-end align-items-center">
                     <CloseButton aria-label="Hide" onClick={handleClearAction} />
                 </div>
@@ -117,8 +116,8 @@ export default function Product() {
             <div></div>
             <div>
                 <Stack direction="horizontal" gap={2} className='d-flex justify-content-between'>
-                    <h6 className="text-start fs-6 lh-lg text-primary">{productLabel} </h6>
-                    <Button variant="primary" size="sm" onClick={handleNew} className='me-2' disabled={(mode === "edit") || (product && Object.keys(product) > 0)}>New Product</Button>
+                    <h6 className="text-start fs-6 lh-lg title">{productLabel} </h6>
+                    <Button bsPrefix="btn-custom" size="sm" onClick={handleNew} className='me-2' disabled={(mode === "edit") || (product && Object.keys(product) > 0)}>New Product</Button>
                 </Stack>
             </div>
             <div hidden={!showForm}>

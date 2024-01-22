@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { PantryContext } from '../../services/context/AppContext.js';
-import { getPantryList, deletePantry } from '../../services/apis/mypantry/fetch/requests/PantryRequests.js';
+import { PantryContext } from '../services/context/AppContext.js';
+import { getPantryList, deletePantry } from '../services/apis/mypantry/fetch/requests/PantryRequests.js';
 import Stack from 'react-bootstrap/Stack';
 import Table from 'react-bootstrap/Table';
 import Button from 'react-bootstrap/Button';
-import { AlertContext } from '../../services/context/AppContext.js';
+import { AlertContext } from '../services/context/AppContext.js';
 import VariantType from '../components/VariantType.js';
 import { BsPencil, BsTrash } from "react-icons/bs";
 
@@ -13,8 +13,9 @@ export default function Home() {
     const [pantries, setPantries] = useState([]);
     const [refresh, setRefresh] = useState(true);
 
+    const [isLoading, setIsLoading] = useState(true);
     const { pantryCtx, setPantryCtx } = useContext(PantryContext);
-    const { alert, setAlert } = useContext(AlertContext);
+    const { setAlert } = useContext(AlertContext);
 
     useEffect(() => {
         if (refresh) fetchPantries();
@@ -22,10 +23,12 @@ export default function Home() {
 
     async function fetchPantries() {
         setRefresh(true);
+        setIsLoading(true);
         try {
             const res = await getPantryList();
             setPantries(res);
             setRefresh(false);
+            setIsLoading(false);
         } catch (error) {
             showAlert(VariantType.DANGER, error.message);
         }
@@ -51,13 +54,13 @@ export default function Home() {
 
     function renderItem(item) {
         return (
-            <tr key={item.id} className="border border-primary-subtle">
-                <td className="border-end-0" onClick={(e) => handlePantryClick(item)}>
-                    <span className={item.isActive ? "" : "text-black-50"}>{item.name}</span></td>
-                <td className="border-start-0">
+            <tr key={item.id} className="align-middle">
+                <td onClick={(e) => handlePantryClick(item)}>
+                    <span className={item.isActive ? "" : "disabled"}>{item.name}</span></td>
+                <td>
                     <Stack direction="horizontal" gap={1} className="d-flex justify-content-end">
-                        <div><Button href={"/pantries/" + item.id + "/edit"} variant="link"><BsPencil /></Button></div>
-                        <div><Button onClick={() => handleRemove(item.id)} variant="link"><BsTrash /></Button></div>
+                        <div><Button href={"/pantries/" + item.id + "/edit"} variant="link"><BsPencil className='icon' /></Button></div>
+                        <div><Button onClick={() => handleRemove(item.id)} variant="link"><BsTrash className='icon' /></Button></div>
                     </Stack>
                 </td>
             </tr>
@@ -65,7 +68,16 @@ export default function Home() {
     }
 
     function renderItems() {
-        return pantries.map((item) => (renderItem(item)));
+        if (isLoading)
+            return (<span>Loading...</span>)
+
+        return (
+            <Table className='bordered'>
+                <tbody>
+                    {pantries.map((item) => (renderItem(item)))}
+                </tbody>
+            </Table>
+        )
     }
 
     function handlePantryClick(item) {
@@ -81,16 +93,14 @@ export default function Home() {
     return (
         <Stack gap={3}>
             <div></div>
-            <div className="d-flex justify-content-end align-items-center">
-                <Button variant="primary" size="sm" href={"/pantries/new"} >New Pantry</Button>
+            <div className="d-flex justify-content-between align-items-center">
+                <h6 className='title'>Pantry List</h6>
+                <Button bsPrefix="btn-custom" size="sm" href={"/pantries/new"} className="pe-2 ps-2">New Pantry</Button>
             </div>
             <div>
-                <Table variant="primary" className='table table-sm align-middle' hover>
-                    <tbody>
-                        {renderItems()}
-                    </tbody>
-                </Table>
+                {renderItems()}
             </div>
         </Stack>
     )
 }
+

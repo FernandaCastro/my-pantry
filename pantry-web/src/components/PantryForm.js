@@ -58,8 +58,8 @@ export default function PantryForm({ pantry, handleSave }) {
             </Row>
             <Row>
                 <Stack direction="horizontal" gap={2} className="mb-3 d-flex justify-content-end">
-                    <div><Button variant="primary" type="reset" size="sm">Clear</Button></div>
-                    <div><Button variant="primary" type="submit" size="sm">Save</Button></div>
+                    <Button bsPrefix='btn-custom' type="reset" size="sm">Clear</Button>
+                    <Button bsPrefix='btn-custom' type="submit" size="sm">Save</Button>
                 </Stack>
             </Row>
         </Form>

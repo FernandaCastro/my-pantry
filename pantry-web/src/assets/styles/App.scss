@@ -1,0 +1,266 @@
+$background: lavender;
+$border-color: #909df4;
+$btn-background-color: #6c66d8;
+$btn-disabled-color: lighten($btn-background-color, 20%);
+$footer-background: hsl(219, 11%, 25%);
+$text-color: hsl(219, 11%, 25%);
+$title-text-color: indigo;
+$hover-background: darken($background, 5%);
+$link-color: rgb(63, 6, 250);
+
+a:hover {
+    color: $link-color !important;
+}
+
+.btn-custom {
+    min-width: 20%;
+    width: fit-content;
+    height: fit-content;
+    color: white;
+    text-decoration: none;
+    background-color: $btn-background-color;
+    border: 1px solid $border-color;
+    border-radius: 5px;
+    align-items: center;
+    text-align: center;
+    pointer-events: all;
+}
+
+Button:hover {
+    color: $link-color !important;
+}
+
+Button:disabled {
+    background-color: $btn-disabled-color;
+}
+
+table {
+    background-color: $border-color;
+    color: $text-color;
+    width: 100%;
+
+    thead {
+        position: sticky;
+        top: 0;
+    }
+
+    th {
+        border-color: $border-color;
+        background: darken($background, 5%) !important;
+    }
+
+    tr {
+        border-color: $border-color;
+        background: $background !important;
+    }
+
+    td {
+        border-color: $border-color;
+        background: $background !important;
+    }
+
+    td.highlight {
+        background: darken($background, 5%) !important;
+    }
+
+    :hover {
+
+        >td,
+        >tr,
+        >th {
+            background-color: $hover-background !important;
+        }
+    }
+
+}
+
+table.bordered {
+    overflow: hidden;
+    border: 1px solid;
+    border-radius: 5px;
+    border-color: $border-color;
+}
+
+.table-hover {
+    :hover {
+
+        >td,
+        >tr,
+        >th {
+            background-color: $hover-background !important;
+        }
+    }
+}
+
+.list {
+    overflow: hidden;
+    border: 0.5px solid;
+    border-radius: 5px;
+    border-color: $border-color;
+
+    .item {
+        overflow: hidden;
+        border: 0.5px solid;
+        border-color: $border-color;
+        color: $text-color;
+    }
+}
+
+.section {
+    border-top: 1.5px solid $border-color;
+    color: $text-color;
+}
+
+.title {
+    color: $title-text-color;
+    margin: inherit;
+}
+
+span {
+    color: $text-color;
+}
+
+span.disabled {
+    color: lighten($text-color, 5%);
+}
+
+p {
+    color: $text-color;
+}
+
+.icon {
+    color: $title-text-color;
+}
+
+.custom-card {
+    padding-top: 5px;
+    border-bottom: 0.8px solid $border-color;
+
+    .card {
+        border: 1.5px solid $border-color !important;
+        background-color: $border-color !important;
+        border-radius: 8px !important;
+    }
+
+    .card-header {
+        background-color: darken($background, 5%);
+    }
+
+    .card-body {
+        background-color: $background;
+        border-bottom-left-radius: 5px;
+        border-bottom-right-radius: 5px;
+    }
+
+}
+
+div.category {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 5px;
+    padding: 0px;
+
+    button {
+        padding: 0px;
+    }
+}
+
+div.scroll-pantryItems {
+    overflow-y: auto;
+    border: 1px solid;
+    border-radius: 5px;
+    border-color: $border-color;
+
+    @media (max-height: 575px) {
+        max-height: 300px;
+    }
+
+    @media (min-height: 576px) {
+        max-height: 400px;
+    }
+
+    @media (min-height: 768px) {
+        max-height: 450px;
+    }
+
+    @media (min-height: 992px) {
+        max-height: 700px;
+    }
+}
+
+div.scroll-consume {
+    overflow-y: auto;
+    border: 1px solid;
+    border-radius: 5px;
+    border-color: $border-color;
+
+    @media (max-height: 575px) {
+        max-height: 300px;
+    }
+
+    @media (min-height: 576px) {
+        max-height: 400px;
+    }
+
+    @media (min-height: 768px) {
+        max-height: 660px;
+    }
+
+    @media (min-height: 992px) {
+        max-height: 850px;
+    }
+}
+
+div.scroll-purchase {
+    overflow-y: auto;
+    border: 1px solid;
+    border-radius: 5px;
+    border-color: $border-color;
+
+    @media (min-height: 575px) {
+        max-height: 250px;
+    }
+
+    @media (min-height: 576px) {
+        max-height: 350px;
+    }
+
+    @media (min-height: 768px) {
+        max-height: 450px;
+    }
+
+    @media (min-height: 992px) {
+        max-height: 550px;
+    }
+}
+
+div.scroll-product {
+    overflow-y: auto;
+    border: 1px solid;
+    border-radius: 5px;
+    border-color: $border-color;
+
+    @media (max-height: 575px) {
+        max-height: 300px;
+    }
+
+    @media (min-height: 576px) {
+        max-height: 400px;
+    }
+
+    @media (min-height: 768px) {
+        max-height: 600px;
+    }
+
+    @media (min-height: 992px) {
+        max-height: 700px;
+    }
+}
+
+.border-custom {
+    border: 1px solid;
+    border-radius: 5px;
+    border-color: $border-color;
+    padding: 10px 20px 5px 20px; //t, r, b, l
+}

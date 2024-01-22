@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import reportWebVitals from './reportWebVitals';
-import App from './views/App.js';
+import App from './pages/App.js';
 
 // Importing Sass with Bootstrap CSS
 //import './App.scss';

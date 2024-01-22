@@ -10,14 +10,14 @@ import java.util.Optional;
 
 public interface PurchaseItemRepository extends JpaRepository<PurchaseItem, Long> {
 
-    @Query("select i, p from purchaseItem i, product p where i.product.id = p.id and i.purchase.id is null order by p.code")
+    @Query("select i, p from purchaseItem i, product p where i.product.id = p.id and i.purchase.id is null order by p.category, p.code")
     List<PurchaseItem> listPendingPurchase();
 
     @Modifying
     @Query("update purchaseItem set purchase.id = :purchaseId where purchase.id is null")
     void updatePendingPurchaseItems(@Param("purchaseId") Long purchaseId);
 
-    @Query("select p from purchaseItem p where p.purchase.id = :purchaseId")
+    @Query("select i, p from purchaseItem i, product p where i.purchase.id = :purchaseId and i.product.id = p.id order by p.category, p.code")
     List<PurchaseItem> findAllByPurchaseId(@Param("purchaseId") Long purchaseId);
 
     @Query("select p from purchaseItem p where p.pantryId = :pantryId and p.product.id = :productId and p.purchase.id is null")

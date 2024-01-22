@@ -1,0 +1,64 @@
+$primary-color: #909df4;
+$primary-text-color: #6c66d8;
+$primary-background: #383d46;
+$secondary-text-color: #1c1d1f;
+$secondary_background: lavender;
+
+.header {
+    background-image: linear-gradient(to bottom right, dodgerblue, purple);
+    padding: 10px;
+    padding-left: 15px;
+
+    nav a {
+        color: white;
+    }
+
+    nav button {
+        border-color: white;
+        color: white;
+        padding: 4px;
+    }
+
+    .toggle-btn {
+        width: auto;
+        height: auto;
+        color: white;
+    }
+
+    .navbar-brand {
+        width: 15%;
+    }
+
+    .navbar-nav {
+        width: 40%;
+        justify-content: center;
+    }
+}
+
+
+.menu {
+    display: flex;
+    direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    padding-top: 15px;
+    width: 100%;
+
+    .menuItem {
+        width: 30%;
+        height: 30px;
+        color: white;
+        text-decoration: none;
+        background-color: $primary-text-color;
+        border: 1px solid $primary-color;
+        border-radius: 5px;
+        align-items: center;
+        text-align: center;
+        pointer-events: all;
+    }
+
+    a {
+        padding: 0px;
+    }
+}

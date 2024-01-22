@@ -1,10 +1,10 @@
 import React, { useEffect, useState, useContext } from 'react';
 import { useParams } from 'react-router';
-import { getPantry, updatePantry, createPantry, createPantryItem, getPantryRebalance } from '../../services/apis/mypantry/fetch/requests/PantryRequests.js';
+import { getPantry, updatePantry, createPantry, createPantryItem, getPantryRebalance } from '../services/apis/mypantry/fetch/requests/PantryRequests.js';
 import Stack from 'react-bootstrap/Stack';
 import VariantType from '../components/VariantType.js';
 import PantryForm from '../components/PantryForm.js';
-import { AlertContext } from '../../services/context/AppContext.js';
+import { AlertContext } from '../services/context/AppContext.js';
 import ProductSearchBar from '../components/ProductSearchBar.js'
 import PantryItemList from '../components/PantryItemList.js';
 import Button from 'react-bootstrap/Button';
@@ -22,7 +22,7 @@ export default function Pantry({ mode }) {
         });
 
     const [isLoading, setIsLoading] = useState(false);
-    const { alert, setAlert } = useContext(AlertContext);
+    const { setAlert } = useContext(AlertContext);
     const [refresh, setRefresh] = useState(false);
 
     useEffect(() => {
@@ -116,7 +116,7 @@ export default function Pantry({ mode }) {
     function renderPantryList() {
         return (
             <Stack gap={2}>
-                <div className="d-flex justify-content-end"><Button variant="primary" size="sm" onClick={handleRebalance} title='Analyse and provision items'>Balance Inventory</Button></div>
+                <div className="d-flex justify-content-end"><Button bsPrefix='btn-custom' size="sm" onClick={handleRebalance} title='Analyse and provision items'>Balance Inventory</Button></div>
                 <div><PantryItemList key={refresh} pantryId={pantry.id} /></div>
             </Stack>
         )

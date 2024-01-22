@@ -27,8 +27,8 @@ public class PropertiesController {
     }
 
     @GetMapping()
-    public ResponseEntity<List<PropertiesDto>> getAll() {
-        return ResponseEntity.ok(service.getAll());
+    public ResponseEntity<List<PropertiesDto>> getAll(@RequestParam String key) {
+        return ResponseEntity.ok(service.getAll(key));
     }
 
 

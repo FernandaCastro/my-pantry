@@ -1,15 +1,16 @@
-import { AlertContext } from '../../services/context/AppContext.js';
-import { getPantryItems, deletePantryItem, updatePantryItem } from '../../services/apis/mypantry/fetch/requests/PantryRequests.js';
+import { AlertContext } from '../services/context/AppContext.js';
+import { getPantryItems, deletePantryItem, updatePantryItem } from '../services/apis/mypantry/fetch/requests/PantryRequests.js';
 import React, { useEffect, useState, useContext } from 'react';
 import VariantType from '../components/VariantType.js';
 import Button from 'react-bootstrap/Button';
 import { BsTrash } from "react-icons/bs";
-import NumericField from '../components/NumericField.js'
+import NumericField from './NumericField.js'
 import Table from 'react-bootstrap/Table';
 import Form from 'react-bootstrap/Form';
 import Image from 'react-bootstrap/Image';
-import food from '../../images/healthy-food.png'
+import food from '../assets/images/healthy-food.png'
 import Stack from 'react-bootstrap/Stack';
+import { camelCase } from '../services/Utils.js';
 
 function PantryItemList({ pantryId }) {
 
@@ -18,9 +19,10 @@ function PantryItemList({ pantryId }) {
     const [pantryItems, setPantryItems] = useState([]);
     const [filteredItems, setFilteredItems] = useState([]);
     const [searchText, setSearchText] = useState("");
-    const { alert, setAlert } = useContext(AlertContext);
+    const { setAlert } = useContext(AlertContext);
 
     useEffect(() => {
+        setIsLoading(true);
         if (pantryId && pantryId > 0 && refresh) {
             fetchPantryItems();
         }
@@ -32,7 +34,6 @@ function PantryItemList({ pantryId }) {
 
     async function fetchPantryItems() {
         try {
-            setIsLoading(true);
             const res = await getPantryItems(pantryId);
             setPantryItems(res);
             setRefresh(false);
@@ -89,7 +90,7 @@ function PantryItemList({ pantryId }) {
                 <td>
                     <Stack direction="horizontal" gap={2}>
                         <div><Image src={food} width={20} height={20} rounded /></div>
-                        <div><span>{item.product.code}</span></div>
+                        <div><span>{camelCase(item.product.code)}</span></div>
                     </Stack>
                     <p className='d-none d-md-block ms-4 mb-0' hidden={item.product.description === ''}>
                         {item.product.description}  {item.product.size}
@@ -99,7 +100,7 @@ function PantryItemList({ pantryId }) {
                 <td><NumericField object={item} attribute="currentQty" onValueChange={handleSave} /></td>
                 <td className='ms-0 pe-0'><span>{item.provisionedQty}</span></td>
                 <td className='ms-0 ps-0 me-2 pe-2'>
-                    <Button onClick={() => handleRemove(item)} variant="link" className='pt-0 pb-0 pe-0'><BsTrash /></Button>
+                    <Button onClick={() => handleRemove(item)} variant="link" className='pt-0 pb-0 pe-0'><BsTrash className='icon' /></Button>
                 </td>
             </tr >
         )
@@ -117,18 +118,22 @@ function PantryItemList({ pantryId }) {
     return (
         <div>
             <Form.Control size="sm" type="text" id="search" className="form-control mb-1" value={searchText} placeholder="Seacrh for items here" onChange={(e) => filter(e.target.value)} />
-            <Table variant="primary" className="rounded-2 overflow-hidden " hover>
-                <tbody >
-                    <tr key="0:0" className="border border-primary-subtle align-middle" style={{ borderRadius: '6px', overflow: 'hidden' }}>
-                        <th scope="col"><span>Code/Desc.</span></th>
-                        <th scope="col"><span>Ideal</span></th>
-                        <th scope="col"><span>Current</span></th>
-                        <th scope="col" className='ms-0 ps-0'><span>Prov.</span></th>
-                        <th scope="col" className='ms-0 ps-0 me-2 pe-2'><span /></th>
-                    </tr>
-                    {renderItems()}
-                </tbody>
-            </Table>
+            <div className='scroll-pantryItems'>
+                <Table>
+                    <thead>
+                        <tr key="0:0" className="align-middle">
+                            <th><span className='title'>Code/Desc.</span></th>
+                            <th><span className='title'>Ideal</span></th>
+                            <th ><span className='title'>Current</span></th>
+                            <th className='ms-0 ps-0'><span className="title">Prov.</span></th>
+                            <th className='ms-0 ps-0 me-2 pe-2'><span /></th>
+                        </tr>
+                    </thead>
+                    <tbody >
+                        {renderItems()}
+                    </tbody>
+                </Table>
+            </div>
         </div>
     );
 }

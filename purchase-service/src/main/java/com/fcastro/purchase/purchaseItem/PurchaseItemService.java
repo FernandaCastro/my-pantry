@@ -1,24 +1,36 @@
 package com.fcastro.purchase.purchaseItem;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fcastro.kafka.event.PurchaseEventDto;
 import com.fcastro.purchase.exception.ResourceNotFoundException;
+import com.fcastro.purchase.exception.ResourceNotValidException;
 import com.fcastro.purchase.product.Product;
+import com.fcastro.purchase.properties.PropertiesService;
+import com.fcastro.purchase.properties.PropertyKey;
+import org.apache.logging.log4j.util.Strings;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class PurchaseItemService {
 
     private final PurchaseItemRepository repository;
+    private final PropertiesService propertiesService;
     private final ModelMapper modelMapper;
+    private ObjectMapper jsonMapper;
 
-    public PurchaseItemService(PurchaseItemRepository repository, ModelMapper modelMapper) {
+    public PurchaseItemService(PurchaseItemRepository repository, PropertiesService propertiesService, ModelMapper modelMapper) {
         this.repository = repository;
+        this.propertiesService = propertiesService;
         this.modelMapper = modelMapper;
+        this.jsonMapper = new ObjectMapper();
     }
 
     public void processPurchaseEvent(PurchaseEventDto dto) {
@@ -36,6 +48,53 @@ public class PurchaseItemService {
 
     public List<PurchaseItemDto> listPendingPurchase() {
         return convertToDto(repository.listPendingPurchase());
+    }
+
+    public List<PurchaseItemDto> listPendingPurchaseByCategory(String supermarket) {
+        var list = convertToDto(repository.listPendingPurchase());
+        if (supermarket == null || Strings.isEmpty(supermarket)) return list;
+
+        var categorized = categorize(list, supermarket);
+        return categorized;
+    }
+
+    public List<PurchaseItemDto> listPurchaseByCategory(Long purchaseId, String supermarket) {
+        var list = convertToDto(repository.findAllByPurchaseId(purchaseId));
+        if (supermarket == null || Strings.isEmpty(supermarket)) return list;
+
+        var categorized = categorize(list, supermarket);
+        return categorized;
+    }
+
+    private List<PurchaseItemDto> categorize(List<PurchaseItemDto> list, String supermarket) {
+        var map = list.stream()
+                .collect(Collectors.groupingBy((item) ->
+                        item.getProduct().getCategory() == null || item.getProduct().getCategory() == "" ?
+                                "Other" : item.getProduct().getCategory()
+                ));
+
+        String propertyKey = supermarket.toLowerCase() + "." + PropertyKey.SUPERMARKET_CATEGORIES.key;
+        var property = propertiesService.get(propertyKey)
+                .orElseThrow(() -> new ResourceNotFoundException("Property " + propertyKey + " not found."));
+
+        List<String> categories = new ArrayList<String>();
+
+        try {
+            categories = Arrays.asList(jsonMapper.readValue(property.getPropertyValue(), String[].class));
+        } catch (JsonProcessingException e) {
+            throw new ResourceNotValidException("Invalid Json value for property: " + PropertyKey.SUPERMARKET_CATEGORIES.key);
+        }
+
+        var categorized = new ArrayList<PurchaseItemDto>();
+        categories.forEach((c) -> {
+            if (map.containsKey(c)) {
+                categorized.addAll(map.get(c));
+                map.remove(c);
+            }
+        });
+        map.values().forEach(l -> categorized.addAll(l));
+
+        return categorized;
     }
 
     @Transactional
@@ -115,7 +174,9 @@ public class PurchaseItemService {
 
     private List<PurchaseItemDto> convertToDto(List<PurchaseItem> entities) {
         if (entities == null) return null;
-        return modelMapper.map(entities, List.class);
+        return entities.stream()
+                .map(entity -> convertToDto(entity))
+                .collect(Collectors.toList());
     }
 
     private PurchaseItemDto convertToDto(PurchaseItem entity) {

@@ -1,11 +1,14 @@
 package com.fcastro.purchase.properties;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 @Repository
 public interface PropertiesRepository extends JpaRepository<Properties, String> {
 
-//    @Query("select p.propertyKey, to_json(p.propertyValue) from properties p where propertyKey = :key")
-//    Optional<Properties> findById(String key);
+    @Query("select p from properties p where p.propertyKey like :key")
+    List<Properties> findAllLikeId(String key);
 }

@@ -1,9 +1,10 @@
 import { BrowserRouter } from "react-router-dom";
 import CustomRoutes from "../routes/CustomRoutes.js";
-import Header from './components/Header.js';
+import Header from '../components/Header.js';
 import React, { useState } from 'react';
 import Container from 'react-bootstrap/Container';
 import Alert from 'react-bootstrap/Alert';
+import '../assets/styles/App.scss';
 
 import { PantryContext, AlertContext } from '../services/context/AppContext.js';
 
@@ -33,13 +34,13 @@ export default function App() {
   return (
     <PantryContext.Provider value={{ pantryCtx, setPantryCtx }}>
       <AlertContext.Provider value={{ alert, setAlert }}>
-        <Container>
-          <BrowserRouter>
-            <Header />
-            <Alert variant={alert.type} show={alert.show} onClose={() => setAlert((a) => a = { ...a, show: !alert.show })} dismissible >{alert.message}</Alert>
+        <BrowserRouter>
+          <Header />
+          <Alert variant={alert.type} show={alert.show} onClose={() => setAlert((a) => a = { ...a, show: !alert.show })} dismissible >{alert.message}</Alert>
+          <Container>
             <CustomRoutes />
-          </BrowserRouter>
-        </Container>
+          </Container>
+        </BrowserRouter>
       </AlertContext.Provider>
     </PantryContext.Provider >
   )
