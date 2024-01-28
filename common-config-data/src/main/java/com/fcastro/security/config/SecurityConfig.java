@@ -5,6 +5,7 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
@@ -26,12 +27,18 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.function.Supplier;
 
+import static jakarta.servlet.DispatcherType.ERROR;
+import static jakarta.servlet.DispatcherType.FORWARD;
+
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
 public class SecurityConfig {
 
     private final JWTRequestFilter jwtRequestFilter;
+
+    @Value("${app.allowed-origin}")
+    private String allowedOrigin;
 
     public SecurityConfig(JWTRequestFilter jwtRequestFilter) {
         this.jwtRequestFilter = jwtRequestFilter;
@@ -43,6 +50,7 @@ public class SecurityConfig {
                 //.cors(Customizer.withDefaults())
                 .cors((cors) -> cors
                         .configurationSource(corsConfigurationSource()))
+
                 .csrf((csrf) -> csrf
                         .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()).ignoringRequestMatchers("/oauth/login")
                         .csrfTokenRequestHandler(new SpaCsrfTokenRequestHandler())
@@ -51,6 +59,7 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class)
                 //.addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class)
+
                 .logout((logout) -> logout
                         .logoutRequestMatcher(new AntPathRequestMatcher("/oauth/logout"))
                         .clearAuthentication(true)
@@ -60,19 +69,22 @@ public class SecurityConfig {
                             response.setStatus(HttpServletResponse.SC_OK);
                         })
                         .permitAll())
+
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/oauth/login").permitAll()
-                        .requestMatchers("/oauth/logout").permitAll()
-                        .anyRequest().authenticated());
+                        //Dispatches FORWARD and ERROR are permitted to allow Spring MVC to render views and Spring Boot to render errors
+                        .dispatcherTypeMatchers(FORWARD, ERROR).permitAll()
+                        .requestMatchers("/oauth/login", "/oauth/logout").permitAll()
+                        .requestMatchers("/account/group").hasRole("ADMIN")
+                        .anyRequest().hasRole("USER"));
         return http.build();
     }
 
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000"));
+        configuration.setAllowedOrigins(Arrays.asList(allowedOrigin));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "OPTIONS", "DELETE", "PUT", "PATCH"));
-        configuration.setAllowedHeaders(Arrays.asList(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, HttpHeaders.ACCESS_CONTROL_ALLOW_CREDENTIALS, "X-Requested-With", "Origin", "Content-Type", "Accept", "Authorization"));
+        configuration.setAllowedHeaders(Arrays.asList(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, HttpHeaders.ACCESS_CONTROL_ALLOW_CREDENTIALS, HttpHeaders.ORIGIN, "X-Requested-With", "Content-Type", "Accept", "Authorization"));
         configuration.setAllowCredentials(true);
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);

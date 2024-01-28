@@ -20,7 +20,7 @@ export default function App() {
 
   const [profileCtx, setProfileCtx] = useState(() => {
     const data = localStorage.getItem("profile-context");
-    return JSON.parse(data)
+    return data ? JSON.parse(data) : data;
   });
 
   const [pantryCtx, setPantryCtx] = useState(() => {
@@ -112,7 +112,7 @@ export default function App() {
           <Header />
           <Alert variant={alert.type} show={alert.show} onClose={() => setAlert((a) => a = { ...a, show: !alert.show })} dismissible >{alert.message}</Alert>
           <Container>
-            {profileCtx ? (
+            {profileCtx && Object.keys(profileCtx).length > 0 ? (
               <CustomRoutes />
             ) : (
               <h6 className="title">Please Log in to continue</h6>

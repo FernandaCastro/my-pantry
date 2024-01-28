@@ -10,7 +10,7 @@ const FetchPurchase = async function (endpoint, method, data) {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json',
             },
-            credentials: 'include',
+            //credentials: 'include',
             body: JSON.stringify(data)
         })
 
