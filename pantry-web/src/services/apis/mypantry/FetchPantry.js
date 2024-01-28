@@ -9,8 +9,9 @@ const FetchPantry = async function (endpoint, method, data) {
             "headers": {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json',
+
             },
-            credentials: 'include',
+            //credentials: 'include',
             body: JSON.stringify(data)
         })
 
