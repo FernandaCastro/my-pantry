@@ -5,7 +5,6 @@ import com.fcastro.model.AccountDto;
 import com.fcastro.security.model.IdTokenDto;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.web.server.Cookie;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
@@ -34,9 +33,8 @@ public class AccountController {
                 .maxAge(7 * 24 * 3600)
                 .path("/")
                 .secure(false)  //true= HTTPS only
-                .domain("localhost.dev")
-                .sameSite(Cookie.SameSite.STRICT.attributeValue())
                 .build();
+        //Using includeCredential=true. When SameSite=None and Secure=true all cookies will be included anyway.
         response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
         return ResponseEntity.ok(appToken.getAccount());
     }
