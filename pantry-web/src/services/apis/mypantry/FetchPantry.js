@@ -1,7 +1,10 @@
 import getResponseContent from '../getResponseContent.js';
 import RequestError from '../RequestError.js';
+import History from '../../../routes/History.js';
 
-const FetchPantry = async function (endpoint, method, data) {
+export default async function FetchPantry(endpoint, method, data) {
+
+    var redirecting = false;
 
     try {
         const res = await fetch(process.env.REACT_APP_API_URL_PANTRY + '/' + endpoint, {
@@ -11,7 +14,7 @@ const FetchPantry = async function (endpoint, method, data) {
                 'Accept': 'application/json',
 
             },
-            //credentials: 'include',
+            credentials: 'include',
             body: JSON.stringify(data)
         })
 
@@ -25,8 +28,15 @@ const FetchPantry = async function (endpoint, method, data) {
             return content;
         }
 
+
+        if (res.status === 401) {
+            redirecting = true;
+            const error = 'Status 401: User is not authorized.'
+            throw new RequestError(error, res.status);
+        }
+
         if (res.status === 403) {
-            const error = 'Status 403: User is not authorized.'
+            const error = 'Status 403: User is forbidden.'
             throw new RequestError(error, res.status);
         }
 
@@ -37,9 +47,8 @@ const FetchPantry = async function (endpoint, method, data) {
     }
     catch (error) {
         throw new RequestError(error.message, error.status)
+    } finally {
+        if (redirecting) { History.navigate("/logout") }
     }
 
-
 }
-
-export default FetchPantry;

@@ -1,7 +1,10 @@
 import getResponseContent from '../getResponseContent';
 import RequestError from '../RequestError';
+import History from '../../../routes/History.js';
 
 const FetchPurchase = async function (endpoint, method, data) {
+
+    var redirecting = false;
 
     try {
         const res = await fetch(process.env.REACT_APP_API_URL_PURCHASE + '/' + endpoint, {
@@ -10,7 +13,7 @@ const FetchPurchase = async function (endpoint, method, data) {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json',
             },
-            //credentials: 'include',
+            credentials: 'include',
             body: JSON.stringify(data)
         })
 
@@ -22,6 +25,12 @@ const FetchPurchase = async function (endpoint, method, data) {
         if (res.ok) {
             const content = getResponseContent(res)
             return content;
+        }
+
+        if (res.status === 401) {
+            redirecting = true;
+            const error = 'Status 401: User is not authorized.'
+            throw new RequestError(error, res.status);
         }
 
         if (res.status === 403) {
@@ -36,6 +45,8 @@ const FetchPurchase = async function (endpoint, method, data) {
     }
     catch (error) {
         throw new RequestError(error.message, error.status)
+    } finally {
+        if (redirecting) { History.navigate("/logout") }
     }
 }
 

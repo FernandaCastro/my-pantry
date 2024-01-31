@@ -3,6 +3,7 @@ $primary-text-color: #6c66d8;
 $primary-background: #383d46;
 $secondary-text-color: #1c1d1f;
 $secondary_background: lavender;
+$link-color: rgb(63, 6, 250);
 
 // div {
 //     border: 1px solid blue;
@@ -114,6 +115,11 @@ $secondary_background: lavender;
     flex-grow: unset;
 }
 
+.home:hover {
+    border-color: $link-color !important;
+    color: $link-color !important;
+}
+
 .menu {
     display: flex;
     direction: row;
@@ -121,29 +127,27 @@ $secondary_background: lavender;
     justify-content: center;
     gap: 30px;
     margin-right: 30px;
-    //padding-top: 5px;
-    //width: 100%;
-
-    .menuItem {
-        //height: fit-content;
-        //color: lavender;
-        align-items: center;
-        text-align: center;
-        pointer-events: all;
-        // padding: 2px;
-        // background-color: $primary-text-color;
-        // border: 1px solid $primary-color;
-        // border-radius: 5px;
-    }
-
-    .menuItem:hover {
-        border: 1px solid lavender;
-        border-radius: 5px;
-        padding: 2px;
-    }
 }
 
-.icon {
+.menuItem {
+    align-items: center;
+    text-align: center;
+    pointer-events: all;
+}
+
+.menuItem:hover {
+    border: 1px solid lavender;
+    border-radius: 5px;
+    padding: 2px;
+}
+
+.menuItem.disabled {
+    border: 0px !important;
+    pointer-events: none !important;
+    opacity: 0.3 !important;
+}
+
+.menu-icon {
     width: 25px;
     height: 25px;
 }

@@ -1,7 +1,7 @@
 $background: lavender;
 $border-color: #909df4;
 $btn-background-color: #6c66d8;
-$btn-disabled-color: lighten($btn-background-color, 20%);
+$btn-disabled-color: lighten($btn-background-color, 25%);
 $footer-background: hsl(219, 11%, 25%);
 $text-color: hsl(219, 11%, 25%);
 $title-text-color: indigo;
@@ -11,11 +11,6 @@ $link-color: rgb(63, 6, 250);
 // div {
 //     border: 1px solid blue;
 // }
-
-a:hover {
-    border-color: $link-color !important;
-    color: $link-color !important;
-}
 
 .btn-custom {
     min-width: 20%;
@@ -31,12 +26,12 @@ a:hover {
     pointer-events: all;
 }
 
-.btn-custom :hover {
+.btn-custom:hover {
     border-color: $link-color !important;
     color: $link-color !important;
 }
 
-Button:disabled {
+.btn-custom.disabled {
     background-color: $btn-disabled-color;
 }
 
@@ -153,6 +148,13 @@ p {
 
 .icon {
     color: $title-text-color;
+    width: 15px;
+    height: 15px;
+}
+
+.icon:hover {
+    border-color: $link-color;
+    color: $link-color;
 }
 
 .custom-card {

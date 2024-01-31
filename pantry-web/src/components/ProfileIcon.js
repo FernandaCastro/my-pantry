@@ -7,6 +7,7 @@ import Popover from 'react-bootstrap/Popover';
 import { Button } from 'react-bootstrap';
 import { LoginWithGoogle, LogoutFromGoogle } from './LoginWithGoogle.js';
 import { logout } from '../services/LoginService';
+import { useNavigate } from 'react-router-dom';
 
 function LoginButton() {
 
@@ -14,12 +15,20 @@ function LoginButton() {
     const [showProfile, setShowProfile] = useState(false);
     const [showLogin, setShowLogin] = useState(false);
     const target = useRef(null);
+    const navigate = useNavigate();
 
     const handleLogout = async () => {
         await logout();
         setProfileCtx(null);
         setShowProfile(false);
+        navigate('/logout');
     };
+
+    const handleLogin = (profile) => {
+        setProfileCtx(profile);
+        setShowLogin(false);
+        navigate('/');
+    }
 
     function renderProfilePopover() {
         const popoverProfile = (
@@ -28,7 +37,7 @@ function LoginButton() {
                     <Image width={50} height={50} roundedCircle referrerPolicy="no-referrer" src={profileCtx.pictureUrl} />
                     <span className='title'>{profileCtx.name}</span>
                     <span className='small'>{profileCtx.email}</span>
-                    <LogoutFromGoogle onClick={handleLogout}>Logout</LogoutFromGoogle>
+                    <LogoutFromGoogle handleLogout={handleLogout}>Logout</LogoutFromGoogle>
                 </Popover.Body>
             </Popover>
         );
@@ -44,7 +53,7 @@ function LoginButton() {
         const popoverSignIn = (
             <Popover id="popover-basic">
                 <Popover.Body className='card-login-profile'>
-                    <LoginWithGoogle setShowLogin={setShowLogin} />
+                    <LoginWithGoogle handleLogin={handleLogin} />
                 </Popover.Body>
             </Popover>
         );
@@ -66,17 +75,3 @@ function LoginButton() {
     )
 }
 export default LoginButton;
-
-{/* <Modal className='custom-modal-child' show={showProfile} onHide={() => setShowProfile(false)} size='sm' animation={true} style={{ position: 'absolute' }}>
-<Modal.Header closeButton>
-    <Modal.Title as='h6'>
-        <div>
-            <Image width={50} height={50} rounded referrerPolicy="no-referrer" src={profileCtx.pictureUrl} />
-            <span>{profileCtx.name}</span>
-        </div>
-    </Modal.Title>
-</Modal.Header>
-<Modal.Body>
-    List of options for profile
-</Modal.Body>
-</Modal> */}

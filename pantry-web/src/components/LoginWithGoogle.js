@@ -5,9 +5,7 @@ import { useContext, useRef, useEffect } from 'react';
 import useScript from '../hooks/useScript';
 //import { GoogleLogin, useGoogleLogin } from '@react-oauth/google';
 
-export function LoginWithGoogle({ setShowLogin }) {
-
-    const { profileCtx, setProfileCtx } = useContext(ProfileContext);
+export function LoginWithGoogle({ handleLogin }) {
 
     const GoogleSignInButton = useRef(null);
 
@@ -20,8 +18,7 @@ export function LoginWithGoogle({ setShowLogin }) {
     const onGoogleSignIn = async res => {
         const { credential } = res;
         var profile = await postLoginToken(credential);
-        setProfileCtx(profile);
-        setShowLogin(false);
+        handleLogin(profile);
     };
 
     useScript('https://accounts.google.com/gsi/client', () => {
@@ -40,7 +37,7 @@ export function LoginWithGoogle({ setShowLogin }) {
     return <div ref={GoogleSignInButton}></div>;
 }
 
-export function LogoutFromGoogle({ onClick }) {
+export function LogoutFromGoogle({ handleLogout }) {
 
     useEffect(() => {
         window.google = undefined;
@@ -51,5 +48,5 @@ export function LogoutFromGoogle({ onClick }) {
         window.google.accounts.id.disableAutoSelect();
     });
 
-    return <Button bsPrefix='btn-custom' onClick={onClick}>Logout</Button>
+    return <Button bsPrefix='btn-custom' onClick={handleLogout}>Logout</Button>
 }
