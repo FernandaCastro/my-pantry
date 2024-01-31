@@ -1,6 +1,7 @@
 package com.fcastro.account.exception;
 
 import com.fcastro.security.exception.TokenVerifierException;
+import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,6 +19,8 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.context.request.ServletWebRequest;
+import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.multipart.support.MissingServletRequestPartException;
 
@@ -45,6 +48,8 @@ public class GlobalExceptionHandler {
         exceptionTypes.put(HttpRequestMethodNotSupportedException.class, "method-not-allowed");
 
         exceptionTypes.put(DataAccessException.class, "database-error");
+        exceptionTypes.put(ExpiredJwtException.class, "token-expired");
+
         exceptionTypes.put(ResourceNotFoundException.class, "application-error");
         exceptionTypes.put(TokenVerifierException.class, "application-error");
     }
@@ -154,6 +159,23 @@ public class GlobalExceptionHandler {
                 .build();
 
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
+    }
+
+    @ExceptionHandler(value = {ExpiredJwtException.class})
+    @ResponseStatus(value = HttpStatus.FORBIDDEN)
+    public ResponseEntity<Object> expiredToken(ExpiredJwtException ex, WebRequest request) {
+
+        String requestUri = ((ServletWebRequest) request).getRequest().getRequestURI().toString();
+
+        final var error = ApplicationError.builder()
+                .timestamp(Clock.systemUTC().millis())
+                .status(HttpStatus.FORBIDDEN.value())
+                .errorType(exceptionTypes.get(ex.getClass()))
+                .errorMessage(ex.getMessage())
+                .path(requestUri)
+                .build();
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
     }
 
     @ExceptionHandler(value = {Exception.class})
