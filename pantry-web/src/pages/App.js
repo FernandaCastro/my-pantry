@@ -1,4 +1,4 @@
-import { Routes, useNavigate } from "react-router-dom";
+import { BrowserRouter } from "react-router-dom";
 import CustomRoutes from "../routes/CustomRoutes.js";
 import Header from '../components/Header.js';
 import React, { useState, useEffect } from 'react';
@@ -37,13 +37,6 @@ export default function App() {
     type: ""
   });
 
-  useEffect(() => {
-    if (!profileCtx || Object.keys(profileCtx).length === 0) {
-      var profile = initLogin();
-      setProfileCtx(profile);
-    }
-  }, []);
-
   React.useEffect(() => {
     localStorage.setItem("pantry-context", JSON.stringify(pantryCtx));
   }, [pantryCtx]);
@@ -67,9 +60,3 @@ export default function App() {
     </ProfileContext.Provider>
   )
 }
-
-// {profileCtx && Object.keys(profileCtx).length > 0 ? (
-//   <CustomRoutes />
-// ) : (
-//   <h6 className="title">Please Log in to continue</h6>
-// )}
