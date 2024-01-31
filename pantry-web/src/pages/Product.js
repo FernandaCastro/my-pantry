@@ -1,6 +1,6 @@
 import React, { useState, useContext, useEffect } from 'react';
-import { updateProduct, createProduct } from '../services/apis/mypantry/fetch/requests/PantryRequests.js';
-import { getProperty } from '../services/apis/mypantry/fetch/requests/PurchaseRequests.js';
+import { updateProduct, createProduct } from '../services/apis/mypantry/requests/PantryRequests.js';
+import { getProperty } from '../services/apis/mypantry/requests/PurchaseRequests.js';
 import Stack from 'react-bootstrap/Stack';
 import VariantType from '../components/VariantType.js';
 import { AlertContext } from '../services/context/AppContext.js';

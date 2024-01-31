@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { getOpenPurchaseOrder, postClosePurchaseOrder, postNewPurchaseOrder, getPendingPurchaseItems, getPurchaseItems, getAllProperty } from '../services/apis/mypantry/fetch/requests/PurchaseRequests.js';
+import { getOpenPurchaseOrder, postClosePurchaseOrder, postNewPurchaseOrder, getPendingPurchaseItems, getPurchaseItems, getAllProperty } from '../services/apis/mypantry/requests/PurchaseRequests.js';
 import { FormGroup } from 'react-bootstrap';
 import Button from 'react-bootstrap/Button';
 import Stack from 'react-bootstrap/Stack';

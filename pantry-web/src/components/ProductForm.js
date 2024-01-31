@@ -5,7 +5,7 @@ import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
 import Select from 'react-select';
 import { useState, useEffect } from 'react';
-import { getProperty } from '../services/apis/mypantry/fetch/requests/PurchaseRequests.js';
+import { getProperty } from '../services/apis/mypantry/requests/PurchaseRequests.js';
 
 export default function ProductForm({ product, categories, handleSave }) {
 

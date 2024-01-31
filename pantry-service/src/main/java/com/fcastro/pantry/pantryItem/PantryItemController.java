@@ -71,8 +71,8 @@ public class PantryItemController {
         return ResponseEntity.ok().body(list);
     }
 
-    @GetMapping("/balancing")
-    public ResponseEntity<List<PantryItemDto>> consumeProduct(@PathVariable Long pantryId) {
+    @GetMapping("items/balancing")
+    public ResponseEntity<List<PantryItemDto>> balanceInventory(@PathVariable Long pantryId) {
         var list = service.processPurchaseNeed(pantryId);
         return ResponseEntity.ok().body(list);
     }
