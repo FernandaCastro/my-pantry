@@ -1,6 +1,6 @@
 package com.fcastro.pantry.pantryItem;
 
-import com.fcastro.model.ProductDto;
+import com.fcastro.app.model.ProductDto;
 import com.fcastro.pantry.JsonUtil;
 import com.fcastro.pantry.exception.PantryNotActiveException;
 import com.fcastro.pantry.exception.QuantityNotAvailableException;

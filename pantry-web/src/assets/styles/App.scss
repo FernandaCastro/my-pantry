@@ -110,6 +110,7 @@ table.bordered {
 .section {
     border-top: 1.5px solid $border-color;
     color: $text-color;
+    width: 100%;
 }
 
 .title {
@@ -176,6 +177,25 @@ div.category {
     button {
         padding: 0px;
     }
+}
+
+div.settings {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    justify-content: flex-start;
+    gap: 2px;
+    padding: 0px;
+}
+
+.card-login-profile {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    border: 1px solid $border-color;
+    border-radius: 8px;
+    background-color: $background !important;
 }
 
 div.scroll-pantryItems {

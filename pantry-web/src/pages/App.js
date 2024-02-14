@@ -1,4 +1,4 @@
-import { BrowserRouter } from "react-router-dom";
+import { BrowserRouter, useNavigate } from "react-router-dom";
 import CustomRoutes from "../routes/CustomRoutes.js";
 import Header from '../components/Header.js';
 import React, { useState, useEffect } from 'react';
@@ -17,7 +17,7 @@ export default function App() {
 
   const [profileCtx, setProfileCtx] = useState(() => {
     const data = localStorage.getItem("profile-context");
-    return Object.keys(data).length > 0 && data !== 'undefined' ? JSON.parse(data) : data;
+    return !data || data === 'undefined' || Object.keys(data).length === 0 ? {} : JSON.parse(data);
   });
 
   const [pantryCtx, setPantryCtx] = useState(() => {

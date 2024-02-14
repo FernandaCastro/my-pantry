@@ -1,7 +1,7 @@
 package com.fcastro.pantry.pantryItem;
 
+import com.fcastro.app.model.ProductDto;
 import com.fcastro.kafka.config.KafkaConfigData;
-import com.fcastro.model.ProductDto;
 import com.fcastro.pantry.config.PurchaseCreateEventProducer;
 import com.fcastro.pantry.exception.QuantityNotAvailableException;
 import com.fcastro.pantry.pantry.PantryDto;

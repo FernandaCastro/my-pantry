@@ -9,7 +9,7 @@ import Consume from '../pages/Consume';
 import Purchase from '../pages/Purchase';
 import Pantry from '../pages/Pantry';
 import Product from '../pages/Product';
-
+import GroupMembers from '../pages/GroupMembers';
 
 function CustomRoutes() {
     let routes = useRoutes([
@@ -48,6 +48,10 @@ function CustomRoutes() {
         {
             path: "/product",
             element: <Product />
+        },
+        {
+            path: "/group-members",
+            element: <GroupMembers />
         },
     ]);
 

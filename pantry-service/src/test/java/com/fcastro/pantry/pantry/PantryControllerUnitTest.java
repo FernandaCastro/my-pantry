@@ -1,6 +1,6 @@
 package com.fcastro.pantry.pantry;
 
-import com.fcastro.model.ProductDto;
+import com.fcastro.app.model.ProductDto;
 import com.fcastro.pantry.JsonUtil;
 import com.fcastro.pantry.pantryItem.PantryItemDto;
 import org.junit.jupiter.api.Test;

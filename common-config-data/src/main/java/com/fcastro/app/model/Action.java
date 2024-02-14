@@ -1,4 +1,4 @@
-package com.fcastro.model;
+package com.fcastro.app.model;
 
 public enum Action {
     CREATE, UPDATE, DELETE

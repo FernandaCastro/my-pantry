@@ -1,7 +1,7 @@
 package com.fcastro.kafka.event;
 
-import com.fcastro.model.Action;
-import com.fcastro.model.ProductDto;
+import com.fcastro.app.model.Action;
+import com.fcastro.app.model.ProductDto;
 import lombok.*;
 
 import java.io.Serializable;

@@ -28,7 +28,6 @@ export default async function FetchPantry(endpoint, method, data) {
             return content;
         }
 
-
         if (res.status === 401) {
             redirecting = true;
             const error = 'Status 401: User is not authorized.'

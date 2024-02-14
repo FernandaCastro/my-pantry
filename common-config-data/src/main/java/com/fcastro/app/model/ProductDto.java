@@ -1,4 +1,4 @@
-package com.fcastro.model;
+package com.fcastro.app.model;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;

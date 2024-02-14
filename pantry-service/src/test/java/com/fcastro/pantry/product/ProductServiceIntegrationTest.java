@@ -1,7 +1,7 @@
 package com.fcastro.pantry.product;
 
+import com.fcastro.app.model.ProductDto;
 import com.fcastro.kafka.config.KafkaConfigData;
-import com.fcastro.model.ProductDto;
 import com.fcastro.pantry.config.PurchaseCreateEventProducer;
 import com.fcastro.pantry.exception.DatabaseConstraintException;
 import com.fcastro.pantry.pantry.PantryDto;

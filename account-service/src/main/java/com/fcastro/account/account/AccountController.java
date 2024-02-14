@@ -1,34 +1,30 @@
 package com.fcastro.account.account;
 
 import com.fcastro.account.exception.ResourceNotFoundException;
-import com.fcastro.model.AccountDto;
+import com.fcastro.app.model.AccountDto;
 import com.fcastro.security.model.IdTokenDto;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.web.server.Cookie;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.util.List;
 
 @RestController
-@RequestMapping("/oauth")
+@RequestMapping
 public class AccountController {
 
-    private final AccountService userService;
-
-    @Value("${app.allowed-origin}")
-    private String allowedOrigin;
+    private final AccountService service;
 
     public AccountController(AccountService userService) {
-        this.userService = userService;
+        this.service = userService;
     }
 
-    @PostMapping("/login")
+    @PostMapping("/oauth/login")
     public ResponseEntity<AccountDto> loginWithGoogle(@RequestBody IdTokenDto requestBody, HttpServletResponse response) {
-        var appToken = userService.loginOAuthGoogle(requestBody);
+        var appToken = service.loginOAuthGoogle(requestBody);
         final ResponseCookie cookie = ResponseCookie.from("AUTH-TOKEN", appToken.getToken())
                 .httpOnly(true)
                 .maxAge(7 * 24 * 3600)
@@ -40,11 +36,16 @@ public class AccountController {
         return ResponseEntity.ok(appToken.getAccount());
     }
 
-    @GetMapping("/user-info")
+    @GetMapping("/oauth/user-info")
     public ResponseEntity<AccountDto> getUserInfo(Principal principal) {
-        return userService.getUser(Long.valueOf(principal.getName()))
+        return service.getUser(Long.valueOf(principal.getName()))
                 .map(ResponseEntity::ok)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+    }
+
+    @GetMapping("/accounts")
+    public ResponseEntity<List<AccountDto>> getAll(@RequestParam String searchParam) {
+        return ResponseEntity.ok(service.getAll(searchParam));
     }
 
 }

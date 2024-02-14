@@ -1,6 +1,6 @@
 package com.fcastro.pantry.product;
 
-import com.fcastro.model.ProductDto;
+import com.fcastro.app.model.ProductDto;
 import com.fcastro.pantry.config.ProductEventProducer;
 import com.fcastro.pantry.exception.DatabaseConstraintException;
 import com.fcastro.pantry.exception.ResourceNotFoundException;

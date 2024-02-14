@@ -4,7 +4,7 @@ import { ProfileContext } from '../services/context/AppContext';
 import React, { useContext, useState, useRef } from 'react';
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Popover from 'react-bootstrap/Popover';
-import { Button } from 'react-bootstrap';
+import { Button, ListGroupItem } from 'react-bootstrap';
 import { LoginWithGoogle, LogoutFromGoogle } from './LoginWithGoogle.js';
 import { logout } from '../services/LoginService';
 import { useNavigate } from 'react-router-dom';
@@ -37,9 +37,15 @@ function LoginButton() {
                     <Image width={50} height={50} roundedCircle referrerPolicy="no-referrer" src={profileCtx.pictureUrl} />
                     <span className='title'>{profileCtx.name}</span>
                     <span className='small'>{profileCtx.email}</span>
+
+                    <div className='section pt-1'><span className='title small'>Settings:</span></div>
+                    <div className="settings pb-2">
+                        <Button href="#" variant="link" className='p-0'><span className='small'>Properties</span></Button>
+                        <Button href="/group-members" variant="link" className='p-0'><span className='small'>Groups & Members</span></Button>
+                    </div >
                     <LogoutFromGoogle handleLogout={handleLogout}>Logout</LogoutFromGoogle>
-                </Popover.Body>
-            </Popover>
+                </Popover.Body >
+            </Popover >
         );
 
         return (

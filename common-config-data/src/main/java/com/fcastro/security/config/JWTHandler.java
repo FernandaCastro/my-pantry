@@ -1,12 +1,11 @@
 package com.fcastro.security.config;
 
-import com.fcastro.model.AccountDto;
+import com.fcastro.app.model.AccountDto;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -27,8 +26,12 @@ public class JWTHandler {
     private static final long TOKEN_VALIDITY_REMEMBER = 2592000000L;
     private final Key key;
 
-    public JWTHandler(@Value("${app.secret}") String secret) {
-        var baseSecret = Hex.decode(secret);
+    private final SecurityConfigData securityConfigData;
+
+    public JWTHandler(SecurityConfigData securityConfigData) {
+        this.securityConfigData = securityConfigData;
+
+        var baseSecret = Hex.decode(securityConfigData.getSecret());
         this.key = Keys.hmacShaKeyFor(baseSecret);
     }
 

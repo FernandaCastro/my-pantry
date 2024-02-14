@@ -14,3 +14,33 @@ export async function postLogin(idToken) {
 export async function postLogout() {
     return FetchAccount('oauth/logout', 'GET');
 }
+
+export async function getAccountGroupList() {
+    return FetchAccount('accountGroups', 'GET');
+}
+
+export async function getFilteredAccountList(text) {
+    return FetchAccount(`accounts?searchParam=${text}`, "GET");
+}
+
+export async function createAccount(account) {
+    return FetchAccount(`accounts`, "POST");
+}
+
+export async function createAccountGroup(group) {
+    return FetchAccount('accountGroups', 'POST', group);
+}
+
+export async function editAccountGroup(group) {
+    return FetchAccount(`accountGroups/${group.id}`, 'PUT', group);
+}
+
+export async function deleteAccountGroup(groupId) {
+    return FetchAccount(`accountGroups/${groupId}`, 'DELETE');
+}
+
+export async function getAccountGroupMemberList(groupId) {
+    return FetchAccount(`accountGroups/${groupId}/members`, "GET");
+}
+
+

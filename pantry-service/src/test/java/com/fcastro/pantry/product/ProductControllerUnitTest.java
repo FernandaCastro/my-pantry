@@ -1,6 +1,6 @@
 package com.fcastro.pantry.product;
 
-import com.fcastro.model.ProductDto;
+import com.fcastro.app.model.ProductDto;
 import com.fcastro.pantry.JsonUtil;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
