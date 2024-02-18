@@ -43,4 +43,8 @@ export async function getAccountGroupMemberList(groupId) {
     return FetchAccount(`accountGroups/${groupId}/members`, "GET");
 }
 
+export async function deleteAccountMember(groupId, accountId) {
+    return FetchAccount(`accountGroups/${groupId}/members/${accountId}`, 'DELETE');
+}
+
 

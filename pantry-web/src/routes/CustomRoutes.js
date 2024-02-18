@@ -10,6 +10,7 @@ import Purchase from '../pages/Purchase';
 import Pantry from '../pages/Pantry';
 import Product from '../pages/Product';
 import GroupMembers from '../pages/GroupMembers';
+import Pantries from '../pages/Pantries';
 
 function CustomRoutes() {
     let routes = useRoutes([
@@ -28,6 +29,10 @@ function CustomRoutes() {
         {
             path: "/home",
             element: <Home />
+        },
+        {
+            path: "/pantries",
+            element: <Pantries />
         },
         {
             path: "/pantries/:id/edit",

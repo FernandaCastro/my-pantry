@@ -7,6 +7,7 @@ import Image from 'react-bootstrap/Image';
 import iconConsume from '../assets/images/cook-lavender.png';
 import iconPurchase from '../assets/images/shopping-cart-lavender.png';
 import iconProduct from '../assets/images/food-lavender.png';
+import iconPantry from '../assets/images/cupboard-lavender.png';
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Tooltip from 'react-bootstrap/Tooltip';
 import ProfileIcon from './ProfileIcon.js';
@@ -38,13 +39,19 @@ export default function Header() {
                         </OverlayTrigger>
                         <OverlayTrigger placement="auto" delay={{ show: 250, hide: 400 }} overlay={<Tooltip id="button-tooltip">Shopping List</Tooltip>}>
                             <Nav.Item>
-                                <Nav.Link href="/purchase" eventKey="link-purchase" className="menuItem">
+                                <Nav.Link href="/purchase" eventKey="link-purchases" className="menuItem">
                                     <Image src={iconPurchase} className="menu-icon" />
                                 </Nav.Link>
                             </Nav.Item>
                         </OverlayTrigger>
+                        <OverlayTrigger placement="auto" delay={{ show: 250, hide: 400 }} overlay={<Tooltip id="button-tooltip">Pantries</Tooltip>}>
+                            <Nav.Item><Nav.Link href="/pantries" eventKey="link-pantries" className="menuItem">
+                                <Image src={iconPantry} className="menu-icon" />
+                            </Nav.Link>
+                            </Nav.Item>
+                        </OverlayTrigger>
                         <OverlayTrigger placement="auto" delay={{ show: 250, hide: 400 }} overlay={<Tooltip id="button-tooltip">Products</Tooltip>}>
-                            <Nav.Item><Nav.Link href="/product" eventKey="link-product" className="menuItem">
+                            <Nav.Item><Nav.Link href="/product" eventKey="link-products" className="menuItem">
                                 <Image src={iconProduct} className="menu-icon" />
                             </Nav.Link>
                             </Nav.Item>
