@@ -2,35 +2,64 @@ package com.fcastro.pantry.pantryItem;
 
 import com.fcastro.app.model.ProductDto;
 import com.fcastro.kafka.config.KafkaConfigData;
+import com.fcastro.kafka.event.PurchaseEventDto;
 import com.fcastro.pantry.config.PurchaseCreateEventProducer;
 import com.fcastro.pantry.exception.QuantityNotAvailableException;
 import com.fcastro.pantry.pantry.PantryDto;
 import com.fcastro.pantry.pantry.PantryService;
+import com.fcastro.pantry.product.Product;
+import com.fcastro.pantry.product.ProductRepository;
 import com.fcastro.pantry.product.ProductService;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
+import org.testcontainers.containers.PostgreSQLContainer;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doNothing;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE
+        , properties = {"spring.security.enabled=false", "spring.kafka.enabled=false"})
+@Testcontainers
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class PantryItemServiceIntegrationTest {
 
-    @Autowired
-    PantryItemService service;
+    @Container
+    private static final PostgreSQLContainer postgreSQLContainer = new PostgreSQLContainer(PostgreSQLContainer.IMAGE)
+            .withDatabaseName("pantry-db_it")
+            .withUsername("pantry")
+            .withPassword("pantry");
+
+    static {
+        postgreSQLContainer.start();
+    }
+
+    @DynamicPropertySource
+    static void setProperties(DynamicPropertyRegistry dynamicPropertyRegistry) {
+        dynamicPropertyRegistry.add("spring.datasource.url", postgreSQLContainer::getJdbcUrl);
+        dynamicPropertyRegistry.add("spring.datasource.username", postgreSQLContainer::getUsername);
+        dynamicPropertyRegistry.add("spring.datasource.password", postgreSQLContainer::getPassword);
+    }
 
     @Autowired
-    PantryItemRepository repository;
+    PantryItemService pantryItemService;
 
     @Autowired
-    PurchaseCreateEventProducer eventProducer;
+    PantryItemRepository pantryItemRepository;
+
+    @MockBean
+    PurchaseCreateEventProducer purchaseCreateEventProducer;
 
     @Autowired
     PantryService pantryService;
@@ -39,26 +68,57 @@ public class PantryItemServiceIntegrationTest {
     ProductService productService;
 
     @Autowired
+    ProductRepository productRepository;
+
+    @Autowired
     KafkaConfigData kafkaConfigData;
 
-    PantryDto pantry = null;
-    List<ProductDto> productList = new ArrayList<>();
+    PantryDto pantry;
+    ProductDto product1, product2;
     Set<PantryItemDto> itemList = new HashSet<>();
 
     @BeforeAll
     public void setupEnv() {
-        pantry = pantryService.save(PantryDto.builder().name("PANTRY_TEST").isActive(true).type("A").build());
 
-        productList.add(productService.save(ProductDto.builder().code("MILK_TEST").description("Vollmilch").size("1L").build()));
-        productList.add(productService.save(ProductDto.builder().code("ICE_TEA_TEST").description("Ice Tea").size("1L").build()));
+        pantry = pantryService.get("PANTRY1")
+                .orElseGet(() -> pantryService.save(PantryDto.builder().name("PANTRY1").isActive(true).type("A").build()));
+
+        //Avoid calling service.save since it triggers Kafka event
+        product1 = productService.get("MILK")
+                .orElseGet(() -> {
+                    var entity = productRepository.saveAndFlush(Product.builder().code("MILK").description("Vollmilch").size("1L").build());
+                    return productService.get(entity.getId()).get();
+                });
+        product2 = productService.get("ICE_TEA")
+                .orElseGet(() -> {
+                    var entity = productRepository.save(Product.builder().code("ICE_TEA").description("Ice Tea").size("1L").build());
+                    return productService.get(entity.getId()).get();
+                });
+
+        var item1 = pantryItemService.get(pantry.getId(), product1.getId())
+                .orElseGet(() -> pantryItemService.save(PantryItemDto.builder()
+                        .pantryId(pantry.getId())
+                        .productId(product1.getId())
+                        .build()));
+
+        var item2 = pantryItemService.get(pantry.getId(), product1.getId())
+                .orElseGet(() -> pantryItemService.save(PantryItemDto.builder()
+                        .pantryId(pantry.getId())
+                        .productId(product2.getId())
+                        .build()));
+
+        itemList.add(item1);
+        itemList.add(item2);
     }
 
     @AfterAll
     public void cleanup() {
         //cleanup
-        itemList.forEach(item -> service.delete(item.getPantryId(), item.getProductId()));
+        itemList.forEach(item -> pantryItemService.delete(item.getPantryId(), item.getProductId()));
 
-        productList.forEach(item -> productService.delete(item.getId()));
+        //Avoid calling service.delete since it triggers Kafka event
+        productRepository.delete(Product.builder().id(product1.getId()).build());
+        productRepository.delete(Product.builder().id(product2.getId()).build());
 
         if (pantry != null) pantryService.delete(pantry.getId());
     }
@@ -68,9 +128,9 @@ public class PantryItemServiceIntegrationTest {
 
         //given
         //PantryItem{currentQty = 10 and IdealQty = 10}, PurchaseItem{consumed = 1}
-        itemList.add(service.save(PantryItemDto.builder()
+        itemList.add(pantryItemService.save(PantryItemDto.builder()
                 .pantryId(pantry.getId())
-                .productId(productList.get(0).getId()) //MILK_TEST
+                .productId(product1.getId()) //MILK_TEST
                 .currentQty(10)
                 .idealQty(10)
                 .provisionedQty(0)
@@ -78,8 +138,8 @@ public class PantryItemServiceIntegrationTest {
                 .build()));
 
         //when
-        var consumedDto = PantryItemConsumedDto.builder().pantryId(pantry.getId()).productId(productList.get(0).getId()).qty(1).build();
-        var item = service.consumePantryItem(consumedDto);
+        var consumedDto = PantryItemConsumedDto.builder().pantryId(pantry.getId()).productId(product1.getId()).qty(1).build();
+        var item = pantryItemService.consumePantryItem(consumedDto);
 
         //then
         assertThat(item.getCurrentQty()).isEqualTo(9);
@@ -91,10 +151,12 @@ public class PantryItemServiceIntegrationTest {
     public void givenValidIds_whenConsumeProduct_shouldCalculateQtyAndPurchaseMore() {
 
         //given
+        doNothing().when(purchaseCreateEventProducer).send(any(PurchaseEventDto.class));
+
         //PantryItem{currentQty = 9 and IdealQty = 10}, PantryItemConsumedDto{qty = 4}
-        itemList.add(service.save(PantryItemDto.builder()
+        itemList.add(pantryItemService.save(PantryItemDto.builder()
                 .pantryId(pantry.getId())
-                .productId(productList.get(0).getId()) //MILK_TEST
+                .productId(product1.getId()) //MILK_TEST
                 .currentQty(9)
                 .idealQty(10)
                 .provisionedQty(0)
@@ -103,8 +165,8 @@ public class PantryItemServiceIntegrationTest {
 
 
         //when
-        var consumedDto = PantryItemConsumedDto.builder().pantryId(pantry.getId()).productId(productList.get(0).getId()).qty(4).build();
-        var item = service.consumePantryItem(consumedDto);
+        var consumedDto = PantryItemConsumedDto.builder().pantryId(pantry.getId()).productId(product1.getId()).qty(4).build();
+        var item = pantryItemService.consumePantryItem(consumedDto);
 
         //then
         assertThat(item.getCurrentQty()).isEqualTo(5);
@@ -116,18 +178,18 @@ public class PantryItemServiceIntegrationTest {
     public void givenListOfItems_whenConsumeProduct_shouldCalculateQtyAndDoNotPurchase() {
 
         //given
-        itemList.add(service.save(PantryItemDto.builder()
+        itemList.add(pantryItemService.save(PantryItemDto.builder()
                 .pantryId(pantry.getId())
-                .productId(productList.get(0).getId()) //MILK_TEST
+                .productId(product1.getId()) //MILK_TEST
                 .currentQty(10)
                 .idealQty(10)
                 .provisionedQty(0)
                 .lastProvisioning(null)
                 .build()));
 
-        itemList.add(service.save(PantryItemDto.builder()
+        itemList.add(pantryItemService.save(PantryItemDto.builder()
                 .pantryId(pantry.getId())
-                .productId(productList.get(1).getId()) //ICE_TEE_TEST
+                .productId(product2.getId()) //ICE_TEE_TEST
                 .currentQty(10)
                 .idealQty(10)
                 .provisionedQty(0)
@@ -136,9 +198,9 @@ public class PantryItemServiceIntegrationTest {
 
         //when
         var consumedItems = new ArrayList<PantryItemConsumedDto>();
-        consumedItems.add(PantryItemConsumedDto.builder().pantryId(pantry.getId()).productId(productList.get(0).getId()).qty(1).build());
-        consumedItems.add(PantryItemConsumedDto.builder().pantryId(pantry.getId()).productId(productList.get(1).getId()).qty(2).build());
-        var items = service.consumePantryItem(pantry.getId(), consumedItems);
+        consumedItems.add(PantryItemConsumedDto.builder().pantryId(pantry.getId()).productId(product1.getId()).qty(1).build());
+        consumedItems.add(PantryItemConsumedDto.builder().pantryId(pantry.getId()).productId(product2.getId()).qty(2).build());
+        var items = pantryItemService.consumePantryItem(pantry.getId(), consumedItems);
 
         //then
         assertThat(items).isNotNull();
@@ -155,18 +217,18 @@ public class PantryItemServiceIntegrationTest {
     public void givenListOfItems_whenConsumeProduct_shouldRollbackAfterException() {
 
         //given
-        itemList.add(service.save(PantryItemDto.builder()
+        itemList.add(pantryItemService.save(PantryItemDto.builder()
                 .pantryId(pantry.getId())
-                .productId(productList.get(0).getId())  //MILK_TEST
+                .productId(product1.getId())  //MILK_TEST
                 .currentQty(10)
                 .idealQty(10)
                 .provisionedQty(0)
                 .lastProvisioning(null)
                 .build()));
 
-        itemList.add(service.save(PantryItemDto.builder()
+        itemList.add(pantryItemService.save(PantryItemDto.builder()
                 .pantryId(pantry.getId())
-                .productId(productList.get(1).getId())  //ICE_TEE_TEST
+                .productId(product2.getId())  //ICE_TEE_TEST
                 .currentQty(0)  //This will throw QuantityNotAvailableException
                 .idealQty(10)
                 .provisionedQty(0)
@@ -175,12 +237,12 @@ public class PantryItemServiceIntegrationTest {
 
         //when
         var consumedItems = new ArrayList<PantryItemConsumedDto>();
-        consumedItems.add(PantryItemConsumedDto.builder().pantryId(pantry.getId()).productId(productList.get(0).getId()).qty(1).build());
-        consumedItems.add(PantryItemConsumedDto.builder().pantryId(pantry.getId()).productId(productList.get(1).getId()).qty(2).build());
-        Assertions.assertThrows(QuantityNotAvailableException.class, () -> service.consumePantryItem(pantry.getId(), consumedItems));
+        consumedItems.add(PantryItemConsumedDto.builder().pantryId(pantry.getId()).productId(product1.getId()).qty(1).build());
+        consumedItems.add(PantryItemConsumedDto.builder().pantryId(pantry.getId()).productId(product2.getId()).qty(2).build());
+        Assertions.assertThrows(QuantityNotAvailableException.class, () -> pantryItemService.consumePantryItem(pantry.getId(), consumedItems));
 
         //then check if the update to item1 had been rolled back
-        var item = service.get(pantry.getId(), productList.get(0).getId()).get();
+        var item = pantryItemService.get(pantry.getId(), product1.getId()).get();
         assertThat(item).isNotNull();
         assertThat(item.getCurrentQty()).isEqualTo(10);
     }

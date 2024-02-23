@@ -25,6 +25,11 @@ public class PantryService {
                 .map(this::convertToDTO);
     }
 
+    public Optional<PantryDto> get(String name) {
+        return repository.findByName(name)
+                .map(this::convertToDTO);
+    }
+
     //TODO: Pageable
     public List<PantryDto> getAll() {
         var listEntity = repository.findAll(Sort.by("name"));

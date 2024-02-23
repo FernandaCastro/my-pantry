@@ -37,11 +37,17 @@ public class ProductService {
                 .map(this::convertToDTO);
     }
 
+    public Optional<ProductDto> get(String code) {
+        return repository.findByCode(code)
+                .map(this::convertToDTO);
+    }
+
     //TODO: Pageable
     public List<ProductDto> getAll(String searchParam) {
         List<Product> listEntity;
 
-        if (searchParam == null) throw new RequestParamExpectedException("Expecting to receive SearchParam: code or description value");
+        if (searchParam == null)
+            throw new RequestParamExpectedException("Expecting to receive SearchParam: code or description value");
 
         listEntity = repository.findAllByCodeOrDescription(searchParam.toLowerCase());
         return listEntity.stream().map(this::convertToDTO).collect(Collectors.toList());

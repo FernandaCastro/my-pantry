@@ -2,6 +2,7 @@ package com.fcastro.security.config;
 
 
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
@@ -26,6 +27,7 @@ import static jakarta.servlet.DispatcherType.FORWARD;
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
+@ConditionalOnProperty(prefix = "spring", value = "security.enabled", matchIfMissing = true, havingValue = "true")
 public class SecurityConfig {
 
     private final JWTRequestFilter jwtRequestFilter;
@@ -50,7 +52,7 @@ public class SecurityConfig {
 
                 //As it's an SPA stateless there's no need to protect against CSRF
                 //TODO: Need to confirm this!!!
-                .csrf().disable()
+                .csrf((csrf) -> csrf.disable())
                 //.csrf((csrf) -> csrf
                 //        .ignoringRequestMatchers("/oauth/login")
                 //        .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
