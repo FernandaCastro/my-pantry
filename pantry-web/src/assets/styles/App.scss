@@ -1,16 +1,16 @@
 $background: lavender;
 $border-color: #909df4;
 $btn-background-color: #6c66d8;
-$btn-disabled-color: lighten($btn-background-color, 20%);
+$btn-disabled-color: lighten($btn-background-color, 25%);
 $footer-background: hsl(219, 11%, 25%);
 $text-color: hsl(219, 11%, 25%);
 $title-text-color: indigo;
 $hover-background: darken($background, 5%);
 $link-color: rgb(63, 6, 250);
 
-a:hover {
-    color: $link-color !important;
-}
+// div {
+//     border: 1px solid blue;
+// }
 
 .btn-custom {
     min-width: 20%;
@@ -26,11 +26,12 @@ a:hover {
     pointer-events: all;
 }
 
-Button:hover {
+.btn-custom:hover {
+    border-color: $link-color !important;
     color: $link-color !important;
 }
 
-Button:disabled {
+.btn-custom.disabled {
     background-color: $btn-disabled-color;
 }
 
@@ -109,6 +110,7 @@ table.bordered {
 .section {
     border-top: 1.5px solid $border-color;
     color: $text-color;
+    width: 100%;
 }
 
 .title {
@@ -118,6 +120,10 @@ table.bordered {
 
 span {
     color: $text-color;
+}
+
+.text-small {
+    font-size: small;
 }
 
 span.disabled {
@@ -130,6 +136,13 @@ p {
 
 .icon {
     color: $title-text-color;
+    width: 15px;
+    height: 15px;
+}
+
+.icon:hover {
+    border-color: $link-color;
+    color: $link-color;
 }
 
 .custom-card {
@@ -164,6 +177,25 @@ div.category {
     button {
         padding: 0px;
     }
+}
+
+div.settings {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    justify-content: flex-start;
+    gap: 2px;
+    padding: 0px;
+}
+
+.card-login-profile {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    border: 1px solid $border-color;
+    border-radius: 8px;
+    background-color: $background !important;
 }
 
 div.scroll-pantryItems {

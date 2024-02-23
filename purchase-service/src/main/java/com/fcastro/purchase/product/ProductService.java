@@ -1,8 +1,8 @@
 package com.fcastro.purchase.product;
 
+import com.fcastro.app.model.ProductDto;
 import com.fcastro.kafka.event.ProductEventDto;
 import com.fcastro.kafka.exception.EventProcessingException;
-import com.fcastro.model.ProductDto;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;

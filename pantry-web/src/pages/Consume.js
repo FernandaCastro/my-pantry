@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useParams } from 'react-router';
-import { getPantry, getPantryItemsConsume, postPantryConsume } from '../services/apis/mypantry/fetch/requests/PantryRequests.js';
+import { getPantry, getPantryItemsConsume, postPantryConsume } from '../services/apis/mypantry/requests/PantryRequests.js';
 import Button from 'react-bootstrap/Button';
 import Stack from 'react-bootstrap/Stack';
 import Table from 'react-bootstrap/Table';

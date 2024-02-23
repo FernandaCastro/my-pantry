@@ -1,13 +1,15 @@
 package com.fcastro.pantry.pantry;
 
-import com.fcastro.model.ProductDto;
+import com.fcastro.app.model.ProductDto;
 import com.fcastro.pantry.JsonUtil;
 import com.fcastro.pantry.pantryItem.PantryItemDto;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
@@ -24,6 +26,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(controllers = PantryController.class)
+@ComponentScan(basePackages = {"com.fcastro.security"})
 public class PantryControllerUnitTest {
 
     @Autowired
@@ -33,6 +36,7 @@ public class PantryControllerUnitTest {
     private PantryService pantryService;
 
     @Test
+    @WithMockUser(roles = {"USER"})
     public void givenValidPantryId_whenGet_shouldReturnOk() throws Exception {
         //given
         var products = new ArrayList<PantryItemDto>();
@@ -57,6 +61,7 @@ public class PantryControllerUnitTest {
     }
 
     @Test
+    @WithMockUser(roles = {"USER"})
     public void whenGetAll_shouldReturnOk() throws Exception {
         //given
         var list = new ArrayList<PantryDto>();
@@ -72,6 +77,7 @@ public class PantryControllerUnitTest {
     }
 
     @Test
+    @WithMockUser(roles = {"USER"})
     public void givenInvalidPantryId_whenGet_shouldReturnNotFound() throws Exception {
         //given
         given(pantryService.get(anyLong())).willReturn(Optional.empty());
@@ -82,6 +88,7 @@ public class PantryControllerUnitTest {
     }
 
     @Test
+    @WithMockUser(roles = {"USER"})
     public void givenNewPantry_whenCreate_shouldReturnCreated() throws Exception {
         //given
         var pantry = PantryDto.builder().id(10L).name("New Base Inventory").isActive(true).type("R").build();
@@ -100,6 +107,7 @@ public class PantryControllerUnitTest {
     }
 
     @Test
+    @WithMockUser(roles = {"USER"})
     public void givenValidPantryId_whenReplace_shouldReturnCreated() throws Exception {
         //given
         var pantry = PantryDto.builder().id(10L).name("Updated Base Inventory").isActive(true).type("R").build();
@@ -119,6 +127,7 @@ public class PantryControllerUnitTest {
     }
 
     @Test
+    @WithMockUser(roles = {"USER"})
     public void givenInvalidPantryId_whenReplace_shouldReturnCreated() throws Exception {
         //given
         var pantry = PantryDto.builder().id(10L).name("Updated Base Inventory").isActive(true).type("R").build();
@@ -132,6 +141,7 @@ public class PantryControllerUnitTest {
     }
 
     @Test
+    @WithMockUser(roles = {"USER"})
     public void givenValidPantryId_whenDelete_shouldReturnNoContent() throws Exception {
         //given
         doNothing().when(pantryService).delete(anyLong());
@@ -139,6 +149,19 @@ public class PantryControllerUnitTest {
         //when //then
         mockMvc.perform(MockMvcRequestBuilders.delete("/pantries/1"))
                 .andExpect(status().isNoContent());
+    }
+
+    @Test
+    @WithMockUser(roles = {""})
+    void getWhenNoUserAuthorityThenForbidden() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.get("/pantries"))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    void getWhenNoUserAuthenticationThenUnauthorized() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.get("/pantries"))
+                .andExpect(status().isUnauthorized());
     }
 
 }

@@ -1,8 +1,8 @@
-import 'dotenv/config';
-const dotEnv = require('dotenv').config();
+// import 'dotenv/config';
+// const dotEnv = require('dotenv').config();
 
 const path = require('path');
-const webpack = require('webpack');
+// const webpack = require('webpack');
 
 const NodePolyfillPlugin = require('node-polyfill-webpack-plugin')
 
@@ -15,11 +15,11 @@ module.exports = {
     },
     plugins: [
         new NodePolyfillPlugin(),
-        new webpack.DefinePlugin({
-            'process.env': {
-                HELLO: JSON.stringify(process.env.HELLO)
-            }
-        }),
+        // new webpack.DefinePlugin({
+        //     'process.env': {
+        //         HELLO: JSON.stringify(process.env.HELLO)
+        //     }
+        // }),
     ],
     output: {
         hashFunction: require('xxhash64').hashFunction,

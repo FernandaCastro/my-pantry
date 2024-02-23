@@ -30,26 +30,26 @@ export default function PantryForm({ pantry, handleSave }) {
         <Form onSubmit={handleSubmit}>
             <Row>
                 <Form.Group className="mb-2 w-25" controlId="formId">
-                    <Form.Label size="sm">Id</Form.Label>
-                    <Form.Control size="sm" type="text" name="id" defaultValue={pantry.id} disabled />
+                    <Form.Label size="sm" className="mb-1 title">Id</Form.Label>
+                    <Form.Control size="sm" className="mb-1 input-custom" type="text" name="id" defaultValue={pantry.id} disabled />
                 </Form.Group>
                 <Form.Group as={Col} className="mb-2" controlId="formName">
-                    <Form.Label size="sm">Name</Form.Label>
-                    <Form.Control size="sm" type="text" name="name" defaultValue={pantry.name} />
+                    <Form.Label size="sm" className="mb-1 title">Name</Form.Label>
+                    <Form.Control size="sm" className="mb-1 input-custom" type="text" name="name" defaultValue={pantry.name} />
                 </Form.Group>
             </Row>
             <Row>
                 <Form.Group className="mb-2 w-25" controlId="formIsActive">
-                    <Form.Label size="sm"></Form.Label>
-                    <Form.Check size="sm"
+                    <Form.Label size="sm" className="mb-1"></Form.Label>
+                    <Form.Check size="sm" className="mb-1 title"
                         name="isActive"
                         defaultChecked={pantry.isActive}
                         onClick={e => setIsActiveLabel(e.target.checked ? "Active" : "Inactive")}
                         label={isActiveLabel} />
                 </Form.Group>
                 <Form.Group as={Col} className="mb-2" controlId="formType">
-                    <Form.Label size="sm">Type</Form.Label>
-                    <Form.Select size="sm" name="type" defaultValue={pantry.type}>
+                    <Form.Label size="sm" className="mb-1 title">Type</Form.Label>
+                    <Form.Select size="sm" className="mb-1" name="type" defaultValue={pantry.type}>
                         <option value='' disabled >Select a type</option>
                         <option value='R'>Recurring</option>
                         <option value='S'>Single</option>

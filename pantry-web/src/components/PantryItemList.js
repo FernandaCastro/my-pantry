@@ -1,5 +1,5 @@
 import { AlertContext } from '../services/context/AppContext.js';
-import { getPantryItems, deletePantryItem, updatePantryItem } from '../services/apis/mypantry/fetch/requests/PantryRequests.js';
+import { getPantryItems, deletePantryItem, updatePantryItem } from '../services/apis/mypantry/requests/PantryRequests.js';
 import React, { useEffect, useState, useContext } from 'react';
 import VariantType from '../components/VariantType.js';
 import Button from 'react-bootstrap/Button';

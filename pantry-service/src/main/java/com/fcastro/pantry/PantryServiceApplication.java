@@ -4,7 +4,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication(
-        scanBasePackages = {"com.fcastro.kafka", "com.fcastro.pantry"}
+        scanBasePackages = {"com.fcastro.kafka", "com.fcastro.security", "com.fcastro.pantry"}
 )
 public class PantryServiceApplication {
     public static void main(String[] args) {

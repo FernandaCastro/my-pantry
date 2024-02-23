@@ -3,7 +3,7 @@ import Button from 'react-bootstrap/Button';
 import { useState, useContext } from 'react';
 import { BsEraser, BsCheck2All, BsChevronDown, BsPlusLg } from "react-icons/bs";
 import VariantType from './VariantType.js';
-import { getFilteredProductList, createProduct } from '../services/apis/mypantry/fetch/requests/PantryRequests.js';
+import { getFilteredProductList, createProduct } from '../services/apis/mypantry/requests/PantryRequests.js';
 import { AlertContext } from '../services/context/AppContext.js';
 import Card from 'react-bootstrap/Card';
 import Stack from 'react-bootstrap/Stack';

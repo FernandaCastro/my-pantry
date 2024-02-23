@@ -1,6 +1,6 @@
 package com.fcastro.pantry.pantryItem;
 
-import com.fcastro.model.ProductDto;
+import com.fcastro.app.model.ProductDto;
 import com.fcastro.pantry.JsonUtil;
 import com.fcastro.pantry.exception.PantryNotActiveException;
 import com.fcastro.pantry.exception.QuantityNotAvailableException;
@@ -11,7 +11,9 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
@@ -29,6 +31,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(controllers = PantryItemController.class)
+@ComponentScan(basePackages = {"com.fcastro.security"})
 public class PantryItemControllerUnitTest {
 
     @Autowired
@@ -38,6 +41,7 @@ public class PantryItemControllerUnitTest {
     private PantryItemService service;
 
     @Test
+    @WithMockUser(roles = {"USER"})
     public void givenValidIds_whenGet_shouldReturnOk() throws Exception {
         //given
         var dto = PantryItemDto.builder()
@@ -58,6 +62,7 @@ public class PantryItemControllerUnitTest {
     }
 
     @Test
+    @WithMockUser(roles = {"USER"})
     public void whenGetAll_shouldReturnOk() throws Exception {
         //given
         var list = new ArrayList<PantryItemDto>();
@@ -81,6 +86,7 @@ public class PantryItemControllerUnitTest {
     }
 
     @Test
+    @WithMockUser(roles = {"USER"})
     public void givenInvalidIds_whenGet_shouldReturnNotFound() throws Exception {
         //given
         given(service.get(anyLong(), anyLong())).willReturn(Optional.empty());
@@ -91,6 +97,7 @@ public class PantryItemControllerUnitTest {
     }
 
     @Test
+    @WithMockUser(roles = {"USER"})
     public void givenNewIds_whenCreate_shouldReturnCreated() throws Exception {
         //given
         var dto = PantryItemDto.builder()
@@ -116,6 +123,7 @@ public class PantryItemControllerUnitTest {
     }
 
     @Test
+    @WithMockUser(roles = {"USER"})
     public void givenValidIds_whenReplace_shouldReturnCreated() throws Exception {
         //given
         var dto = PantryItemDto.builder()
@@ -139,6 +147,7 @@ public class PantryItemControllerUnitTest {
     }
 
     @Test
+    @WithMockUser(roles = {"USER"})
     public void givenInvalidPantryId_whenReplace_shouldReturnNotFound() throws Exception {
         //given
         var dto = PantryItemDto.builder()
@@ -156,6 +165,7 @@ public class PantryItemControllerUnitTest {
     }
 
     @Test
+    @WithMockUser(roles = {"USER"})
     public void givenValidPantryId_whenDelete_shouldReturnNoContent() throws Exception {
         //given
         doNothing().when(service).delete(1L, 1L);
@@ -166,6 +176,7 @@ public class PantryItemControllerUnitTest {
     }
 
     @Test
+    @WithMockUser(roles = {"USER"})
     public void givenValidIds_whenConsumeProduct_shouldReturnOk() throws Exception {
         //given
         var list = new ArrayList<PantryItemConsumedDto>();
@@ -180,6 +191,7 @@ public class PantryItemControllerUnitTest {
     }
 
     @Test
+    @WithMockUser(roles = {"USER"})
     public void givenInvalidIds_whenConsumeProduct_shouldReturnNotFound() throws Exception {
         //given
         var dto = PantryItemConsumedDto.builder().pantryId(1L).productId(1L).qty(1).build();
@@ -193,6 +205,7 @@ public class PantryItemControllerUnitTest {
     }
 
     @Test
+    @WithMockUser(roles = {"USER"})
     public void givenInvalidQuantity_whenConsumeProduct_shouldReturnBadRequest() throws Exception {
         //given
         var dto = PantryItemConsumedDto.builder().pantryId(1L).productId(1L).qty(10).build();
@@ -206,6 +219,7 @@ public class PantryItemControllerUnitTest {
     }
 
     @Test
+    @WithMockUser(roles = {"USER"})
     public void givenPantryNotActive_whenConsumeProduct_shouldReturnBadRequest() throws Exception {
         //given
         var dto = PantryItemConsumedDto.builder().pantryId(1L).productId(1L).qty(10).build();

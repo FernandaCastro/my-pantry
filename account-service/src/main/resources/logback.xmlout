@@ -1,0 +1,6 @@
+<configuration>
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender"/>
+    <logger name="org.springframework.security" level="trace" additivity="false">
+        <appender-ref ref="Console"/>
+    </logger>
+</configuration>

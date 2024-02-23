@@ -13,11 +13,9 @@ import java.io.Serializable;
 @AllArgsConstructor
 public class PantryItemKey implements Serializable {
 
-    //@Column(table = "pantryItem", name = "pantry_id", insertable = false, updatable = false)
     @Column(name = "pantry_id")
     private long pantryId;
 
-    //@Column(table = "pantryItem", name = "product_id", insertable = false, updatable = false)
     @Column(name = "product_id")
     private long productId;
 
