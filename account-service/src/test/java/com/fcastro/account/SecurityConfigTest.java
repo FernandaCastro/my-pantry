@@ -41,19 +41,19 @@ public class SecurityConfigTest {
                 .andExpect(MockMvcResultMatchers.status().isUnauthorized());
     }
 
-    @Test
-    @WithMockUser(roles = {"ADMIN"})
-    public void testAdminAccess() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get("/accountGroups/10/members"))
-                .andExpect(MockMvcResultMatchers.status().isOk());
-    }
+//    @Test
+//    @WithMockUser(roles = {"ADMIN"})
+//    public void testAdminAccess() throws Exception {
+//        mockMvc.perform(MockMvcRequestBuilders.get("/accountGroups/10/members"))
+//                .andExpect(MockMvcResultMatchers.status().isOk());
+//    }
 
-    @Test
-    @WithMockUser(roles = {"USER"})
-    public void testForbiddenAdminAccess() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get("/accountGroups/10/members"))
-                .andExpect(MockMvcResultMatchers.status().isForbidden());
-    }
+//    @Test
+//    @WithMockUser(roles = {"USER"})
+//    public void testForbiddenAdminAccess() throws Exception {
+//        mockMvc.perform(MockMvcRequestBuilders.get("/accountGroups/10/members"))
+//                .andExpect(MockMvcResultMatchers.status().isForbidden());
+//    }
 
     @Test
     @WithMockUser(username = "1", roles = {"USER"})

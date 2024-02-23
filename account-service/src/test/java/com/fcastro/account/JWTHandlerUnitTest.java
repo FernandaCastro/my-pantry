@@ -4,44 +4,31 @@ import com.fcastro.app.model.AccountDto;
 import com.fcastro.security.config.JWTHandler;
 import com.fcastro.security.config.SecurityConfigData;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.boot.test.context.ConfigDataApplicationContextInitializer;
 import org.springframework.security.core.Authentication;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-@ExtendWith(MockitoExtension.class)
-@ContextConfiguration(classes = {SecurityConfigData.class})
-@ComponentScan(basePackages = {"com.fcastro.security"})
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public class JWTHandlerTest {
+@ExtendWith(SpringExtension.class)
+//Loads the application.yml file
+@ContextConfiguration(initializers = ConfigDataApplicationContextInitializer.class,
+        classes = JWTHandler.class)
+@EnableConfigurationProperties(value = SecurityConfigData.class)
+public class JWTHandlerUnitTest {
 
     @Autowired
     SecurityConfigData securityConfigData;
 
-    @InjectMocks
+    @Autowired
     JWTHandler jwtHandler;
-
-//    @BeforeAll
-//    void setup() {
-//        securityConfigData = new SecurityConfigData();
-//        jwtHandler = new JWTHandler(securityConfigData);
-//    }
-
-    @Configuration
-    @ComponentScan(basePackages = {"com.fcastro.security"}) //Otherwise, it doesn't load SecurityConfig classes
-    static class TestConfig {
-
-    }
 
     @Test
     void createToken_and_verifyAndGetAuthentication_shouldWork() {

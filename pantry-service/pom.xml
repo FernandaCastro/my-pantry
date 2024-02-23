@@ -2,16 +2,15 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <parent>
-        <artifactId>my-pantry</artifactId>
-        <groupId>com.fcastro</groupId>
-        <version>0.0.1-SNAPSHOT</version>
-    </parent>
-
     <modelVersion>4.0.0</modelVersion>
 
+    <parent>
+        <groupId>com.fcastro</groupId>
+        <artifactId>my-pantry</artifactId>
+        <version>${revision}</version>
+    </parent>
+
     <artifactId>pantry-service</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <dependencies>
@@ -44,7 +43,7 @@
         <dependency>
             <groupId>com.fcastro</groupId>
             <artifactId>common-config-data</artifactId>
-            <version>${project.version}</version>
+            <version>${revision}</version>
         </dependency>
         <dependency>
             <groupId>org.flywaydb</groupId>
