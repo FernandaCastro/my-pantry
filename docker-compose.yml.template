@@ -34,21 +34,21 @@ services:
     restart: always
 
   account-db:
-      container_name: account-db
-      image: postgres
-      environment:
-        POSTGRES_DB: account-db
-        POSTGRES_USER: account
-        POSTGRES_PASSWORD: account
-        PGDATA: /data/postgres
-      volumes:
-        - account-db:/data/postgres
-      ports:
-        - "5434:5432"
-      networks:
-        - postgres
-        - spring
-      restart: always
+    container_name: account-db
+    image: postgres
+    environment:
+      POSTGRES_DB: account-db
+      POSTGRES_USER: account
+      POSTGRES_PASSWORD: account
+      PGDATA: /data/postgres
+    volumes:
+      - account-db:/data/postgres
+    ports:
+      - "5434:5432"
+    networks:
+      - postgres
+      - spring
+    restart: always
 
   pgadmin:
     container_name: pgadmin
@@ -75,6 +75,7 @@ services:
       ZOOKEEPER_TICK_TIME: 2000
     networks:
       - kafka
+    restart: always
 
   kafka-broker:
     image: confluentinc/cp-kafka
@@ -93,9 +94,10 @@ services:
       - zookeeper
     networks:
       - kafka
+    restart: always
 
   pantry-service:
-     image: #Change to: <your DockerHub user>/pantry-service:latest
+     image: fernandacastro/pantry-service:latest
      container_name: pantry-service
      ports:
        - "8080:8080"
@@ -108,9 +110,10 @@ services:
      depends_on:
        - kafka-broker
        - pantry-db
+     restart: always
 
   purchase-service:
-    image: #Change to: <your DockerHub user>/purchase-service:latest
+    image: fernandacastro/purchase-service:latest
     container_name: purchase-service
     ports:
       - "8081:8081"
@@ -123,21 +126,39 @@ services:
     depends_on:
       - kafka-broker
       - purchase-db
+    restart: always
+
+  account-service:
+    image: fernandacastro/account-service:latest
+    container_name: account-service
+    ports:
+      - "8082:8082"
+    environment:
+       - SPRING_PROFILES_ACTIVE=docker
+    networks:
+      - spring
+      - postgres
+    depends_on:
+      - account-db
+    restart: always
 
   pantry-web:
     container_name: pantry-web
-    image: #Change to: <your DockerHub user>/pantry-web:latest
+    image: fernandacastro/pantry-web:0.0.2-SNAPSHOT
     ports:
      - "3000:3000"
     networks:
       - spring
     depends_on:
+      - account-service
       - pantry-service
       - purchase-service
+    restart: always
+
 volumes:
+  account-db:
   pantry-db:
   purchase-db:
-  account-db:
   pgadmin:
 networks:
   postgres:
@@ -146,4 +167,3 @@ networks:
     driver: bridge
   kafka:
     driver: bridge
-

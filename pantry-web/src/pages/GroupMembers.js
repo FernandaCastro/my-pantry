@@ -3,7 +3,7 @@ import { FormCheck, Stack } from "react-bootstrap";
 import Button from 'react-bootstrap/Button';
 import { AlertContext } from '../services/context/AppContext.js';
 import VariantType from '../components/VariantType.js';
-import { getAccountGroupList, createAccountGroup, editAccountGroup, deleteAccountGroup, getAccountGroupMemberList } from '../services/apis/mypantry/requests/AccountRequests.js';
+import { getAccountGroupList, createAccountGroup, editAccountGroup, deleteAccountGroup, getAccountGroupMemberList, deleteAccountMember } from '../services/apis/mypantry/requests/AccountRequests.js';
 import Table from 'react-bootstrap/Table';
 import { BsPencil, BsTrash, BsCheck2All, BsXLg } from "react-icons/bs";
 import AccountSearchBar from '../components/AccountSearchBar';
@@ -104,6 +104,19 @@ function GroupMembers() {
         }
     }
 
+    async function fetchDeleteMember(groupId, accountId) {
+        try {
+            setIsLoading(true);
+            await deleteAccountMember(groupId, accountId);
+            showAlert(VariantType.SUCCESS, "Member removed successfully!");
+        } catch (error) {
+            showAlert(VariantType.DANGER, error.message);
+        } finally {
+            setRefresh(true);
+            setIsLoading(false);
+        }
+    }
+
     function handleNewGroup() {
         const group = { id: 0, name: groupName };
         fetchCreateGroup(group);
@@ -115,7 +128,7 @@ function GroupMembers() {
     }
 
     function handleRemoveMember(groupId, accountId) {
-        fetchDeleteMember(id);
+        fetchDeleteMember(groupId, accountId);
     }
 
     function handleEditGroup(item) {
