@@ -14,7 +14,7 @@ import org.springframework.context.annotation.Configuration;
 public class SecurityConfigData {
 
     private String secret;
-    private String allowedOrigin;
+    private String[] allowedOrigin;
     private String googleClientId;
     private String googleClientSecret;
 }
