@@ -9,7 +9,6 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
-import org.springframework.validation.ObjectError;
 import org.springframework.web.HttpMediaTypeNotAcceptableException;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
@@ -25,9 +24,10 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 import org.springframework.web.multipart.support.MissingServletRequestPartException;
 
 import java.time.Clock;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
@@ -52,12 +52,17 @@ public class GlobalExceptionHandler {
 
         exceptionTypes.put(ResourceNotFoundException.class, "application-error");
         exceptionTypes.put(TokenVerifierException.class, "application-error");
+        exceptionTypes.put(AccountAlreadyExistsException.class, "application-error");
+        exceptionTypes.put(PasswordAnswerNotMatchException.class, "application-error");
+
     }
 
     @ExceptionHandler(value = {
             MissingServletRequestParameterException.class,
             MissingServletRequestPartException.class,
-            HttpMessageNotReadableException.class})
+            HttpMessageNotReadableException.class,
+            AccountAlreadyExistsException.class,
+            PasswordAnswerNotMatchException.class})
     public ResponseEntity<?> badRequest(final Exception ex, final HttpServletRequest request) {
 
         final var error = ApplicationError.builder()
@@ -113,9 +118,14 @@ public class GlobalExceptionHandler {
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
     public ResponseEntity<?> badRequest(final MethodArgumentNotValidException ex, final HttpServletRequest request) {
 
-        final var errorsSet = ex.getBindingResult().getAllErrors().stream()
-                .map(ObjectError::getDefaultMessage).collect(Collectors.toSet());
-        final var errorMessages = String.join(",", errorsSet);
+        List<String> errors = new ArrayList<>();
+        ex.getBindingResult().getAllErrors().forEach((error) -> {
+            errors.add(error.getDefaultMessage());
+        });
+
+//        final var errorsSet = ex.getBindingResult().getAllErrors().stream()
+//                .map(ObjectError::getDefaultMessage).collect(Collectors.toSet());
+        final var errorMessages = String.join(",", errors);
 
         final var error = ApplicationError.builder()
                 .timestamp(Clock.systemUTC().millis())

@@ -1,7 +1,10 @@
 package com.fcastro.security.config;
 
 
-import jakarta.servlet.http.HttpServletResponse;
+import com.fcastro.security.jwt.CustomAccessDeniedHandler;
+import com.fcastro.security.jwt.CustomAuthenticationEntryPointHandler;
+import com.fcastro.security.jwt.JWTRequestFilter;
+import com.fcastro.security.jwt.SecurityConfigData;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,7 +17,6 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.HeaderWriterLogoutHandler;
 import org.springframework.security.web.header.writers.ClearSiteDataHeaderWriter;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -53,14 +55,8 @@ public class SecurityConfig {
                 //As it's an SPA stateless there's no need to protect against CSRF
                 //TODO: Need to confirm this!!!
                 .csrf((csrf) -> csrf.disable())
-                //.csrf((csrf) -> csrf
-                //        .ignoringRequestMatchers("/oauth/login")
-                //        .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-                //        .csrfTokenRequestHandler(new SpaCsrfTokenRequestHandler())
-                //)
 
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-
                 .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class)
 
                 //Intercept the FilterChain(ExceptionTranslationFilter) when a SecurityException occurs:
@@ -70,21 +66,9 @@ public class SecurityConfig {
                         .accessDeniedHandler(customAccessDeniedHandler)
                         .authenticationEntryPoint(customAuthenticationEntryPointHandler))
 
-                .logout((logout) -> logout
-                        .logoutRequestMatcher(new AntPathRequestMatcher("/oauth/logout"))
-                        .clearAuthentication(true)
-                        .invalidateHttpSession(true)
-                        .deleteCookies("AUTH-TOKEN")
-                        .addLogoutHandler(clearSiteData)
-                        .logoutSuccessHandler((request, response, authentication) -> {
-                            response.setStatus(HttpServletResponse.SC_OK);
-                        })
-                        .permitAll())
-
                 .authorizeHttpRequests(authorize -> authorize
                         //Dispatches FORWARD and ERROR are permitted to allow Spring MVC to render views and Spring Boot to render errors
                         .dispatcherTypeMatchers(FORWARD, ERROR).permitAll()
-                        .requestMatchers("/oauth/login", "/oauth/logout").permitAll()
                         //.requestMatchers("/accountGroups/*/members").hasRole("ADMIN")
                         .anyRequest().hasRole("USER"));
 
@@ -102,50 +86,6 @@ public class SecurityConfig {
         source.registerCorsConfiguration("/**", configuration);
         return source;
     }
-}
 
-//final class SpaCsrfTokenRequestHandler extends CsrfTokenRequestAttributeHandler {
-//    private final CsrfTokenRequestHandler delegate = new XorCsrfTokenRequestAttributeHandler();
-//
-//    @Override
-//    public void handle(HttpServletRequest request, HttpServletResponse response, Supplier<CsrfToken> csrfToken) {
-//        /*
-//         * Always use XorCsrfTokenRequestAttributeHandler to provide BREACH protection of
-//         * the CsrfToken when it is rendered in the response body.
-//         */
-//        this.delegate.handle(request, response, csrfToken);
-//    }
-//
-//    @Override
-//    public String resolveCsrfTokenValue(HttpServletRequest request, CsrfToken csrfToken) {
-//        /*
-//         * If the request contains a request header, use CsrfTokenRequestAttributeHandler
-//         * to resolve the CsrfToken. This applies when a single-page application includes
-//         * the header value automatically, which was obtained via a cookie containing the
-//         * raw CsrfToken.
-//         */
-//        if (StringUtils.hasText(request.getHeader(csrfToken.getHeaderName()))) {
-//            return super.resolveCsrfTokenValue(request, csrfToken);
-//        }
-//        /*
-//         * In all other cases (e.g. if the request contains a request parameter), use
-//         * XorCsrfTokenRequestAttributeHandler to resolve the CsrfToken. This applies
-//         * when a server-side rendered form includes the _csrf request parameter as a
-//         * hidden input.
-//         */
-//        return this.delegate.resolveCsrfTokenValue(request, csrfToken);
-//    }
-//}
-//
-//final class CsrfCookieFilter extends OncePerRequestFilter {
-//
-//    @Override
-//    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
-//            throws ServletException, IOException {
-//        CsrfToken csrfToken = (CsrfToken) request.getAttribute("_csrf");
-//        // Render the token value to a cookie by causing the deferred token to be loaded
-//        csrfToken.getToken();
-//
-//        filterChain.doFilter(request, response);
-//    }
-//}
+
+}

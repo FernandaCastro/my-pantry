@@ -1,4 +1,4 @@
-const getResponseContent = function (response) {
+function getResponseContent(response) {
     if (!response) return;
     const contentType = response.headers.get('Content-Type')
 

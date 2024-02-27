@@ -9,6 +9,7 @@ import java.util.Optional;
 
 @Repository
 public interface AccountRepository extends JpaRepository<Account, Long> {
+    @Query("select p from account p where p.email = :email")
     Optional<Account> findByEmail(String email);
 
     @Query("select p from account p where lower(p.name) = :searchParam or lower(p.email) = :searchParam order by p.name")

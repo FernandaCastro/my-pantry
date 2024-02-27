@@ -4,10 +4,11 @@ import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
 import '../assets/styles/Header.scss';
 import Image from 'react-bootstrap/Image';
-import iconConsume from '../assets/images/cook-lavender.png';
-import iconPurchase from '../assets/images/shopping-cart-lavender.png';
-import iconProduct from '../assets/images/food-lavender.png';
-import iconPantry from '../assets/images/cupboard-lavender.png';
+import iconConsume from '../assets/images/cook-gradient.png';
+import iconPurchase from '../assets/images/shoppingcart-gradient.png';
+import iconProduct from '../assets/images/food-gradient.png';
+import iconPantry from '../assets/images/cupboard-gradient.png';
+import iconMenu from '../assets/images/menu-gradient.png';
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Tooltip from 'react-bootstrap/Tooltip';
 import ProfileIcon from './ProfileIcon.js';
@@ -20,12 +21,15 @@ export default function Header() {
     return (
         <div className="header">
             <Navbar collapseOnSelect expand="md">
-                <Navbar.Brand className="home" href="/home" >The Pantry</Navbar.Brand>
+                <Navbar.Brand className="homeLink" href="/home" ><span className="homeText">My Pantry</span></Navbar.Brand>
                 <Container className='container fix-pantry-name'>
                     <Nav><Nav.Link href={"/pantries/" + pantryCtx.id + "/edit"}>{pantryCtx.name}</Nav.Link></Nav>
                 </Container>
                 <Container bsPrefix='fix-toggle-btn'>
-                    <Navbar.Toggle className="toggle-btn" />
+                    {/* className="toggle-btn" */}
+                    <Navbar.Toggle >
+                        <Image src={iconMenu} className="menu-icon" />
+                    </Navbar.Toggle>
                 </Container>
                 <Container bsPrefix='fix-login-btn-before'>
                     <ProfileIcon />

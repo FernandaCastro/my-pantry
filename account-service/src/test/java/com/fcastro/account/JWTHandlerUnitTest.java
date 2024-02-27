@@ -1,8 +1,8 @@
 package com.fcastro.account;
 
-import com.fcastro.app.model.AccountDto;
-import com.fcastro.security.config.JWTHandler;
-import com.fcastro.security.config.SecurityConfigData;
+import com.fcastro.security.jwt.JWTHandler;
+import com.fcastro.security.jwt.SecurityConfigData;
+import com.fcastro.security.model.AccountDto;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,7 +43,7 @@ public class JWTHandlerUnitTest {
         // Assert
         assertNotNull(token);
         assertNotNull(authentication);
-        assertEquals(accountDto.getId().toString(), authentication.getPrincipal());
+        assertEquals(accountDto.getEmail(), authentication.getPrincipal());
 
         var authorities = authentication.getAuthorities().stream()
                 .map(grantedAuthority -> grantedAuthority.getAuthority())

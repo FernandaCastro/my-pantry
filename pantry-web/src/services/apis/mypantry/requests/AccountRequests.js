@@ -4,15 +4,31 @@
 import { FetchAccount, FetchAccountHeader } from '../FetchAccount';
 
 export async function getUserInfo() {
-    return FetchAccountHeader(`oauth/user-info`);
+    return FetchAccountHeader(`auth/user-info`);
 }
 
-export async function postLogin(idToken) {
-    return FetchAccount('oauth/login', 'POST', idToken);
+export async function postGoogleLogin(idToken) {
+    return FetchAccount('auth/google-login', 'POST', idToken);
+}
+
+export async function postLogin(account) {
+    return FetchAccount('auth/login', 'POST', account);
+}
+
+export async function getResetPassword(email) {
+    return FetchAccount(`auth/reset-password?email=${email}`, 'GET');
+}
+
+export async function postResetPassword(account) {
+    return FetchAccount('auth/reset-password', 'POST', account);
+}
+
+export async function postSignup(account) {
+    return FetchAccount('auth/signup', 'POST', account);
 }
 
 export async function postLogout() {
-    return FetchAccount('oauth/logout', 'GET');
+    return FetchAccount('auth/logout', 'GET');
 }
 
 export async function getAccountGroupList() {

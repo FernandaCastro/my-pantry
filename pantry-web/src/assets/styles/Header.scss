@@ -4,6 +4,10 @@ $primary-background: #383d46;
 $secondary-text-color: #1c1d1f;
 $secondary_background: lavender;
 $link-color: rgb(63, 6, 250);
+$btn-background-color: #6c66d8;
+//$gradient-color: linear-gradient(90deg, #84D5FF, #98C4FE, #ADB2FE, #BEA4FD, #E584FC);
+$gradient-color: linear-gradient(90deg, rgba(228, 132, 252, 1) 0%, rgba(132, 212, 255, 1) 100%);
+//$gradient-color: linear-gradient(20deg, rgba(132, 212, 255, 1) 0%, rgb(231, 141, 243) 100%);
 
 // div {
 //     border: 1px solid blue;
@@ -18,14 +22,6 @@ $link-color: rgb(63, 6, 250);
         color: lavender;
         padding: 0px;
         width: auto;
-    }
-
-    .toggle-btn {
-        width: auto;
-        height: auto;
-        color: lavender;
-        border-color: lavender;
-        padding: 4px;
     }
 
     .icon:hover {
@@ -46,6 +42,15 @@ $link-color: rgb(63, 6, 250);
 
     .navbar-collape {
         flex-grow: unset;
+    }
+
+    .navbar-toggler,
+    .navbar-toggler:focus,
+    .navbar-toggler:active,
+    .navbar-toggler-icon:focus {
+        outline: none !important;
+        box-shadow: none !important;
+        border: 0 !important;
     }
 }
 
@@ -115,7 +120,18 @@ $link-color: rgb(63, 6, 250);
     flex-grow: unset;
 }
 
-.home:hover {
+.homeText {
+    font-family: cursive;
+    font-size: x-large;
+    font-weight: bold;
+    padding-left: 10px;
+    //background: linear-gradient(90deg, #99F0F7, #C2B6F3, #EA7BEE);
+    background: $gradient-color;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.homeLink:hover {
     border-color: $link-color !important;
     color: $link-color !important;
 }
@@ -124,9 +140,10 @@ $link-color: rgb(63, 6, 250);
     display: flex;
     direction: row;
     align-items: center;
-    justify-content: center;
+    justify-content: space-around;
     gap: 30px;
     margin-right: 30px;
+    padding-top: 5px;
 }
 
 .menuItem {
@@ -150,4 +167,11 @@ $link-color: rgb(63, 6, 250);
 .menu-icon {
     width: 25px;
     height: 25px;
+}
+
+.profile-icon {
+    background: linear-gradient(white, white) padding-box,
+        $gradient-color border-box;
+    border-radius: 20px;
+    border: 2px solid transparent;
 }

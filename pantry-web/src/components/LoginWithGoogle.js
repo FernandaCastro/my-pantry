@@ -1,13 +1,15 @@
 import { postLoginToken } from '../services/LoginService';
-import { ProfileContext } from '../services/context/AppContext';
 import { Button } from 'react-bootstrap';
-import { useContext, useRef, useEffect } from 'react';
+import { useRef, useEffect, useContext } from 'react';
 import useScript from '../hooks/useScript';
+import { AlertContext } from '../services/context/AppContext.js';
+import VariantType from '../components/VariantType.js';
 //import { GoogleLogin, useGoogleLogin } from '@react-oauth/google';
 
-export function LoginWithGoogle({ handleLogin }) {
+export function LoginWithGoogle({ handlePostLogin }) {
 
     const GoogleSignInButton = useRef(null);
+    const { setAlert } = useContext(AlertContext);
 
     useEffect(() => {
         window.google = undefined;
@@ -17,8 +19,19 @@ export function LoginWithGoogle({ handleLogin }) {
     // https://developers.google.com/identity/gsi/web/reference/js-reference#CredentialResponse
     const onGoogleSignIn = async res => {
         const { credential } = res;
-        var profile = await postLoginToken(credential);
-        handleLogin(profile);
+        var profile;
+
+        try {
+            profile = await postLoginToken(credential);
+
+        } catch (error) {
+            setAlert({
+                show: true,
+                type: VariantType.DANGER,
+                message: error
+            })
+        }
+        handlePostLogin(profile);
     };
 
     useScript('https://accounts.google.com/gsi/client', () => {

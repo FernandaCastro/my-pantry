@@ -46,6 +46,11 @@
             <version>${revision}</version>
         </dependency>
         <dependency>
+            <groupId>com.fcastro</groupId>
+            <artifactId>security-config</artifactId>
+            <version>${revision}</version>
+        </dependency>
+        <dependency>
             <groupId>org.flywaydb</groupId>
             <artifactId>flyway-core</artifactId>
         </dependency>

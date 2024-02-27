@@ -1,6 +1,6 @@
-package com.fcastro.security.config;
+package com.fcastro.security.jwt;
 
-import com.fcastro.app.model.AccountDto;
+import com.fcastro.security.model.AccountDto;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
@@ -42,7 +42,7 @@ public class JWTHandler {
         claims.put("role", account.getRoles());
 
         return Jwts.builder()
-                .setSubject(account.getId().toString())
+                .setSubject(account.getEmail().toString())
                 .setIssuedAt(new Date())
                 .setExpiration(validity)
                 .addClaims(claims)

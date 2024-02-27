@@ -1,4 +1,4 @@
-package com.fcastro.security.config;
+package com.fcastro.security.jwt;
 
 import lombok.Getter;
 import lombok.Setter;
