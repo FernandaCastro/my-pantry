@@ -91,7 +91,7 @@ public class AuthenticationSecurityConfig {
                 .authorizeHttpRequests(authorize -> authorize
                         //Dispatches FORWARD and ERROR are permitted to allow Spring MVC to render views and Spring Boot to render errors
                         .dispatcherTypeMatchers(FORWARD, ERROR).permitAll()
-                        .requestMatchers("/auth/reset-password", "/auth/google-login", "/auth/signup", "/auth/login", "/auth/logout").permitAll()
+                        .requestMatchers("/auth/reset-password", "/auth/google-login", "/auth/register", "/auth/login", "/auth/logout").permitAll()
                         //.requestMatchers("/accountGroups/*/members").hasRole("ADMIN")
                         .anyRequest().hasRole("USER"));
 

@@ -10,12 +10,13 @@ import java.util.List;
 @Repository
 public interface AccountGroupMemberRepository extends JpaRepository<AccountGroupMember, AccountGroupMemberKey> {
 
-    @Query("select aga, ac from account ac, accountGroupAccount aga " +
+    @Query("select aga, ac from account ac, accountGroupAccount aga, account a " +
             "where aga.accountId = ac.id  " +
             "and aga.accountGroupId  = :groupId  " +
-            "and aga.accountId = :accountId  " +
+            "and aga.accountId = a.id  " +
+            "and a.email = :email " +
             "order by ac.name")
-    List<AccountGroupMember> findAllByAccountIdAndGroupId(long accountId, long groupId);
+    List<AccountGroupMember> findAllByAccountIdAndGroupId(String email, long groupId);
 
     @Modifying
     @Query("delete from accountGroupAccount aga where aga.accountGroupId = :groupId")

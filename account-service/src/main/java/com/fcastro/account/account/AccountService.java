@@ -59,6 +59,10 @@ public class AccountService {
                 .build();
     }
 
+    public Optional<NewAccountDto> get(Long id) {
+        return accountRepository.findById(id).map(this::convertToNewAccountDto);
+    }
+
     public Optional<AccountDto> getUser(String email) {
         return accountRepository.findByEmail(email).map(this::convertToDto);
     }
@@ -113,6 +117,9 @@ public class AccountService {
         }
     }
 
+    /**
+     * Handles the Account creation or update when logging through provider (Google)
+     **/
     @Transactional
     private AccountDto createOrUpdateUser(Account account) {
         Account existingAccount = accountRepository.findByEmail(account.getEmail()).orElse(null);
@@ -143,7 +150,14 @@ public class AccountService {
         return convertToDto(existingAccount);
     }
 
+    /**
+     * Handles only registration of an Account => not secured
+     * Account does not exist: Create new
+     * Account was created by a specific provider (Google): Store the password.
+     */
     public AccountDto register(NewAccountDto newAccount) {
+
+        //Account was created by a specific provider (Google): Store the password.
         Account existingAccount = accountRepository.findByEmail(newAccount.getEmail()).orElse(null);
         if (existingAccount == null) {
             var account = Account.builder()
@@ -154,22 +168,86 @@ public class AccountService {
                     .passwordQuestion(newAccount.getPasswordQuestion())
                     .passwordAnswer(newAccount.getPasswordAnswer())
                     .build();
-            existingAccount = accountRepository.save(account);
-            return convertToDto(existingAccount);
+
+            account = accountRepository.save(account);
+            accountGroupService.createDefaultGroup(account.getId());
+            return convertToDto(account);
         }
-        //User has already signedUp using Google, for instance. Store the password.
+
+        //Account was created by a specific provider (Google): Store the password.
         if (Strings.isNotEmpty(existingAccount.getExternalProvider()) &&
                 Strings.isEmpty(existingAccount.getPassword())) {
             existingAccount.setPassword(passwordEncoder.encode(newAccount.getPassword()));
             existingAccount.setPasswordQuestion(newAccount.getPasswordQuestion());
             existingAccount.setPasswordAnswer(newAccount.getPasswordAnswer());
+
             existingAccount = accountRepository.save(existingAccount);
+            accountGroupService.createDefaultGroup(existingAccount.getId());
+
+            return convertToDto(existingAccount);
+        }
+
+        //Account was pre-created by another user: Complete registration.
+        if (Strings.isEmpty(existingAccount.getExternalProvider()) &&
+                Strings.isEmpty(existingAccount.getPassword())) {
+            existingAccount.setName(newAccount.getName());
+            existingAccount.setPassword(passwordEncoder.encode(newAccount.getPassword()));
+            existingAccount.setPasswordQuestion(newAccount.getPasswordQuestion());
+            existingAccount.setPasswordAnswer(newAccount.getPasswordAnswer());
+
+            existingAccount = accountRepository.save(existingAccount);
+            accountGroupService.createDefaultGroup(existingAccount.getId());
 
             return convertToDto(existingAccount);
         }
 
         throw new AccountAlreadyExistsException("This email is already in use. Please login using your password.");
     }
+
+    /**
+     * Handles the update of an existing Account => Secured by a JWT
+     **/
+    public AccountDto updateAccount(NewAccountDto newAccount) {
+
+        Account existingAccount = accountRepository.findById(newAccount.getId())
+                .orElseThrow(() -> new ResourceNotFoundException("Account not found"));
+
+        //Base-case assumes password has not changed
+        String password = existingAccount.getPassword();
+
+        //In case password has changed, encode it again
+        if (!password.equals(newAccount.getPassword()) &&
+                !passwordEncoder.matches(newAccount.getPassword(), password)) {
+            password = passwordEncoder.encode(newAccount.getPassword());
+        }
+
+        existingAccount.setName(newAccount.getName());
+        existingAccount.setEmail(newAccount.getEmail());
+        existingAccount.setPassword(password);
+        existingAccount.setPasswordQuestion(newAccount.getPasswordQuestion());
+        existingAccount.setPasswordAnswer(newAccount.getPasswordAnswer());
+
+        existingAccount = accountRepository.save(existingAccount);
+        return convertToDto(existingAccount);
+    }
+
+    /**
+     * Handles a pre registration of a new account, made by another user => secured by JWT
+     **/
+    public AccountDto preCreateAccount(AccountDto newAccount) {
+        Account existingAccount = accountRepository.findByEmail(newAccount.getEmail()).orElse(null);
+        if (existingAccount == null) {
+            var account = Account.builder()
+                    .email(newAccount.getEmail())
+                    .roles("ROLE_USER")
+                    .build();
+
+            account = accountRepository.save(account);
+            return convertToDto(account);
+        }
+        throw new AccountAlreadyExistsException("There is an account using this email.");
+    }
+
 
     public List<AccountDto> getAll(String searchParam) {
 
@@ -178,6 +256,32 @@ public class AccountService {
 
         var accountList = accountRepository.findAllByNameOrEmail(searchParam.toLowerCase());
         return accountList.stream().map(this::convertToDto).collect(Collectors.toList());
+    }
+
+    private AccountDto convertToDto(NewAccountDto account) {
+        return AccountDto.builder()
+                .id(account.getId())
+                .name(account.getName())
+                .email(account.getEmail())
+                .pictureUrl(account.getPictureUrl())
+                .roles(account.getRoles())
+                .password(account.getPassword())
+                .passwordQuestion(account.getPasswordQuestion())
+                .passwordAnswer(account.getPasswordAnswer())
+                .build();
+    }
+
+    private NewAccountDto convertToNewAccountDto(Account account) {
+        return NewAccountDto.builder()
+                .id(account.getId())
+                .name(account.getName())
+                .email(account.getEmail())
+                .pictureUrl(account.getPictureUrl())
+                .roles(account.getRoles())
+                .password(account.getPassword())
+                .passwordQuestion(account.getPasswordQuestion())
+                .passwordAnswer(account.getPasswordAnswer())
+                .build();
     }
 
     private AccountDto convertToDto(Account account) {

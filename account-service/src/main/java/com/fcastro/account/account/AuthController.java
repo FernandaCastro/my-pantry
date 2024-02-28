@@ -75,7 +75,7 @@ public class AuthController {
         }
     }
 
-    @PostMapping("/signup")
+    @PostMapping("/register")
     public ResponseEntity<AccountDto> register(@Valid @RequestBody NewAccountDto request) {
 
         var account = service.register(request);

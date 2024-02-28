@@ -9,9 +9,10 @@ import java.util.List;
 @Repository
 public interface AccountGroupRepository extends JpaRepository<AccountGroup, Long>, CustomAccountGroupRepository<Long> {
 
-    @Query("select ag from accountGroup ag, accountGroupAccount aga " +
+    @Query("select ag from accountGroup ag, accountGroupAccount aga, account a " +
             "where ag.id = aga.accountGroupId  " +
-            "and aga.accountId = :accountId  " +
+            "and aga.accountId = a.id  " +
+            "and a.email = :email " +
             "order by ag.name")
-    List<AccountGroup> findAllStrict(long accountId);
+    List<AccountGroup> findAllStrict(String email);
 }

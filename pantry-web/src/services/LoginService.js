@@ -1,4 +1,4 @@
-import { getUserInfo, postGoogleLogin, postLogout, postLogin, postSignup } from '../services/apis/mypantry/requests/AccountRequests.js';
+import { getUserInfo, postGoogleLogin, postLogout, postLogin, postRegister } from '../services/apis/mypantry/requests/AccountRequests.js';
 
 export async function initLogin() {
     try {
@@ -28,11 +28,11 @@ export async function login(account) {
     }
 }
 
-export async function signup(account) {
+export async function register(account) {
     try {
-        return await postSignup(account);
+        return await postRegister(account);
     } catch (error) {
-        console.log(`signup Failed: ${error}`);
+        console.log(`postRegister Failed: ${error}`);
         throw error;
     }
 }

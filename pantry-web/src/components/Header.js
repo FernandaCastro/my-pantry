@@ -22,18 +22,18 @@ export default function Header() {
         <div className="header">
             <Navbar collapseOnSelect expand="md">
                 <Navbar.Brand className="homeLink" href="/home" ><span className="homeText">My Pantry</span></Navbar.Brand>
-                <Container className='container fix-pantry-name'>
-                    <Nav><Nav.Link href={"/pantries/" + pantryCtx.id + "/edit"}>{pantryCtx.name}</Nav.Link></Nav>
-                </Container>
+                <Container className='container fix-pantry-name'></Container>
                 <Container bsPrefix='fix-toggle-btn'>
                     {/* className="toggle-btn" */}
                     <Navbar.Toggle >
                         <Image src={iconMenu} className="menu-icon" />
                     </Navbar.Toggle>
                 </Container>
+
                 <Container bsPrefix='fix-login-btn-before'>
                     <ProfileIcon />
                 </Container>
+
                 <Navbar.Collapse>
                     <div className="menu">
                         <OverlayTrigger placement="auto" delay={{ show: 250, hide: 400 }} overlay={<Tooltip id="button-tooltip">Consume from Pantry</Tooltip>}>
@@ -62,11 +62,14 @@ export default function Header() {
                         </OverlayTrigger>
                     </div>
                 </Navbar.Collapse>
+
                 <Container bsPrefix='fix-login-btn-after'>
                     <ProfileIcon />
                 </Container>
             </Navbar>
-
+            <div className="d-flex justify-content-center align-items-center p-0">
+                <Nav><Nav.Link className="link-to-pantry" href={"/pantries/" + pantryCtx.id + "/edit"}>{pantryCtx.name}</Nav.Link></Nav>
+            </div>
         </div>
     )
 }

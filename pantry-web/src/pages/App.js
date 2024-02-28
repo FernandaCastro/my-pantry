@@ -4,8 +4,9 @@ import Header from '../components/Header.js';
 import React, { useState, useEffect } from 'react';
 import Container from 'react-bootstrap/Container';
 import Alert from 'react-bootstrap/Alert';
+import Fade from 'react-bootstrap/Fade';
 import '../assets/styles/App.scss';
-import { initLogin } from '../services/LoginService.js'
+import Collapse from 'react-bootstrap/Collapse';
 import History from '../routes/History.js';
 import NavigateSetter from "../routes/NavigateSetter.js";
 
@@ -38,6 +39,16 @@ export default function App() {
   });
 
   React.useEffect(() => {
+    if (alert.show) {
+      setTimeout(() => {
+        setAlert(
+          (a) => a = { ...a, show: false }
+        );
+      }, 5000);
+    }
+  }, [alert.show])
+
+  React.useEffect(() => {
     localStorage.setItem("pantry-context", JSON.stringify(pantryCtx));
   }, [pantryCtx]);
 
@@ -50,7 +61,7 @@ export default function App() {
       <PantryContext.Provider value={{ pantryCtx, setPantryCtx }}>
         <AlertContext.Provider value={{ alert, setAlert }}>
           <Header />
-          <Alert variant={alert.type} show={alert.show} onClose={() => setAlert((a) => a = { ...a, show: !alert.show })} dismissible >{alert.message}</Alert>
+          <Alert variant={alert.type} show={alert.show} onClose={() => setAlert((a) => a = { ...a, show: !alert.show })} dismissible transition={Fade}>{alert.message}</Alert>
           <Container>
             <NavigateSetter />
             <CustomRoutes />

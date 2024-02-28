@@ -28,8 +28,7 @@ public class AccountGroupMemberController {
 
     @GetMapping
     public ResponseEntity<List<AccountGroupMemberDto>> getAll(Authentication authentication, @PathVariable long groupId) {
-        var accountId = Long.valueOf(authentication.getName());
-        return ResponseEntity.ok(service.getAll(accountId, groupId));
+        return ResponseEntity.ok(service.getAll(authentication.getName(), groupId));
     }
 
     @PostMapping

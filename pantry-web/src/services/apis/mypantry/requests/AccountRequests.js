@@ -23,12 +23,20 @@ export async function postResetPassword(account) {
     return FetchAccount('auth/reset-password', 'POST', account);
 }
 
-export async function postSignup(account) {
-    return FetchAccount('auth/signup', 'POST', account);
+export async function postRegister(account) {
+    return FetchAccount('auth/register', 'POST', account);
+}
+
+export async function getAccount(id) {
+    return FetchAccount(`accounts/${id}`, "GET");
+}
+
+export async function updateAccount(account) {
+    return FetchAccount(`accounts/${account.id}`, 'PUT', account);
 }
 
 export async function postLogout() {
-    return FetchAccount('auth/logout', 'GET');
+    return FetchAccount('auth/logout', 'POST');
 }
 
 export async function getAccountGroupList() {

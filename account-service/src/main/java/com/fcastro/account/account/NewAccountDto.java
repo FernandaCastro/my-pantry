@@ -28,4 +28,6 @@ public class NewAccountDto {
     private String pictureUrl;
 
     private String roles;
+
+    private Long id;
 }
