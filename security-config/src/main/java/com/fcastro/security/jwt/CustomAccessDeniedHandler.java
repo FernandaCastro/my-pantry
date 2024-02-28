@@ -1,4 +1,4 @@
-package com.fcastro.security.config;
+package com.fcastro.security.jwt;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

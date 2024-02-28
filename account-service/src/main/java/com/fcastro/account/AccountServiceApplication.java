@@ -4,7 +4,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication(
-		scanBasePackages = {"com.fcastro.security", "com.fcastro.account"}
+		scanBasePackages = {"com.fcastro.security.jwt", "com.fcastro.account"}
 )
 public class AccountServiceApplication {
 

@@ -34,8 +34,7 @@ public class AccountGroupController {
         if (isRootAccount(authentication))
             return ResponseEntity.ok(service.getAll());
 
-        var accountId = Long.valueOf(authentication.getName());
-        return ResponseEntity.ok(service.getAll(accountId));
+        return ResponseEntity.ok(service.getAll(authentication.getName()));
     }
 
     @PostMapping

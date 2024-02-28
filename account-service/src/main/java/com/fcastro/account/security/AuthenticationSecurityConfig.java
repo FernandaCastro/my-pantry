@@ -1,15 +1,24 @@
-package com.fcastro.security.config;
+package com.fcastro.account.security;
 
 
+import com.fcastro.security.jwt.CustomAccessDeniedHandler;
+import com.fcastro.security.jwt.CustomAuthenticationEntryPointHandler;
+import com.fcastro.security.jwt.JWTRequestFilter;
+import com.fcastro.security.jwt.SecurityConfigData;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.HeaderWriterLogoutHandler;
@@ -28,22 +37,24 @@ import static jakarta.servlet.DispatcherType.FORWARD;
 @EnableWebSecurity
 @EnableMethodSecurity
 @ConditionalOnProperty(prefix = "spring", value = "security.enabled", matchIfMissing = true, havingValue = "true")
-public class SecurityConfig {
+public class AuthenticationSecurityConfig {
 
     private final JWTRequestFilter jwtRequestFilter;
     private final CustomAccessDeniedHandler customAccessDeniedHandler;
     private final CustomAuthenticationEntryPointHandler customAuthenticationEntryPointHandler;
     private final SecurityConfigData securityConfigData;
+    private final UserDetailsServiceImpl userDetailsService;
 
-    public SecurityConfig(JWTRequestFilter jwtRequestFilter, CustomAccessDeniedHandler customAccessDeniedHandler, CustomAuthenticationEntryPointHandler customAuthenticationEntryPointHandler, SecurityConfigData securityConfigData) {
+    public AuthenticationSecurityConfig(JWTRequestFilter jwtRequestFilter, CustomAccessDeniedHandler customAccessDeniedHandler, CustomAuthenticationEntryPointHandler customAuthenticationEntryPointHandler, SecurityConfigData securityConfigData, UserDetailsServiceImpl userDetailsService) {
         this.jwtRequestFilter = jwtRequestFilter;
         this.customAccessDeniedHandler = customAccessDeniedHandler;
         this.customAuthenticationEntryPointHandler = customAuthenticationEntryPointHandler;
         this.securityConfigData = securityConfigData;
+        this.userDetailsService = userDetailsService;
     }
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain authenticationFilterChain(HttpSecurity http) throws Exception {
         HeaderWriterLogoutHandler clearSiteData = new HeaderWriterLogoutHandler(new ClearSiteDataHeaderWriter(ClearSiteDataHeaderWriter.Directive.STORAGE));
 
         http
@@ -53,14 +64,10 @@ public class SecurityConfig {
                 //As it's an SPA stateless there's no need to protect against CSRF
                 //TODO: Need to confirm this!!!
                 .csrf((csrf) -> csrf.disable())
-                //.csrf((csrf) -> csrf
-                //        .ignoringRequestMatchers("/oauth/login")
-                //        .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-                //        .csrfTokenRequestHandler(new SpaCsrfTokenRequestHandler())
-                //)
 
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 
+                .authenticationProvider(authenticationProvider())
                 .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class)
 
                 //Intercept the FilterChain(ExceptionTranslationFilter) when a SecurityException occurs:
@@ -71,7 +78,7 @@ public class SecurityConfig {
                         .authenticationEntryPoint(customAuthenticationEntryPointHandler))
 
                 .logout((logout) -> logout
-                        .logoutRequestMatcher(new AntPathRequestMatcher("/oauth/logout"))
+                        .logoutRequestMatcher(new AntPathRequestMatcher("/auth/logout"))
                         .clearAuthentication(true)
                         .invalidateHttpSession(true)
                         .deleteCookies("AUTH-TOKEN")
@@ -84,7 +91,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorize -> authorize
                         //Dispatches FORWARD and ERROR are permitted to allow Spring MVC to render views and Spring Boot to render errors
                         .dispatcherTypeMatchers(FORWARD, ERROR).permitAll()
-                        .requestMatchers("/oauth/login", "/oauth/logout").permitAll()
+                        .requestMatchers("/auth/reset-password", "/auth/google-login", "/auth/register", "/auth/login", "/auth/logout").permitAll()
                         //.requestMatchers("/accountGroups/*/members").hasRole("ADMIN")
                         .anyRequest().hasRole("USER"));
 
@@ -102,50 +109,25 @@ public class SecurityConfig {
         source.registerCorsConfiguration("/**", configuration);
         return source;
     }
+
+    @Bean
+    public DaoAuthenticationProvider authenticationProvider() {
+        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
+
+        authProvider.setUserDetailsService(userDetailsService);
+        authProvider.setPasswordEncoder(passwordEncoder());
+
+        return authProvider;
+    }
+
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
+        return authConfig.getAuthenticationManager();
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
 }
 
-//final class SpaCsrfTokenRequestHandler extends CsrfTokenRequestAttributeHandler {
-//    private final CsrfTokenRequestHandler delegate = new XorCsrfTokenRequestAttributeHandler();
-//
-//    @Override
-//    public void handle(HttpServletRequest request, HttpServletResponse response, Supplier<CsrfToken> csrfToken) {
-//        /*
-//         * Always use XorCsrfTokenRequestAttributeHandler to provide BREACH protection of
-//         * the CsrfToken when it is rendered in the response body.
-//         */
-//        this.delegate.handle(request, response, csrfToken);
-//    }
-//
-//    @Override
-//    public String resolveCsrfTokenValue(HttpServletRequest request, CsrfToken csrfToken) {
-//        /*
-//         * If the request contains a request header, use CsrfTokenRequestAttributeHandler
-//         * to resolve the CsrfToken. This applies when a single-page application includes
-//         * the header value automatically, which was obtained via a cookie containing the
-//         * raw CsrfToken.
-//         */
-//        if (StringUtils.hasText(request.getHeader(csrfToken.getHeaderName()))) {
-//            return super.resolveCsrfTokenValue(request, csrfToken);
-//        }
-//        /*
-//         * In all other cases (e.g. if the request contains a request parameter), use
-//         * XorCsrfTokenRequestAttributeHandler to resolve the CsrfToken. This applies
-//         * when a server-side rendered form includes the _csrf request parameter as a
-//         * hidden input.
-//         */
-//        return this.delegate.resolveCsrfTokenValue(request, csrfToken);
-//    }
-//}
-//
-//final class CsrfCookieFilter extends OncePerRequestFilter {
-//
-//    @Override
-//    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
-//            throws ServletException, IOException {
-//        CsrfToken csrfToken = (CsrfToken) request.getAttribute("_csrf");
-//        // Render the token value to a cookie by causing the deferred token to be loaded
-//        csrfToken.getToken();
-//
-//        filterChain.doFilter(request, response);
-//    }
-//}

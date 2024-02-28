@@ -13,6 +13,6 @@ export default function LogoutFromGoogle() {
     }, []);
 
     return (
-        <h6 className="mt-3 title">You have been logged out, your session is not valid anymore. <br /> Please log in again to continue...</h6>
+        <h6 className="mt-3 title"><br /> You have been logged out, or your session is not valid anymore. <br /> <br /> Please <b>log in</b> to continue...</h6>
     )
 }

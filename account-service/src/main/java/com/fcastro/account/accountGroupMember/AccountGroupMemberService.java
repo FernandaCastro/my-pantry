@@ -25,8 +25,8 @@ public class AccountGroupMemberService {
     }
 
     //TODO: Pageable
-    public List<AccountGroupMemberDto> getAll(long accountId, long accountGroupId) {
-        var listEntity = repository.findAllByAccountIdAndGroupId(accountId, accountGroupId);
+    public List<AccountGroupMemberDto> getAll(String email, long accountGroupId) {
+        var listEntity = repository.findAllByAccountIdAndGroupId(email, accountGroupId);
         return listEntity.stream().map(this::convertToDTO).collect(Collectors.toList());
     }
 

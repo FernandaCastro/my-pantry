@@ -4,7 +4,7 @@ import com.fcastro.account.account.AccountController;
 import com.fcastro.account.account.AccountService;
 import com.fcastro.account.accountGroupMember.AccountGroupMemberController;
 import com.fcastro.account.accountGroupMember.AccountGroupMemberService;
-import com.fcastro.app.model.AccountDto;
+import com.fcastro.security.model.AccountDto;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -18,7 +18,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.util.Optional;
 
-import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 
 @WebMvcTest(controllers = {AccountController.class, AccountGroupMemberController.class})
@@ -56,10 +56,10 @@ public class SecurityConfigTest {
 //    }
 
     @Test
-    @WithMockUser(username = "1", roles = {"USER"})
+    @WithMockUser(username = "user@user.com", roles = {"USER"})
     public void testUserAccess() throws Exception {
 
-        given(accountService.getUser(anyLong())).willReturn(Optional.of(AccountDto.builder().build()));
+        given(accountService.getUser(anyString())).willReturn(Optional.of(AccountDto.builder().build()));
 
         mockMvc.perform(MockMvcRequestBuilders.get("/oauth/user-info"))
                 .andExpect(MockMvcResultMatchers.status().isOk());

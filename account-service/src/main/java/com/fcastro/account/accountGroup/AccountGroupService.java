@@ -32,8 +32,8 @@ public class AccountGroupService {
     }
 
     //TODO: Pageable
-    public List<AccountGroupDto> getAll(long accountId) {
-        var listEntity = repository.findAllStrict(accountId);
+    public List<AccountGroupDto> getAll(String email) {
+        var listEntity = repository.findAllStrict(email);
         return listEntity.stream().map(this::convertToDTO).collect(Collectors.toList());
     }
 

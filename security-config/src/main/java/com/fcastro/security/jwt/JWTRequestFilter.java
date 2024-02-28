@@ -1,4 +1,4 @@
-package com.fcastro.security.config;
+package com.fcastro.security.jwt;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

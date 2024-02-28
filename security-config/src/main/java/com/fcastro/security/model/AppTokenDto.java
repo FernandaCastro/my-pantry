@@ -1,6 +1,5 @@
 package com.fcastro.security.model;
 
-import com.fcastro.app.model.AccountDto;
 import lombok.*;
 
 @Getter

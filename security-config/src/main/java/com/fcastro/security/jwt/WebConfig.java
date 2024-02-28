@@ -1,4 +1,4 @@
-package com.fcastro.security.config;
+package com.fcastro.security.jwt;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;

@@ -1,19 +1,16 @@
 package com.fcastro.account.account;
 
 import com.fcastro.account.exception.ResourceNotFoundException;
-import com.fcastro.app.model.AccountDto;
-import com.fcastro.security.model.IdTokenDto;
-import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.ResponseCookie;
+import com.fcastro.security.model.AccountDto;
+import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.security.Principal;
 import java.util.List;
 
 @RestController
-@RequestMapping
+@RequestMapping("accounts")
 public class AccountController {
 
     private final AccountService service;
@@ -22,30 +19,32 @@ public class AccountController {
         this.service = userService;
     }
 
-    @PostMapping("/oauth/login")
-    public ResponseEntity<AccountDto> loginWithGoogle(@RequestBody IdTokenDto requestBody, HttpServletResponse response) {
-        var appToken = service.loginOAuthGoogle(requestBody);
-        final ResponseCookie cookie = ResponseCookie.from("AUTH-TOKEN", appToken.getToken())
-                .httpOnly(true)
-                .maxAge(7 * 24 * 3600)
-                .path("/")
-                .secure(false)  //true= HTTPS only
-                .build();
-        //Using includeCredential=true. When SameSite=None and Secure=true all cookies will be included anyway.
-        response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
-        return ResponseEntity.ok(appToken.getAccount());
+    @GetMapping
+    public ResponseEntity<List<AccountDto>> getAll(@RequestParam String searchParam) {
+        return ResponseEntity.ok(service.getAll(searchParam));
     }
 
-    @GetMapping("/oauth/user-info")
-    public ResponseEntity<AccountDto> getUserInfo(Principal principal) {
-        return service.getUser(Long.valueOf(principal.getName()))
+    @GetMapping("/{id}")
+    public ResponseEntity<NewAccountDto> get(@PathVariable Long id) {
+        return service.get(id)
                 .map(ResponseEntity::ok)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
     }
 
-    @GetMapping("/accounts")
-    public ResponseEntity<List<AccountDto>> getAll(@RequestParam String searchParam) {
-        return ResponseEntity.ok(service.getAll(searchParam));
+    @PostMapping
+    public ResponseEntity<AccountDto> create(@Valid @RequestBody AccountDto newDto) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(service.preCreateAccount(newDto));
+    }
+
+    @PutMapping("/{id}")
+    ResponseEntity<AccountDto> replace(@Valid @RequestBody NewAccountDto newAccount, @PathVariable Long id) {
+
+        var dto = service.updateAccount(newAccount);
+
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(dto);
     }
 
 }
