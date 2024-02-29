@@ -2,6 +2,7 @@ import React from 'react';
 import { useRoutes } from "react-router-dom";
 
 import NotFound from "../pages/NotFound";
+import Login from '../pages/Login';
 import Logout from '../pages/Logout';
 
 import Home from '../pages/Home';
@@ -17,6 +18,10 @@ function CustomRoutes() {
         {
             path: "*",
             element: <NotFound />
+        },
+        {
+            path: "/login",
+            element: <Login />
         },
         {
             path: "/logout",

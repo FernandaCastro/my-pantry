@@ -143,6 +143,7 @@ p {
 .icon:hover {
     border-color: $link-color;
     color: $link-color;
+    transform: scale(1.4);
 }
 
 .custom-card {
@@ -295,4 +296,43 @@ div.scroll-product {
     border-radius: 5px;
     border-color: $border-color;
     padding: 10px 20px 5px 20px; //t, r, b, l
+}
+
+.form-check-label {
+    color: $text-color !important;
+}
+
+.form-check-label:disabled {
+    color: lighten($text-color, 5%);
+}
+
+.form-check-input:checked {
+    background-color: #6c66d8 !important;
+    border-color: #909df4 !important;
+}
+
+.form-check-label {
+    color: $text-color !important;
+}
+
+.form-check-label:disabled {
+    color: lighten($text-color, 5%);
+}
+
+.form-check-input:checked {
+    background-color: btn-background-color !important;
+    border-color: $border-color !important;
+}
+
+.form-radio-label {
+    color: $text-color !important;
+}
+
+.form-radio-label:disabled {
+    color: lighten($text-color, 5%);
+}
+
+.form-radio-input:checked {
+    background-color: btn-background-color !important;
+    border-color: $border-color !important;
 }

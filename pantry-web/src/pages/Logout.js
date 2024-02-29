@@ -1,7 +1,7 @@
 import { PantryContext, ProfileContext } from '../services/context/AppContext.js';
 import { useEffect, useContext } from 'react';
 
-export default function LogoutFromGoogle() {
+export default function Logout() {
 
     const { pantryCtx, setPantryCtx } = useContext(PantryContext);
     const { profileCtx, setProfileCtx } = useContext(ProfileContext);
