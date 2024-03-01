@@ -107,6 +107,9 @@ public class PantryItemService {
     }
 
     private PantryItem processPurchaseNeed(PantryItem itemEntity) {
+
+        if (itemEntity.getIdealQty() <= 0) return itemEntity;
+
         var usagePercentage = calculateUsagePercentage(itemEntity);
         var provision = calculateProvision(itemEntity);
 
