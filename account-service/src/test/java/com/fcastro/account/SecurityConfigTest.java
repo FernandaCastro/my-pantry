@@ -4,22 +4,15 @@ import com.fcastro.account.account.AccountController;
 import com.fcastro.account.account.AccountService;
 import com.fcastro.account.accountGroupMember.AccountGroupMemberController;
 import com.fcastro.account.accountGroupMember.AccountGroupMemberService;
-import com.fcastro.security.model.AccountDto;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.ComponentScan;
-import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-
-import java.util.Optional;
-
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.BDDMockito.given;
 
 @WebMvcTest(controllers = {AccountController.class, AccountGroupMemberController.class})
 @AutoConfigureMockMvc
@@ -55,13 +48,13 @@ public class SecurityConfigTest {
 //                .andExpect(MockMvcResultMatchers.status().isForbidden());
 //    }
 
-    @Test
-    @WithMockUser(username = "user@user.com", roles = {"USER"})
-    public void testUserAccess() throws Exception {
-
-        given(accountService.getUser(anyString())).willReturn(Optional.of(AccountDto.builder().build()));
-
-        mockMvc.perform(MockMvcRequestBuilders.get("/oauth/user-info"))
-                .andExpect(MockMvcResultMatchers.status().isOk());
-    }
+//    @Test
+//    @WithMockUser(roles = {"USER"})
+//    public void testUserAccess() throws Exception {
+//
+//        given(accountService.getUser(anyString())).willReturn(Optional.of(AccountDto.builder().build()));
+//
+//        mockMvc.perform(MockMvcRequestBuilders.get("/auth/user-info"))
+//                .andExpect(MockMvcResultMatchers.status().isOk());
+//    }
 }

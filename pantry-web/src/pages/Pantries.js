@@ -7,6 +7,7 @@ import Button from 'react-bootstrap/Button';
 import { AlertContext } from '../services/context/AppContext.js';
 import VariantType from '../components/VariantType.js';
 import { BsPencil, BsTrash } from "react-icons/bs";
+import Form from 'react-bootstrap/Form';
 
 export default function Pantries() {
 
@@ -55,8 +56,13 @@ export default function Pantries() {
     function renderItem(item) {
         return (
             <tr key={item.id} className="align-middle">
-                <td onClick={(e) => handlePantryClick(item)}>
-                    <span className={item.isActive ? "" : "disabled"}>{item.name}</span></td>
+                <td>
+                    <Form.Check size="sm" type="radio" name="group1"
+                        disabled={!item.isActive}
+                        defaultChecked={pantryCtx && Object.keys(pantryCtx).length > 0 && pantryCtx.id === item.id ? true : false}
+                        onClick={(e) => e.target.checked ? handlePantryClick(item) : null}
+                        label={item.name} />
+                </td>
                 <td>
                     <Stack direction="horizontal" gap={1} className="d-flex justify-content-end">
                         <div><Button href={"/pantries/" + item.id + "/edit"} variant="link"><BsPencil className='icon' /></Button></div>

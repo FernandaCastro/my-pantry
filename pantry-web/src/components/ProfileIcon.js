@@ -228,8 +228,8 @@ function ProfileIcon() {
                 <OverlayTrigger placement="left-start" trigger="click" overlay={popoverProfile} onToggle={(e) => setShowProfile(e)} show={showProfile}>
                     <Button variant='link'>
                         {profileCtx.pictureUrl && profileCtx.pictureUrl.length > 0 ?
-                            <Image className='profile-icon' width={40} height={40} roundedCircle referrerPolicy="no-referrer" src={profileCtx.pictureUrl} /> :
-                            <Image width={30} height={30} roundedCircle referrerPolicy="no-referrer" src={iAccount} />
+                            <Image className='profile-icon hover-effect' width={40} height={40} roundedCircle referrerPolicy="no-referrer" src={profileCtx.pictureUrl} /> :
+                            <Image className='hover-effect' width={30} height={30} roundedCircle referrerPolicy="no-referrer" src={iAccount} />
                         }
                     </Button>
                 </OverlayTrigger>
@@ -259,8 +259,8 @@ function ProfileIcon() {
             <OverlayTrigger placement="left-start" trigger="click" overlay={popoverEditProfile} onToggle={(e) => setShowEditProfile(e)} show={showEditProfile}>
                 <Button variant='link'>
                     {profileCtx.pictureUrl && profileCtx.pictureUrl.length > 0 ?
-                        <Image className='profile-icon' width={40} height={40} roundedCircle referrerPolicy="no-referrer" src={profileCtx.pictureUrl} /> :
-                        <Image width={30} height={30} roundedCircle referrerPolicy="no-referrer" src={iAccount} />
+                        <Image className='profile-icon hover-effect' width={40} height={40} roundedCircle referrerPolicy="no-referrer" src={profileCtx.pictureUrl} /> :
+                        <Image className='hover-effect' width={30} height={30} roundedCircle referrerPolicy="no-referrer" src={iAccount} />
                     }
                 </Button>
             </OverlayTrigger>
@@ -289,7 +289,7 @@ function ProfileIcon() {
         return (
             <OverlayTrigger placement="left-start" trigger="click" overlay={popoverRegister} onToggle={(e) => setShowRegister(e)} show={showRegister}>
                 <Button variant='link'>
-                    <Image width={30} height={30} roundedCircle referrerPolicy="no-referrer" src={iNoAccount} />
+                    <Image className='hover-effect' width={30} height={30} roundedCircle referrerPolicy="no-referrer" src={iNoAccount} />
                 </Button>
             </OverlayTrigger>
         )
@@ -316,7 +316,7 @@ function ProfileIcon() {
         return (
             <OverlayTrigger placement="left-start" trigger="click" overlay={popoverLogin} onToggle={(e) => setShowLogin(e)} show={showLogin}>
                 <Button variant='link'>
-                    <Image width={30} height={30} roundedCircle referrerPolicy="no-referrer" src={iNoAccount} />
+                    <Image className='hover-effect' width={30} height={30} roundedCircle referrerPolicy="no-referrer" src={iNoAccount} />
                 </Button>
             </OverlayTrigger>
         )
@@ -342,7 +342,7 @@ function ProfileIcon() {
         return (
             <OverlayTrigger placement="left-start" trigger="click" overlay={popoverResetPassword} onToggle={(e) => setShowResetPassword(e)} show={showResetPassword}>
                 <Button variant='link'>
-                    <Image width={30} height={30} roundedCircle referrerPolicy="no-referrer" src={iNoAccount} />
+                    <Image className='hover-effect' width={30} height={30} roundedCircle referrerPolicy="no-referrer" src={iNoAccount} />
                 </Button>
             </OverlayTrigger>
         )
