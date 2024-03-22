@@ -1,5 +1,8 @@
 package com.fcastro.pantry.exception;
 
+import com.fcastro.app.exception.ApplicationError;
+import com.fcastro.app.exception.ResourceNotFoundException;
+import com.fcastro.security.exception.AccountGroupNotDefinedException;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
@@ -53,6 +56,7 @@ public class GlobalExceptionHandler {
         exceptionTypes.put(QuantityNotAvailableException.class, "application-error");
         exceptionTypes.put(PantryNotActiveException.class, "application-error");
         exceptionTypes.put(RequestParamExpectedException.class, "application-error");
+        exceptionTypes.put(AccountGroupNotDefinedException.class, "application-error");
     }
 
     @ExceptionHandler(value = {QuantityNotAvailableException.class,
@@ -61,7 +65,8 @@ public class GlobalExceptionHandler {
             MissingServletRequestParameterException.class,
             MissingServletRequestPartException.class,
             HttpMessageNotReadableException.class,
-            DatabaseConstraintException.class})
+            DatabaseConstraintException.class,
+            AccountGroupNotDefinedException.class})
     public ResponseEntity<?> badRequest(final Exception ex, final HttpServletRequest request) {
 
         final var error = ApplicationError.builder()

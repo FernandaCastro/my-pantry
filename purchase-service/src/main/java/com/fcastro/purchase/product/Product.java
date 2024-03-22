@@ -26,6 +26,7 @@ public class Product {
     private String description;
     private String size;
     private String category;
+    private Long accountGroupId;
 
 //    @JsonIgnoreProperties("product")
 //    @OneToMany(mappedBy = "product", fetch = FetchType.LAZY, cascade = CascadeType.ALL)

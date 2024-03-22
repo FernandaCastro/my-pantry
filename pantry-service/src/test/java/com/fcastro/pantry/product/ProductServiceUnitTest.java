@@ -1,9 +1,9 @@
 package com.fcastro.pantry.product;
 
+import com.fcastro.app.exception.ResourceNotFoundException;
 import com.fcastro.app.model.ProductDto;
 import com.fcastro.pantry.config.ProductEventProducer;
 import com.fcastro.pantry.exception.DatabaseConstraintException;
-import com.fcastro.pantry.exception.ResourceNotFoundException;
 import com.fcastro.pantry.pantryItem.PantryItemRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;

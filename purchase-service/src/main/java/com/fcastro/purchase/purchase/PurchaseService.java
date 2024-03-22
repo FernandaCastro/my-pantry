@@ -1,10 +1,10 @@
 package com.fcastro.purchase.purchase;
 
+import com.fcastro.app.exception.ResourceNotFoundException;
 import com.fcastro.purchase.config.PurchaseCompleteEventProducer;
 import com.fcastro.purchase.exception.NoItemToPurchaseException;
 import com.fcastro.purchase.exception.PurchaseAlreadyProcessedException;
 import com.fcastro.purchase.exception.PurchaseItemsMissingException;
-import com.fcastro.purchase.exception.ResourceNotFoundException;
 import com.fcastro.purchase.purchaseItem.PurchaseItemService;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;

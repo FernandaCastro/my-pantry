@@ -11,6 +11,10 @@ export async function getPantry(pantryId) {
     return FetchPantry(`pantries/${pantryId}`, "GET");
 }
 
+export async function getPantryAccessControl(pantryId) {
+    return FetchPantry(`pantries/${pantryId}/access-control`, "GET");
+}
+
 export async function getPantryItems(pantryId) {
     return FetchPantry(`pantries/${pantryId}/items`, "GET")
 }
@@ -65,6 +69,10 @@ export async function updateProduct(productId, body) {
 }
 export async function deleteProduct(productId) {
     return FetchPantry(`products/${productId}`, "DELETE");
+}
+
+export async function getAssociatedPantries(groupId) {
+    return FetchPantry(`pantries?groupId=${groupId}`, "GET");
 }
 
 

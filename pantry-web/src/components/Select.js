@@ -50,6 +50,7 @@ export default ({ name, placeholder, options, onChange, defaultValue }) =>
     placeholder={placeholder}
     options={options}
     onChange={onChange}
-    defaultValue={defaultValue} />
+    defaultValue={defaultValue}
+/>
 );
 

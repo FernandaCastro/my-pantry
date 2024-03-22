@@ -24,4 +24,6 @@ public class Properties {
     @NotBlank(message = "Property Value is mandatory")
     @Column(columnDefinition = "jsonb")
     private String propertyValue;
+
+    private Long accountGroupId;
 }

@@ -1,5 +1,7 @@
 package com.fcastro.purchase.exception;
 
+import com.fcastro.app.exception.ApplicationError;
+import com.fcastro.app.exception.ResourceNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

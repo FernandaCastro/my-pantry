@@ -43,14 +43,6 @@ export const FetchAccount = async function (endpoint, method, data) {
         'Accept': 'application/json',
     }
 
-    // if (isCSRFMethod(method)) {
-    //     var tokenCSRF = getCookie('XSRF-TOKEN');
-    //     headers = {
-    //         ...headers,
-    //         'X-XSRF-TOKEN': tokenCSRF
-    //     };
-    // }
-
     try {
         const res = await fetch(process.env.REACT_APP_API_URL_ACCOUNT + '/' + endpoint, {
             method,
@@ -65,7 +57,7 @@ export const FetchAccount = async function (endpoint, method, data) {
         }
 
         if (res.ok) {
-            const content = getResponseContent(res)
+            const content = await getResponseContent(res)
             return content;
         }
 
@@ -80,12 +72,11 @@ export const FetchAccount = async function (endpoint, method, data) {
             throw new RequestError(error, res.status);
         }
 
-        const content = getResponseContent(res);
-        const errorMsg = res.statusText === '' && content ? content.errorMessage : res.statusText;
+        const content = await getResponseContent(res);
+        const errorMsg = content ? content.errorMessage : res.statusText;
         console.log("Fetch API Account-Service: $s - $s", res.status, errorMsg);
         throw new RequestError(errorMsg, res.status, content)
-    } catch (error) {
-        throw new RequestError(error.message, error.status, error.body)
+
     } finally {
         if (redirecting) { History.navigate("/logout") }
     }

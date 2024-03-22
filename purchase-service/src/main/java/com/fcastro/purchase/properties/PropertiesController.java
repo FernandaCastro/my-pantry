@@ -1,6 +1,6 @@
 package com.fcastro.purchase.properties;
 
-import com.fcastro.purchase.exception.ResourceNotFoundException;
+import com.fcastro.app.exception.ResourceNotFoundException;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

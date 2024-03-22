@@ -1,9 +1,12 @@
 package com.fcastro.pantry.pantry;
 
-import com.fcastro.pantry.exception.ResourceNotFoundException;
+import com.fcastro.app.exception.ResourceNotFoundException;
+import com.fcastro.security.model.AccountGroupDto;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -25,17 +28,29 @@ public class PantryController {
                 .orElseThrow(() -> new ResourceNotFoundException("Pantry not found"));
     }
 
+    @GetMapping(path = "/{id}/access-control")
+    public ResponseEntity<AccountGroupDto> getAccessControl(@PathVariable Long id) {
+        return service.getAccessControl(id)
+                .map(ResponseEntity::ok)
+                .orElseThrow(() -> new ResourceNotFoundException("There is no Account Group associated to this Pantry."));
+    }
+
     @GetMapping
-    public ResponseEntity<List<PantryDto>> getAll() {
-        return ResponseEntity.ok(service.getAll());
+    @PreAuthorize("hasPermission(#groupId, 'list_pantry')")
+    public ResponseEntity<List<PantryDto>> getAll(@P("groupId") @RequestParam(required = false) Long groupId) {
+        return groupId == null ?
+                ResponseEntity.ok(service.getAll()) :
+                ResponseEntity.ok(service.getAll(groupId));
     }
 
     @PostMapping
-    public ResponseEntity<PantryDto> create(@Valid @RequestBody PantryDto newDto) {
+    @PreAuthorize("hasPermission(#groupId.getAccountGroupId(), 'create_pantry')")
+    public ResponseEntity<PantryDto> create(@P("groupId") @Valid @RequestBody PantryDto newDto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(service.save(newDto));
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasPermission(#groupId.getAccountGroupId(), 'edit_pantry')")
     ResponseEntity<PantryDto> replace(@Valid @RequestBody PantryDto newDto, @PathVariable Long id) {
 
         var dto = service.get(id)
@@ -43,6 +58,7 @@ public class PantryController {
                     resource.setName(newDto.getName());
                     resource.setType(newDto.getType());
                     resource.setIsActive(newDto.getIsActive());
+                    resource.setAccountGroupId(newDto.getAccountGroupId());
                     return service.save(resource);
                 })
                 .orElseThrow(() -> new ResourceNotFoundException("Pantry not found"));
@@ -53,6 +69,7 @@ public class PantryController {
     }
 
     @DeleteMapping(path = "/{id}")
+    @PreAuthorize("hasPermission(#groupId.getAccountGroupId(), 'delete_pantry')")
     public ResponseEntity<PantryDto> delete(@PathVariable Long id) {
         service.delete(id);
         return ResponseEntity.noContent().build();

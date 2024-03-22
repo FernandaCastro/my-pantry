@@ -1,12 +1,18 @@
 package com.fcastro.pantry.pantry;
 
-import com.fcastro.pantry.exception.ResourceNotFoundException;
+import com.fcastro.app.exception.ResourceNotFoundException;
+import com.fcastro.security.accessControl.AccessControlService;
+import com.fcastro.security.authorization.AuthorizationService;
+import com.fcastro.security.exception.AccountGroupNotDefinedException;
+import com.fcastro.security.model.AccountGroupDto;
+import com.fcastro.security.model.AccountGroupMemberDto;
 import org.modelmapper.ModelMapper;
-import org.springframework.data.domain.Sort;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -14,10 +20,14 @@ public class PantryService {
 
     private final PantryRepository repository;
     private final ModelMapper modelMapper;
+    private final AuthorizationService authorizationService;
+    private final AccessControlService accessControlService;
 
-    public PantryService(PantryRepository repository, ModelMapper modelMapper) {
+    public PantryService(PantryRepository repository, ModelMapper modelMapper, AuthorizationService authorizationService, AccessControlService accessControlService) {
         this.repository = repository;
         this.modelMapper = modelMapper;
+        this.authorizationService = authorizationService;
+        this.accessControlService = accessControlService;
     }
 
     public Optional<PantryDto> get(long id) {
@@ -32,13 +42,35 @@ public class PantryService {
 
     //TODO: Pageable
     public List<PantryDto> getAll() {
-        var listEntity = repository.findAll(Sort.by("name"));
+        var groupMembers = authorizationService.getGroupMember(SecurityContextHolder.getContext().getAuthentication().getName());
+        var accountGroups = groupMembers.stream().map(AccountGroupMemberDto::getAccountGroupId).collect(Collectors.toSet());
+        var listEntity = repository.findAllByAccountGroup(accountGroups);
         return listEntity.stream().map(this::convertToDTO).collect(Collectors.toList());
     }
 
+    public List<PantryDto> getAll(Long groupId) {
+        var listEntity = repository.findAllByAccountGroup(Set.of(groupId));
+        return listEntity.stream().map(this::convertToDTO).collect(Collectors.toList());
+    }
+
+    public Optional<AccountGroupDto> getAccessControl(Long pantryId) {
+        var access = accessControlService.findAllByClazzAndClazzId(Pantry.class.getSimpleName(), pantryId)
+                .orElseThrow(() -> new ResourceNotFoundException("There is no Account Group associated to this Pantry."));
+
+        return Optional.of(AccountGroupDto.builder().id(access.getAccountGroupId()).build());
+    }
+
     public PantryDto save(PantryDto dto) {
+        if (dto.getAccountGroupId() == null)
+            throw new AccountGroupNotDefinedException("Pantry should be associated to a group");
+
         var entity = repository.save(convertToEntity(dto));
-        return convertToDTO(entity);
+        accessControlService.save(Pantry.class.getSimpleName(), entity.getId(), dto.getAccountGroupId());
+
+        var storedDto = convertToDTO(entity);
+        storedDto.setAccountGroupId(dto.getAccountGroupId());
+
+        return storedDto;
     }
 
     public void delete(long id) {
@@ -46,6 +78,8 @@ public class PantryService {
                 .orElseThrow(() -> new ResourceNotFoundException("Pantry not found"));
 
         repository.deleteById(id);
+
+        accessControlService.delete(Pantry.class.getSimpleName(), id);
     }
 
     private PantryDto convertToDTO(Pantry entity) {
@@ -54,11 +88,14 @@ public class PantryService {
                 .id(entity.getId())
                 .name(entity.getName())
                 .type(entity.getType())
-                .isActive(entity.getIsActive()).build();
+                .isActive(entity.getIsActive())
+                .accountGroupId(entity.getAccountGroupId())
+                .build();
     }
 
     private Pantry convertToEntity(PantryDto dto) {
         if (dto == null) return null;
         return modelMapper.map(dto, Pantry.class);
     }
+
 }

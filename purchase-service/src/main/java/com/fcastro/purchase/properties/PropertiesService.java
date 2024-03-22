@@ -1,6 +1,6 @@
 package com.fcastro.purchase.properties;
 
-import com.fcastro.purchase.exception.ResourceNotFoundException;
+import com.fcastro.app.exception.ResourceNotFoundException;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;

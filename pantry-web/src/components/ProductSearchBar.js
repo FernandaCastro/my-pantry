@@ -154,7 +154,7 @@ function ProductSearchBar({ handleSelectAction, handleClearAction, addButtonVisi
                             <span style={{ color: 'red', fontSize: '11px' }}>{notFoundMessage}</span>
                             {renderProductForm()}
                             {results ? (
-                                <table hover>
+                                <table>
                                     <tbody>
                                         {renderResults()}
                                     </tbody>

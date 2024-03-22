@@ -25,14 +25,23 @@ public class JWTRequestFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
+        Authentication authentication;
+
+        //pantry-web users
         Cookie[] cookies = request.getCookies();
         Cookie authCookie = cookies == null ? null : Arrays.stream(cookies)
                 .filter(cookie -> cookie.getName().equals("AUTH-TOKEN"))
                 .findAny().orElse(null);
-        Authentication authentication;
         if (authCookie != null && (authentication = jwtUtils.verifyAndGetAuthentication(authCookie.getValue())) != null) {
             SecurityContextHolder.getContext().setAuthentication(authentication);
         }
+
+        //Internal requests
+        String jwtToken = request.getHeader("SYSADMIN-AUTH");
+        if (jwtToken != null && (authentication = jwtUtils.verifyAndGetAuthentication(jwtToken)) != null) {
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+        }
+
         filterChain.doFilter(request, response);
     }
 }

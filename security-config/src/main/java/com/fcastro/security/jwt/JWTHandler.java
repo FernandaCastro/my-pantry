@@ -1,6 +1,5 @@
 package com.fcastro.security.jwt;
 
-import com.fcastro.security.model.AccountDto;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
@@ -26,23 +25,25 @@ public class JWTHandler {
     private static final long TOKEN_VALIDITY_REMEMBER = 2592000000L;
     private final Key key;
 
-    private final SecurityConfigData securityConfigData;
+    private final PropertiesConfig securityConfigData;
 
-    public JWTHandler(SecurityConfigData securityConfigData) {
-        this.securityConfigData = securityConfigData;
+    public JWTHandler(PropertiesConfig propertiesConfig) {
+        this.securityConfigData = propertiesConfig;
 
-        var baseSecret = Hex.decode(securityConfigData.getSecret());
+        var baseSecret = Hex.decode(propertiesConfig.getSecret());
         this.key = Keys.hmacShaKeyFor(baseSecret);
     }
 
-    public String createToken(AccountDto account, boolean rememberMe) {
+    public String createToken(String email, String role, boolean rememberMe) {
         long now = (new Date()).getTime();
         Date validity = rememberMe ? new Date(now + TOKEN_VALIDITY_REMEMBER) : new Date(now + TOKEN_VALIDITY);
         Map<String, Object> claims = new HashMap<>();
-        claims.put("role", account.getRoles());
+        if (role != null && role.length() > 0) {
+            claims.put("role", role);
+        }
 
         return Jwts.builder()
-                .setSubject(account.getEmail().toString())
+                .setSubject(email)
                 .setIssuedAt(new Date())
                 .setExpiration(validity)
                 .addClaims(claims)
@@ -57,7 +58,12 @@ public class JWTHandler {
                     .build()
                     .parseClaimsJws(token)
                     .getBody();
-            List<GrantedAuthority> authorities = AuthorityUtils.commaSeparatedStringToAuthorityList(claims.get("role", String.class));
+
+            List<GrantedAuthority> authorities;
+            var roles = claims.get("role", String.class);
+            authorities = (roles != null && roles.length() > 0) ?
+                    AuthorityUtils.commaSeparatedStringToAuthorityList(roles) :
+                    AuthorityUtils.NO_AUTHORITIES;
             return new UsernamePasswordAuthenticationToken(claims.getSubject(), token, authorities);
         } catch (JwtException | IllegalArgumentException ignored) {
             return null;

@@ -2,8 +2,8 @@ package com.fcastro.purchase.purchaseItem;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fcastro.app.exception.ResourceNotFoundException;
 import com.fcastro.kafka.event.PurchaseEventDto;
-import com.fcastro.purchase.exception.ResourceNotFoundException;
 import com.fcastro.purchase.exception.ResourceNotValidException;
 import com.fcastro.purchase.product.Product;
 import com.fcastro.purchase.properties.PropertiesService;

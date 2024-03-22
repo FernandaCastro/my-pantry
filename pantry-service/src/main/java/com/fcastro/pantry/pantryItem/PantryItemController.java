@@ -1,7 +1,7 @@
 package com.fcastro.pantry.pantryItem;
 
+import com.fcastro.app.exception.ResourceNotFoundException;
 import com.fcastro.pantry.exception.DatabaseConstraintException;
-import com.fcastro.pantry.exception.ResourceNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

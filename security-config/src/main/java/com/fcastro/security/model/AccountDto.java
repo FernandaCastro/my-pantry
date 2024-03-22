@@ -13,7 +13,6 @@ public class AccountDto {
     private String name;
     private String email;
     private String pictureUrl;
-    private String roles;
 
     @JsonIgnore
     private String password;

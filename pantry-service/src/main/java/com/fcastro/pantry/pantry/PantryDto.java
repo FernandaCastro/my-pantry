@@ -21,4 +21,14 @@ public class PantryDto {
     private Boolean isActive;
 
     private List<PantryItemDto> items;
+
+    private Long accountGroupId;
+
+    public PantryDto(Long id, String name, String type, Boolean isActive, Long accountGroupId) {
+        this.id = id;
+        this.name = name;
+        this.type = type;
+        this.isActive = isActive;
+        this.accountGroupId = accountGroupId;
+    }
 }

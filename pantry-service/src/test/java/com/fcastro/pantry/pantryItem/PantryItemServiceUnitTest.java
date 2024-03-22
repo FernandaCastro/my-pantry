@@ -1,11 +1,11 @@
 package com.fcastro.pantry.pantryItem;
 
+import com.fcastro.app.exception.ResourceNotFoundException;
 import com.fcastro.kafka.event.PurchaseEventDto;
 import com.fcastro.kafka.exception.EventProcessingException;
 import com.fcastro.pantry.config.PurchaseCreateEventProducer;
 import com.fcastro.pantry.exception.PantryNotActiveException;
 import com.fcastro.pantry.exception.QuantityNotAvailableException;
-import com.fcastro.pantry.exception.ResourceNotFoundException;
 import com.fcastro.pantry.pantry.Pantry;
 import com.fcastro.pantry.product.Product;
 import org.junit.jupiter.api.Assertions;

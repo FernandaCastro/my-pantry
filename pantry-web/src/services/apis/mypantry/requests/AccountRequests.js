@@ -64,11 +64,19 @@ export async function deleteAccountGroup(groupId) {
 }
 
 export async function getAccountGroupMemberList(groupId) {
-    return FetchAccount(`accountGroups/${groupId}/members`, "GET");
+    return FetchAccount(`accountGroupMembers/${groupId}`, "GET");
+}
+
+export async function addAccountMember(member) {
+    return FetchAccount(`accountGroupMembers`, 'POST', member);
 }
 
 export async function deleteAccountMember(groupId, accountId) {
-    return FetchAccount(`accountGroups/${groupId}/members/${accountId}`, 'DELETE');
+    return FetchAccount(`accountGroupMembers/${groupId}/${accountId}`, 'DELETE');
+}
+
+export async function getRoles() {
+    return FetchAccount('roles', 'GET');
 }
 
 

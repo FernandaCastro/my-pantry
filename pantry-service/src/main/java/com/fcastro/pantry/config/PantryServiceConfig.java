@@ -36,4 +36,5 @@ public class PantryServiceConfig {
         modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.LOOSE);
         return modelMapper;
     }
+
 }

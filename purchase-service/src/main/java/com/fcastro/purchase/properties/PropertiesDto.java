@@ -16,4 +16,6 @@ public class PropertiesDto {
 
     @NotBlank(message = "Property Value is mandatory")
     private String propertyValue;
+
+    private Long accountGroupId;
 }

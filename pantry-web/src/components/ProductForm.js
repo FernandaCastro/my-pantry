@@ -3,7 +3,7 @@ import Stack from 'react-bootstrap/Stack';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
-import Select from 'react-select';
+import Select from './Select';
 import { useState, useEffect } from 'react';
 import { getProperty } from '../services/apis/mypantry/requests/PurchaseRequests.js';
 

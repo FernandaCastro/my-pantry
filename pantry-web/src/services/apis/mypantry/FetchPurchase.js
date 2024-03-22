@@ -23,7 +23,7 @@ const FetchPurchase = async function (endpoint, method, data) {
         }
 
         if (res.ok) {
-            const content = getResponseContent(res)
+            const content = await getResponseContent(res)
             return content;
         }
 
@@ -38,7 +38,7 @@ const FetchPurchase = async function (endpoint, method, data) {
             throw new RequestError(error, res.status);
         }
 
-        const content = getResponseContent(res);
+        const content = await getResponseContent(res);
         const errorMsg = res.statusText === '' && content ? content.errorMessage : res.statusText;
         console.log("Fetch API Purchase-Service: $s - $s", res.status, errorMsg);
         throw new RequestError(errorMsg, res.status, content)

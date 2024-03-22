@@ -1,12 +1,12 @@
 package com.fcastro.pantry.pantryItem;
 
+import com.fcastro.app.exception.ResourceNotFoundException;
 import com.fcastro.app.model.ProductDto;
 import com.fcastro.kafka.event.PurchaseEventDto;
 import com.fcastro.kafka.exception.EventProcessingException;
 import com.fcastro.pantry.config.PurchaseCreateEventProducer;
 import com.fcastro.pantry.exception.PantryNotActiveException;
 import com.fcastro.pantry.exception.QuantityNotAvailableException;
-import com.fcastro.pantry.exception.ResourceNotFoundException;
 import org.hibernate.LazyInitializationException;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;

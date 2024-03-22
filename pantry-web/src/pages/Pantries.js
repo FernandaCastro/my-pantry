@@ -36,7 +36,6 @@ export default function Pantries() {
     }
 
     async function fetchDeletePantry(id) {
-        setRefresh(false);
         try {
             await deletePantry(id);
             setRefresh(true);
