@@ -1,27 +1,29 @@
-package com.fcastro.security.securityConfig;
+package com.fcastro.accountservice.security;
 
 
-import com.fcastro.security.authorization.CustomAuthorizationManager;
 import com.fcastro.security.core.config.SecurityPropertiesConfig;
 import com.fcastro.security.core.handler.CustomAccessDeniedHandler;
 import com.fcastro.security.core.handler.CustomAuthenticationEntryPointHandler;
-import com.fcastro.security.core.jwt.JWTHandler;
 import com.fcastro.security.core.jwt.JWTRequestFilter;
-import org.springframework.aop.Advisor;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
-import org.springframework.security.authorization.method.AuthorizationManagerBeforeMethodInterceptor;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.HeaderWriterLogoutHandler;
 import org.springframework.security.web.header.writers.ClearSiteDataHeaderWriter;
-import org.springframework.web.client.RestClient;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -33,29 +35,30 @@ import static jakarta.servlet.DispatcherType.FORWARD;
 
 @Configuration
 @EnableWebSecurity
-@EnableMethodSecurity(prePostEnabled = false) //Disable default implementation of MethodSecurity
+@EnableMethodSecurity
 @ConditionalOnProperty(prefix = "spring", value = "security.enabled", matchIfMissing = true, havingValue = "true")
-public class SecurityConfig {
+public class AccountServiceSecurityConfig {
 
     private final JWTRequestFilter jwtRequestFilter;
     private final CustomAccessDeniedHandler customAccessDeniedHandler;
     private final CustomAuthenticationEntryPointHandler customAuthenticationEntryPointHandler;
     private final SecurityPropertiesConfig propertiesConfig;
+    private final UserDetailsServiceImpl userDetailsService;
 
-    private final String ROLE_SYSADMIN = "ROLE_SYSADMIN";
-
-    public SecurityConfig(JWTRequestFilter jwtRequestFilter,
-                          CustomAccessDeniedHandler customAccessDeniedHandler,
-                          CustomAuthenticationEntryPointHandler customAuthenticationEntryPointHandler,
-                          SecurityPropertiesConfig propertiesConfig) {
+    public AccountServiceSecurityConfig(JWTRequestFilter jwtRequestFilter,
+                                        CustomAccessDeniedHandler customAccessDeniedHandler,
+                                        CustomAuthenticationEntryPointHandler customAuthenticationEntryPointHandler,
+                                        SecurityPropertiesConfig propertiesConfig,
+                                        UserDetailsServiceImpl userDetailsService) {
         this.jwtRequestFilter = jwtRequestFilter;
         this.customAccessDeniedHandler = customAccessDeniedHandler;
         this.customAuthenticationEntryPointHandler = customAuthenticationEntryPointHandler;
         this.propertiesConfig = propertiesConfig;
+        this.userDetailsService = userDetailsService;
     }
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain authenticationFilterChain(HttpSecurity http) throws Exception {
         HeaderWriterLogoutHandler clearSiteData = new HeaderWriterLogoutHandler(new ClearSiteDataHeaderWriter(ClearSiteDataHeaderWriter.Directive.STORAGE));
 
         http
@@ -67,6 +70,8 @@ public class SecurityConfig {
                 .csrf((csrf) -> csrf.disable())
 
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+
+                .authenticationProvider(authenticationProvider())
                 .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class)
 
                 //Intercept the FilterChain(ExceptionTranslationFilter) when a SecurityException occurs:
@@ -76,12 +81,22 @@ public class SecurityConfig {
                         .accessDeniedHandler(customAccessDeniedHandler)
                         .authenticationEntryPoint(customAuthenticationEntryPointHandler))
 
+                .logout((logout) -> logout
+                        .logoutRequestMatcher(new AntPathRequestMatcher("/auth/logout"))
+                        .clearAuthentication(true)
+                        .invalidateHttpSession(true)
+                        .deleteCookies("AUTH-TOKEN")
+                        .addLogoutHandler(clearSiteData)
+                        .logoutSuccessHandler((request, response, authentication) -> {
+                            response.setStatus(HttpServletResponse.SC_OK);
+                        })
+                        .permitAll())
+
                 .authorizeHttpRequests(authorize -> authorize
                         //Dispatches FORWARD and ERROR are permitted to allow Spring MVC to render views and Spring Boot to render errors
                         .dispatcherTypeMatchers(FORWARD, ERROR).permitAll()
-                        //.requestMatchers("/accountGroups/*/members").hasRole("ADMIN")
-                        .anyRequest().authenticated()
-                );
+                        .requestMatchers("/auth/reset-password", "/auth/google-login", "/auth/register", "/auth/login", "/auth/logout").permitAll()
+                        .anyRequest().authenticated());
 
         return http.build();
     }
@@ -98,23 +113,24 @@ public class SecurityConfig {
         return source;
     }
 
-
     @Bean
-        //Injects CustomAuthorizationManager into preAuthorize Method Interceptor
-    Advisor preAuthorize(CustomAuthorizationManager manager) {
-        return AuthorizationManagerBeforeMethodInterceptor.preAuthorize(manager);
+    public DaoAuthenticationProvider authenticationProvider() {
+        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
+
+        authProvider.setUserDetailsService(userDetailsService);
+        authProvider.setPasswordEncoder(passwordEncoder());
+
+        return authProvider;
     }
 
     @Bean
-        //RestClient to the AuthorizationServer
-    RestClient authorizationServer(SecurityPropertiesConfig securityConfigData, JWTHandler jwtHandler) {
-        String jwtToken = jwtHandler.createToken("sysadmin@mypantry.com", ROLE_SYSADMIN, false);
-
-        return RestClient.builder()
-                .baseUrl(securityConfigData.getAuthzServer())
-                .defaultHeader("SYSADMIN-AUTH", jwtToken)
-                .build();
-
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
+        return authConfig.getAuthenticationManager();
     }
 
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
 }
+

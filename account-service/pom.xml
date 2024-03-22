@@ -15,7 +15,7 @@
     <dependencies>
         <dependency>
             <groupId>com.fcastro</groupId>
-            <artifactId>security-config</artifactId>
+            <artifactId>security-core-config</artifactId>
             <version>${revision}</version>
         </dependency>
 

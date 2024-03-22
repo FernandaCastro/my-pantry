@@ -1,6 +1,6 @@
 package com.fcastro.security.authorization;
 
-import com.fcastro.security.model.AccountGroupMemberDto;
+import com.fcastro.security.core.model.AccountGroupMemberDto;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.AccessDeniedException;

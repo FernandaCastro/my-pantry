@@ -28,6 +28,7 @@
         <module>purchase-service</module>
         <module>account-service</module>
         <module>security-config</module>
+        <module>security-core-config</module>
     </modules>
 
     <dependencyManagement>

@@ -1,7 +1,7 @@
 package com.fcastro.security.authorization;
 
-import com.fcastro.security.model.AccountGroupMemberDto;
-import com.fcastro.security.model.PermissionDto;
+import com.fcastro.security.core.model.AccountGroupMemberDto;
+import com.fcastro.security.core.model.PermissionDto;
 import org.springframework.security.access.expression.method.MethodSecurityExpressionOperations;
 
 import java.util.List;
