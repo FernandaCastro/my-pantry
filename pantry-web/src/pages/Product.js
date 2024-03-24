@@ -8,6 +8,7 @@ import ProductForm from '../components/ProductForm.js';
 import ProductList from '../components/ProductList.js';
 import Button from 'react-bootstrap/Button';
 import CloseButton from 'react-bootstrap/CloseButton';
+import { getAccountGroupList } from '../services/apis/mypantry/requests/AccountRequests.js';
 
 export default function Product() {
 
@@ -19,8 +20,14 @@ export default function Product() {
     const [showForm, setShowForm] = useState(false);
     const [categories, setCategories] = useState([{}]);
 
+    const [accountGroupOptions, setAccountGroupOptions] = useState([]);
+    const [isLoading, setIsLoading] = useState(false);
+
     useEffect(() => {
         fetchCategories();
+        if (!accountGroupOptions || accountGroupOptions.length === 0) {
+            fetchAccountGroups();
+        }
     }, []);
 
     async function fetchCategories() {
@@ -40,6 +47,27 @@ export default function Product() {
             setCategories(list);
         } catch (error) {
             showAlert(VariantType.DANGER, "Unable to load categories: " + error.message);
+        }
+    }
+
+    async function fetchAccountGroups() {
+        setIsLoading(true);
+        try {
+            const res = await getAccountGroupList();
+
+            var list = [];
+            res.forEach(group => {
+                list = [...list,
+                {
+                    value: group.id,
+                    label: group.name
+                }]
+            });
+
+            setAccountGroupOptions(list);
+            setIsLoading(false);
+        } catch (error) {
+            showAlert(VariantType.DANGER, error.message);
         }
     }
 
@@ -100,34 +128,25 @@ export default function Product() {
         })
     }
 
-    function renderProductForm() {
-        return (
-            <div className='border-custom'>
-                <div className="me-3 d-flex justify-content-end align-items-center">
-                    <CloseButton aria-label="Hide" onClick={handleClearAction} />
-                </div>
-                <ProductForm key={productLabel} product={product} categories={categories} handleSave={handleSave} />
-            </div>
-        );
-    }
-
     return (
-        <Stack gap={3}>
-            <div></div>
-            <div>
-                <Stack direction="horizontal" gap={2} className='d-flex justify-content-between'>
+        <>
+            <div hidden={!showForm} className="mt-4">
+                <div className='border-custom'>
+                    <div className="me-3 d-flex justify-content-end align-items-center">
+                        <CloseButton aria-label="Hide" onClick={handleClearAction} />
+                    </div>
+                    <ProductForm key={productLabel} product={product} categories={categories} accountGroupOptions={accountGroupOptions} handleSave={handleSave} />
+                </div>
+            </div>
+            <div hidden={showForm} className="mt-4">
+                <Stack direction="horizontal" gap={2} className='mb-3 d-flex justify-content-between'>
                     <h6 className="text-start fs-6 lh-lg title">{productLabel} </h6>
                     <Button bsPrefix="btn-custom" size="sm" onClick={handleNew} className='me-2' disabled={(mode === "edit") || (product && Object.keys(product) > 0)}>New Product</Button>
                 </Stack>
-            </div>
-            <div hidden={!showForm}>
-                {renderProductForm()}
-            </div>
-            <div>
+
                 <ProductList key={refresh} disabled={showForm} onEdit={handleOnListSelection} onRemove={handleRemove} />
             </div>
-            <div></div>
-        </Stack>
+        </>
     );
 
 }

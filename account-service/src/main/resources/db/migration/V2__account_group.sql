@@ -1,7 +1,8 @@
 ALTER TABLE IF EXISTS account.ACCOUNT_GROUP_ACCOUNT RENAME TO ACCOUNT_GROUP_MEMBER;
 
 ALTER TABLE IF EXISTS account.ACCOUNT_GROUP
-    ADD COLUMN IF NOT EXISTS PARENT_ACCOUNT_GROUP_ID BIGINT REFERENCES ACCOUNT_GROUP (ID);
+    ADD COLUMN IF NOT EXISTS PARENT_ACCOUNT_GROUP_ID BIGINT REFERENCES ACCOUNT_GROUP (ID),
+    ALTER COLUMN NAME type VARCHAR(40);
 
 ALTER TABLE IF EXISTS account.ACCOUNT
     DROP COLUMN IF EXISTS ROLES;
@@ -35,7 +36,8 @@ INSERT INTO account.PERMISSION ("id", "name") VALUES
  (10, 'LIST_PRODUCT'),
  (11, 'CREATE_PRODUCT'),
  (12, 'EDIT_PRODUCT'),
- (13, 'DELETE_PRODUCT') on conflict do nothing;
+ (13, 'DELETE_PRODUCT'),
+ (14, 'ANALYSE_PANTRY_ITEM') on conflict do nothing;
 
 INSERT INTO account.ROLE ("id", "name") VALUES
  (1, 'OWNER'),
@@ -43,12 +45,12 @@ INSERT INTO account.ROLE ("id", "name") VALUES
  (3, 'USER') on conflict do nothing;
 
 INSERT INTO account.ROLE_PERMISSION ("role_id", "permission_id") VALUES
- (1, 1), (1, 2), (1, 3), (1, 4), (1, 5), (1, 6), (1, 7), (1, 8), (1, 9), (1, 10), (1, 11), (1, 12), (1, 13),
- (2, 1), (2, 5), (2, 6), (2, 7), (2, 9), (2, 10),
+ (1, 1), (1, 2), (1, 3), (1, 4), (1, 5), (1, 6), (1, 7), (1, 8), (1, 9), (1, 10), (1, 11), (1, 12), (1, 13),(1,14),
+ (2, 1), (2, 5), (2, 6), (2, 7), (2, 9), (2, 10),(2,14),
  (3, 1), (3, 5), (3, 9), (3, 10) on conflict do nothing;;
 
 ALTER TABLE account.ACCOUNT_GROUP_MEMBER
     DROP COLUMN IF EXISTS ROLE;
 
 ALTER TABLE account.ACCOUNT_GROUP_MEMBER
-    ADD COLUMN ROLE_ID BIGINT NOT NULL REFERENCES ROLE(ID) DEFAULT 1;
+    ADD COLUMN IF NOT EXISTS ROLE_ID BIGINT NOT NULL REFERENCES ROLE(ID) DEFAULT 1;

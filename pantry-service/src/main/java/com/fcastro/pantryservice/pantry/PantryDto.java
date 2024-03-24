@@ -1,6 +1,6 @@
 package com.fcastro.pantryservice.pantry;
 
-import com.fcastro.pantryservice.pantryItem.PantryItemDto;
+import com.fcastro.pantryservice.pantryitem.PantryItemDto;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 

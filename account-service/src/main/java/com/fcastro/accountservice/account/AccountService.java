@@ -1,7 +1,7 @@
 package com.fcastro.accountservice.account;
 
-import com.fcastro.accountservice.accountGroup.AccountGroupService;
-import com.fcastro.accountservice.accountGroupMember.AccountGroupMemberService;
+import com.fcastro.accountservice.accountgroup.AccountGroupService;
+import com.fcastro.accountservice.accountgroupmember.AccountGroupMemberService;
 import com.fcastro.accountservice.exception.AccountAlreadyExistsException;
 import com.fcastro.accountservice.exception.PasswordAnswerNotMatchException;
 import com.fcastro.app.exception.RequestParamExpectedException;
@@ -112,7 +112,7 @@ public class AccountService {
 
         if (existingAccount == null) {
             var createdAccount = accountRepository.save(account);
-            accountGroupService.createParentGroup(createdAccount.getId());
+            accountGroupService.createParentGroup(createdAccount);
             return convertToDto(createdAccount);
         }
 
@@ -153,7 +153,7 @@ public class AccountService {
                     .build();
 
             account = accountRepository.save(account);
-            accountGroupService.createParentGroup(account.getId());
+            accountGroupService.createParentGroup(account);
             return convertToDto(account);
         }
 
@@ -165,7 +165,7 @@ public class AccountService {
             existingAccount.setPasswordAnswer(newAccount.getPasswordAnswer());
 
             existingAccount = accountRepository.save(existingAccount);
-            accountGroupService.createParentGroup(existingAccount.getId());
+            accountGroupService.createParentGroup(existingAccount);
 
             return convertToDto(existingAccount);
         }
@@ -179,7 +179,7 @@ public class AccountService {
             existingAccount.setPasswordAnswer(newAccount.getPasswordAnswer());
 
             existingAccount = accountRepository.save(existingAccount);
-            accountGroupService.createParentGroup(existingAccount.getId());
+            accountGroupService.createParentGroup(existingAccount);
 
             return convertToDto(existingAccount);
         }

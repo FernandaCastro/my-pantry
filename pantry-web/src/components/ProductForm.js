@@ -7,17 +7,23 @@ import Select from './Select';
 import { useState, useEffect } from 'react';
 import { getProperty } from '../services/apis/mypantry/requests/PurchaseRequests.js';
 
-export default function ProductForm({ product, categories, handleSave }) {
+export default function ProductForm({ product, categories, accountGroupOptions, handleSave }) {
 
     const [categoryOption, setCategoryOption] = useState({ value: product.category, label: product.category });
     const [categoryList, setCategoryList] = useState([{}]);
+    const [accountGroupOption, setAccountGroupOption] = useState({ value: 0, label: "" });
 
     useEffect(() => {
         if (!categories || Object.keys(categories).length === 0)
             fetchCategories();
         else
             setCategoryList(categories);
-    }, []);
+
+        if (Object.keys(product).length > 0 && product.id > 0) {
+            const found = accountGroupOptions.find(a => a.value === product.accountGroupId);
+            setAccountGroupOption(() => found);
+        }
+    }, [product.id]);
 
     async function fetchCategories() {
         try {
@@ -50,7 +56,8 @@ export default function ProductForm({ product, categories, handleSave }) {
         let formJson = Object.fromEntries(formData.entries());
         formJson = {
             ...formJson,
-            category: categoryOption.value
+            category: categoryOption.value,
+            accountGroupId: accountGroupOption.value
         }
 
         handleSave(formJson);
@@ -60,6 +67,15 @@ export default function ProductForm({ product, categories, handleSave }) {
 
     return (
         <Form key={product} onSubmit={handleSubmit}>
+            <Row>
+                <Form.Group as={Col} className="mb-2" controlId="formAccountGroups" size="sm">
+                    <Form.Label size="sm" className="title mb-1">Account Group</Form.Label>
+                    <Select name="accountGroup" key={accountGroupOption.value}
+                        defaultValue={accountGroupOption}
+                        options={accountGroupOptions}
+                        onChange={setAccountGroupOption} />
+                </Form.Group>
+            </Row>
             <Row>
                 <Form.Group className="w-25" controlId="formId">
                     <Form.Label size="sm" className="title mb-1">Id</Form.Label>

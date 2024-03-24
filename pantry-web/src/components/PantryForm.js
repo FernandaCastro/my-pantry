@@ -16,11 +16,11 @@ export default function PantryForm({ pantry, handleSave, accountGroupOptions }) 
     const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
-        if (pantry && Object.keys(pantry).length > 0 && pantry.id > 0) {
+        if (Object.keys(pantry).length > 0 && pantry.id > 0) {
             const found = accountGroupOptions.find(a => a.value === pantry.accountGroupId);
-            setAccountGroupOption(found);
+            setAccountGroupOption(() => found);
         }
-    }, []);
+    }, [pantry.id]);
 
     function handleSubmit(e) {
         // Prevent the browser from reloading the page
@@ -47,7 +47,7 @@ export default function PantryForm({ pantry, handleSave, accountGroupOptions }) 
                 <Form.Group as={Col} className="mb-2" controlId="formAccountGroups" size="sm">
                     <Form.Label size="sm" className="title mb-1">Account Group</Form.Label>
                     {isLoading ? <span>Loading...</span> :
-                        <Select key={accountGroupOption.value} name="accountGroup"
+                        <Select name="accountGroup" key={accountGroupOption.value}
                             defaultValue={accountGroupOption}
                             options={accountGroupOptions}
                             onChange={setAccountGroupOption} />
@@ -75,7 +75,7 @@ export default function PantryForm({ pantry, handleSave, accountGroupOptions }) 
                 </Form.Group>
                 <Form.Group as={Col} className="mb-2" controlId="formType">
                     <Form.Label size="sm" className="mb-1 title">Type</Form.Label>
-                    <Form.Select size="sm" className="mb-1" name="type" defaultValue={pantry.type}>
+                    <Form.Select key={pantry.id} size="sm" className="mb-1" name="type" defaultValue={pantry.type}>
                         <option value='' disabled >Select a type</option>
                         <option value='R'>Recurring</option>
                         <option value='S'>Single</option>

@@ -2,7 +2,7 @@ package com.fcastro.pantryservice.exception;
 
 import com.fcastro.app.exception.ApplicationError;
 import com.fcastro.app.exception.ResourceNotFoundException;
-import com.fcastro.security.exception.AccountGroupNotDefinedException;
+import com.fcastro.security.exception.AccessControlNotDefinedException;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
@@ -11,6 +11,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.HttpMediaTypeNotAcceptableException;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
@@ -21,7 +22,6 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.context.request.ServletWebRequest;
-import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.multipart.support.MissingServletRequestPartException;
 
@@ -50,13 +50,14 @@ public class GlobalExceptionHandler {
 
         exceptionTypes.put(DataAccessException.class, "database-error");
         exceptionTypes.put(ExpiredJwtException.class, "token-expired");
+        exceptionTypes.put(AccessDeniedException.class, "access-denied");
 
         exceptionTypes.put(DatabaseConstraintException.class, "application-error");
         exceptionTypes.put(ResourceNotFoundException.class, "application-error");
         exceptionTypes.put(QuantityNotAvailableException.class, "application-error");
         exceptionTypes.put(PantryNotActiveException.class, "application-error");
         exceptionTypes.put(RequestParamExpectedException.class, "application-error");
-        exceptionTypes.put(AccountGroupNotDefinedException.class, "application-error");
+        exceptionTypes.put(AccessControlNotDefinedException.class, "application-error");
     }
 
     @ExceptionHandler(value = {QuantityNotAvailableException.class,
@@ -66,7 +67,7 @@ public class GlobalExceptionHandler {
             MissingServletRequestPartException.class,
             HttpMessageNotReadableException.class,
             DatabaseConstraintException.class,
-            AccountGroupNotDefinedException.class})
+            AccessControlNotDefinedException.class})
     public ResponseEntity<?> badRequest(final Exception ex, final HttpServletRequest request) {
 
         final var error = ApplicationError.builder()
@@ -169,9 +170,9 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
     }
 
-    @ExceptionHandler(value = {ExpiredJwtException.class})
+    @ExceptionHandler(value = {ExpiredJwtException.class, AccessDeniedException.class})
     @ResponseStatus(value = HttpStatus.FORBIDDEN)
-    public ResponseEntity<Object> expiredToken(ExpiredJwtException ex, WebRequest request) {
+    public ResponseEntity<Object> expiredToken(final Exception ex, final HttpServletRequest request) {
 
         String requestUri = ((ServletWebRequest) request).getRequest().getRequestURI().toString();
 

@@ -1,6 +1,6 @@
 package com.fcastro.pantryservice.product;
 
-import com.fcastro.pantryservice.pantryItem.PantryItem;
+import com.fcastro.pantryservice.pantryitem.PantryItem;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
@@ -20,7 +20,7 @@ public class Product {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     @NotBlank(message = "Code is mandatory")
     private String code;
@@ -28,7 +28,19 @@ public class Product {
     private String size;
     private String category;
 
+    @Transient
+    private Long accountGroupId;
+
     @OneToMany(mappedBy = "product", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<PantryItem> items;
+
+    public Product(Long id, String code, String description, String size, String category, Long accountGroupId) {
+        this.id = id;
+        this.code = code;
+        this.description = description;
+        this.size = size;
+        this.category = category;
+        this.accountGroupId = accountGroupId;
+    }
 
 }

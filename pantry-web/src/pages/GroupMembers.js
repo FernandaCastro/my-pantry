@@ -227,7 +227,7 @@ function GroupMembers() {
                             onChange={() => setSelectedGroup(item)} style={{ color: "hsl(219, 11%, 25%)" }}
                             label={item.name} />
                         </td>
-                        <td><span>{!item.parentAccountGroup ? "main-group" : ""}</span></td>
+                        <td><span>{!item.parentAccountGroup ? "parent" : "child"}</span></td>
                         <td>
                             <Stack direction="horizontal" gap={1} className="d-flex justify-content-end">
                                 <div><Button onClick={() => setEditGroup(item.id)} variant="link"><BsPencil className='icon' /></Button></div>

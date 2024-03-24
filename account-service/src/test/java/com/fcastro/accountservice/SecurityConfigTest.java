@@ -2,8 +2,8 @@ package com.fcastro.accountservice;
 
 import com.fcastro.accountservice.account.AccountController;
 import com.fcastro.accountservice.account.AccountService;
-import com.fcastro.accountservice.accountGroupMember.AccountGroupMemberController;
-import com.fcastro.accountservice.accountGroupMember.AccountGroupMemberService;
+import com.fcastro.accountservice.accountgroupmember.AccountGroupMemberController;
+import com.fcastro.accountservice.accountgroupmember.AccountGroupMemberService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;

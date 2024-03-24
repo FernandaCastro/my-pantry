@@ -8,6 +8,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
 
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Component
 public class AuthorizationService {
@@ -50,5 +52,10 @@ public class AuthorizationService {
                 })
                 .body(new ParameterizedTypeReference<List<AccountGroupMemberDto>>() {
                 });
+    }
+
+    public Set<Long> getAccountGroupList(String email) {
+        var groupMembers = getGroupMember(email);
+        return groupMembers.stream().map(AccountGroupMemberDto::getAccountGroupId).collect(Collectors.toSet());
     }
 }

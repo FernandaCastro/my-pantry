@@ -64,7 +64,7 @@ export async function deleteAccountGroup(groupId) {
 }
 
 export async function getAccountGroupMemberList(groupId) {
-    return FetchAccount(`accountGroupMembers/${groupId}`, "GET");
+    return FetchAccount(`accountGroupMembers?groupId=${groupId}`, "GET");
 }
 
 export async function addAccountMember(member) {

@@ -3,7 +3,7 @@ package com.fcastro.pantryservice.event;
 import com.fcastro.kafka.config.KafkaConfigData;
 import com.fcastro.kafka.event.PurchaseCompleteEvent;
 import com.fcastro.kafka.exception.EventProcessingException;
-import com.fcastro.pantryservice.pantryItem.PantryItemService;
+import com.fcastro.pantryservice.pantryitem.PantryItemService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;

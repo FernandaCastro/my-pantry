@@ -4,7 +4,7 @@ import com.fcastro.app.exception.ResourceNotFoundException;
 import com.fcastro.app.model.ProductDto;
 import com.fcastro.pantryservice.event.ProductEventProducer;
 import com.fcastro.pantryservice.exception.DatabaseConstraintException;
-import com.fcastro.pantryservice.pantryItem.PantryItemRepository;
+import com.fcastro.pantryservice.pantryitem.PantryItemRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -43,7 +43,7 @@ public class ProductServiceUnitTest {
     @Test
     public void givenValidPantryId_whenGet_ShouldReturnPantryDto() {
         //given
-        var entity = Product.builder().id(1).code("MILK").description("Integral").size("1L").build();
+        var entity = Product.builder().id(1L).code("MILK").description("Integral").size("1L").build();
         given(repository.findById(anyLong())).willReturn(Optional.of(entity));
 
         //when
@@ -61,7 +61,7 @@ public class ProductServiceUnitTest {
     @Test
     public void givenValidDto_whenSave_ShouldReturnNewDto() {
         //given
-        var entity = Product.builder().id(1).code("MILK").description("Integral").size("1L").build();
+        var entity = Product.builder().id(1L).code("MILK").description("Integral").size("1L").build();
         given(repository.save(any(Product.class))).willReturn(entity);
 
         //when
@@ -78,7 +78,7 @@ public class ProductServiceUnitTest {
     @Test
     public void givenValidId_whenDelete_ShouldReturnNull() {
         //given
-        var dto = Product.builder().id(1).code("MILK").description("Integral").size("1L").build();
+        var dto = Product.builder().id(1L).code("MILK").description("Integral").size("1L").build();
         given(repository.findById(anyLong())).willReturn(Optional.of(dto));
         given(pantryItemRepository.countPantryItem(anyLong())).willReturn(0);
         doNothing().when(repository).deleteById(anyLong());
@@ -93,7 +93,7 @@ public class ProductServiceUnitTest {
     @Test
     public void givenValidId_whenDelete_ShouldReturnDatabaseConstraintException() {
         //given
-        var dto = Product.builder().id(1).code("MILK").description("Integral").size("1L").build();
+        var dto = Product.builder().id(1L).code("MILK").description("Integral").size("1L").build();
         given(repository.findById(anyLong())).willReturn(Optional.of(dto));
         given(pantryItemRepository.countPantryItem(anyLong())).willReturn(1);
 

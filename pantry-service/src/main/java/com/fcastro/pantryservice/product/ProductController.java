@@ -5,6 +5,8 @@ import com.fcastro.app.model.ProductDto;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,25 +22,29 @@ public class ProductController {
     }
 
     @GetMapping(path = "/{id}")
-    public ResponseEntity<ProductDto> get(@PathVariable long id) {
+    @PreAuthorize("hasPermission('Product', #id, 'list_product')")
+    public ResponseEntity<ProductDto> get(@P("id") @PathVariable long id) {
         return service.get(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @GetMapping()
+    @PreAuthorize("hasPermission('list_product')")
     public ResponseEntity<List<ProductDto>> getAll(@RequestParam(required = false) String searchParam) {
         if (searchParam == null) return ResponseEntity.ok(service.getAll());
         return ResponseEntity.ok(service.getAll(searchParam));
     }
 
     @PostMapping
-    public ResponseEntity<ProductDto> create(@Valid @RequestBody ProductDto newDto) {
+    @PreAuthorize("hasPermission(#product.getAccountGroupId(), 'create_product')")
+    public ResponseEntity<ProductDto> create(@P("product") @Valid @RequestBody ProductDto newDto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(service.save(newDto));
     }
 
     @PutMapping("/{id}")
-    ResponseEntity<ProductDto> replace(@Valid @RequestBody ProductDto newDto, @PathVariable Long id) {
+    @PreAuthorize("hasPermission('Product', #id, 'edit_product')")
+    ResponseEntity<ProductDto> replace(@Valid @RequestBody ProductDto newDto, @P("id") @PathVariable Long id) {
 
         var dto = service.get(id)
                 .map(resource -> {
@@ -56,7 +62,8 @@ public class ProductController {
     }
 
     @DeleteMapping(path = "/{id}")
-    public ResponseEntity<ProductDto> delete(@PathVariable Long id) {
+    @PreAuthorize("hasPermission('Product', #id, 'delete_product')")
+    public ResponseEntity<ProductDto> delete(@P("product") @PathVariable Long id) {
         service.delete(id);
         return ResponseEntity.noContent().build();
     }

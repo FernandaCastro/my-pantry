@@ -1,11 +1,10 @@
 package com.fcastro.pantryservice.pantry;
 
 import com.fcastro.app.exception.ResourceNotFoundException;
-import com.fcastro.security.accessControl.AccessControlService;
+import com.fcastro.security.accesscontrol.AccessControlService;
 import com.fcastro.security.authorization.AuthorizationService;
 import com.fcastro.security.core.model.AccountGroupDto;
-import com.fcastro.security.core.model.AccountGroupMemberDto;
-import com.fcastro.security.exception.AccountGroupNotDefinedException;
+import com.fcastro.security.exception.AccessControlNotDefinedException;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -42,8 +41,7 @@ public class PantryService {
 
     //TODO: Pageable
     public List<PantryDto> getAll() {
-        var groupMembers = authorizationService.getGroupMember(SecurityContextHolder.getContext().getAuthentication().getName());
-        var accountGroups = groupMembers.stream().map(AccountGroupMemberDto::getAccountGroupId).collect(Collectors.toSet());
+        var accountGroups = authorizationService.getAccountGroupList(SecurityContextHolder.getContext().getAuthentication().getName());
         var listEntity = repository.findAllByAccountGroup(accountGroups);
         return listEntity.stream().map(this::convertToDTO).collect(Collectors.toList());
     }
@@ -54,15 +52,13 @@ public class PantryService {
     }
 
     public Optional<AccountGroupDto> getAccessControl(Long pantryId) {
-        var access = accessControlService.findAllByClazzAndClazzId(Pantry.class.getSimpleName(), pantryId)
-                .orElseThrow(() -> new ResourceNotFoundException("There is no Account Group associated to this Pantry."));
-
+        var access = accessControlService.get(Pantry.class.getSimpleName(), pantryId);
         return Optional.of(AccountGroupDto.builder().id(access.getAccountGroupId()).build());
     }
 
     public PantryDto save(PantryDto dto) {
         if (dto.getAccountGroupId() == null)
-            throw new AccountGroupNotDefinedException("Pantry should be associated to a group");
+            throw new AccessControlNotDefinedException("Pantry must be associated to a group");
 
         var entity = repository.save(convertToEntity(dto));
         accessControlService.save(Pantry.class.getSimpleName(), entity.getId(), dto.getAccountGroupId());
