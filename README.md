@@ -1,4 +1,4 @@
-![mypantry.png](mypantry.png "my-pantry diagram")
+![diagram](MyPantry.png)
 
 # my-pantry
 
