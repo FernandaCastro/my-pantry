@@ -1,3 +1,5 @@
+![mypantry.png](mypantry.png "my-pantry diagram")
+
 # my-pantry
 
 It manages pantry inventories and creates shopping lists. <br/> It is all based on the consumption of the items of a
