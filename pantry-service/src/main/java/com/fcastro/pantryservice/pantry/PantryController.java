@@ -23,7 +23,7 @@ public class PantryController {
 
     @GetMapping(path = "/{id}")
     @PreAuthorize("hasPermission('pantry', #pantryId, 'list_pantry')")
-    public ResponseEntity<PantryDto> get(@P("pantryId") @PathVariable long id) {
+    public ResponseEntity<PantryDto> get(@P("pantryId") @PathVariable Long id) {
         return service.get(id)
                 .map(ResponseEntity::ok)
                 .orElseThrow(() -> new ResourceNotFoundException("Pantry not found"));

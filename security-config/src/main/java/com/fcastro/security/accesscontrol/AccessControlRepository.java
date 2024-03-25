@@ -32,4 +32,6 @@ public interface AccessControlRepository extends JpaRepository<AccessControl, Ac
             "and a.clazzId = :clazzId")
     @Modifying
     void deleteAllByClazzAndClazzId(String clazz, Long clazzId);
+
+    List<AccessControl> findAllByAccountGroupId(Long accountGroupId);
 }

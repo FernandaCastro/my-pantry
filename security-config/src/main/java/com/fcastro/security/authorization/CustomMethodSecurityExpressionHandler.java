@@ -14,10 +14,10 @@ import java.util.function.Supplier;
 @Component
 public class CustomMethodSecurityExpressionHandler extends DefaultMethodSecurityExpressionHandler {
 
-    private final AuthorizationService authorizationService;
+    private final AuthorizationHandler authorizationService;
     private final AccessControlService accessControlService;
 
-    CustomMethodSecurityExpressionHandler(AuthorizationService authorizationService, AccessControlService accessControlService) {
+    CustomMethodSecurityExpressionHandler(AuthorizationHandler authorizationService, AccessControlService accessControlService) {
         this.authorizationService = authorizationService;
         this.accessControlService = accessControlService;
     }

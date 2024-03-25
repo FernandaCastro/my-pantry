@@ -9,7 +9,7 @@ import com.fcastro.pantryservice.exception.DatabaseConstraintException;
 import com.fcastro.pantryservice.exception.RequestParamExpectedException;
 import com.fcastro.pantryservice.pantryitem.PantryItemRepository;
 import com.fcastro.security.accesscontrol.AccessControlService;
-import com.fcastro.security.authorization.AuthorizationService;
+import com.fcastro.security.authorization.AuthorizationHandler;
 import com.fcastro.security.exception.AccessControlNotDefinedException;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -26,10 +26,10 @@ public class ProductService {
     private final PantryItemRepository pantryItemRepository;
     private final ProductEventProducer productEventProducer;
     private final ModelMapper modelMapper;
-    private final AuthorizationService authorizationService;
+    private final AuthorizationHandler authorizationService;
     private final AccessControlService accessControlService;
 
-    public ProductService(ProductRepository repository, PantryItemRepository pantryItemRepository, ProductEventProducer productEventProducer, ModelMapper modelMapper, AuthorizationService authorizationService, AccessControlService accessControlService) {
+    public ProductService(ProductRepository repository, PantryItemRepository pantryItemRepository, ProductEventProducer productEventProducer, ModelMapper modelMapper, AuthorizationHandler authorizationService, AccessControlService accessControlService) {
         this.repository = repository;
         this.pantryItemRepository = pantryItemRepository;
         this.productEventProducer = productEventProducer;

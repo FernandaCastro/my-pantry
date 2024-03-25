@@ -10,16 +10,23 @@ import java.util.List;
 public class CustomMethodSecurityExpressionRoot {
 
     private MethodSecurityExpressionOperations expressionOperations;
-    private final AuthorizationService authorizationService;
+    private final AuthorizationHandler authorizationService;
     private final AccessControlService accessControlService;
 
-    public CustomMethodSecurityExpressionRoot(AuthorizationService authorizationService, AccessControlService accessControlService) {
+    public CustomMethodSecurityExpressionRoot(AuthorizationHandler authorizationService, AccessControlService accessControlService) {
         this.authorizationService = authorizationService;
         this.accessControlService = accessControlService;
     }
 
     public void setExpressionOperations(MethodSecurityExpressionOperations expressionOperations) {
         this.expressionOperations = expressionOperations;
+    }
+
+    //Check if connected user has <role> : sysadmin user is the only one with a defined role
+    public boolean hasAuthority(String role) {
+        if (expressionOperations.getAuthentication().getAuthorities() == null) return false;
+        return expressionOperations.getAuthentication().getAuthorities().stream()
+                .anyMatch(grantedAuthority -> role.equalsIgnoreCase(grantedAuthority.getAuthority()));
     }
 
     //Check if connected user has <permission> in at least one group
@@ -67,7 +74,7 @@ public class CustomMethodSecurityExpressionRoot {
         if (permissions == null || permissions.size() == 0) return false;
 
         return permissions.stream()
-                .anyMatch((p) -> p.getName().toLowerCase().equals(permission.toLowerCase()));
+                .anyMatch((p) -> p.getName().equalsIgnoreCase(permission));
     }
 
 }

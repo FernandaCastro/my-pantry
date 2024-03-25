@@ -12,11 +12,11 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Component
-public class AuthorizationService {
+public class AuthorizationHandler {
 
     private final RestClient authzServer;
 
-    public AuthorizationService(RestClient authzServer) {
+    public AuthorizationHandler(RestClient authzServer) {
         this.authzServer = authzServer;
     }
 
@@ -50,7 +50,7 @@ public class AuthorizationService {
                         status.value() == 404, (request, response) -> {
                     throw new AccessDeniedException("User " + email + " is not authorized in this group.");
                 })
-                .body(new ParameterizedTypeReference<List<AccountGroupMemberDto>>() {
+                .body(new ParameterizedTypeReference<>() {
                 });
     }
 

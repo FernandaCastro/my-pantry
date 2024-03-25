@@ -1,4 +1,4 @@
-package com.fcastro.security.accesscontrol;
+package com.fcastro.security.core.model;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;

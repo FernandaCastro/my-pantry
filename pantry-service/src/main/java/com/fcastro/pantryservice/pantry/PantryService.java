@@ -2,7 +2,7 @@ package com.fcastro.pantryservice.pantry;
 
 import com.fcastro.app.exception.ResourceNotFoundException;
 import com.fcastro.security.accesscontrol.AccessControlService;
-import com.fcastro.security.authorization.AuthorizationService;
+import com.fcastro.security.authorization.AuthorizationHandler;
 import com.fcastro.security.core.model.AccountGroupDto;
 import com.fcastro.security.exception.AccessControlNotDefinedException;
 import org.modelmapper.ModelMapper;
@@ -19,10 +19,10 @@ public class PantryService {
 
     private final PantryRepository repository;
     private final ModelMapper modelMapper;
-    private final AuthorizationService authorizationService;
+    private final AuthorizationHandler authorizationService;
     private final AccessControlService accessControlService;
 
-    public PantryService(PantryRepository repository, ModelMapper modelMapper, AuthorizationService authorizationService, AccessControlService accessControlService) {
+    public PantryService(PantryRepository repository, ModelMapper modelMapper, AuthorizationHandler authorizationService, AccessControlService accessControlService) {
         this.repository = repository;
         this.modelMapper = modelMapper;
         this.authorizationService = authorizationService;

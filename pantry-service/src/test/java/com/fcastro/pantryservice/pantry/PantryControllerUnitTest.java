@@ -3,9 +3,8 @@ package com.fcastro.pantryservice.pantry;
 import com.fcastro.app.model.ProductDto;
 import com.fcastro.pantryservice.JsonUtil;
 import com.fcastro.pantryservice.pantryitem.PantryItemDto;
-import com.fcastro.security.accesscontrol.AccessControlDto;
 import com.fcastro.security.accesscontrol.AccessControlService;
-import com.fcastro.security.authorization.AuthorizationService;
+import com.fcastro.security.authorization.AuthorizationHandler;
 import com.fcastro.security.authorization.CustomAuthorizationManager;
 import com.fcastro.security.authorization.CustomMethodSecurityExpressionHandler;
 import com.fcastro.security.authorization.CustomMethodSecurityExpressionRoot;
@@ -14,6 +13,7 @@ import com.fcastro.security.core.config.SecurityPropertiesConfig;
 import com.fcastro.security.core.handler.CustomAccessDeniedHandler;
 import com.fcastro.security.core.handler.CustomAuthenticationEntryPointHandler;
 import com.fcastro.security.core.jwt.JWTHandler;
+import com.fcastro.security.core.model.AccessControlDto;
 import com.fcastro.security.core.model.AccountGroupMemberDto;
 import com.fcastro.security.core.model.PermissionDto;
 import com.fcastro.security.core.model.RoleDto;
@@ -79,7 +79,7 @@ public class PantryControllerUnitTest {
     private PantryService pantryService;
 
     @MockBean
-    private AuthorizationService authorizationService;
+    private AuthorizationHandler authorizationService;
 
     @MockBean
     private AccessControlService accessControlService;

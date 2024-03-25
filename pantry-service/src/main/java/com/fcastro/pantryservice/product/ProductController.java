@@ -22,8 +22,8 @@ public class ProductController {
     }
 
     @GetMapping(path = "/{id}")
-    @PreAuthorize("hasPermission('Product', #id, 'list_product')")
-    public ResponseEntity<ProductDto> get(@P("id") @PathVariable long id) {
+    @PreAuthorize("hasPermission('Product', #iproductId, 'list_product')")
+    public ResponseEntity<ProductDto> get(@P("productId") @PathVariable long id) {
         return service.get(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
@@ -43,8 +43,8 @@ public class ProductController {
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasPermission('Product', #id, 'edit_product')")
-    ResponseEntity<ProductDto> replace(@Valid @RequestBody ProductDto newDto, @P("id") @PathVariable Long id) {
+    @PreAuthorize("hasPermission('Product', #productId, 'edit_product')")
+    ResponseEntity<ProductDto> replace(@Valid @RequestBody ProductDto newDto, @P("productId") @PathVariable Long id) {
 
         var dto = service.get(id)
                 .map(resource -> {
@@ -62,8 +62,8 @@ public class ProductController {
     }
 
     @DeleteMapping(path = "/{id}")
-    @PreAuthorize("hasPermission('Product', #id, 'delete_product')")
-    public ResponseEntity<ProductDto> delete(@P("product") @PathVariable Long id) {
+    @PreAuthorize("hasPermission('Product', #productId, 'delete_product')")
+    public ResponseEntity<ProductDto> delete(@P("productId") @PathVariable Long id) {
         service.delete(id);
         return ResponseEntity.noContent().build();
     }

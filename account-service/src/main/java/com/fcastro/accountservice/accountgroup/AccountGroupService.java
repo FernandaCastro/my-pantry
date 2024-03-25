@@ -3,9 +3,10 @@ package com.fcastro.accountservice.accountgroup;
 import com.fcastro.accountservice.account.Account;
 import com.fcastro.accountservice.accountgroupmember.AccountGroupMemberService;
 import com.fcastro.accountservice.exception.DeletionNotAllowedException;
+import com.fcastro.accountservice.security.AccessControlHandler;
 import com.fcastro.app.exception.ResourceNotFoundException;
-import com.fcastro.security.core.handler.AuthorizationUtils;
 import com.fcastro.security.core.model.AccountGroupDto;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,12 +19,12 @@ public class AccountGroupService {
 
     private final AccountGroupRepository repository;
     private final AccountGroupMemberService groupMemberService;
-    private final AuthorizationUtils authorizationUtils;
+    private final AccessControlHandler accessControlHandler;
 
-    public AccountGroupService(AccountGroupRepository repository, AccountGroupMemberService groupMemberService, AuthorizationUtils authorizationUtils) {
+    public AccountGroupService(AccountGroupRepository repository, AccountGroupMemberService groupMemberService, AccessControlHandler accessControlHandler) {
         this.repository = repository;
         this.groupMemberService = groupMemberService;
-        this.authorizationUtils = authorizationUtils;
+        this.accessControlHandler = accessControlHandler;
     }
 
     public Optional<AccountGroupDto> get(long id) {
@@ -32,7 +33,7 @@ public class AccountGroupService {
     }
 
     public List<AccountGroupDto> getAll() {
-        List<AccountGroup> listEntity = repository.findAllStrict(authorizationUtils.getUserEmail());
+        List<AccountGroup> listEntity = repository.findAllStrict(SecurityContextHolder.getContext().getAuthentication().getName());
         return listEntity.stream().map(this::convertToDTO).collect(Collectors.toList());
     }
 
@@ -63,15 +64,14 @@ public class AccountGroupService {
         }
 
         //new child group, so find  and associate the parent
-        var parentGroup = repository.findParentAccountGroup(authorizationUtils.getUserEmail())
+        var parentGroup = repository.findParentAccountGroup(SecurityContextHolder.getContext().getAuthentication().getName())
                 .orElseThrow(() -> new ResourceNotFoundException("Parent Account Group not found"));
-        ;
 
         var accountGroup = convertToEntity(dto);
         accountGroup.setParentAccountGroup(parentGroup);
         accountGroup = repository.save(accountGroup);
 
-        groupMemberService.createChildGroupMember(authorizationUtils.getUserEmail(), accountGroup.getId());
+        groupMemberService.createChildGroupMember(SecurityContextHolder.getContext().getAuthentication().getName(), accountGroup.getId());
 
         return convertToDTO(accountGroup);
     }
@@ -83,6 +83,10 @@ public class AccountGroupService {
 
         if (accountGroup.getParentAccountGroup() == null)
             throw new DeletionNotAllowedException("This is your main Account Group. It cannot be deleted.");
+
+        var isGroupInUse = accessControlHandler.isInUse(accountGroupId);
+        if (isGroupInUse)
+            throw new DeletionNotAllowedException("This Account Group is in use and cannot be deleted. It may contain Pantries, Purchase Orders and/or Products.");
 
         repository.deleteById(accountGroupId);
     }
