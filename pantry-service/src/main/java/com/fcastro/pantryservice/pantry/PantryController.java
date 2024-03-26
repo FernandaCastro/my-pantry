@@ -22,7 +22,7 @@ public class PantryController {
     }
 
     @GetMapping(path = "/{id}")
-    @PreAuthorize("hasPermission('pantry', #pantryId, 'list_pantry')")
+    @PreAuthorize("hasPermission('Pantry', #pantryId, 'list_pantry')")
     public ResponseEntity<PantryDto> get(@P("pantryId") @PathVariable Long id) {
         return service.get(id)
                 .map(ResponseEntity::ok)
@@ -70,7 +70,7 @@ public class PantryController {
     }
 
     @DeleteMapping(path = "/{id}")
-    @PreAuthorize("hasPermission('pantry', #pantryId, 'delete_pantry')")
+    @PreAuthorize("hasPermission('Pantry', #pantryId, 'delete_pantry')")
     public ResponseEntity<PantryDto> delete(@P("pantryId") @PathVariable Long id) {
         service.delete(id);
         return ResponseEntity.noContent().build();
