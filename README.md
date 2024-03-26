@@ -30,12 +30,9 @@ Screenshots: <br />
 |:-------------|:-------------------------|
 |/pantries <img height="30" width="30" src="./pantry-web/src/assets/images/cupboard-gradient.png" />| List Pantries and its related actions: new, edit and delete |
 |/consume <img height="30" width="30" src="./pantry-web/src/assets/images/cook-gradient.png" /> | <b><u>After selecting a pantry</u></b>, you can consume items from it. <br /> Once the consumption of an item reaches 50%, an order to purchase is fired.
-|/purchase <img height="30" width="30" src="./pantry-web/src/assets/images/shoppingcart-gradient.png" />| Items to be purchased (from all your pantries). A shopping list is created **
-
-once you open a new Order**. When you complete buying and **close the Order** My Pantry will update your Pantry
-Inventory with the purchased items.
-|/product <img height="30" width="30" src="./pantry-web/src/assets/images/food-gradient.png" />| List Products and its
-related actions: new, edit and delete
+|/purchase <img height="30" width="30" src="./pantry-web/src/assets/images/shoppingcart-gradient.png" />| Items to be purchased (from all your pantries). A shopping list is created ** once you open a new Order**. When you complete buying and **
+close the Order** My Pantry will update your Pantry Inventory with the purchased items.
+|/product <img height="30" width="30" src="./pantry-web/src/assets/images/food-gradient.png" />| List Products and its related actions: new, edit and delete
 
 ### account-service (localhost:8082) :
 
