@@ -3,10 +3,9 @@
 # My Pantry
 (It's still under development!)
 
-My Pantry manages pantry inventories and maintains a shopping list as the products have been consumed from the
+My Pantry manages pantries and automatically creates shopping lists as products are consumed from the
 inventory. <br/> <br/>
-You can also share your Pantry Inventories, Shopping Lists and Products with other users, by adding users to your
-Account Group.
+You can also share your Pantries, Shopping Lists and Products with other users, by adding users to your Account Group.
 
 The frontend is developed in Reactjs and Javascript, while backend is written in Java 17, Spring Boot and Spring
 Security. The Authentication is possible by either Google Signin (Google IDToken - having localhost as callback) or
