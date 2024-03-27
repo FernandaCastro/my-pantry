@@ -1,14 +1,17 @@
 package com.fcastro.security.config;
 
 
-import com.fcastro.security.jwt.CustomAccessDeniedHandler;
-import com.fcastro.security.jwt.CustomAuthenticationEntryPointHandler;
-import com.fcastro.security.jwt.JWTRequestFilter;
-import com.fcastro.security.jwt.SecurityConfigData;
+import com.fcastro.security.authorization.CustomAuthorizationManager;
+import com.fcastro.security.core.config.SecurityPropertiesConfig;
+import com.fcastro.security.core.handler.CustomAccessDeniedHandler;
+import com.fcastro.security.core.handler.CustomAuthenticationEntryPointHandler;
+import com.fcastro.security.core.jwt.JWTRequestFilter;
+import org.springframework.aop.Advisor;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
+import org.springframework.security.authorization.method.AuthorizationManagerBeforeMethodInterceptor;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -28,20 +31,23 @@ import static jakarta.servlet.DispatcherType.FORWARD;
 
 @Configuration
 @EnableWebSecurity
-@EnableMethodSecurity
+@EnableMethodSecurity(prePostEnabled = false) //Disable default implementation of MethodSecurity
 @ConditionalOnProperty(prefix = "spring", value = "security.enabled", matchIfMissing = true, havingValue = "true")
 public class SecurityConfig {
 
     private final JWTRequestFilter jwtRequestFilter;
     private final CustomAccessDeniedHandler customAccessDeniedHandler;
     private final CustomAuthenticationEntryPointHandler customAuthenticationEntryPointHandler;
-    private final SecurityConfigData securityConfigData;
+    private final SecurityPropertiesConfig propertiesConfig;
 
-    public SecurityConfig(JWTRequestFilter jwtRequestFilter, CustomAccessDeniedHandler customAccessDeniedHandler, CustomAuthenticationEntryPointHandler customAuthenticationEntryPointHandler, SecurityConfigData securityConfigData) {
+    public SecurityConfig(JWTRequestFilter jwtRequestFilter,
+                          CustomAccessDeniedHandler customAccessDeniedHandler,
+                          CustomAuthenticationEntryPointHandler customAuthenticationEntryPointHandler,
+                          SecurityPropertiesConfig propertiesConfig) {
         this.jwtRequestFilter = jwtRequestFilter;
         this.customAccessDeniedHandler = customAccessDeniedHandler;
         this.customAuthenticationEntryPointHandler = customAuthenticationEntryPointHandler;
-        this.securityConfigData = securityConfigData;
+        this.propertiesConfig = propertiesConfig;
     }
 
     @Bean
@@ -70,7 +76,8 @@ public class SecurityConfig {
                         //Dispatches FORWARD and ERROR are permitted to allow Spring MVC to render views and Spring Boot to render errors
                         .dispatcherTypeMatchers(FORWARD, ERROR).permitAll()
                         //.requestMatchers("/accountGroups/*/members").hasRole("ADMIN")
-                        .anyRequest().hasRole("USER"));
+                        .anyRequest().authenticated()
+                );
 
         return http.build();
     }
@@ -78,7 +85,7 @@ public class SecurityConfig {
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList(securityConfigData.getAllowedOrigin()));
+        configuration.setAllowedOrigins(Arrays.asList(propertiesConfig.getAllowedOrigin()));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "OPTIONS", "DELETE", "PUT", "PATCH"));
         configuration.setAllowedHeaders(Arrays.asList(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, HttpHeaders.ACCESS_CONTROL_ALLOW_CREDENTIALS, HttpHeaders.ORIGIN, "Content-Type", "Accept"));
         configuration.setAllowCredentials(true);
@@ -87,5 +94,11 @@ public class SecurityConfig {
         return source;
     }
 
+
+    @Bean
+        //Injects CustomAuthorizationManager into preAuthorize Method Interceptor
+    Advisor preAuthorize(CustomAuthorizationManager manager) {
+        return AuthorizationManagerBeforeMethodInterceptor.preAuthorize(manager);
+    }
 
 }

@@ -8,10 +8,12 @@ import { AlertContext } from '../services/context/AppContext.js';
 import ProductSearchBar from '../components/ProductSearchBar.js'
 import PantryItemList from '../components/PantryItemList.js';
 import Button from 'react-bootstrap/Button';
+import { getAccountGroupList } from '../services/apis/mypantry/requests/AccountRequests.js';
 
 export default function Pantry({ mode }) {
 
     let { id } = useParams();
+    const [accountGroupOptions, setAccountGroupOptions] = useState([]);
 
     const [pantry, setPantry] = useState(
         {
@@ -29,7 +31,33 @@ export default function Pantry({ mode }) {
         if (id && mode === 'edit') {
             fetchPantry();
         }
+
+        if (!accountGroupOptions || accountGroupOptions.length === 0) {
+            fetchAccountGroups();
+        }
     }, [])
+
+
+    async function fetchAccountGroups() {
+        setIsLoading(true);
+        try {
+            const res = await getAccountGroupList();
+
+            var list = [];
+            res.forEach(group => {
+                list = [...list,
+                {
+                    value: group.id,
+                    label: group.name
+                }]
+            });
+
+            setAccountGroupOptions(list);
+            setIsLoading(false);
+        } catch (error) {
+            showAlert(VariantType.DANGER, error.message);
+        }
+    }
 
     async function fetchPantry() {
         setIsLoading(true);
@@ -128,7 +156,7 @@ export default function Pantry({ mode }) {
             <div>
                 {mode === "edit" && isLoading ?
                     <h6>Loading...</h6> :
-                    <PantryForm pantry={pantry} handleSave={handleSave} />}
+                    <PantryForm pantry={pantry} handleSave={handleSave} accountGroupOptions={accountGroupOptions} />}
             </div>
             <div>
                 <ProductSearchBar handleSelectAction={handleAddItem} addButtonVisible={true} />

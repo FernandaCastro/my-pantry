@@ -123,7 +123,7 @@ span {
 }
 
 .text-small {
-    font-size: small;
+    font-size: smaller;
 }
 
 span.disabled {
@@ -197,6 +197,26 @@ div.settings {
     border: 1px solid $border-color;
     border-radius: 8px;
     background-color: $background !important;
+}
+
+.custom-alert {
+
+    .custom-alert-body {
+        border: 1px solid $border-color;
+        border-radius: 8px;
+        background-color: $background;
+        border-bottom: 0px;
+        border-bottom-left-radius: 0px;
+        border-bottom-right-radius: 0px;
+    }
+
+    .custom-alert-footer {
+        border: 1px solid $border-color;
+        border-radius: 8px;
+        background-color: $background;
+        border-top-left-radius: 0px;
+        border-top-right-radius: 0px;
+    }
 }
 
 div.scroll-pantryItems {

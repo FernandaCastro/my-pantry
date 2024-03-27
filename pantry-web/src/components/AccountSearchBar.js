@@ -10,6 +10,7 @@ import Stack from 'react-bootstrap/Stack';
 import CloseButton from 'react-bootstrap/CloseButton';
 import Collapse from 'react-bootstrap/Collapse';
 import { getFilteredAccountList, createAccount, } from '../services/apis/mypantry/requests/AccountRequests.js';
+import RoleSelect from './RoleSelect';
 
 function AccountSearchBar({ handleSelectAction, handleClearAction }) {
 
@@ -21,6 +22,7 @@ function AccountSearchBar({ handleSelectAction, handleClearAction }) {
     const [show, setShow] = useState(true);
     const { setAlert } = useContext(AlertContext);
 
+    const [selectedRole, setSelectedRole] = useState();
     const [account, setAccount] = useState({});
 
     function handleSearch() {
@@ -28,7 +30,7 @@ function AccountSearchBar({ handleSelectAction, handleClearAction }) {
     }
 
     function clearSearch() {
-        setSearchText("");
+        setSearchText(() => "");
         setResults([]);
         setNotFoundMessage("");
     }
@@ -37,7 +39,7 @@ function AccountSearchBar({ handleSelectAction, handleClearAction }) {
         if (handleClearAction) handleClearAction();
     }
     function handleSelect(item) {
-        handleSelectAction(item);
+        handleSelectAction(item, selectedRole);
         clearSearch();
     }
 
@@ -59,7 +61,7 @@ function AccountSearchBar({ handleSelectAction, handleClearAction }) {
         return (
             <Stack direction="horizontal" gap={2} className="w-100">
                 <div className="w-75 pe-0">
-                    <Form.Control size="sm" type="text" placeholder='Search by e-mail or name' onChange={(e) => setSearchText(e.target.value)} />
+                    <Form.Control size="sm" type="text" placeholder='Search by e-mail or name' value={searchText} onChange={(e) => setSearchText(e.target.value)} />
                 </div>
                 <div>
                     <Button className="w-0 p-0" variant="link" onClick={handleSearch} title='Search' disabled={!searchText && searchText.length > 3}><BsSearch className='icon' /></Button>
@@ -82,10 +84,10 @@ function AccountSearchBar({ handleSelectAction, handleClearAction }) {
                         <td className="w-0 p-0 border-end-0 colorfy">
                             <span>{item.name} {item.email === "" ? "" : ' - ' + item.email}</span></td>
                         <td className="w-0 p-0 colorfy">
-                            <Form.Check size="sm" className="mb-1 title"
-                                defaultChecked={item.role === 'ADMIN'}
+                            {/* <Form.Check size="sm" className="mb-1 title"
                                 onClick={e => item = { ...item, groupRole: (e.target.checked ? "ADMIN" : "USER") }}
-                                label="as Admin" />
+                                label="as Admin" /> */}
+                            <RoleSelect setSelectedRole={setSelectedRole}/>    
                         </td>
                         <td className="w-0 p-0 colorfy">
                             <Button onClick={() => handleSelect(item)} variant="link" title='Select this account'><BsCheck2All className='icon' /></Button>

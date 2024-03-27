@@ -44,7 +44,7 @@ export default function App() {
         setAlert(
           (a) => a = { ...a, show: false }
         );
-      }, 5000);
+      }, 10000);
     }
   }, [alert.show])
 
