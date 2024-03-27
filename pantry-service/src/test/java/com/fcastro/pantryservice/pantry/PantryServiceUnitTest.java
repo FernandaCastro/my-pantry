@@ -1,6 +1,8 @@
 package com.fcastro.pantryservice.pantry;
 
 import com.fcastro.app.exception.ResourceNotFoundException;
+import com.fcastro.security.accesscontrol.AccessControlService;
+import com.fcastro.security.authorization.AuthorizationHandler;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -9,9 +11,7 @@ import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
-import org.springframework.data.domain.Sort;
 
-import java.util.ArrayList;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -32,6 +32,14 @@ public class PantryServiceUnitTest {
     @Spy
     ModelMapper modelMapper;
 
+    @Mock
+    private AccessControlService accessControlService;
+
+    @Mock
+    private AuthorizationHandler authorizationHandler;
+
+    private static final String MOCK_USER = "MOCK_USER";
+
     @Test
     public void givenValidPantryId_whenGet_ShouldReturnPantryDto() {
         //given
@@ -51,30 +59,14 @@ public class PantryServiceUnitTest {
     }
 
     @Test
-    public void whenGetAll_ShouldReturnList() {
-        //given
-        var list = new ArrayList<Pantry>();
-        list.add(Pantry.builder().id(1L).name("Base Inventory").isActive(true).type("R").build());
-        list.add(Pantry.builder().id(2L).name("Base Inventory").isActive(true).type("R").build());
-
-        given(repository.findAll(Sort.by("name"))).willReturn(list);
-
-        //when
-        var result = service.getAll();
-
-        //then
-        org.assertj.core.api.Assertions.assertThat(result).isNotNull();
-        assertThat(result.size()).isEqualTo(2);
-    }
-
-    @Test
     public void givenValidDto_whenSave_ShouldReturnNewDto() {
         //given
         var entity = Pantry.builder().id(1L).name("Base Inventory").isActive(true).type("R").build();
         given(repository.save(any(Pantry.class))).willReturn(entity);
+        doNothing().when(accessControlService).save(anyString(), anyLong(), anyLong());
 
         //when
-        var dto = service.save(PantryDto.builder().build());
+        var dto = service.save(PantryDto.builder().id(1L).name("Base Inventory").isActive(true).type("R").accountGroupId(10L).build());
 
         //then
         assertThat(dto).isNotNull();
@@ -90,6 +82,7 @@ public class PantryServiceUnitTest {
         var dto = Pantry.builder().id(1L).name("Base Inventory").isActive(true).type("R").build();
         given(repository.findById(anyLong())).willReturn(Optional.of(dto));
         doNothing().when(repository).deleteById(anyLong());
+        doNothing().when(accessControlService).delete(anyString(), anyLong());
 
         //when //then
         service.delete(1);

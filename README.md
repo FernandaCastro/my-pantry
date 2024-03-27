@@ -1,6 +1,7 @@
 ![diagram](readme_images/MyPantry.png)
 
 # My Pantry
+(It's still under development!)
 
 My Pantry manages pantry inventories and maintains a shopping list as the products have been consumed from the
 inventory. <br/> <br/>
@@ -8,11 +9,8 @@ You can also share your Pantry Inventories, Shopping Lists and Products with oth
 Account Group.
 
 The frontend is developed in Reactjs and Javascript, while backend is written in Java 17, Spring Boot and Spring
-Security. The Authentication is possible by either Google Signin (Google IDToken) or user/password.
-
-Navigate to the root folder _<my-pantry>_ and run it as Docker containers: <br />
-```docker compose up -d``` <br />
-_**=> Populate the application.yml files before running it.**_
+Security. The Authentication is possible by either Google Signin (Google IDToken - having localhost as callback) or
+user/password.
 
 Screenshots: <br />
 <img height="400" width="200" title="Login" src="./readme_images/login.png"/>

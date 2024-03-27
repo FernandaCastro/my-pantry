@@ -5,7 +5,6 @@ import com.fcastro.security.authorization.CustomAuthorizationManager;
 import com.fcastro.security.core.config.SecurityPropertiesConfig;
 import com.fcastro.security.core.handler.CustomAccessDeniedHandler;
 import com.fcastro.security.core.handler.CustomAuthenticationEntryPointHandler;
-import com.fcastro.security.core.jwt.JWTHandler;
 import com.fcastro.security.core.jwt.JWTRequestFilter;
 import org.springframework.aop.Advisor;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -21,7 +20,6 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.HeaderWriterLogoutHandler;
 import org.springframework.security.web.header.writers.ClearSiteDataHeaderWriter;
-import org.springframework.web.client.RestClient;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -41,8 +39,6 @@ public class SecurityConfig {
     private final CustomAccessDeniedHandler customAccessDeniedHandler;
     private final CustomAuthenticationEntryPointHandler customAuthenticationEntryPointHandler;
     private final SecurityPropertiesConfig propertiesConfig;
-
-    private final String ROLE_SYSADMIN = "ROLE_SYSADMIN";
 
     public SecurityConfig(JWTRequestFilter jwtRequestFilter,
                           CustomAccessDeniedHandler customAccessDeniedHandler,
@@ -103,18 +99,6 @@ public class SecurityConfig {
         //Injects CustomAuthorizationManager into preAuthorize Method Interceptor
     Advisor preAuthorize(CustomAuthorizationManager manager) {
         return AuthorizationManagerBeforeMethodInterceptor.preAuthorize(manager);
-    }
-
-    @Bean
-        //RestClient to the AuthorizationServer
-    RestClient authorizationServer(SecurityPropertiesConfig securityConfigData, JWTHandler jwtHandler) {
-        String jwtToken = jwtHandler.createToken("sysadmin@mypantry.com", ROLE_SYSADMIN, false);
-
-        return RestClient.builder()
-                .baseUrl(securityConfigData.getAuthzServer())
-                .defaultHeader("SYSADMIN-AUTH", jwtToken)
-                .build();
-
     }
 
 }

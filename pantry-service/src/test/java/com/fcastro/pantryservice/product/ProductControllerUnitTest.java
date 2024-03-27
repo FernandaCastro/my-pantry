@@ -2,14 +2,18 @@ package com.fcastro.pantryservice.product;
 
 import com.fcastro.app.model.ProductDto;
 import com.fcastro.pantryservice.JsonUtil;
+import com.fcastro.security.core.config.SecurityPropertiesConfig;
+import com.fcastro.security.core.jwt.JWTRequestFilter;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureDataJpa;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.FilterType;
 import org.springframework.http.MediaType;
-import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
@@ -25,9 +29,11 @@ import static org.mockito.Mockito.doNothing;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(controllers = ProductController.class)
-@AutoConfigureMockMvc
-@ComponentScan(basePackages = {"com.fcastro.security"})
+@WebMvcTest(controllers = ProductController.class,
+        excludeAutoConfiguration = SecurityAutoConfiguration.class,
+        excludeFilters = {@ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = {JWTRequestFilter.class})})
+@EnableConfigurationProperties(value = SecurityPropertiesConfig.class)
+@AutoConfigureDataJpa
 public class ProductControllerUnitTest {
 
     @Autowired
@@ -37,7 +43,6 @@ public class ProductControllerUnitTest {
     private ProductService service;
 
     @Test
-    @WithMockUser(roles = {"USER"})
     public void givenValidId_whenGet_shouldReturnOk() throws Exception {
         //given
         var dto = ProductDto.builder().id(1).code("MILK").description("Integral").size("1L").build();
@@ -54,7 +59,6 @@ public class ProductControllerUnitTest {
     }
 
     @Test
-    @WithMockUser(roles = {"USER"})
     public void givenInvalidId_whenGet_shouldReturnNoContent() throws Exception {
         //given
         given(service.get(anyLong())).willReturn(Optional.empty());
@@ -65,7 +69,6 @@ public class ProductControllerUnitTest {
     }
 
     @Test
-    @WithMockUser(roles = {"USER"})
     public void whenGetAll_shouldReturnOk() throws Exception {
         //given
         var list = new ArrayList<ProductDto>();
@@ -83,7 +86,6 @@ public class ProductControllerUnitTest {
     }
 
     @Test
-    @WithMockUser(roles = {"USER"})
     public void givenNewDto_whenCreate_shouldReturnCreated() throws Exception {
         //given
         var dto = ProductDto.builder().id(1).code("MILK").description("Integral").size("1L").build();
@@ -102,7 +104,6 @@ public class ProductControllerUnitTest {
     }
 
     @Test
-    @WithMockUser(roles = {"USER"})
     public void givenValidId_whenReplace_shouldReturnCreated() throws Exception {
         //given
         var dto = ProductDto.builder().id(1).code("MILK").description("Integral").size("1L").build();
@@ -122,7 +123,6 @@ public class ProductControllerUnitTest {
     }
 
     @Test
-    @WithMockUser(roles = {"USER"})
     public void givenInvalidId_whenReplace_shouldReturnCreated() throws Exception {
         //given
         var dto = ProductDto.builder().id(10).code("MILK").description("Integral").size("1L").build();
@@ -136,7 +136,6 @@ public class ProductControllerUnitTest {
     }
 
     @Test
-    @WithMockUser(roles = {"USER"})
     public void givenValidPantryId_whenDelete_shouldReturnNoContent() throws Exception {
         //given
         doNothing().when(service).delete(anyLong());
