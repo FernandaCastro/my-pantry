@@ -130,11 +130,11 @@ function GroupMembers() {
         }
     }
 
-    async function fetchAddMember(groupId, accountMember) {
+    async function fetchAddMember(accountMember) {
         try {
             setIsLoading(true);
             setRefreshMembers(false);
-            await addAccountMember(groupId, accountMember);
+            await addAccountMember(accountMember);
             showAlert(VariantType.SUCCESS, "Member added successfully!");
         } catch (error) {
             showAlert(VariantType.DANGER, error.message);
@@ -170,14 +170,14 @@ function GroupMembers() {
         (pantries && pantries.length > 0) ? setShowModal(true) : fetchDeleteGroup(id);
     }
 
-    function handleAddMember(newMember, role) {
+    function handleAddMember(newMember, selectedRole) {
         const accountMember = {
             accountGroupId: selectedGroup.id,
             accountId: newMember.id,
-            role: role
+            role: selectedRole
         }
 
-        fetchAddMember(selectedGroup.id, accountMember);
+        fetchAddMember(accountMember);
     }
 
     function handleRemoveMember(groupId, accountId) {

@@ -4,7 +4,7 @@
 import FetchPantry from '../FetchPantry';
 
 export async function getPantryList() {
-    return FetchPantry(`pantries`, "GET");
+    return FetchPantry(`pantries/all`, "GET");
 }
 
 export async function getPantry(pantryId) {

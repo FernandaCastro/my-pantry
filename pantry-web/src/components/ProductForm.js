@@ -18,7 +18,9 @@ export default function ProductForm({ product, categories, accountGroupOptions, 
             fetchCategories();
         else
             setCategoryList(categories);
+    }, []);
 
+    useEffect(() => {
         if (Object.keys(product).length > 0 && product.id > 0) {
             const found = accountGroupOptions.find(a => a.value === product.accountGroupId);
             setAccountGroupOption(() => found);
@@ -70,7 +72,7 @@ export default function ProductForm({ product, categories, accountGroupOptions, 
             <Row>
                 <Form.Group as={Col} className="mb-2" controlId="formAccountGroups" size="sm">
                     <Form.Label size="sm" className="title mb-1">Account Group</Form.Label>
-                    <Select name="accountGroup" key={accountGroupOption.value}
+                    <Select key={accountGroupOption.value} name="accountGroup"
                         defaultValue={accountGroupOption}
                         options={accountGroupOptions}
                         onChange={setAccountGroupOption} />
@@ -93,7 +95,7 @@ export default function ProductForm({ product, categories, accountGroupOptions, 
                 </Form.Group>
                 <Form.Group as={Col} className="mb-2" controlId="formCategory" size="sm">
                     <Form.Label size="sm">Category</Form.Label>
-                    <Select name="category" defaultValue={categoryOption} options={categoryList}
+                    <Select key={categoryList.length} name="category" defaultValue={categoryOption} options={categoryList}
                         onChange={setCategoryOption} />
                 </Form.Group>
             </Row>
