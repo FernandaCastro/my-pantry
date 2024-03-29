@@ -7,7 +7,7 @@ import Select from './Select';
 import { useState, useEffect } from 'react';
 import { getProperty } from '../services/apis/mypantry/requests/PurchaseRequests.js';
 
-export default function ProductForm({ product, categories, accountGroupOptions, handleSave }) {
+export default function ProductForm({ product, accountGroupId, categories, accountGroupOptions, handleSave }) {
 
     const [categoryOption, setCategoryOption] = useState({ value: product.category, label: product.category });
     const [categoryList, setCategoryList] = useState([{}]);
@@ -21,11 +21,14 @@ export default function ProductForm({ product, categories, accountGroupOptions, 
     }, []);
 
     useEffect(() => {
-        if (Object.keys(product).length > 0 && product.id > 0) {
-            const found = accountGroupOptions.find(a => a.value === product.accountGroupId);
+        const searchGroupId = (Object.keys(product).length > 0 && product.id > 0) ? product.accountGroupId : accountGroupId;
+
+        if (searchGroupId && searchGroupId > 0) {
+            const found = accountGroupOptions.find(a => a.value === searchGroupId);
             setAccountGroupOption(() => found);
         }
-    }, [product.id]);
+
+    }, [product.id, accountGroupId]);
 
     async function fetchCategories() {
         try {

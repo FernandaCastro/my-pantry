@@ -22,4 +22,5 @@ CREATE TABLE IF NOT EXISTS purchase.PROPERTIES(
 );
 
 INSERT INTO PROPERTIES VALUES
-('product.categories', '["", "Bakery", "Beverages", "Cleaning", "Coockies", "Dairy", "Frozen", "Fruit and vegetables", "Grocery", "Meat", "Personal Hygiene", "Refrigerated"]');
+('product.categories', '["", "Bakery", "Beverages", "Cleaning", "Coockies", "Dairy", "Frozen", "Fruit and vegetables", "Grocery", "Meat", "Personal Hygiene", "Refrigerated"]')
+on conflict do nothing;

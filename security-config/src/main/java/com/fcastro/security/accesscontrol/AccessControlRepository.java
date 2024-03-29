@@ -27,10 +27,10 @@ public interface AccessControlRepository extends JpaRepository<AccessControl, Ac
             "and a.clazzId = :clazzId")
     Optional<AccessControl> findByClazzAndClazzId(String clazz, Long clazzId);
 
-    @Query("delete from accessControl a " +
+    @Modifying
+    @Query("delete accessControl a " +
             "where a.clazz = :clazz " +
             "and a.clazzId = :clazzId")
-    @Modifying
     void deleteAllByClazzAndClazzId(String clazz, Long clazzId);
 
     List<AccessControl> findAllByAccountGroupId(Long accountGroupId);

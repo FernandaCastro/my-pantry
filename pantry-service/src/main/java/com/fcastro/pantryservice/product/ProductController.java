@@ -32,10 +32,10 @@ public class ProductController {
 
     @GetMapping()
     @PreAuthorize("hasPermissionInAnyGroup('list_product')")
-    public ResponseEntity<List<ProductDto>> getAll(@RequestParam(required = false) String searchParam) {
+    public ResponseEntity<List<ProductDto>> getAll(@RequestParam(required = false) Long groupId, @RequestParam(required = false) String searchParam) {
         if (searchParam == null)
             return ResponseEntity.ok(service.getAll(SecurityContextHolder.getContext().getAuthentication().getName()));
-        return ResponseEntity.ok(service.getAllBySearchParam(searchParam));
+        return ResponseEntity.ok(service.getAllBySearchParam(groupId, searchParam));
     }
 
     @PostMapping
