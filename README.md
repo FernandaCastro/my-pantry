@@ -2,7 +2,7 @@
 
 # My Pantry
 
-version: 0.0.3 <br />
+version: 0.0.3-snapshot <br />
 Plans for next version:
 
 - Wizards that create basic products and pantry with basic items
