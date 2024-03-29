@@ -109,7 +109,7 @@ export default function Pantry({ mode }) {
         setRefresh(true);
         try {
             await createPantryItem(pantry.id, body);
-
+            showAlert(VariantType.SUCCESS, "Item added successfully.");
         } catch (error) {
             showAlert(VariantType.DANGER, error.message);
         } finally {
@@ -160,7 +160,7 @@ export default function Pantry({ mode }) {
                     <PantryForm pantry={pantry} handleSave={handleSave} accountGroupOptions={accountGroupOptions} />}
             </div>
             <div>
-                <ProductSearchBar accountGroupId={pantry.accountGroupId} handleSelectAction={handleAddItem} addButtonVisible={true} />
+                <ProductSearchBar accountGroupId={pantry.accountGroupId} accountGroupOptions={accountGroupOptions} handleSelectAction={handleAddItem} addButtonVisible={true} />
             </div>
             <div>
                 {isLoading && !pantry ?

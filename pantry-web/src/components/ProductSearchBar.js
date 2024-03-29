@@ -13,7 +13,7 @@ import ProductForm from './ProductForm.js';
 import { camelCase } from '../services/Utils.js';
 import Collapse from 'react-bootstrap/Collapse';
 
-function ProductSearchBar({ accountGroupId, handleSelectAction, handleClearAction, addButtonVisible }) {
+function ProductSearchBar({ accountGroupId, accountGroupOptions, handleSelectAction, handleClearAction, addButtonVisible }) {
 
     const notFound = "No product found";
     const [searchText, setSearchText] = useState("");
@@ -132,7 +132,7 @@ function ProductSearchBar({ accountGroupId, handleSelectAction, handleClearActio
                     <div className="me-3 d-flex justify-content-end align-items-center">
                         <CloseButton aria-label="Hide" onClick={() => setShowProductForm(false)} />
                     </div>
-                    <ProductForm product={product} handleSave={handleSaveAndAddNewProduct} />
+                    <ProductForm product={product} accountGroupId={accountGroupId} accountGroupOptions={accountGroupOptions} handleSave={handleSaveAndAddNewProduct} />
                 </div>
             );
         }
