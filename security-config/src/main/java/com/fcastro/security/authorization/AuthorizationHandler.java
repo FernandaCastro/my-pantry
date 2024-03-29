@@ -1,6 +1,8 @@
 package com.fcastro.security.authorization;
 
 import com.fcastro.security.core.model.AccountGroupMemberDto;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.AccessDeniedException;
@@ -14,6 +16,8 @@ import java.util.stream.Collectors;
 @Component
 public class AuthorizationHandler {
 
+    Logger log = LoggerFactory.getLogger(AuthorizationHandler.class);
+
     private final RestClient authzServer;
 
     public AuthorizationHandler(RestClient authzServer) {
@@ -26,8 +30,9 @@ public class AuthorizationHandler {
                 .uri("/accountGroupMembers/{groupId}/" + email, groupId)
                 .accept(MediaType.APPLICATION_JSON)
                 .retrieve()
-                .onStatus(status -> status.value() == 404, (request, response) -> {
-                    throw new AccessDeniedException("User " + email + " is not authorized in this group.");
+                .onStatus(status ->
+                        status.value() >= 400, (request, response) -> {
+                    throw new AccessDeniedException("Request to retrieve GroupMember from AuthorizationServer failed: [" + response.getStatusCode() + " : " + response.getStatusText() + "]");
                 })
                 .body(AccountGroupMemberDto.class);
     }
@@ -39,23 +44,19 @@ public class AuthorizationHandler {
                 .accept(MediaType.APPLICATION_JSON)
                 .retrieve()
                 .onStatus(status ->
-                        status.value() == 401, (request, response) -> {
-                    throw new AccessDeniedException("Request unauthorized to retrieve authorization data.");
+                        status.value() >= 400, (request, response) -> {
+                    throw new AccessDeniedException("Request to retrieve GroupMember from AuthorizationServer failed: [" + response.getStatusCode() + " : " + response.getStatusText() + "]");
                 })
-                .onStatus(status ->
-                        status.value() == 403, (request, response) -> {
-                    throw new AccessDeniedException("Request forbidden to retrieve authorization data.");
-                })
-                .onStatus(status ->
-                        status.value() == 404, (request, response) -> {
-                    throw new AccessDeniedException("User " + email + " is not authorized in this group.");
-                })
-                .body(new ParameterizedTypeReference<>() {
+                .body(new ParameterizedTypeReference<List<AccountGroupMemberDto>>() {
                 });
     }
 
     public Set<Long> getAccountGroupList(String email) {
+        log.info("Account " + email + "requesting AccountGroups");
+        if (email == null || email.length() == 0)
+            throw new AccessDeniedException("Email is empty. Request unauthorized.");
         var groupMembers = getGroupMember(email);
+        if (groupMembers == null) return null;
         return groupMembers.stream().map(AccountGroupMemberDto::getAccountGroupId).collect(Collectors.toSet());
     }
 }

@@ -29,8 +29,7 @@ import java.util.Optional;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.hasSize;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -82,7 +81,7 @@ public class PantryControllerUnitTest {
         list.add(PantryDto.builder().id(1L).name("Base Inventory").isActive(true).type("R").build());
         list.add(PantryDto.builder().id(2L).name("Base Inventory").isActive(true).type("R").build());
 
-        given(pantryService.getAll()).willReturn(list);
+        given(pantryService.getAll(anyString())).willReturn(list);
 
         //when //then
         mockMvc.perform(MockMvcRequestBuilders.get("/pantries"))

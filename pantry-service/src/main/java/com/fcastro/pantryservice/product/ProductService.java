@@ -15,6 +15,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -49,7 +50,7 @@ public class ProductService {
     }
 
     //TODO: Pageable
-    public List<ProductDto> getAll(String searchParam) {
+    public List<ProductDto> getAllBySearchParam(String searchParam) {
         List<Product> listEntity;
 
         if (searchParam == null)
@@ -59,8 +60,9 @@ public class ProductService {
         return listEntity.stream().map(this::convertToDTO).collect(Collectors.toList());
     }
 
-    public List<ProductDto> getAll() {
-        var accountGroups = authorizationService.getAccountGroupList(SecurityContextHolder.getContext().getAuthentication().getName());
+    public List<ProductDto> getAll(String email) {
+        var accountGroups = authorizationService.getAccountGroupList(email);
+        if (accountGroups == null) return new ArrayList<ProductDto>();
         List<Product> listEntity = repository.findAll(accountGroups);
         return listEntity.stream().map(this::convertToDTO).collect(Collectors.toList());
     }

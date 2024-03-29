@@ -6,6 +6,7 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,8 +33,9 @@ public class ProductController {
     @GetMapping()
     @PreAuthorize("hasPermission('list_product')")
     public ResponseEntity<List<ProductDto>> getAll(@RequestParam(required = false) String searchParam) {
-        if (searchParam == null) return ResponseEntity.ok(service.getAll());
-        return ResponseEntity.ok(service.getAll(searchParam));
+        if (searchParam == null)
+            return ResponseEntity.ok(service.getAll(SecurityContextHolder.getContext().getAuthentication().getName()));
+        return ResponseEntity.ok(service.getAllBySearchParam(searchParam));
     }
 
     @PostMapping

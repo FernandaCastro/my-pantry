@@ -1,7 +1,12 @@
 ![diagram](readme_images/MyPantry.png)
 
 # My Pantry
-(It's still under development!)
+
+version: 0.0.3-snapshot <br />
+Plans for next version:
+
+- Wizards that create basic products and pantry with basic items
+- Add permissions and manage access control on purchase-service objects
 
 My Pantry manages pantries and automatically creates shopping lists as products are consumed from the
 inventory. <br/> <br/>
@@ -10,6 +15,10 @@ You can also share your Pantries, Shopping Lists and Products with other users, 
 The frontend is developed in Reactjs and Javascript, while backend is written in Java 17, Spring Boot and Spring
 Security. The Authentication is possible by either Google Signin (Google IDToken - having localhost as callback) or
 user/password.
+
+<b>Run it from Docker</b> by getting docker-compose.yml file from the project root folder: <br/>
+(It will pull images from my public DockerHub repository)
+```docker compose up -d```
 
 Screenshots: <br />
 <img height="400" width="200" title="Login" src="./readme_images/login.png"/>

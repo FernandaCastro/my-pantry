@@ -6,6 +6,7 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
@@ -40,7 +41,7 @@ public class PantryController {
     @PreAuthorize("hasPermission(#groupId, 'list_pantry')")
     public ResponseEntity<List<PantryDto>> getAll(@P("groupId") @RequestParam(required = false) Long groupId) {
         return groupId == null ?
-                ResponseEntity.ok(service.getAll()) :
+                ResponseEntity.ok(service.getAll(SecurityContextHolder.getContext().getAuthentication().getName())) :
                 ResponseEntity.ok(service.getAll(groupId));
     }
 
