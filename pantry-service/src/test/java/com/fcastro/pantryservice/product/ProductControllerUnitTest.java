@@ -75,7 +75,7 @@ public class ProductControllerUnitTest {
         list.add(ProductDto.builder().id(1).code("MILK").description("Integral").size("1L").build());
         list.add(ProductDto.builder().id(2).code("VOLLMILK").description("Integral").size("2L").build());
 
-        given(service.getAll("MILK")).willReturn(list);
+        given(service.getAllBySearchParam("MILK")).willReturn(list);
 
         //when //then
         mockMvc.perform(MockMvcRequestBuilders.get("/products")

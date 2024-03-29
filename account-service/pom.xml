@@ -15,6 +15,12 @@
     <dependencies>
         <dependency>
             <groupId>com.fcastro</groupId>
+            <artifactId>common-config-data</artifactId>
+            <version>${revision}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.fcastro</groupId>
             <artifactId>security-core-config</artifactId>
             <version>${revision}</version>
         </dependency>
@@ -99,7 +105,7 @@
         <dependency>
             <groupId>com.fcastro</groupId>
             <artifactId>common-config-data</artifactId>
-            <version>0.0.2-SNAPSHOT</version>
+            <version>${revision}</version>
             <scope>compile</scope>
         </dependency>
     </dependencies>

@@ -6,9 +6,9 @@ import com.fcastro.security.authorization.AuthorizationHandler;
 import com.fcastro.security.core.model.AccountGroupDto;
 import com.fcastro.security.exception.AccessControlNotDefinedException;
 import org.modelmapper.ModelMapper;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -40,8 +40,9 @@ public class PantryService {
     }
 
     //TODO: Pageable
-    public List<PantryDto> getAll() {
-        var accountGroups = authorizationService.getAccountGroupList(SecurityContextHolder.getContext().getAuthentication().getName());
+    public List<PantryDto> getAll(String email) {
+        var accountGroups = authorizationService.getAccountGroupList(email);
+        if (accountGroups == null) return new ArrayList<PantryDto>();
         var listEntity = repository.findAllByAccountGroup(accountGroups);
         return listEntity.stream().map(this::convertToDTO).collect(Collectors.toList());
     }
