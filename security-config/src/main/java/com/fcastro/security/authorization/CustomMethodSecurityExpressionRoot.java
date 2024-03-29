@@ -30,7 +30,7 @@ public class CustomMethodSecurityExpressionRoot {
     }
 
     //Check if connected user has <permission> in at least one group
-    public boolean hasPermission(String permission) {
+    public boolean hasPermissionInAnyGroup(String permission) {
 
         String email = expressionOperations.getAuthentication().getName();
         var groupMembers = authorizationService.getGroupMember(email);
@@ -46,28 +46,26 @@ public class CustomMethodSecurityExpressionRoot {
     //Check if connected user has <permission> in the <groupId>
     public boolean hasPermission(Long groupId, String permission) {
 
-        if (groupId == null) return hasPermission(permission);
+        if (groupId == null || groupId == 0) return false;
 
-        String email = expressionOperations.getAuthentication().getName();
-        var groupMember = authorizationService.getGroupMember(groupId, email);
-        if (groupMember == null || groupMember.getRole() == null) return false;
-
-        return checkPermission(groupMember.getRole().getPermissions(), permission);
-
+        return checkAccountGroupPermission(groupId, permission);
     }
 
-    //Check if connected user has <permission> in the <groupId>
+    //Check if connected user has <permission> in the group in which clazz/clazzId belongs
     public boolean hasPermission(String clazz, Long clazzId, String permission) {
 
         if (clazz == null || clazz.length() == 0 || clazzId == null || clazzId == 0) return false;
         var access = accessControlService.get(clazz, clazzId);
 
+        return checkAccountGroupPermission(access.getAccountGroupId(), permission);
+    }
+
+    private boolean checkAccountGroupPermission(Long groupId, String permission) {
         String email = expressionOperations.getAuthentication().getName();
-        var groupMember = authorizationService.getGroupMember(access.getAccountGroupId(), email);
+        var groupMember = authorizationService.getGroupMember(groupId, email);
         if (groupMember == null || groupMember.getRole() == null) return false;
 
         return checkPermission(groupMember.getRole().getPermissions(), permission);
-
     }
 
     private boolean checkPermission(List<PermissionDto> permissions, String permission) {

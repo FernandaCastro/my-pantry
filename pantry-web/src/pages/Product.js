@@ -18,7 +18,7 @@ export default function Product() {
     const [refresh, setRefresh] = useState(0);
     const { setAlert } = useContext(AlertContext);
     const [showForm, setShowForm] = useState(false);
-    const [categories, setCategories] = useState([{}]);
+    const [categories, setCategories] = useState([]);
 
     const [accountGroupOptions, setAccountGroupOptions] = useState([]);
     const [isLoading, setIsLoading] = useState(false);

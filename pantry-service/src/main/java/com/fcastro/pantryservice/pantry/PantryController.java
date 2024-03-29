@@ -37,12 +37,16 @@ public class PantryController {
                 .orElseThrow(() -> new ResourceNotFoundException("There is no Account Group associated to this Pantry."));
     }
 
+    @GetMapping("/all")
+    @PreAuthorize("hasPermissionInAnyGroup('list_pantry')")
+    public ResponseEntity<List<PantryDto>> getAll() {
+        return ResponseEntity.ok(service.getAll(SecurityContextHolder.getContext().getAuthentication().getName()));
+    }
+
     @GetMapping
     @PreAuthorize("hasPermission(#groupId, 'list_pantry')")
-    public ResponseEntity<List<PantryDto>> getAll(@P("groupId") @RequestParam(required = false) Long groupId) {
-        return groupId == null ?
-                ResponseEntity.ok(service.getAll(SecurityContextHolder.getContext().getAuthentication().getName())) :
-                ResponseEntity.ok(service.getAll(groupId));
+    public ResponseEntity<List<PantryDto>> getAll(@P("groupId") @RequestParam Long groupId) {
+        return ResponseEntity.ok(service.getAll(groupId));
     }
 
     @PostMapping
@@ -52,8 +56,8 @@ public class PantryController {
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasPermission(#pantry.getAccountGroupId(), 'edit_pantry')")
-    ResponseEntity<PantryDto> replace(@P("pantry") @Valid @RequestBody PantryDto newDto, @PathVariable Long id) {
+    @PreAuthorize("hasPermission('Pantry', #pantryId, 'edit_pantry')")
+    ResponseEntity<PantryDto> replace(@Valid @RequestBody PantryDto newDto, @P("pantryId") @PathVariable Long id) {
 
         var dto = service.get(id)
                 .map(resource -> {

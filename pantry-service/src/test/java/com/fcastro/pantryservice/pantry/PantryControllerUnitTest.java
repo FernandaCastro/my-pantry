@@ -84,7 +84,7 @@ public class PantryControllerUnitTest {
         given(pantryService.getAll(anyString())).willReturn(list);
 
         //when //then
-        mockMvc.perform(MockMvcRequestBuilders.get("/pantries"))
+        mockMvc.perform(MockMvcRequestBuilders.get("/pantries/all"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(2)));
     }

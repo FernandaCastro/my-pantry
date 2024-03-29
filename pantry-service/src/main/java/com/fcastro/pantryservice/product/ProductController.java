@@ -23,7 +23,7 @@ public class ProductController {
     }
 
     @GetMapping(path = "/{id}")
-    @PreAuthorize("hasPermission('Product', #iproductId, 'list_product')")
+    @PreAuthorize("hasPermission('Product', #productId, 'list_product')")
     public ResponseEntity<ProductDto> get(@P("productId") @PathVariable long id) {
         return service.get(id)
                 .map(ResponseEntity::ok)
@@ -31,7 +31,7 @@ public class ProductController {
     }
 
     @GetMapping()
-    @PreAuthorize("hasPermission('list_product')")
+    @PreAuthorize("hasPermissionInAnyGroup('list_product')")
     public ResponseEntity<List<ProductDto>> getAll(@RequestParam(required = false) String searchParam) {
         if (searchParam == null)
             return ResponseEntity.ok(service.getAll(SecurityContextHolder.getContext().getAuthentication().getName()));
