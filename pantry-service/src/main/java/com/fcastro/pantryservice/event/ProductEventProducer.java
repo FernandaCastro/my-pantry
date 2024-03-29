@@ -5,7 +5,6 @@ import com.fcastro.kafka.event.ProductEvent;
 import com.fcastro.kafka.event.ProductEventDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.kafka.KafkaException;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.SendResult;
 import org.springframework.stereotype.Component;
@@ -42,7 +41,7 @@ public class ProductEventProducer {
                 );
             } else {
                 LOGGER.error("Unable to send ProductEvent to {}: {}", kafkaConfigData.getProductTopic(), event.toString());
-                throw new KafkaException("Unable to send ProductEvent: " + ex.getMessage(), ex);
+                //throw new KafkaException("Unable to send ProductEvent: " + ex.getMessage(), ex);
                 //TODO: How to treat this async exception? Save to try again later? Kafka has it available?
             }
         });

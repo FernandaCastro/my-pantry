@@ -39,7 +39,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
             "or lower(p.description) like %:searchParam% ) " +
             "and p.id = ac.clazzId " +
             "and ac.clazz = 'Product' " +
-            "and ac.accountGroupId in :accountGroups " +
+            "and ac.accountGroupId = :accountGroupId " +
             "order by p.code")
-    List<Product> findAllByCodeOrDescription(String searchParam, Set<Long> accountGroups);
+    List<Product> findAllByCodeOrDescription(String searchParam, Long accountGroupId);
 }

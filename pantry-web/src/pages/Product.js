@@ -105,8 +105,8 @@ export default function Product() {
         return setShowForm(true);
     }
 
-    function handleSave(jsonProduct) {
-        fetchSaveProduct(jsonProduct);
+    async function handleSave(jsonProduct) {
+        await fetchSaveProduct(jsonProduct);
         handleClearAction();
     }
 

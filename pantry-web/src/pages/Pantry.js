@@ -20,7 +20,8 @@ export default function Pantry({ mode }) {
             id: 0,
             name: "",
             type: "",
-            isActive: true
+            isActive: true,
+            accountGroupId: 0
         });
 
     const [isLoading, setIsLoading] = useState(false);
@@ -159,7 +160,7 @@ export default function Pantry({ mode }) {
                     <PantryForm pantry={pantry} handleSave={handleSave} accountGroupOptions={accountGroupOptions} />}
             </div>
             <div>
-                <ProductSearchBar handleSelectAction={handleAddItem} addButtonVisible={true} />
+                <ProductSearchBar accountGroupId={pantry.accountGroupId} handleSelectAction={handleAddItem} addButtonVisible={true} />
             </div>
             <div>
                 {isLoading && !pantry ?

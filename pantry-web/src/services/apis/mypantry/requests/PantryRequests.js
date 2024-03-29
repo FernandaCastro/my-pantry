@@ -51,10 +51,10 @@ export async function deletePantryItem(pantryId, productId) {
     return FetchPantry(`pantries/${pantryId}/items/${productId}`, "DELETE");
 }
 
-export async function getFilteredProductList(text) {
+export async function getFilteredProductList(groupId, text) {
     // const newText = text.replace(/%/g, "%25");
     // console.log(newText);
-    return FetchPantry(`products?searchParam=${text}`, "GET");
+    return FetchPantry(`products?groupId=${groupId}&searchParam=${text}`, "GET");
 }
 
 export async function getProductList() {

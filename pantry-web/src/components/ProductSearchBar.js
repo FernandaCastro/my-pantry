@@ -13,7 +13,7 @@ import ProductForm from './ProductForm.js';
 import { camelCase } from '../services/Utils.js';
 import Collapse from 'react-bootstrap/Collapse';
 
-function ProductSearchBar({ handleSelectAction, handleClearAction, addButtonVisible }) {
+function ProductSearchBar({ accountGroupId, handleSelectAction, handleClearAction, addButtonVisible }) {
 
     const notFound = "No product found";
     const [searchText, setSearchText] = useState("");
@@ -47,7 +47,7 @@ function ProductSearchBar({ handleSelectAction, handleClearAction, addButtonVisi
 
     async function fetchProduct(value) {
         try {
-            const res = await getFilteredProductList(value);
+            const res = await getFilteredProductList(accountGroupId, value);
             setNotFoundMessage(res.length === 0 ? notFound : "");
             setResults(res);
         } catch (error) {

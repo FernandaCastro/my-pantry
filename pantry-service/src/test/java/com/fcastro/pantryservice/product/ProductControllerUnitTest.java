@@ -75,10 +75,11 @@ public class ProductControllerUnitTest {
         list.add(ProductDto.builder().id(1).code("MILK").description("Integral").size("1L").build());
         list.add(ProductDto.builder().id(2).code("VOLLMILK").description("Integral").size("2L").build());
 
-        given(service.getAllBySearchParam("MILK")).willReturn(list);
+        given(service.getAllBySearchParam(1L, "MILK")).willReturn(list);
 
         //when //then
         mockMvc.perform(MockMvcRequestBuilders.get("/products")
+                        .param("groupId", "1")
                         .param("searchParam", "MILK")
                 )
                 .andExpect(status().isOk())

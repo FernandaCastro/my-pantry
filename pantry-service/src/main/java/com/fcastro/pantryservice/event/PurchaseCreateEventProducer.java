@@ -5,7 +5,6 @@ import com.fcastro.kafka.event.PurchaseCreateEvent;
 import com.fcastro.kafka.event.PurchaseEventDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.kafka.KafkaException;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.SendResult;
 import org.springframework.stereotype.Component;
@@ -42,7 +41,7 @@ public class PurchaseCreateEventProducer {
                 );
             } else {
                 LOGGER.error("Unable to send PurchaseCreateEvent to {}: {}", kafkaConfigData.getPurchaseCreateTopic(), event.toString());
-                throw new KafkaException("Unable to send PurchaseCreateEvent: " + ex.getMessage(), ex);
+                //throw new KafkaException("Unable to send PurchaseCreateEvent: " + ex.getMessage(), ex);
                 //TODO: How to treat this async exception? Save to try again later? Kafka has it available?
             }
         });

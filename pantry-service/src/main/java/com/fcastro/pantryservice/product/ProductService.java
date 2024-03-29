@@ -12,7 +12,6 @@ import com.fcastro.security.accesscontrol.AccessControlService;
 import com.fcastro.security.authorization.AuthorizationHandler;
 import com.fcastro.security.exception.AccessControlNotDefinedException;
 import org.modelmapper.ModelMapper;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -50,13 +49,14 @@ public class ProductService {
     }
 
     //TODO: Pageable
-    public List<ProductDto> getAllBySearchParam(String searchParam) {
-        List<Product> listEntity;
+    public List<ProductDto> getAllBySearchParam(Long groupId, String searchParam) {
+        if (groupId == null)
+            throw new RequestParamExpectedException("Expecting to receive parameter groupId");
 
         if (searchParam == null)
             throw new RequestParamExpectedException("Expecting to receive SearchParam: code or description value");
-        var accountGroups = authorizationService.getAccountGroupList(SecurityContextHolder.getContext().getAuthentication().getName());
-        listEntity = repository.findAllByCodeOrDescription(searchParam.toLowerCase(), accountGroups);
+
+        var listEntity = repository.findAllByCodeOrDescription(searchParam.toLowerCase(), groupId);
         return listEntity.stream().map(this::convertToDTO).collect(Collectors.toList());
     }
 
