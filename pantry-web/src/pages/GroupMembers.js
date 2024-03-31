@@ -26,7 +26,7 @@ function GroupMembers() {
     const [associatedPantries, setAssociatedPantries] = useState([]);
 
     const [groupName, setGroupName] = useState("");
-    const [selectedGroup, setSelectedGroup] = useState();
+    const [selectedGroup, setSelectedGroup] = useState({id: 0});
     const [editGroup, setEditGroup] = useState(0);
 
     const [showNewGroup, setShowNewGroup] = useState(false);
@@ -39,8 +39,8 @@ function GroupMembers() {
     }, [refresh])
 
     useEffect(() => {
-        if (selectedGroup) fetchMembers();
-    }, [selectedGroup])
+        if (selectedGroup.id > 0) fetchMembers();
+    }, [selectedGroup.id])
 
     useEffect(() => {
         if (refreshMembers) fetchMembers();
@@ -298,7 +298,7 @@ function GroupMembers() {
                     {renderGroups()}
                 </div>
                 <div>
-                    <AccountSearchBar handleSelectAction={handleAddMember} />
+                    <AccountSearchBar key={selectedGroup.id} handleSelectAction={handleAddMember} disabled={selectedGroup.id === 0}/>
                 </div>
                 <div>
                     <h6 className='title'>Members</h6>

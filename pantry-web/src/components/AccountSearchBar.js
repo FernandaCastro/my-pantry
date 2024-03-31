@@ -11,8 +11,9 @@ import CloseButton from 'react-bootstrap/CloseButton';
 import Collapse from 'react-bootstrap/Collapse';
 import { getFilteredAccountList, createAccount, } from '../services/apis/mypantry/requests/AccountRequests.js';
 import RoleSelect from './RoleSelect';
+import AccountForm from './AccountForm';
 
-function AccountSearchBar({ handleSelectAction, handleClearAction }) {
+function AccountSearchBar({ handleSelectAction, handleClearAction, disabled }) {
 
     const notFound = "Account not found";
     const [searchText, setSearchText] = useState("");
@@ -61,16 +62,16 @@ function AccountSearchBar({ handleSelectAction, handleClearAction }) {
         return (
             <Stack direction="horizontal" gap={2} className="w-100">
                 <div className="w-75 pe-0">
-                    <Form.Control size="sm" type="text" placeholder='Search by e-mail or name' value={searchText} onChange={(e) => setSearchText(e.target.value)} />
+                    <Form.Control size="sm" type="text" placeholder='Search by e-mail or name' value={searchText} onChange={(e) => setSearchText(e.target.value)} disabled={disabled}/>
                 </div>
                 <div>
-                    <Button className="w-0 p-0" variant="link" onClick={handleSearch} title='Search' disabled={!searchText && searchText.length > 3}><BsSearch className='icon' /></Button>
+                    <Button className="w-0 p-0" variant="link" onClick={handleSearch} title='Search' disabled={!searchText && searchText.length < 3}><BsSearch className='icon' /></Button>
                 </div>
                 <div>
-                    <Button className="w-0 p-0" type="reset" variant="link" onClick={handleClear} title='Clear search text'><BsEraser className='icon' /></Button>
+                    <Button className="w-0 p-0" type="reset" variant="link" onClick={handleClear} title='Clear search text' disabled={disabled}><BsEraser className='icon' /></Button>
                 </div>
                 <div>
-                    <Button className="w-0 p-0" variant="link" onClick={handleNewAccount} title='Create new account' disabled={results && results.length > 0}><BsPlusLg className='icon' /></Button>
+                    <Button className="w-0 p-0" variant="link" onClick={() => setShowAccountForm(true)} title='Pre-register an account.' disabled={disabled}><BsPlusLg className='icon' /></Button>
                 </div>
             </Stack>
         );
@@ -87,10 +88,10 @@ function AccountSearchBar({ handleSelectAction, handleClearAction }) {
                             {/* <Form.Check size="sm" className="mb-1 title"
                                 onClick={e => item = { ...item, groupRole: (e.target.checked ? "ADMIN" : "USER") }}
                                 label="as Admin" /> */}
-                            <RoleSelect setSelectedRole={setSelectedRole}/>    
+                            <RoleSelect setSelectedRole={setSelectedRole} />
                         </td>
                         <td className="w-0 p-0 colorfy">
-                            <Button onClick={() => handleSelect(item)} variant="link" title='Select this account'><BsCheck2All className='icon' /></Button>
+                            <Button onClick={() => handleSelect(item)} variant="link" title='Add Member to the group'><BsCheck2All className='icon' /></Button>
                         </td>
                     </tr>
 
@@ -107,26 +108,11 @@ function AccountSearchBar({ handleSelectAction, handleClearAction }) {
         })
     }
 
-    async function fetchSaveAccount(body) {
-        try {
-            const res = await createAccount(body);
-            setAccount(res);
-            return res;
-        } catch (error) {
-            showAlert(VariantType.DANGER, error.message);
-        }
-    }
 
-    function handleNewAccount() {
-        setAccount({ id: 0, code: searchText });
-        setShowAccountForm(true);
-    }
-
-    async function handleSaveAndAddNewAccount(jsonAccount) {
-        const res = await fetchSaveAccount(jsonAccount);
-        handleSelect(res);
-        showAlert(VariantType.SUCCESS, "Account saved and added to the list successfully ");
+    async function handleSaveSuccess(newAccount) {
+        clearSearch();
         setShowAccountForm(false);
+        setResults([...results, newAccount]);
     }
 
     function renderAccountForm() {
@@ -136,7 +122,7 @@ function AccountSearchBar({ handleSelectAction, handleClearAction }) {
                     <div className="me-3 d-flex justify-content-end align-items-center">
                         <CloseButton aria-label="Hide" onClick={() => setShowAccountForm(false)} />
                     </div>
-                    {/* <PAccountForm product={account} handleSave={handleSaveAndAddNewAccount} /> */}
+                    <AccountForm handleSaveSuccess={handleSaveSuccess} />
                 </div>
             );
         }

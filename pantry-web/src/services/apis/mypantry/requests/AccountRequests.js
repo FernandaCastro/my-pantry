@@ -48,7 +48,7 @@ export async function getFilteredAccountList(text) {
 }
 
 export async function createAccount(account) {
-    return FetchAccount(`accounts`, "POST");
+    return FetchAccount(`accounts`, "POST", account);
 }
 
 export async function createAccountGroup(group) {

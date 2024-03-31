@@ -18,11 +18,12 @@ public class Account {
 
     private String externalProvider;
 
+    @Column(nullable = false, length = 20)
     private String name;
 
     private String password;
 
-    @Column(unique = true)
+    @Column(unique = true, nullable = false, length = 50)
     private String email;
 
     private String pictureUrl;
