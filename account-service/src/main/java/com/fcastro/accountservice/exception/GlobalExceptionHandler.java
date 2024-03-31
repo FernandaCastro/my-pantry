@@ -1,6 +1,7 @@
 package com.fcastro.accountservice.exception;
 
 import com.fcastro.app.exception.ApplicationError;
+import com.fcastro.app.exception.RequestParamExpectedException;
 import com.fcastro.app.exception.ResourceNotFoundException;
 import com.fcastro.security.core.exception.TokenVerifierException;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -58,6 +59,7 @@ public class GlobalExceptionHandler {
         exceptionTypes.put(PasswordAnswerNotMatchException.class, "application-error");
         exceptionTypes.put(AtLeastOneMemberMustExistException.class, "application-error");
         exceptionTypes.put(DeletionNotAllowedException.class, "application-error");
+        exceptionTypes.put(RequestParamExpectedException.class, "application-error");
     }
 
     @ExceptionHandler(value = {
@@ -67,7 +69,8 @@ public class GlobalExceptionHandler {
             AccountAlreadyExistsException.class,
             PasswordAnswerNotMatchException.class,
             AtLeastOneMemberMustExistException.class,
-            DeletionNotAllowedException.class})
+            DeletionNotAllowedException.class,
+            RequestParamExpectedException.class})
     public ResponseEntity<?> badRequest(final Exception ex, final HttpServletRequest request) {
 
         final var error = ApplicationError.builder()

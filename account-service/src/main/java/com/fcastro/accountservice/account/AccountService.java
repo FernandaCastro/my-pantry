@@ -218,9 +218,14 @@ public class AccountService {
      * Handles a pre registration of a new account, made by another user => secured by JWT
      **/
     public AccountDto preCreateAccount(AccountDto newAccount) {
+        if (newAccount.getEmail() == null || newAccount.getEmail().isBlank() ||
+                newAccount.getName() == null || newAccount.getName().isBlank())
+            throw new RequestParamExpectedException("Name and Email are required.");
+
         Account existingAccount = accountRepository.findByEmail(newAccount.getEmail()).orElse(null);
         if (existingAccount == null) {
             var account = Account.builder()
+                    .name(newAccount.getName())
                     .email(newAccount.getEmail())
                     .build();
 
