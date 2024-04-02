@@ -16,6 +16,6 @@ public class AccessControlDto {
     @NotBlank(message = "Class Id is mandatory")
     private Long clazzId;
 
-    @NotBlank(message = "Account Group Id is mandatory")
-    private Long accountGroupId;
+    @NotBlank(message = "Account Group is mandatory")
+    private AccountGroupDto accountGroup;
 }

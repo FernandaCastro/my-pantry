@@ -1,6 +1,5 @@
 package com.fcastro.security.authorization;
 
-import com.fcastro.security.accesscontrol.AccessControlService;
 import org.aopalliance.intercept.MethodInvocation;
 import org.springframework.expression.EvaluationContext;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
@@ -15,18 +14,16 @@ import java.util.function.Supplier;
 public class CustomMethodSecurityExpressionHandler extends DefaultMethodSecurityExpressionHandler {
 
     private final AuthorizationHandler authorizationService;
-    private final AccessControlService accessControlService;
 
-    CustomMethodSecurityExpressionHandler(AuthorizationHandler authorizationService, AccessControlService accessControlService) {
+    CustomMethodSecurityExpressionHandler(AuthorizationHandler authorizationService) {
         this.authorizationService = authorizationService;
-        this.accessControlService = accessControlService;
     }
 
     @Override
     public EvaluationContext createEvaluationContext(Supplier<Authentication> authentication, MethodInvocation mi) {
         StandardEvaluationContext context = (StandardEvaluationContext) super.createEvaluationContext(authentication, mi);
         MethodSecurityExpressionOperations delegate = (MethodSecurityExpressionOperations) context.getRootObject().getValue();
-        CustomMethodSecurityExpressionRoot root = new CustomMethodSecurityExpressionRoot(authorizationService, accessControlService);
+        CustomMethodSecurityExpressionRoot root = new CustomMethodSecurityExpressionRoot(authorizationService);
         root.setExpressionOperations(delegate);
         context.setRootObject(root);
         return context;

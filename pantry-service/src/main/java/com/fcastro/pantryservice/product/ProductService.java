@@ -1,5 +1,6 @@
 package com.fcastro.pantryservice.product;
 
+import com.fcastro.accountservice.accesscontrol.AccessControlService;
 import com.fcastro.app.exception.ResourceNotFoundException;
 import com.fcastro.app.model.Action;
 import com.fcastro.app.model.ProductDto;
@@ -8,7 +9,6 @@ import com.fcastro.pantryservice.event.ProductEventProducer;
 import com.fcastro.pantryservice.exception.DatabaseConstraintException;
 import com.fcastro.pantryservice.exception.RequestParamExpectedException;
 import com.fcastro.pantryservice.pantryitem.PantryItemRepository;
-import com.fcastro.security.accesscontrol.AccessControlService;
 import com.fcastro.security.authorization.AuthorizationHandler;
 import com.fcastro.security.exception.AccessControlNotDefinedException;
 import org.modelmapper.ModelMapper;
@@ -61,7 +61,7 @@ public class ProductService {
     }
 
     public List<ProductDto> getAll(String email) {
-        var accountGroups = authorizationService.getAccountGroupList(email);
+        var accountGroups = authorizationService.getAccountGroupIdList(email);
         if (accountGroups == null) return new ArrayList<ProductDto>();
         List<Product> listEntity = repository.findAll(accountGroups);
         return listEntity.stream().map(this::convertToDTO).collect(Collectors.toList());

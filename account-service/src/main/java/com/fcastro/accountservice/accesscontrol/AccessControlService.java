@@ -1,7 +1,9 @@
-package com.fcastro.security.accesscontrol;
+package com.fcastro.accountservice.accesscontrol;
 
+import com.fcastro.accountservice.accountgroup.AccountGroup;
+import com.fcastro.accountservice.exception.AccessControlNotDefinedException;
 import com.fcastro.security.core.model.AccessControlDto;
-import com.fcastro.security.exception.AccessControlNotDefinedException;
+import com.fcastro.security.core.model.AccountGroupDto;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -26,17 +28,13 @@ public class AccessControlService {
                 .orElseThrow(() -> new AccessControlNotDefinedException("No access control defined for " + clazz + "[" + clazzId + "]"));
     }
 
-    public List<AccessControlDto> get(Long accountGroupId) {
+    public List<AccessControlDto> getAll(Long accountGroupId) {
         var list = accessControlRepository.findAllByAccountGroupId(accountGroupId);
         return list.stream().map(this::convertToDto).collect(Collectors.toList());
     }
 
-    public void save(String clazz, Long clazzId, Long accountGroupId) {
-        var accessControl = AccessControl.builder()
-                .clazz(clazz)
-                .clazzId(clazzId)
-                .accountGroupId(accountGroupId)
-                .build();
+    public void save(AccessControlDto accessControlDto) {
+        var accessControl = convertToEntity(accessControlDto);
         accessControlRepository.save(accessControl);
     }
 
@@ -49,7 +47,22 @@ public class AccessControlService {
         return AccessControlDto.builder()
                 .clazz(entity.getClazz())
                 .clazzId(entity.getClazzId())
-                .accountGroupId(entity.getAccountGroupId())
+                .accountGroup(AccountGroupDto.builder()
+                        .id(entity.getAccountGroup()
+                                .getId()).name(entity.getAccountGroup().getName())
+                        .build())
+                .build();
+    }
+
+
+    private AccessControl convertToEntity(AccessControlDto dto) {
+        if (dto == null) return null;
+        return AccessControl.builder()
+                .clazz(dto.getClazz())
+                .clazzId(dto.getClazzId())
+                .accountGroup(AccountGroup.builder()
+                        .id(dto.getAccountGroup().getId())
+                        .build())
                 .build();
     }
 }

@@ -1,6 +1,5 @@
 package com.fcastro.security.authorization;
 
-import com.fcastro.security.accesscontrol.AccessControlService;
 import com.fcastro.security.core.model.AccountGroupMemberDto;
 import com.fcastro.security.core.model.PermissionDto;
 import org.springframework.security.access.expression.method.MethodSecurityExpressionOperations;
@@ -11,11 +10,9 @@ public class CustomMethodSecurityExpressionRoot {
 
     private MethodSecurityExpressionOperations expressionOperations;
     private final AuthorizationHandler authorizationService;
-    private final AccessControlService accessControlService;
 
-    public CustomMethodSecurityExpressionRoot(AuthorizationHandler authorizationService, AccessControlService accessControlService) {
+    public CustomMethodSecurityExpressionRoot(AuthorizationHandler authorizationService) {
         this.authorizationService = authorizationService;
-        this.accessControlService = accessControlService;
     }
 
     public void setExpressionOperations(MethodSecurityExpressionOperations expressionOperations) {
@@ -33,7 +30,7 @@ public class CustomMethodSecurityExpressionRoot {
     public boolean hasPermissionInAnyGroup(String permission) {
 
         String email = expressionOperations.getAuthentication().getName();
-        var groupMembers = authorizationService.getGroupMember(email);
+        var groupMembers = authorizationService.getAccountGroupMemberList(email);
         if (groupMembers == null || groupMembers.size() == 0) return false;
 
         for (AccountGroupMemberDto gm : groupMembers) {
@@ -55,14 +52,14 @@ public class CustomMethodSecurityExpressionRoot {
     public boolean hasPermission(String clazz, Long clazzId, String permission) {
 
         if (clazz == null || clazz.length() == 0 || clazzId == null || clazzId == 0) return false;
-        var access = accessControlService.get(clazz, clazzId);
+        var access = authorizationService.getAccessControl(clazz, clazzId);
 
-        return checkAccountGroupPermission(access.getAccountGroupId(), permission);
+        return checkAccountGroupPermission(access.getAccountGroup().getId(), permission);
     }
 
     private boolean checkAccountGroupPermission(Long groupId, String permission) {
         String email = expressionOperations.getAuthentication().getName();
-        var groupMember = authorizationService.getGroupMember(groupId, email);
+        var groupMember = authorizationService.getAccountGroupMemberList(groupId, email);
         if (groupMember == null || groupMember.getRole() == null) return false;
 
         return checkPermission(groupMember.getRole().getPermissions(), permission);

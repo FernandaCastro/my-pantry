@@ -1,5 +1,7 @@
 package com.fcastro.security.authorization;
 
+import com.fcastro.security.core.model.AccessControlDto;
+import com.fcastro.security.core.model.AccountGroupDto;
 import com.fcastro.security.core.model.AccountGroupMemberDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,7 +26,7 @@ public class AuthorizationHandler {
         this.authzServer = authzServer;
     }
 
-    public AccountGroupMemberDto getGroupMember(Long groupId, String email) {
+    public AccountGroupMemberDto getAccountGroupMemberList(Long groupId, String email) {
 
         return authzServer.get()
                 .uri("/accountGroupMembers/{groupId}/" + email, groupId)
@@ -37,7 +39,7 @@ public class AuthorizationHandler {
                 .body(AccountGroupMemberDto.class);
     }
 
-    public List<AccountGroupMemberDto> getGroupMember(String email) {
+    public List<AccountGroupMemberDto> getAccountGroupMemberList(String email) {
 
         return authzServer.get()
                 .uri("/accountGroupMembers?email=" + email)
@@ -51,12 +53,54 @@ public class AuthorizationHandler {
                 });
     }
 
-    public Set<Long> getAccountGroupList(String email) {
-        log.info("Account " + email + "requesting AccountGroups");
+    public Set<Long> getAccountGroupIdList(String email) {
         if (email == null || email.length() == 0)
             throw new AccessDeniedException("Email is empty. Request unauthorized.");
-        var groupMembers = getGroupMember(email);
+        var groupMembers = getAccountGroupMemberList(email);
         if (groupMembers == null) return null;
         return groupMembers.stream().map(AccountGroupMemberDto::getAccountGroupId).collect(Collectors.toSet());
+    }
+
+    public AccessControlDto getAccessControl(String clazz, Long clazzId) {
+        return authzServer.get()
+                .uri("/accessControl?clazz={clazz}&clazzId={clazzId}", clazz, clazzId)
+                .accept(MediaType.APPLICATION_JSON)
+                .retrieve()
+                .onStatus(status ->
+                        status.value() >= 400, (request, response) -> {
+                    throw new AccessDeniedException("Request to retrieve AccessControl from AuthorizationServer failed: [" + response.getStatusCode() + " : " + response.getStatusText() + "]");
+                })
+                .body(AccessControlDto.class);
+    }
+
+    public void saveAccessControl(String clazz, Long clazzId, Long accountGroupId) {
+        var body = AccessControlDto.builder()
+                .clazz(clazz)
+                .clazzId(clazzId)
+                .accountGroup(AccountGroupDto.builder().id(accountGroupId).build())
+                .build();
+
+        authzServer.post()
+                .uri("/accessControl")
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(body)
+                .retrieve()
+                .onStatus(status ->
+                        status.value() >= 400, (request, response) -> {
+                    throw new AccessDeniedException("Request to save AccessControl from AuthorizationServer failed: [" + response.getStatusCode() + " : " + response.getStatusText() + "]");
+                })
+                .toBodilessEntity();
+    }
+
+    public void deleteAccessControl(String clazz, Long clazzId) {
+
+        authzServer.delete()
+                .uri("/accessControl?clazz={clazz}&clazzId={clazzId}\", clazz, clazzId")
+                .retrieve()
+                .onStatus(status ->
+                        status.value() >= 400, (request, response) -> {
+                    throw new AccessDeniedException("Request to delete AccessControl from AuthorizationServer failed: [" + response.getStatusCode() + " : " + response.getStatusText() + "]");
+                })
+                .toBodilessEntity();
     }
 }

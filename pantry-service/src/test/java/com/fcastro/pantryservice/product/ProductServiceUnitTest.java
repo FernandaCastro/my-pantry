@@ -1,11 +1,11 @@
 package com.fcastro.pantryservice.product;
 
+import com.fcastro.accountservice.accesscontrol.AccessControlService;
 import com.fcastro.app.exception.ResourceNotFoundException;
 import com.fcastro.app.model.ProductDto;
 import com.fcastro.pantryservice.event.ProductEventProducer;
 import com.fcastro.pantryservice.exception.DatabaseConstraintException;
 import com.fcastro.pantryservice.pantryitem.PantryItemRepository;
-import com.fcastro.security.accesscontrol.AccessControlService;
 import com.fcastro.security.authorization.AuthorizationHandler;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;

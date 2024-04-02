@@ -1,7 +1,7 @@
 package com.fcastro.pantryservice.pantry;
 
+import com.fcastro.accountservice.accesscontrol.AccessControlService;
 import com.fcastro.app.exception.ResourceNotFoundException;
-import com.fcastro.security.accesscontrol.AccessControlService;
 import com.fcastro.security.authorization.AuthorizationHandler;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;

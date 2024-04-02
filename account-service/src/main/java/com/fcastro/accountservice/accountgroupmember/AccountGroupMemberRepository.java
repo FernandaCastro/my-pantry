@@ -38,4 +38,55 @@ public interface AccountGroupMemberRepository extends JpaRepository<AccountGroup
     List<AccountGroupMember> findAllByAccountGroupId(long groupId);
 
     List<AccountGroupMember> findAllByRoleIdAndAccountGroupId(long roleId, long groupId);
+
+    @Query("select distinct gm.* " +
+            "from accountGroupMember gm, " +
+            "account ac, " +
+            "accessControl acc, " +
+            "role role, " +
+            "rolePermission rp, " +
+            "permission per " +
+            "where ac.id = gm.accountId " +
+            "and acc.accountGroupId = gm.accountGroupId " +
+            "and role.id = gm.roleId " +
+            "and rp.roleId = role.id " +
+            "and per.id = rp.permissionId " +
+            "and ac.email = :email " +
+            "and per.name = :permission")
+    List<AccountGroupMember> hasPermissionInAnyGroup(String email, String permission);
+
+    @Query("select distinct gm.* " +
+            "from accountGroupMember gm, " +
+            "account ac, " +
+            "accessControl acc, " +
+            "role role, " +
+            "rolePermission rp, " +
+            "permission per " +
+            "where ac.id = gm.accountId " +
+            "and acc.accountGroupId = gm.accountGroupId " +
+            "and role.id = gm.roleId " +
+            "and rp.roleId = role.id " +
+            "and per.id = rp.permissionId " +
+            "and ac.email = :email " +
+            "and per.name = :permission " +
+            "and gm.accountGroupId = :accountGroupId")
+    List<AccountGroupMember> hasPermissionInGroup(String email, String permission, Long accountGroupId);
+
+    @Query("select distinct gm.* " +
+            "from accountGroupMember gm, " +
+            "account ac, " +
+            "accessControl acc, " +
+            "role role, " +
+            "rolePermission rp, " +
+            "permission per " +
+            "where ac.id = gm.accountId " +
+            "and acc.accountGroupId = gm.accountGroupId " +
+            "and role.id = gm.roleId " +
+            "and rp.roleId = role.id " +
+            "and per.id = rp.permissionId " +
+            "and ac.email = :email " +
+            "and per.name = :permission " +
+            "and acc.clazz = clazz " +
+            "and acc.clazzId = clazzId")
+    List<AccountGroupMember> hasPermissionInObject(String email, String permission, String clazz, String clazzId);
 }

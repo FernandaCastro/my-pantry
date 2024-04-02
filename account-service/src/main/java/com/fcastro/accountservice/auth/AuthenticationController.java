@@ -1,5 +1,9 @@
-package com.fcastro.accountservice.account;
+package com.fcastro.accountservice.auth;
 
+import com.fcastro.accountservice.account.AccountService;
+import com.fcastro.accountservice.account.LogintDto;
+import com.fcastro.accountservice.account.NewAccountDto;
+import com.fcastro.accountservice.account.ResetPasswordDto;
 import com.fcastro.app.exception.ResourceNotFoundException;
 import com.fcastro.security.core.handler.UserDetailsImpl;
 import com.fcastro.security.core.model.AccountDto;
@@ -20,12 +24,12 @@ import java.security.Principal;
 
 @RestController
 @RequestMapping("auth")
-public class AuthController {
+public class AuthenticationController {
 
     private final AccountService service;
     private final AuthenticationManager authenticationManager;
 
-    public AuthController(AccountService userService, AuthenticationManager authenticationManager) {
+    public AuthenticationController(AccountService userService, AuthenticationManager authenticationManager) {
         this.service = userService;
         this.authenticationManager = authenticationManager;
     }

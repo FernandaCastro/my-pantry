@@ -1,5 +1,6 @@
-package com.fcastro.security.accesscontrol;
+package com.fcastro.accountservice.accesscontrol;
 
+import com.fcastro.accountservice.accountgroup.AccountGroup;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -21,6 +22,7 @@ public class AccessControl {
     @Column(nullable = false)
     private Long clazzId;
 
-    @Column(nullable = false)
-    private Long accountGroupId;
+    @OneToOne
+    @JoinColumn(name = "account_group_id", nullable = false)
+    private AccountGroup accountGroup;
 }

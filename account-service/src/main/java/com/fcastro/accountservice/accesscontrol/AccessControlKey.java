@@ -1,4 +1,4 @@
-package com.fcastro.security.accesscontrol;
+package com.fcastro.accountservice.accesscontrol;
 
 import jakarta.persistence.Column;
 import lombok.*;

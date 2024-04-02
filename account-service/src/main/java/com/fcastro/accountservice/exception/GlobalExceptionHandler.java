@@ -60,6 +60,7 @@ public class GlobalExceptionHandler {
         exceptionTypes.put(AtLeastOneMemberMustExistException.class, "application-error");
         exceptionTypes.put(DeletionNotAllowedException.class, "application-error");
         exceptionTypes.put(RequestParamExpectedException.class, "application-error");
+        exceptionTypes.put(AccessControlNotDefinedException.class, "application-error");
     }
 
     @ExceptionHandler(value = {
@@ -70,7 +71,8 @@ public class GlobalExceptionHandler {
             PasswordAnswerNotMatchException.class,
             AtLeastOneMemberMustExistException.class,
             DeletionNotAllowedException.class,
-            RequestParamExpectedException.class})
+            RequestParamExpectedException.class,
+            AccessControlNotDefinedException.class})
     public ResponseEntity<?> badRequest(final Exception ex, final HttpServletRequest request) {
 
         final var error = ApplicationError.builder()

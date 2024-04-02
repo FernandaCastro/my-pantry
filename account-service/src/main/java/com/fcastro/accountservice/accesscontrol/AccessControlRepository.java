@@ -1,4 +1,4 @@
-package com.fcastro.security.accesscontrol;
+package com.fcastro.accountservice.accesscontrol;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
