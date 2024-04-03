@@ -11,37 +11,24 @@ import java.util.Set;
 @Repository
 public interface PantryRepository extends JpaRepository<Pantry, Long> {
 
-    @Query("select new com.fcastro.pantryservice.pantry.Pantry(p.id, p.name, p.type, p.isActive, ac.accountGroupId) as account_group_id from pantry p, accessControl ac " +
-            "where p.id = :id " +
-            "and p.id = ac.clazzId " +
-            "and ac.clazz = 'Pantry' " +
-            "and ac.accountGroupId in :accountGroups ")
-    Optional<Pantry> findById(long id, Set<Long> accountGroups);
 
-    @Query("select new com.fcastro.pantryservice.pantry.Pantry(p.id, p.name, p.type, p.isActive, ac.accountGroupId) as account_group_id from pantry p, accessControl ac " +
-            "where p.id = :id " +
-            "and p.id = ac.clazzId " +
-            "and ac.clazz = 'Pantry' ")
-    Optional<Pantry> findById(long id);
+//    @Query("select new com.fcastro.pantryservice.pantry.Pantry(p.id, p.name, p.type, p.isActive, ac.accountGroupId) as account_group_id from pantry p, accessControl ac " +
+//            "where p.id = :id " +
+//            "and p.id = ac.clazzId " +
+//            "and ac.clazz = 'Pantry' ")
+//    Optional<Pantry> findById(long id);
+//
+//
+//    @Query("select new com.fcastro.pantryservice.pantry.Pantry(p.id, p.name, p.type, p.isActive, ac.accountGroupId) as account_group_id from pantry p, accessControl ac " +
+//            "where p.name = :name " +
+//            "and p.id = ac.clazzId " +
+//            "and ac.clazz = 'Pantry' ")
+//    Optional<Pantry> findByName(String name);
 
-    @Query("select new com.fcastro.pantryservice.pantry.Pantry(p.id, p.name, p.type, p.isActive, ac.accountGroupId) as account_group_id from pantry p, accessControl ac " +
-            "where p.name = :name " +
-            "and p.id = ac.clazzId " +
-            "and ac.clazz = 'Pantry' " +
-            "and ac.accountGroupId in :accountGroups ")
-    Optional<Pantry> findByName(String name, Set<Long> accountGroups);
-
-    @Query("select new com.fcastro.pantryservice.pantry.Pantry(p.id, p.name, p.type, p.isActive, ac.accountGroupId) as account_group_id from pantry p, accessControl ac " +
-            "where p.name = :name " +
-            "and p.id = ac.clazzId " +
-            "and ac.clazz = 'Pantry' ")
     Optional<Pantry> findByName(String name);
 
-    @Query("select new com.fcastro.pantryservice.pantry.Pantry(p.id, p.name, p.type, p.isActive, ac.accountGroupId) as account_group_id " +
-            "from pantry p, accessControl ac " +
-            "where p.id = ac.clazzId " +
-            "and ac.clazz = 'Pantry' " +
-            "and ac.accountGroupId in :accountGroups " +
-            "order by p.name")
-    List<Pantry> findAllByAccountGroup(Set<Long> accountGroups);
+    ///
+    @Query("select p from pantry p where p.id in :pantryIds")
+    List<Pantry> findAllByIds(Set<Long> pantryIds);
+
 }

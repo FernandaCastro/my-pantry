@@ -21,7 +21,7 @@ public class PantryItemController {
     }
 
     @GetMapping(path = "/items/{productId}")
-    @PreAuthorize("hasPermission('Pantry', #pantryId, 'list_pantry_item')")
+    @PreAuthorize("hasPermissionInObject('Pantry', #pantryId, 'list_pantry_item')")
     public ResponseEntity<PantryItemDto> get(@P("pantryId") @PathVariable long pantryId, @PathVariable long productId) {
         return service.get(pantryId, productId)
                 .map(ResponseEntity::ok)
@@ -29,19 +29,19 @@ public class PantryItemController {
     }
 
     @GetMapping("/items")
-    @PreAuthorize("hasPermission('Pantry', #pantryId, 'list_pantry_item')")
+    @PreAuthorize("hasPermissionInObject('Pantry', #pantryId, 'list_pantry_item')")
     public ResponseEntity<List<PantryItemDto>> getAll(@P("pantryId") @PathVariable long pantryId) {
         return ResponseEntity.ok(service.getAll(pantryId));
     }
 
     @GetMapping("/items/consume")
-    @PreAuthorize("hasPermission('Pantry', #pantryId, 'consume_pantry_item')")
+    @PreAuthorize("hasPermissionInObject('Pantry', #pantryId, 'consume_pantry_item')")
     public ResponseEntity<List<PantryItemDto>> getAllConsume(@P("pantryId") @PathVariable long pantryId) {
         return ResponseEntity.ok(service.getAllConsume(pantryId));
     }
 
     @PostMapping("/items")
-    @PreAuthorize("hasPermission('Pantry', #pantryId, 'add_pantry_item')")
+    @PreAuthorize("hasPermissionInObject('Pantry', #pantryId, 'add_pantry_item')")
     public ResponseEntity<PantryItemDto> create(@P("pantryId") @PathVariable long pantryId, @RequestBody PantryItemDto newDto) {
         if (service.get(newDto.getPantryId(), newDto.getProductId()).isPresent())
             throw new DatabaseConstraintException("This item is already in the pantry. It shouldn't be added again.");
@@ -50,7 +50,7 @@ public class PantryItemController {
     }
 
     @PutMapping("/items/{productId}")
-    @PreAuthorize("hasPermission('Pantry', #pantryId, 'edit_pantry_item')")
+    @PreAuthorize("hasPermissionInObject('Pantry', #pantryId, 'edit_pantry_item')")
     ResponseEntity<PantryItemDto> replace(@RequestBody PantryItemDto newDto, @P("pantryId") @PathVariable long pantryId, @PathVariable long productId) {
         var dto = service.get(pantryId, productId)
                 .map(resource -> {
@@ -66,14 +66,14 @@ public class PantryItemController {
     }
 
     @DeleteMapping("/items/{productId}")
-    @PreAuthorize("hasPermission('Pantry', #pantryId, 'delete_pantry_item')")
+    @PreAuthorize("hasPermissionInObject('Pantry', #pantryId, 'delete_pantry_item')")
     public ResponseEntity<PantryItemDto> delete(@P("pantryId") @PathVariable long pantryId, @PathVariable long productId) {
         service.delete(pantryId, productId);
         return ResponseEntity.noContent().build();
     }
 
     @PostMapping("items/consume")
-    @PreAuthorize("hasPermission('Pantry', #pantryId, 'consume_pantry_item')")
+    @PreAuthorize("hasPermissionInObject('Pantry', #pantryId, 'consume_pantry_item')")
     public ResponseEntity<List<PantryItemDto>> consumeProduct(@P("pantryId") @PathVariable Long pantryId, @RequestBody List<PantryItemConsumedDto> items) {
         service.consumePantryItem(pantryId, items);
         var list = service.getAll(pantryId);
@@ -81,7 +81,7 @@ public class PantryItemController {
     }
 
     @GetMapping("items/balancing")
-    @PreAuthorize("hasPermission('Pantry', #pantryId, 'analyse_pantry_item')")
+    @PreAuthorize("hasPermissionInObject('Pantry', #pantryId, 'analyse_pantry_item')")
     public ResponseEntity<List<PantryItemDto>> balanceInventory(@P("pantryId") @PathVariable Long pantryId) {
         var list = service.processPurchaseNeed(pantryId);
         return ResponseEntity.ok().body(list);

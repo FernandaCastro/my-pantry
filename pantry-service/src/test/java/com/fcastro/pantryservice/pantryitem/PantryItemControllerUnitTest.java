@@ -1,11 +1,11 @@
 package com.fcastro.pantryservice.pantryitem;
 
 import com.fcastro.app.exception.ResourceNotFoundException;
-import com.fcastro.app.model.ProductDto;
 import com.fcastro.pantryservice.JsonUtil;
 import com.fcastro.pantryservice.exception.PantryNotActiveException;
 import com.fcastro.pantryservice.exception.QuantityNotAvailableException;
 import com.fcastro.pantryservice.pantry.PantryDto;
+import com.fcastro.pantryservice.product.ProductDto;
 import com.fcastro.security.core.config.SecurityPropertiesConfig;
 import com.fcastro.security.core.jwt.JWTRequestFilter;
 import org.junit.jupiter.api.Test;

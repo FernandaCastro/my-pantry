@@ -1,12 +1,12 @@
 package com.fcastro.pantryservice.pantryitem;
 
 import com.fcastro.app.exception.ResourceNotFoundException;
-import com.fcastro.app.model.ProductDto;
 import com.fcastro.kafka.event.PurchaseEventDto;
 import com.fcastro.kafka.exception.EventProcessingException;
 import com.fcastro.pantryservice.event.PurchaseCreateEventProducer;
 import com.fcastro.pantryservice.exception.PantryNotActiveException;
 import com.fcastro.pantryservice.exception.QuantityNotAvailableException;
+import com.fcastro.pantryservice.product.ProductDto;
 import org.hibernate.LazyInitializationException;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -140,7 +140,7 @@ public class PantryItemService {
     public void processPurchaseCompleteEvent(List<PurchaseEventDto> purchasedList) {
 
         var exceptions = new HashMap<Serializable, Throwable>();
-        purchasedList.stream().forEach(
+        purchasedList.forEach(
                 (purchasedItem) -> {
                     try {
                         updatePantryItem(purchasedItem);

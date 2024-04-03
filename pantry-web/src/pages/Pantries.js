@@ -63,6 +63,9 @@ export default function Pantries() {
                         label={item.name} />
                 </td>
                 <td>
+                    <span className='d-none d-md-block'>{item.accountGroup.name}</span>
+                </td>
+                <td>
                     <Stack direction="horizontal" gap={1} className="d-flex justify-content-end">
                         <div><Button href={"/pantries/" + item.id + "/edit"} variant="link"><BsPencil className='icon' /></Button></div>
                         <div><Button onClick={() => handleRemove(item.id)} variant="link"><BsTrash className='icon' /></Button></div>

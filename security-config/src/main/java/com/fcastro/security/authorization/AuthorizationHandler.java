@@ -12,8 +12,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
 
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @Component
 public class AuthorizationHandler {
@@ -26,40 +24,63 @@ public class AuthorizationHandler {
         this.authzServer = authzServer;
     }
 
-    public AccountGroupMemberDto getAccountGroupMemberList(Long groupId, String email) {
+    public List<AccountGroupMemberDto> hasPermissionInAnyGroup(String email, String permission) {
+
+        StringBuilder uri = new StringBuilder("/authorization/permission-in-any-group?")
+                .append("email=").append(email)
+                .append("&permission=").append(permission);
 
         return authzServer.get()
-                .uri("/accountGroupMembers/{groupId}/" + email, groupId)
+                .uri(uri.toString())
                 .accept(MediaType.APPLICATION_JSON)
                 .retrieve()
                 .onStatus(status ->
                         status.value() >= 400, (request, response) -> {
-                    throw new AccessDeniedException("Request to retrieve GroupMember from AuthorizationServer failed: [" + response.getStatusCode() + " : " + response.getStatusText() + "]");
-                })
-                .body(AccountGroupMemberDto.class);
-    }
-
-    public List<AccountGroupMemberDto> getAccountGroupMemberList(String email) {
-
-        return authzServer.get()
-                .uri("/accountGroupMembers?email=" + email)
-                .accept(MediaType.APPLICATION_JSON)
-                .retrieve()
-                .onStatus(status ->
-                        status.value() >= 400, (request, response) -> {
-                    throw new AccessDeniedException("Request to retrieve GroupMember from AuthorizationServer failed: [" + response.getStatusCode() + " : " + response.getStatusText() + "]");
+                    throw new AccessDeniedException("Request to AuthorizationServer(permission-in-any-group) failed: [" + response.getStatusCode() + " : " + response.getStatusText() + "]");
                 })
                 .body(new ParameterizedTypeReference<List<AccountGroupMemberDto>>() {
                 });
     }
 
-    public Set<Long> getAccountGroupIdList(String email) {
-        if (email == null || email.length() == 0)
-            throw new AccessDeniedException("Email is empty. Request unauthorized.");
-        var groupMembers = getAccountGroupMemberList(email);
-        if (groupMembers == null) return null;
-        return groupMembers.stream().map(AccountGroupMemberDto::getAccountGroupId).collect(Collectors.toSet());
+    public List<AccountGroupMemberDto> hasPermissionInAGroup(String email, String permission, Long accountGroupId) {
+
+        StringBuilder uri = new StringBuilder("/authorization/permission-in-group?")
+                .append("email=").append(email)
+                .append("&permission=").append(permission)
+                .append("&accountGroupId=").append(accountGroupId);
+
+        return authzServer.get()
+                .uri(uri.toString())
+                .accept(MediaType.APPLICATION_JSON)
+                .retrieve()
+                .onStatus(status ->
+                        status.value() >= 400, (request, response) -> {
+                    throw new AccessDeniedException("Request to AuthorizationServer(permission-in-group) failed: [" + response.getStatusCode() + " : " + response.getStatusText() + "]");
+                })
+                .body(new ParameterizedTypeReference<List<AccountGroupMemberDto>>() {
+                });
     }
+
+    public List<AccountGroupMemberDto> hasPermissionInObject(String email, String permission, String clazz, Long clazzId) {
+
+        StringBuilder uri = new StringBuilder("authorization/permission-in-object?")
+                .append("email=").append(email)
+                .append("&permission=").append(permission)
+                .append("&clazz=").append(clazz)
+                .append("&clazzId=").append(clazzId);
+
+        return authzServer.get()
+                .uri(uri.toString())
+                .accept(MediaType.APPLICATION_JSON)
+                .retrieve()
+                .onStatus(status ->
+                        status.value() >= 400, (request, response) -> {
+                    throw new AccessDeniedException("Request to AuthorizationServer(permission-in-object) failed: [" + response.getStatusCode() + " : " + response.getStatusText() + "]");
+                })
+                .body(new ParameterizedTypeReference<List<AccountGroupMemberDto>>() {
+                });
+    }
+
 
     public AccessControlDto getAccessControl(String clazz, Long clazzId) {
         return authzServer.get()
@@ -68,12 +89,33 @@ public class AuthorizationHandler {
                 .retrieve()
                 .onStatus(status ->
                         status.value() >= 400, (request, response) -> {
-                    throw new AccessDeniedException("Request to retrieve AccessControl from AuthorizationServer failed: [" + response.getStatusCode() + " : " + response.getStatusText() + "]");
+                    throw new AccessDeniedException("Request to AuthorizationServer(accessControl) failed: [" + response.getStatusCode() + " : " + response.getStatusText() + "]");
                 })
                 .body(AccessControlDto.class);
     }
 
+    public List<AccessControlDto> listAccessControl(String email, String clazz, Long clazzId, Long accountGroupId) {
+        StringBuilder uri = new StringBuilder("/authorization/access-control?")
+                .append("email=").append(email)
+                .append("&clazz=").append(clazz);
+
+        if (clazzId != null) uri.append("&clazzId=").append(clazzId);
+        if (accountGroupId != null) uri.append("&accountGroup=").append(accountGroupId);
+
+        return authzServer.get()
+                .uri(uri.toString())
+                .accept(MediaType.APPLICATION_JSON)
+                .retrieve()
+                .onStatus(status ->
+                        status.value() >= 400, (request, response) -> {
+                    throw new AccessDeniedException("Request AuthorizationServer(access-control) failed: [" + response.getStatusCode() + " : " + response.getStatusText() + "]");
+                })
+                .body(new ParameterizedTypeReference<List<AccessControlDto>>() {
+                });
+    }
+
     public void saveAccessControl(String clazz, Long clazzId, Long accountGroupId) {
+
         var body = AccessControlDto.builder()
                 .clazz(clazz)
                 .clazzId(clazzId)
@@ -81,7 +123,7 @@ public class AuthorizationHandler {
                 .build();
 
         authzServer.post()
-                .uri("/accessControl")
+                .uri("/authorization/access-control")
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(body)
                 .retrieve()
@@ -94,8 +136,12 @@ public class AuthorizationHandler {
 
     public void deleteAccessControl(String clazz, Long clazzId) {
 
+        StringBuilder uri = new StringBuilder("authorization/access-control?")
+                .append("clazz=").append(clazz)
+                .append("&clazzId={clazzId}");
+
         authzServer.delete()
-                .uri("/accessControl?clazz={clazz}&clazzId={clazzId}\", clazz, clazzId")
+                .uri(uri.toString(), clazz, clazzId)
                 .retrieve()
                 .onStatus(status ->
                         status.value() >= 400, (request, response) -> {

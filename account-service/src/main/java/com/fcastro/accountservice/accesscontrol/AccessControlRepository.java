@@ -14,12 +14,12 @@ public interface AccessControlRepository extends JpaRepository<AccessControl, Ac
     @Query("select a from accessControl a " +
             "where a.clazz = :clazz " +
             "and a.clazzId = :clazzId " +
-            "and a.accountGroupId in :groupIds")
+            "and a.accountGroup.id in :groupIds")
     List<AccessControl> findAllByGroupIds(String clazz, Long clazzId, List<Long> groupIds);
 
     @Query("select a from accessControl a " +
             "where a.clazz = :clazz " +
-            "and a.accountGroupId in :groupIds")
+            "and a.accountGroup.id in :groupIds")
     List<AccessControl> findAllByClazzAndGroupIds(String clazz, List<Long> groupIds);
 
     @Query("select a from accessControl a " +
@@ -34,4 +34,36 @@ public interface AccessControlRepository extends JpaRepository<AccessControl, Ac
     void deleteAllByClazzAndClazzId(String clazz, Long clazzId);
 
     List<AccessControl> findAllByAccountGroupId(Long accountGroupId);
+
+    @Query("select distinct acc " +
+            "from accountGroupMember gm," +
+            "account ac, " +
+            "accessControl acc " +
+            "where ac.id = gm.account.id " +
+            "and acc.accountGroup.id = gm.accountGroup.id " +
+            "and ac.email = :email " +
+            "and acc.clazz = :clazz ")
+    List<AccessControl> findAllByEmailAndClazz(String email, String clazz);
+
+    @Query("select distinct acc " +
+            "from accountGroupMember gm," +
+            "account ac, " +
+            "accessControl acc " +
+            "where ac.id = gm.accountId " +
+            "and acc.accountGroup.id = gm.accountGroup.id " +
+            "and ac.email = :email " +
+            "and acc.clazz = :clazz " +
+            "and acc.clazzId = :clazzId ")
+    List<AccessControl> findAllByEmailAndClazzAndClazzId(String email, String clazz, Long clazzId);
+
+    @Query("select distinct acc " +
+            "from accountGroupMember gm," +
+            "account ac, " +
+            "accessControl acc " +
+            "where ac.id = gm.account.id " +
+            "and acc.accountGroup.id = gm.accountGroup.id " +
+            "and ac.email = :email " +
+            "and acc.clazz = :clazz " +
+            "and acc.accountGroup.id = :accountGroupId ")
+    List<AccessControl> findAllByEmailAndClazzAndAccountGroupId(String email, String clazz, Long accountGroupId);
 }

@@ -1,7 +1,6 @@
 package com.fcastro.kafka.event;
 
 import com.fcastro.app.model.Action;
-import com.fcastro.app.model.ProductDto;
 import lombok.*;
 
 import java.io.Serializable;
@@ -14,5 +13,9 @@ import java.io.Serializable;
 @ToString
 public class ProductEventDto implements Serializable {
     Action action;
-    ProductDto product;
+    private long id;
+    private String code;
+    private String description;
+    private String size;
+    private String category;
 }

@@ -1,8 +1,8 @@
 package com.fcastro.pantryservice.pantry;
 
-import com.fcastro.accountservice.accesscontrol.AccessControlService;
 import com.fcastro.app.exception.ResourceNotFoundException;
 import com.fcastro.security.authorization.AuthorizationHandler;
+import com.fcastro.security.core.model.AccountGroupDto;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -33,9 +33,6 @@ public class PantryServiceUnitTest {
     ModelMapper modelMapper;
 
     @Mock
-    private AccessControlService accessControlService;
-
-    @Mock
     private AuthorizationHandler authorizationHandler;
 
     private static final String MOCK_USER = "MOCK_USER";
@@ -63,10 +60,11 @@ public class PantryServiceUnitTest {
         //given
         var entity = Pantry.builder().id(1L).name("Base Inventory").isActive(true).type("R").build();
         given(repository.save(any(Pantry.class))).willReturn(entity);
-        doNothing().when(accessControlService).save(anyString(), anyLong(), anyLong());
+        doNothing().when(authorizationHandler).saveAccessControl(anyString(), anyLong(), anyLong());
 
         //when
-        var dto = service.save(PantryDto.builder().id(1L).name("Base Inventory").isActive(true).type("R").accountGroupId(10L).build());
+        var dto = service.save(PantryDto.builder().id(1L).name("Base Inventory").isActive(true).type("R")
+                .accountGroup(AccountGroupDto.builder().id(10L).build()).build());
 
         //then
         assertThat(dto).isNotNull();
@@ -82,7 +80,7 @@ public class PantryServiceUnitTest {
         var dto = Pantry.builder().id(1L).name("Base Inventory").isActive(true).type("R").build();
         given(repository.findById(anyLong())).willReturn(Optional.of(dto));
         doNothing().when(repository).deleteById(anyLong());
-        doNothing().when(accessControlService).delete(anyString(), anyLong());
+        doNothing().when(authorizationHandler).deleteAccessControl(anyString(), anyLong());
 
         //when //then
         service.delete(1);

@@ -1,6 +1,7 @@
 package com.fcastro.pantryservice.pantry;
 
 import com.fcastro.pantryservice.pantryitem.PantryItemDto;
+import com.fcastro.security.core.model.AccountGroupDto;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
@@ -22,13 +23,5 @@ public class PantryDto {
 
     private List<PantryItemDto> items;
 
-    private Long accountGroupId;
-
-    public PantryDto(Long id, String name, String type, Boolean isActive, Long accountGroupId) {
-        this.id = id;
-        this.name = name;
-        this.type = type;
-        this.isActive = isActive;
-        this.accountGroupId = accountGroupId;
-    }
+    private AccountGroupDto accountGroup;
 }

@@ -1,6 +1,5 @@
 package com.fcastro.pantryservice.pantryitem;
 
-import com.fcastro.app.model.ProductDto;
 import com.fcastro.kafka.config.KafkaConfigData;
 import com.fcastro.kafka.event.PurchaseEventDto;
 import com.fcastro.pantryservice.event.PurchaseCreateEventProducer;
@@ -8,8 +7,10 @@ import com.fcastro.pantryservice.exception.QuantityNotAvailableException;
 import com.fcastro.pantryservice.pantry.PantryDto;
 import com.fcastro.pantryservice.pantry.PantryService;
 import com.fcastro.pantryservice.product.Product;
+import com.fcastro.pantryservice.product.ProductDto;
 import com.fcastro.pantryservice.product.ProductRepository;
 import com.fcastro.pantryservice.product.ProductService;
+import com.fcastro.security.core.model.AccountGroupDto;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -78,7 +79,8 @@ public class PantryItemServiceIntegrationTest {
     public void setupEnv() {
 
         pantry = pantryService.get("PANTRY1")
-                .orElseGet(() -> pantryService.save(PantryDto.builder().name("PANTRY1").isActive(true).type("A").accountGroupId(1L).build()));
+                .orElseGet(() -> pantryService.save(PantryDto.builder().name("PANTRY1").isActive(true).type("A")
+                        .accountGroup(AccountGroupDto.builder().id(1L).build()).build()));
 
         //Avoid calling service.save since it triggers Kafka event
         product1 = productService.get("MILK")

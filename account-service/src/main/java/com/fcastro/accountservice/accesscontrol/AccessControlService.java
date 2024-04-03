@@ -33,6 +33,31 @@ public class AccessControlService {
         return list.stream().map(this::convertToDto).collect(Collectors.toList());
     }
 
+    //Authorization method
+    public List<AccessControlDto> getAllByEmailAndAccessControl(String email, String clazz, Long clazzId, Long accountGroupId) {
+        if (email.isEmpty()) return List.of();
+
+        List<AccessControl> list = null;
+
+        //Email + Clazz + AccountGroup
+        if (!clazz.isEmpty() && accountGroupId != null) {
+            list = accessControlRepository.findAllByEmailAndClazzAndAccountGroupId(email, clazz, accountGroupId);
+
+            //Email + Clazz + ClazzId
+        } else if (!clazz.isEmpty() && clazzId != null) {
+            list = accessControlRepository.findAllByEmailAndClazzAndClazzId(email, clazz, clazzId);
+
+            //Email + Clazz
+        } else if (!clazz.isEmpty()) {
+            list = accessControlRepository.findAllByEmailAndClazz(email, clazz);
+
+        } else {
+            throw new AccessControlNotDefinedException("Unable to retrieve Access Control. The criteria informed is invalid.");
+        }
+
+        return list.stream().map(this::convertToDto).collect(Collectors.toList());
+    }
+
     public void save(AccessControlDto accessControlDto) {
         var accessControl = convertToEntity(accessControlDto);
         accessControlRepository.save(accessControl);

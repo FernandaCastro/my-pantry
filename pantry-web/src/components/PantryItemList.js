@@ -55,9 +55,10 @@ function PantryItemList({ pantryId }) {
     async function fetchUpdatePantryItem(item) {
         try {
             await updatePantryItem(item.pantryId, item.productId, item);
-            setRefresh(true);
         } catch (error) {
             showAlert(VariantType.DANGER, error.message);
+        } finally {
+            setRefresh(true);
         }
     }
 
@@ -96,8 +97,8 @@ function PantryItemList({ pantryId }) {
                         {item.product.description}  {item.product.size}
                     </p>
                 </td>
-                <td><NumericField object={item} attribute="idealQty" onValueChange={handleSave} /></td>
-                <td><NumericField object={item} attribute="currentQty" onValueChange={handleSave} /></td>
+                <td><NumericField key={item.idealQty} object={item} attribute="idealQty" onValueChange={handleSave} /></td>
+                <td><NumericField key={item.currentQty} object={item} attribute="currentQty" onValueChange={handleSave} /></td>
                 <td className='ms-0 pe-0'><span>{item.provisionedQty}</span></td>
                 <td className='ms-0 ps-0 me-2 pe-2'>
                     <Button onClick={() => handleRemove(item)} variant="link" className='pt-0 pb-0 pe-0'><BsTrash className='icon' /></Button>

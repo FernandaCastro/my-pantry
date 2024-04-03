@@ -1,6 +1,5 @@
 package com.fcastro.pantryservice.product;
 
-import com.fcastro.app.model.ProductDto;
 import com.fcastro.kafka.config.KafkaConfigData;
 import com.fcastro.kafka.event.ProductEventDto;
 import com.fcastro.pantryservice.event.ProductEventProducer;

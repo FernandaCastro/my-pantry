@@ -106,6 +106,24 @@ public class AccountGroupMemberService {
         repository.deleteById(key);
     }
 
+    //Authorization methods
+    public List<AccountGroupMemberDto> hasPermissionInAnyGroup(String email, String permission) {
+        var list = repository.hasPermissionInAnyGroup(email, permission);
+        return list.stream().map(this::convertToDTO).toList();
+    }
+
+    //Authorization method
+    public List<AccountGroupMemberDto> hasPermissionInGroup(String email, String permission, Long accountGroupId) {
+        var member = convertToDTO(repository.hasPermissionInGroup(email, permission, accountGroupId));
+        return member == null ? List.of() : List.of(member);
+    }
+
+    //Authorization method
+    public List<AccountGroupMemberDto> hasPermissionInObject(String email, String permission, String clazz, Long clazzId) {
+        var member = convertToDTO(repository.hasPermissionInObject(email, permission, clazz, clazzId));
+        return member == null ? List.of() : List.of(member);
+    }
+
     private AccountGroupMemberDto convertToDTO(AccountGroupMember entity) {
         if (entity == null) return null;
 

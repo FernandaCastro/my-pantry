@@ -23,11 +23,11 @@ public class PantryController {
     }
 
     @GetMapping(path = "/{id}")
-    @PreAuthorize("hasPermission('Pantry', #pantryId, 'list_pantry')")
+    @PreAuthorize("hasPermissionInObject('Pantry', #pantryId, 'list_pantry')")
     public ResponseEntity<PantryDto> get(@P("pantryId") @PathVariable Long id) {
-        return service.get(id)
+        return service.getEmbeddingAccountGroup(SecurityContextHolder.getContext().getAuthentication().getName(), id)
                 .map(ResponseEntity::ok)
-                .orElseThrow(() -> new ResourceNotFoundException("Pantry not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Pantry not found."));
     }
 
     @GetMapping(path = "/{id}/access-control")
@@ -44,19 +44,19 @@ public class PantryController {
     }
 
     @GetMapping
-    @PreAuthorize("hasPermission(#groupId, 'list_pantry')")
+    @PreAuthorize("hasPermissionInAGroup(#groupId, 'list_pantry')")
     public ResponseEntity<List<PantryDto>> getAll(@P("groupId") @RequestParam Long groupId) {
-        return ResponseEntity.ok(service.getAll(groupId));
+        return ResponseEntity.ok(service.getAll(SecurityContextHolder.getContext().getAuthentication().getName(), groupId));
     }
 
     @PostMapping
-    @PreAuthorize("hasPermission(#pantry.getAccountGroupId(), 'create_pantry')")
+    @PreAuthorize("hasPermissionInAGroup(#pantry.getAccountGroupId(), 'create_pantry')")
     public ResponseEntity<PantryDto> create(@P("pantry") @Valid @RequestBody PantryDto newDto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(service.save(newDto));
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasPermission('Pantry', #pantryId, 'edit_pantry')")
+    @PreAuthorize("hasPermissionInObject('Pantry', #pantryId, 'edit_pantry')")
     ResponseEntity<PantryDto> replace(@Valid @RequestBody PantryDto newDto, @P("pantryId") @PathVariable Long id) {
 
         var dto = service.get(id)
@@ -64,7 +64,7 @@ public class PantryController {
                     resource.setName(newDto.getName());
                     resource.setType(newDto.getType());
                     resource.setIsActive(newDto.getIsActive());
-                    resource.setAccountGroupId(newDto.getAccountGroupId());
+                    resource.setAccountGroup(newDto.getAccountGroup());
                     return service.save(resource);
                 })
                 .orElseThrow(() -> new ResourceNotFoundException("Pantry not found"));
@@ -75,7 +75,7 @@ public class PantryController {
     }
 
     @DeleteMapping(path = "/{id}")
-    @PreAuthorize("hasPermission('Pantry', #pantryId, 'delete_pantry')")
+    @PreAuthorize("hasPermissionInObject('Pantry', #pantryId, 'delete_pantry')")
     public ResponseEntity<PantryDto> delete(@P("pantryId") @PathVariable Long id) {
         service.delete(id);
         return ResponseEntity.noContent().build();

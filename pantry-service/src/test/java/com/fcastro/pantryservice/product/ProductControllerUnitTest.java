@@ -1,6 +1,5 @@
 package com.fcastro.pantryservice.product;
 
-import com.fcastro.app.model.ProductDto;
 import com.fcastro.pantryservice.JsonUtil;
 import com.fcastro.security.core.config.SecurityPropertiesConfig;
 import com.fcastro.security.core.jwt.JWTRequestFilter;
@@ -22,8 +21,7 @@ import java.util.Optional;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.hasSize;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -75,7 +73,7 @@ public class ProductControllerUnitTest {
         list.add(ProductDto.builder().id(1).code("MILK").description("Integral").size("1L").build());
         list.add(ProductDto.builder().id(2).code("VOLLMILK").description("Integral").size("2L").build());
 
-        given(service.getAllBySearchParam(1L, "MILK")).willReturn(list);
+        given(service.getAllBySearchParam(anyString(), anyLong(), anyString())).willReturn(list);
 
         //when //then
         mockMvc.perform(MockMvcRequestBuilders.get("/products")
