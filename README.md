@@ -4,7 +4,10 @@
 
 version: 0.0.4 <br />
 
-- Access Control is now in the centralized in account_service, as part of the authorization.
+- Access Control is now centralized in account_service, as part of the authorization.
+  - Why? So far, Pantry and Product are the only relevant entities when it comes to access control. So instead of making
+    purchase-service request access-control data to pantry-service, I decided to centralize it together with
+    authorization logic in account-service.
 - New Permission: PURCHASE_PANTRY Permissions refactored: CONSUME_PANTRY, ANALYSE_PANTRY
 - Control the access to Purchases
 - Purchase by selecting specific pantries or all
