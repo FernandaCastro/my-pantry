@@ -34,11 +34,9 @@ public interface AccountGroupMemberRepository extends JpaRepository<AccountGroup
     @Query("select distinct gm " +
             "from accountGroupMember gm, " +
             "account ac, " +
-            "accessControl acc, " +
             "role role " +
             "JOIN role.permissions per " +
             "where ac.id = gm.account.id " +
-            "and acc.accountGroup.id = gm.accountGroup.id " +
             "and role.id = gm.role.id " +
             "and ac.email = :email " +
             "and lower(per.name) = lower(:permission)")
@@ -47,11 +45,9 @@ public interface AccountGroupMemberRepository extends JpaRepository<AccountGroup
     @Query("select distinct gm " +
             "from accountGroupMember gm, " +
             "account ac, " +
-            "accessControl acc, " +
             "role role " +
             "JOIN role.permissions per " +
             "where ac.id = gm.account.id " +
-            "and acc.accountGroup.id = gm.accountGroup.id " +
             "and role.id = gm.role.id " +
             "and ac.email = :email " +
             "and lower(per.name) = lower(:permission) " +

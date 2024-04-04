@@ -8,14 +8,14 @@ import com.fcastro.purchaseservice.exception.ResourceNotValidException;
 import com.fcastro.purchaseservice.product.Product;
 import com.fcastro.purchaseservice.properties.PropertiesService;
 import com.fcastro.purchaseservice.properties.PropertyKey;
+import com.fcastro.security.authorization.AuthorizationHandler;
+import com.fcastro.security.core.model.AccessControlDto;
 import org.apache.logging.log4j.util.Strings;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -24,12 +24,14 @@ public class PurchaseItemService {
     private final PurchaseItemRepository repository;
     private final PropertiesService propertiesService;
     private final ModelMapper modelMapper;
+    private final AuthorizationHandler authorizationHandler;
     private ObjectMapper jsonMapper;
 
-    public PurchaseItemService(PurchaseItemRepository repository, PropertiesService propertiesService, ModelMapper modelMapper) {
+    public PurchaseItemService(PurchaseItemRepository repository, PropertiesService propertiesService, ModelMapper modelMapper, AuthorizationHandler authorizationHandler) {
         this.repository = repository;
         this.propertiesService = propertiesService;
         this.modelMapper = modelMapper;
+        this.authorizationHandler = authorizationHandler;
         this.jsonMapper = new ObjectMapper();
     }
 
@@ -46,12 +48,14 @@ public class PurchaseItemService {
         repository.save(entity);
     }
 
-    public List<PurchaseItemDto> listPendingPurchase() {
-        return convertToDto(repository.listPendingPurchase());
+    public List<PurchaseItemDto> listPendingPurchase(String email) {
+        var pantryIds = getPantryIdList(email);
+        return convertToDto(repository.listPendingPurchase(pantryIds));
     }
 
-    public List<PurchaseItemDto> listPendingPurchaseByCategory(String supermarket) {
-        var list = convertToDto(repository.listPendingPurchase());
+    public List<PurchaseItemDto> listPendingPurchaseByCategory(String email, String supermarket) {
+        var pantryIds = getPantryIdList(email);
+        var list = convertToDto(repository.listPendingPurchase(pantryIds));
         if (supermarket == null || Strings.isEmpty(supermarket)) return list;
 
         var categorized = categorize(list, supermarket);
@@ -66,10 +70,15 @@ public class PurchaseItemService {
         return categorized;
     }
 
+    private Set<Long> getPantryIdList(String email) {
+        var accessControlList = authorizationHandler.listAccessControl(email, "Pantry", null, null);
+        return accessControlList.stream().map(AccessControlDto::getClazzId).collect(Collectors.toSet());
+    }
+
     private List<PurchaseItemDto> categorize(List<PurchaseItemDto> list, String supermarket) {
         var map = list.stream()
                 .collect(Collectors.groupingBy((item) ->
-                        item.getProduct().getCategory() == null || item.getProduct().getCategory() == "" ?
+                        item.getProduct().getCategory() == null || Objects.equals(item.getProduct().getCategory(), "") ?
                                 "Other" : item.getProduct().getCategory()
                 ));
 

@@ -13,7 +13,7 @@ select dblink_connect('pantry_conn', 'postgresql://pantry:pantry@pantry-db:5432/
 insert into account.ACCESS_CONTROL (clazz, clazz_id, account_group_id)
 ( select clazz, clazz_id, account_group_id
          from dblink('pantry_conn', 'SELECT * FROM access_control')
-         AS t(clazz text, clazz_id int, account_group_id int) );
+         AS t(clazz text, clazz_id int, account_group_id int) ) on conflict do nothing;
 
 select dblink_disconnect('pantry_conn');
 drop extension IF EXISTS dblink;
@@ -22,4 +22,4 @@ drop extension IF EXISTS dblink;
 UPDATE account.PERMISSION set name = 'CONSUME_PANTRY' where name = 'CONSUME_PANTRY_ITEM';
 UPDATE account.PERMISSION set name = 'ANALYSE_PANTRY' where name = 'ANALYSE_PANTRY_ITEM';
 INSERT INTO account.PERMISSION ("id", "name") VALUES (15, 'PURCHASE_PANTRY') on conflict do nothing;
-INSERT INTO account.ROLE_PERMISSION ("role_id", "permission_id") VALUES (1, 15), (2, 15),(3, 15) on conflict do nothing;;
+INSERT INTO account.ROLE_PERMISSION ("role_id", "permission_id") VALUES (1, 15), (2, 15),(3, 15) on conflict do nothing;

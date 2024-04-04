@@ -50,7 +50,7 @@ public class PantryController {
     }
 
     @PostMapping
-    @PreAuthorize("hasPermissionInAGroup(#pantry.getAccountGroupId(), 'create_pantry')")
+    @PreAuthorize("hasPermissionInAGroup(#pantry.getAccountGroup().getId(), 'create_pantry')")
     public ResponseEntity<PantryDto> create(@P("pantry") @Valid @RequestBody PantryDto newDto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(service.save(newDto));
     }

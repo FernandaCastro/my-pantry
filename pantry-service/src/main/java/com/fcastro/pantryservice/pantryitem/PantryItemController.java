@@ -35,7 +35,7 @@ public class PantryItemController {
     }
 
     @GetMapping("/items/consume")
-    @PreAuthorize("hasPermissionInObject('Pantry', #pantryId, 'consume_pantry_item')")
+    @PreAuthorize("hasPermissionInObject('Pantry', #pantryId, 'consume_pantry')")
     public ResponseEntity<List<PantryItemDto>> getAllConsume(@P("pantryId") @PathVariable long pantryId) {
         return ResponseEntity.ok(service.getAllConsume(pantryId));
     }
@@ -73,7 +73,7 @@ public class PantryItemController {
     }
 
     @PostMapping("items/consume")
-    @PreAuthorize("hasPermissionInObject('Pantry', #pantryId, 'consume_pantry_item')")
+    @PreAuthorize("hasPermissionInObject('Pantry', #pantryId, 'consume_pantry')")
     public ResponseEntity<List<PantryItemDto>> consumeProduct(@P("pantryId") @PathVariable Long pantryId, @RequestBody List<PantryItemConsumedDto> items) {
         service.consumePantryItem(pantryId, items);
         var list = service.getAll(pantryId);
@@ -81,7 +81,7 @@ public class PantryItemController {
     }
 
     @GetMapping("items/balancing")
-    @PreAuthorize("hasPermissionInObject('Pantry', #pantryId, 'analyse_pantry_item')")
+    @PreAuthorize("hasPermissionInObject('Pantry', #pantryId, 'analyse_pantry')")
     public ResponseEntity<List<PantryItemDto>> balanceInventory(@P("pantryId") @PathVariable Long pantryId) {
         var list = service.processPurchaseNeed(pantryId);
         return ResponseEntity.ok().body(list);

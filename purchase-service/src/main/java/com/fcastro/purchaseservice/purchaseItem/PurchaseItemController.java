@@ -1,6 +1,7 @@
 package com.fcastro.purchaseservice.purchaseItem;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,7 +18,7 @@ public class PurchaseItemController {
 
     @GetMapping("/items")
     public ResponseEntity<List<PurchaseItemDto>> listPendingPurchase(@RequestParam(required = false) String supermarket) {
-        return ResponseEntity.ok(service.listPendingPurchaseByCategory(supermarket));
+        return ResponseEntity.ok(service.listPendingPurchaseByCategory(SecurityContextHolder.getContext().getAuthentication().getName(), supermarket));
     }
 
     @GetMapping("/{id}/items")

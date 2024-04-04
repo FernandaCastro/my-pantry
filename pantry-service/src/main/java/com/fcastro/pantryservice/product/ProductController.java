@@ -38,7 +38,7 @@ public class ProductController {
     }
 
     @PostMapping
-    @PreAuthorize("hasPermissionInAGroup(#product.getAccountGroupId(), 'create_product')")
+    @PreAuthorize("hasPermissionInAGroup(#product.getAccountGroup().getId(), 'create_product')")
     public ResponseEntity<ProductDto> create(@P("product") @Valid @RequestBody ProductDto newDto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(service.save(newDto));
     }
