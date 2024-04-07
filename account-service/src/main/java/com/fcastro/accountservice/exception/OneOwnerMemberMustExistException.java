@@ -4,8 +4,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(code = HttpStatus.BAD_REQUEST)
-public class DeletionNotAllowedException extends RuntimeException {
-    public DeletionNotAllowedException(String message) {
+public class OneOwnerMemberMustExistException extends RuntimeException {
+    public OneOwnerMemberMustExistException(String message) {
         super(message);
     }
 }

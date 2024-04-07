@@ -11,14 +11,16 @@ import java.util.Optional;
 @Repository
 public interface AccountGroupMemberRepository extends JpaRepository<AccountGroupMember, AccountGroupMemberKey> {
 
-    @Query("select aga, a from account a, accountGroupMember aga " +
+    @Query("select aga, a, r from account a, accountGroupMember aga, role r " +
             "where aga.accountId = a.id  " +
+            "and r.id = aga.role.id " +
             "and a.email = :email ")
     List<AccountGroupMember> findAllByEmail(String email);
 
-    @Query("select aga, a " +
-            "from account a, accountGroupMember aga " +
+    @Query("select aga, a, r " +
+            "from account a, accountGroupMember aga, role r " +
             "where aga.accountId = a.id  " +
+            "and r.id = aga.role.id " +
             "and a.email = :email " +
             "and aga.accountGroupId = :groupId")
     Optional<AccountGroupMember> findByGroupIdAndEmail(Long groupId, String email);
