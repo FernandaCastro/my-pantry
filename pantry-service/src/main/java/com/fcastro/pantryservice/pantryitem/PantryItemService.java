@@ -4,6 +4,7 @@ import com.fcastro.app.exception.ResourceNotFoundException;
 import com.fcastro.kafka.event.PurchaseEventDto;
 import com.fcastro.kafka.exception.EventProcessingException;
 import com.fcastro.pantryservice.event.PurchaseCreateEventProducer;
+import com.fcastro.pantryservice.exception.PantryAndProductAccountGroupInconsistentException;
 import com.fcastro.pantryservice.exception.PantryNotActiveException;
 import com.fcastro.pantryservice.exception.QuantityNotAvailableException;
 import com.fcastro.pantryservice.product.ProductDto;
@@ -16,6 +17,7 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -50,6 +52,11 @@ public class PantryItemService {
     }
 
     public PantryItemDto save(PantryItemDto dto) {
+        if (!Objects.equals(dto.getPantry().getAccountGroup().getId(), dto.getProduct().getAccountGroup().getId()) &&
+                (dto.getProduct().getAccountGroup().getParentAccountGroup() == null || !Objects.equals(dto.getPantry().getAccountGroup().getId(), dto.getProduct().getAccountGroup().getParentAccountGroup().getId()))) {
+            throw new PantryAndProductAccountGroupInconsistentException("Product " + dto.getProduct().getCode() + " is not allowed in the Pantry.");
+        }
+
         var entity = repository.save(convertToEntity(dto));
         return convertToDTO(entity);
     }

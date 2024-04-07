@@ -100,7 +100,7 @@ public class AuthorizationHandler {
                 .append("&clazz=").append(clazz);
 
         if (clazzId != null) uri.append("&clazzId=").append(clazzId);
-        if (accountGroupId != null) uri.append("&accountGroup=").append(accountGroupId);
+        if (accountGroupId != null) uri.append("&accountGroupId=").append(accountGroupId);
 
         return authzServer.get()
                 .uri(uri.toString())

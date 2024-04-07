@@ -132,8 +132,8 @@ export default function Pantry({ mode }) {
 
     function handleAddItem(product) {
         const body = {
-            pantryId: pantry.id,
-            productId: product.id
+            pantry: pantry,
+            product: product
         }
         fetchSavePantryItem(body);
     }

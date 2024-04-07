@@ -43,7 +43,7 @@ public class PantryItemController {
     @PostMapping("/items")
     @PreAuthorize("hasPermissionInObject('Pantry', #pantryId, 'add_pantry_item')")
     public ResponseEntity<PantryItemDto> create(@P("pantryId") @PathVariable long pantryId, @RequestBody PantryItemDto newDto) {
-        if (service.get(newDto.getPantryId(), newDto.getProductId()).isPresent())
+        if (service.get(newDto.getPantry().getId(), newDto.getProduct().getId()).isPresent())
             throw new DatabaseConstraintException("This item is already in the pantry. It shouldn't be added again.");
 
         return ResponseEntity.status(HttpStatus.CREATED).body(service.save(newDto));

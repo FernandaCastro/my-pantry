@@ -57,7 +57,6 @@ public class ProductService {
                 .description(eventDto.getDescription())
                 .size(eventDto.getSize())
                 .category(eventDto.getCategory())
-                .accountGroupId(eventDto.getAccountGroupId())
                 .build();
     }
 

@@ -81,12 +81,13 @@ function ProductList({ disabled, onEdit, onRemove }) {
         return (
             <tr key={item.id} className="align-middle">
                 <td>
-                    <Stack direction="horizontal" gap={1}>
+                    <Stack direction="horizontal" gap={10}>
                         <div><Image src={food} width={20} height={20} rounded /></div>
                         <div><span>{camelCase(item.code)}</span></div>
                     </Stack>
                     <p hidden={item.description === ''} className='ms-4 mb-0'>{item.description}  {item.size}</p>
                 </td>
+                <td><span>{item.accountGroup.name}</span></td>
                 <td className="border-start-0">
                     <Stack direction="horizontal" gap={1} className="d-flex justify-content-end">
                         <div><Button onClick={() => onEdit(item)} variant="link" disabled={disabled}><BsPencil className='icon' /></Button></div>
@@ -104,8 +105,7 @@ function ProductList({ disabled, onEdit, onRemove }) {
                 <Table>
                     <thead>
                         <tr key="0:0" className="align-middle">
-                            <th><h6 className='title'>Products</h6></th>
-                            <th />
+                            <th colSpan={3}><h6 className='title'>Products</h6></th>
                         </tr>
                     </thead>
                     <tbody>

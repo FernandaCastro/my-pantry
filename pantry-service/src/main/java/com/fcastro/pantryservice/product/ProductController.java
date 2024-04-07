@@ -53,6 +53,7 @@ public class ProductController {
                     resource.setDescription(newDto.getDescription());
                     resource.setSize(newDto.getSize());
                     resource.setCategory(newDto.getCategory());
+                    resource.setAccountGroup(newDto.getAccountGroup());
                     return service.save(resource);
                 })
                 .orElseThrow(() -> new ResourceNotFoundException("Product not found"));

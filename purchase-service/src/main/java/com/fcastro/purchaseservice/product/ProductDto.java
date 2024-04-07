@@ -1,6 +1,5 @@
 package com.fcastro.purchaseservice.product;
 
-import com.fcastro.security.core.model.AccountGroupDto;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
@@ -17,5 +16,4 @@ public class ProductDto {
     private String description;
     private String size;
     private String category;
-    private AccountGroupDto accountGroup;
 }

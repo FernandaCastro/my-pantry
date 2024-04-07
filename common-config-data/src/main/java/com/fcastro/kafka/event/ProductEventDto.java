@@ -18,5 +18,4 @@ public class ProductEventDto implements Serializable {
     private String description;
     private String size;
     private String category;
-    private Long accountGroupId;
 }

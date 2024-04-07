@@ -6,7 +6,6 @@ import com.fcastro.kafka.event.ProductEventDto;
 import com.fcastro.pantryservice.event.ProductEventProducer;
 import com.fcastro.pantryservice.exception.DatabaseConstraintException;
 import com.fcastro.pantryservice.exception.RequestParamExpectedException;
-import com.fcastro.pantryservice.pantry.Pantry;
 import com.fcastro.pantryservice.pantryitem.PantryItemRepository;
 import com.fcastro.security.authorization.AuthorizationHandler;
 import com.fcastro.security.core.model.AccessControlDto;
@@ -72,9 +71,8 @@ public class ProductService {
     }
 
     public List<ProductDto> getAll(String email) {
-        var accessControl = AccessControlDto.builder()
-                .clazz(Product.class.getSimpleName()).build();
-        var accessControlList = authorizationHandler.listAccessControl(email, Pantry.class.getSimpleName(), null, null);
+
+        var accessControlList = authorizationHandler.listAccessControl(email, Product.class.getSimpleName(), null, null);
 
         var productIds = accessControlList.stream().map(AccessControlDto::getClazzId).collect(Collectors.toSet());
         var productList = repository.findAllByIds(productIds).stream().map(this::convertToDTO).collect(Collectors.toList());

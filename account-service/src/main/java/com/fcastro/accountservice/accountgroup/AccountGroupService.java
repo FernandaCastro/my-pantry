@@ -46,7 +46,7 @@ public class AccountGroupService {
     @Transactional
     public AccountGroupDto createParentGroup(Account account) {
         var accountGroup = AccountGroup.builder()
-                .name("Default Group - " + account.getName())
+                .name("Group " + account.getName())
                 .build();
 
         accountGroup = repository.save(accountGroup);

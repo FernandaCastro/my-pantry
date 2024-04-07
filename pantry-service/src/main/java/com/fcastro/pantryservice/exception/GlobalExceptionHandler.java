@@ -58,6 +58,7 @@ public class GlobalExceptionHandler {
         exceptionTypes.put(PantryNotActiveException.class, "application-error");
         exceptionTypes.put(RequestParamExpectedException.class, "application-error");
         exceptionTypes.put(AccessControlNotDefinedException.class, "application-error");
+        exceptionTypes.put(PantryAndProductAccountGroupInconsistentException.class, "application-error");
     }
 
     @ExceptionHandler(value = {QuantityNotAvailableException.class,

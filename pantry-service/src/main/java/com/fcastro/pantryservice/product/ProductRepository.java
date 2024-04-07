@@ -22,6 +22,6 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     List<Product> findAllByCodeOrDescription(String searchParam, Set<Long> productIds);
 
 
-    @Query("select p from product p where p.id in :productIds")
+    @Query("select p from product p where p.id in :productIds order by p.code")
     List<Product> findAllByIds(Set<Long> productIds);
 }
