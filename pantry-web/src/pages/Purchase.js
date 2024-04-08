@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 import { getOpenPurchaseOrder, postClosePurchaseOrder, postNewPurchaseOrder, getPendingPurchaseItems, getPurchaseItems, getAllProperty } from '../services/apis/mypantry/requests/PurchaseRequests.js';
 import { FormGroup } from 'react-bootstrap';
 import Button from 'react-bootstrap/Button';
@@ -6,7 +6,7 @@ import Stack from 'react-bootstrap/Stack';
 import Image from 'react-bootstrap/Image';
 import food from '../assets/images/healthy-food.png'
 import VariantType from '../components/VariantType.js';
-import { AlertContext } from '../services/context/AppContext.js';
+import useAlert from '../hooks/useAlert.js';
 import Form from 'react-bootstrap/Form';
 import NumericField from '../components/NumericField.js'
 import Table from 'react-bootstrap/Table';
@@ -31,7 +31,7 @@ export default function Purchase() {
     const [showSupermarkets, setShowSupermarkets] = useState(true);
 
     const [searchText, setSearchText] = useState("");
-    const { setAlert } = useContext(AlertContext);
+    const { showAlert } = useAlert();
 
     useEffect(() => {
         fetchOpenPurchaseOrder();
@@ -177,14 +177,6 @@ export default function Purchase() {
     function isNull(object) {
         if (!object || (Object.keys(object).length === 0 && object.constructor === Object)) return true;
         return false;
-    }
-
-    function showAlert(type, message) {
-        setAlert({
-            show: true,
-            type: type,
-            message: message
-        })
     }
 
     function handleSave() {

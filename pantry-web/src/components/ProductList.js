@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect} from 'react';
 import Table from 'react-bootstrap/Table';
 import { getProductList, deleteProduct } from '../services/apis/mypantry/requests/PantryRequests.js';
-import { AlertContext } from '../services/context/AppContext.js';
 import VariantType from './VariantType.js';
+import useAlert from '../hooks/useAlert.js';
 import Form from 'react-bootstrap/Form';
 import Stack from 'react-bootstrap/Stack';
 import Image from 'react-bootstrap/Image';
@@ -18,7 +18,7 @@ function ProductList({ disabled, onEdit, onRemove }) {
     const [productList, setProductList] = useState([]);
     const [filteredItems, setFilteredItems] = useState([]);
     const [searchText, setSearchText] = useState("");
-    const { setAlert } = useContext(AlertContext);
+    const { showAlert } = useAlert();
 
     useEffect(() => {
         if (refresh) fetchProductList();
@@ -63,14 +63,6 @@ function ProductList({ disabled, onEdit, onRemove }) {
         } catch (error) {
             showAlert(VariantType.DANGER, error.message);
         }
-    }
-
-    function showAlert(type, message) {
-        setAlert({
-            show: true,
-            type: type,
-            message: message
-        })
     }
 
     function renderItems() {

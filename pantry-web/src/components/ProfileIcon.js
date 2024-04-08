@@ -10,8 +10,8 @@ import { LoginWithGoogle, LogoutFromGoogle } from './LoginWithGoogle.js';
 import { logout, register, login } from '../services/LoginService';
 import { useNavigate } from 'react-router-dom';
 import Form from 'react-bootstrap/Form';
-import { AlertContext } from '../services/context/AppContext.js';
 import VariantType from '../components/VariantType.js';
+import useAlert from '../hooks/useAlert.js';
 import Tooltip from 'react-bootstrap/Tooltip';
 import { getAccount, postResetPassword, getResetPassword, updateAccount } from '../services/apis/mypantry/requests/AccountRequests';
 
@@ -34,7 +34,7 @@ function ProfileIcon() {
     const [passwordQuestion, setPasswordQuestion] = useState("");
     const [passwordAnswer, setPasswordAnswer] = useState("");
 
-    const { setAlert } = useContext(AlertContext);
+    const { showAlert } = useAlert();
 
     const handleLogout = async () => {
         await logout();
@@ -160,14 +160,6 @@ function ProfileIcon() {
         catch (error) {
             showAlert(VariantType.DANGER, error.message);
         }
-    }
-
-    function showAlert(type, message) {
-        setAlert({
-            show: true,
-            type: type,
-            message: message
-        })
     }
 
     function renderPopovers() {

@@ -1,10 +1,10 @@
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router';
 import { getPantry, updatePantry, createPantry, createPantryItem, getPantryRebalance } from '../services/apis/mypantry/requests/PantryRequests.js';
 import Stack from 'react-bootstrap/Stack';
 import VariantType from '../components/VariantType.js';
+import useAlert from '../hooks/useAlert.js';
 import PantryForm from '../components/PantryForm.js';
-import { AlertContext } from '../services/context/AppContext.js';
 import ProductSearchBar from '../components/ProductSearchBar.js'
 import PantryItemList from '../components/PantryItemList.js';
 import Button from 'react-bootstrap/Button';
@@ -21,12 +21,12 @@ export default function Pantry({ mode }) {
             name: "",
             type: "",
             isActive: true,
-            accountGroup: {id: 0}
+            accountGroup: { id: 0 }
         });
 
     const [isLoading, setIsLoading] = useState(false);
-    const { setAlert } = useContext(AlertContext);
     const [refresh, setRefresh] = useState(false);
+    const { showAlert } = useAlert();
 
     useEffect(() => {
         if (id && mode === 'edit') {
@@ -116,14 +116,6 @@ export default function Pantry({ mode }) {
             setRefresh(false);
             setIsLoading(false);
         }
-    }
-
-    function showAlert(type, message) {
-        setAlert({
-            show: true,
-            type: type,
-            message: message
-        })
     }
 
     function handleSave(body) {

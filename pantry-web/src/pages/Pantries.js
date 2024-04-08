@@ -4,8 +4,8 @@ import { getPantryList, deletePantry } from '../services/apis/mypantry/requests/
 import Stack from 'react-bootstrap/Stack';
 import Table from 'react-bootstrap/Table';
 import Button from 'react-bootstrap/Button';
-import { AlertContext } from '../services/context/AppContext.js';
 import VariantType from '../components/VariantType.js';
+import useAlert from '../hooks/useAlert.js';
 import { BsPencil, BsTrash } from "react-icons/bs";
 import Form from 'react-bootstrap/Form';
 
@@ -16,7 +16,7 @@ export default function Pantries() {
 
     const [isLoading, setIsLoading] = useState(true);
     const { pantryCtx, setPantryCtx } = useContext(PantryContext);
-    const { setAlert } = useContext(AlertContext);
+    const { showAlert } = useAlert();
 
     useEffect(() => {
         if (refresh) fetchPantries();
@@ -42,14 +42,6 @@ export default function Pantries() {
         } catch (error) {
             showAlert(VariantType.DANGER, error.message);
         }
-    }
-
-    function showAlert(type, message) {
-        setAlert({
-            show: true,
-            type: type,
-            message: message
-        })
     }
 
     function renderItem(item) {

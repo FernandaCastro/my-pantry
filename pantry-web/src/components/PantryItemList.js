@@ -1,6 +1,5 @@
-import { AlertContext } from '../services/context/AppContext.js';
 import { getPantryItems, deletePantryItem, updatePantryItem } from '../services/apis/mypantry/requests/PantryRequests.js';
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useEffect, useState } from 'react';
 import VariantType from '../components/VariantType.js';
 import Button from 'react-bootstrap/Button';
 import { BsTrash } from "react-icons/bs";
@@ -11,6 +10,7 @@ import Image from 'react-bootstrap/Image';
 import food from '../assets/images/healthy-food.png'
 import Stack from 'react-bootstrap/Stack';
 import { camelCase } from '../services/Utils.js';
+import useAlert from '../hooks/useAlert.js';
 
 function PantryItemList({ pantryId }) {
 
@@ -19,7 +19,7 @@ function PantryItemList({ pantryId }) {
     const [pantryItems, setPantryItems] = useState([]);
     const [filteredItems, setFilteredItems] = useState([]);
     const [searchText, setSearchText] = useState("");
-    const { setAlert } = useContext(AlertContext);
+    const { showAlert } = useAlert();
 
     useEffect(() => {
         setIsLoading(true);
@@ -71,14 +71,6 @@ function PantryItemList({ pantryId }) {
     function handleSave(item) {
         fetchUpdatePantryItem(item);
         //showAlert(VariantType.SUCCESS, "Item updated successfully!");
-    }
-
-    function showAlert(type, message) {
-        setAlert({
-            show: true,
-            type: type,
-            message: message
-        })
     }
 
     function renderItems() {

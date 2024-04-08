@@ -1,9 +1,9 @@
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
-import { useState, useContext } from 'react';
+import { useState } from 'react';
 import { BsEraser, BsCheck2All, BsChevronDown, BsPlusLg, BsSearch } from "react-icons/bs";
 import VariantType from './VariantType.js';
-import { AlertContext } from '../services/context/AppContext.js';
+import useAlert from '../hooks/useAlert.js';
 import Card from 'react-bootstrap/Card';
 import Table from 'react-bootstrap/Table';
 import Stack from 'react-bootstrap/Stack';
@@ -21,7 +21,7 @@ function AccountSearchBar({ handleSelectAction, handleClearAction, disabled }) {
     const [notFoundMessage, setNotFoundMessage] = useState("");
     const [showAccountForm, setShowAccountForm] = useState(false);
     const [show, setShow] = useState(true);
-    const { setAlert } = useContext(AlertContext);
+    const { showAlert } = useAlert();
 
     const [selectedRole, setSelectedRole] = useState();
     const [account, setAccount] = useState({});
@@ -50,19 +50,22 @@ function AccountSearchBar({ handleSelectAction, handleClearAction, disabled }) {
             setNotFoundMessage(res.length === 0 ? notFound : "");
             setResults(res);
         } catch (error) {
-            setAlert({
-                show: true,
-                type: VariantType.DANGER,
-                message: error.message
-            });
+            showAlert(VariantType.DANGER, error.message);
         }
+    }
+
+
+    async function handleSaveSuccess(newAccount) {
+        clearSearch();
+        setShowAccountForm(false);
+        setResults([...results, newAccount]);
     }
 
     function renderSearchBar() {
         return (
             <Stack direction="horizontal" gap={2} className="w-100">
                 <div className="w-75 pe-0">
-                    <Form.Control size="sm" type="text" placeholder='Search by e-mail or name' value={searchText} onChange={(e) => setSearchText(e.target.value)} disabled={disabled}/>
+                    <Form.Control size="sm" type="text" placeholder='Search by e-mail or name' value={searchText} onChange={(e) => setSearchText(e.target.value)} disabled={disabled} />
                 </div>
                 <div>
                     <Button className="w-0 p-0" variant="link" onClick={handleSearch} title='Search' disabled={!searchText && searchText.length < 3}><BsSearch className='icon' /></Button>
@@ -79,44 +82,32 @@ function AccountSearchBar({ handleSelectAction, handleClearAction, disabled }) {
 
     function renderResults() {
         return (
-            results.map((item) => {
-                return (
-                    <tr key={item.id} className="w-0 p-0 colorfy">
-                        <td className="w-0 p-0 border-end-0 colorfy">
-                            <span>{item.name} {item.email === "" ? "" : ' - ' + item.email}</span></td>
-                        <td className="w-0 p-0 colorfy">
-                            {/* <Form.Check size="sm" className="mb-1 title"
+            <Table hover>
+                <tbody>
+                    {results.map((item) => {
+                        return (
+                            <tr key={item.id} className="w-0 p-0 colorfy">
+                                <td className="w-0 p-0 border-end-0 colorfy">
+                                    <span>{item.name} {item.email === "" ? "" : ' - ' + item.email}</span></td>
+                                <td className="w-0 p-0 colorfy">
+                                    {/* <Form.Check size="sm" className="mb-1 title"
                                 onClick={e => item = { ...item, groupRole: (e.target.checked ? "ADMIN" : "USER") }}
                                 label="as Admin" /> */}
-                            <RoleSelect setSelectedRole={setSelectedRole} />
-                        </td>
-                        <td className="w-0 p-0 colorfy">
-                            <Button onClick={() => handleSelect(item)} variant="link" title='Add Member to the group'><BsCheck2All className='icon' /></Button>
-                        </td>
-                    </tr>
+                                    <RoleSelect setSelectedRole={setSelectedRole} />
+                                </td>
+                                <td className="w-0 p-0 colorfy">
+                                    <Button onClick={() => handleSelect(item)} variant="link" title='Add Member to the group'><BsCheck2All className='icon' /></Button>
+                                </td>
+                            </tr>
 
-                );
-            })
-        );
-    }
-
-    function showAlert(type, message) {
-        setAlert({
-            show: true,
-            type: type,
-            message: message
-        })
-    }
-
-
-    async function handleSaveSuccess(newAccount) {
-        clearSearch();
-        setShowAccountForm(false);
-        setResults([...results, newAccount]);
+                        );
+                    })}
+                </tbody>
+            </Table>
+            )
     }
 
     function renderAccountForm() {
-        if (showAccountForm) {
             return (
                 <div>
                     <div className="me-3 d-flex justify-content-end align-items-center">
@@ -125,7 +116,6 @@ function AccountSearchBar({ handleSelectAction, handleClearAction, disabled }) {
                     <AccountForm handleSaveSuccess={handleSaveSuccess} />
                 </div>
             );
-        }
     }
 
     return (
@@ -142,15 +132,8 @@ function AccountSearchBar({ handleSelectAction, handleClearAction, disabled }) {
                         </Card.Header>
                         <Card.Body className="m-0 p-2">
                             <span style={{ color: 'red', fontSize: '11px' }}>{notFoundMessage}</span>
-                            {renderAccountForm()}
-                            {results ? (
-                                <Table hover>
-                                    <tbody>
-                                        {renderResults()}
-                                    </tbody>
-                                </Table>)
-                                : <span />
-                            }
+                            {showAccountForm ? renderAccountForm() : <span/>}
+                            {results ?  renderResults() : <span /> }
                         </Card.Body>
                     </Card>
 

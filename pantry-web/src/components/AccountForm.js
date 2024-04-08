@@ -3,13 +3,12 @@ import Button from 'react-bootstrap/Button';
 import Stack from 'react-bootstrap/Stack';
 import Row from 'react-bootstrap/Row';
 import VariantType from './VariantType.js';
-import { AlertContext } from '../services/context/AppContext.js';
-import { useState, useContext } from 'react';
+import useAlert from '../hooks/useAlert.js';
 import { createAccount } from '../services/apis/mypantry/requests/AccountRequests';
 
-export default function AccountForm({ handleSaveSuccess }) {
+export default function AccountForm({ handleSaveSuccess, show }) {
 
-    const { setAlert } = useContext(AlertContext);
+    const { showAlert } = useAlert();
 
     async function fetchCreateAccount(body) {
         try {
@@ -35,14 +34,6 @@ export default function AccountForm({ handleSaveSuccess }) {
         fetchCreateAccount(formJson);
 
         console.log(formJson);
-    }
-
-    function showAlert(type, message) {
-        setAlert({
-            show: true,
-            type: type,
-            message: message
-        })
     }
 
     return (

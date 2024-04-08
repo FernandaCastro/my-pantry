@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router';
 import { getPantry, getPantryItemsConsume, postPantryConsume } from '../services/apis/mypantry/requests/PantryRequests.js';
 import Button from 'react-bootstrap/Button';
@@ -6,11 +6,11 @@ import Stack from 'react-bootstrap/Stack';
 import Table from 'react-bootstrap/Table';
 import Image from 'react-bootstrap/Image';
 import food from '../assets/images/healthy-food.png'
-import VariantType from '../components/VariantType.js';
-import { AlertContext } from '../services/context/AppContext.js';
 import Form from 'react-bootstrap/Form';
 import NumericField from '../components/NumericField.js'
 import { camelCase } from '../services/Utils.js';
+import VariantType from '../components/VariantType.js';
+import useAlert from '../hooks/useAlert.js';
 
 export default function Consume() {
 
@@ -26,7 +26,7 @@ export default function Consume() {
 
   const [isLoading, setIsLoading] = useState(true);
   const [reload, setReload] = useState(false);
-  const { setAlert } = useContext(AlertContext);
+  const { showAlert } = useAlert();
 
   useEffect(() => {
     fetchPantryData();
@@ -86,14 +86,6 @@ export default function Consume() {
     })
     setIsPantryEmpty(emptyPantry)
     return setConsumedItems(copy);
-  }
-
-  function showAlert(type, message) {
-    setAlert({
-      show: true,
-      type: type,
-      message: message
-    })
   }
 
   function handleSave() {

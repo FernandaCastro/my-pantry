@@ -94,7 +94,7 @@ public class AccountGroupMemberService {
             throw new NotAllowedException("You are not allowed to change the group.");
         }
 
-        if (AccountGroupMemberRole.OWNER.value.equals(member.getRole().getName())) {
+        if (AccountGroupMemberRole.OWNER.value.equals(dto.getRole().getName())) {
             throw new OneOwnerMemberMustExistException("Only one Owner Member is allowed in the group");
         }
 

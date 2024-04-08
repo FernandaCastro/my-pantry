@@ -1,9 +1,9 @@
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { updateProduct, createProduct } from '../services/apis/mypantry/requests/PantryRequests.js';
 import { getProperty } from '../services/apis/mypantry/requests/PurchaseRequests.js';
 import Stack from 'react-bootstrap/Stack';
 import VariantType from '../components/VariantType.js';
-import { AlertContext } from '../services/context/AppContext.js';
+import useAlert from '../hooks/useAlert.js';
 import ProductForm from '../components/ProductForm.js';
 import ProductList from '../components/ProductList.js';
 import Button from 'react-bootstrap/Button';
@@ -16,12 +16,12 @@ export default function Product() {
     const [mode, setMode] = useState("");
     const [productLabel, setProductLabel] = useState("");
     const [refresh, setRefresh] = useState(0);
-    const { setAlert } = useContext(AlertContext);
     const [showForm, setShowForm] = useState(false);
     const [categories, setCategories] = useState([]);
 
     const [accountGroupOptions, setAccountGroupOptions] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
+    const { showAlert } = useAlert();
 
     useEffect(() => {
         fetchCategories();
@@ -118,14 +118,6 @@ export default function Product() {
 
     function handleOnListSelection(item) {
         handleSelectAction(item);
-    }
-
-    function showAlert(type, message) {
-        setAlert({
-            show: true,
-            type: type,
-            message: message
-        })
     }
 
     return (

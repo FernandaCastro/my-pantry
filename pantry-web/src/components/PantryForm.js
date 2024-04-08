@@ -3,16 +3,14 @@ import Stack from 'react-bootstrap/Stack';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
-import { useState, useEffect, useContext } from 'react';
+import { useState, useEffect } from 'react';
 import Select from './Select';
 //import Select from 'react-select';
-import { AlertContext } from '../services/context/AppContext.js';
 
 export default function PantryForm({ pantry, handleSave, accountGroupOptions }) {
 
     const [isActiveLabel, setIsActiveLabel] = useState(pantry.isActive ? "Active" : "Inactive");
     const [accountGroupOption, setAccountGroupOption] = useState({ value: 0, label: "" });
-    const { setAlert } = useContext(AlertContext);
     const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {

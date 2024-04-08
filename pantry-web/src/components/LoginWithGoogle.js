@@ -1,15 +1,14 @@
 import { postLoginToken } from '../services/LoginService';
 import { Button } from 'react-bootstrap';
-import { useRef, useEffect, useContext } from 'react';
+import { useRef, useEffect} from 'react';
 import useScript from '../hooks/useScript';
-import { AlertContext } from '../services/context/AppContext.js';
 import VariantType from '../components/VariantType.js';
-//import { GoogleLogin, useGoogleLogin } from '@react-oauth/google';
+import useAlert from '../hooks/useAlert.js';
 
 export function LoginWithGoogle({ handlePostLogin }) {
 
     const GoogleSignInButton = useRef(null);
-    const { setAlert } = useContext(AlertContext);
+    const { showAlert } = useAlert();
 
     useEffect(() => {
         window.google = undefined;
@@ -25,11 +24,7 @@ export function LoginWithGoogle({ handlePostLogin }) {
             profile = await postLoginToken(credential);
 
         } catch (error) {
-            setAlert({
-                show: true,
-                type: VariantType.DANGER,
-                message: error
-            })
+            showAlert(VariantType.DANGER, error);
         }
         handlePostLogin(profile);
     };
