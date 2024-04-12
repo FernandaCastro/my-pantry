@@ -256,13 +256,13 @@ public class AccountService {
     }
 
     private String createJwtToken(AccountDto accountDto) {
-        return jwtHandler.createToken(accountDto.getEmail(), false);
+        return jwtHandler.createToken(accountDto.getEmail(), true);
     }
 
     public ResponseCookie createCookie(String jwtToken) {
         return ResponseCookie.from("AUTH-TOKEN", jwtToken)
                 .httpOnly(true)
-                .maxAge(1 * 24 * 3600)
+                .maxAge(7 * 24 * 3600)
                 .path("/")
                 .secure(false)  //true= HTTPS only
                 .build();

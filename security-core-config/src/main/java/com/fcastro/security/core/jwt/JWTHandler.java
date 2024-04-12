@@ -22,8 +22,8 @@ import java.util.Map;
 @Component
 public class JWTHandler {
 
-    private static final long TOKEN_VALIDITY = 86400000L;
-    private static final long TOKEN_VALIDITY_REMEMBER = 2592000000L;
+    private static final long TOKEN_VALIDITY = 86400000L; //24hours
+    private static final long TOKEN_VALIDITY_REMEMBER = 2592000000L;//30days
     private final Key key;
 
     private final SecurityPropertiesConfig securityConfigData;
@@ -47,7 +47,7 @@ public class JWTHandler {
                 .compact();
     }
 
-    public String createSysToken(String email, String role, boolean rememberMe) {
+    public String createSysToken(String email, String role) {
         long now = (new Date()).getTime();
         Map<String, Object> claims = new HashMap<>();
         if (role != null && role.length() > 0) {

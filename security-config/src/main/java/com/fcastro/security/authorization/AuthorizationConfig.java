@@ -14,7 +14,7 @@ public class AuthorizationConfig {
     //RestClient to the AuthorizationServer
     @Bean
     RestClient authorizationServer(SecurityPropertiesConfig securityConfigData, JWTHandler jwtHandler) {
-        String jwtToken = jwtHandler.createSysToken("sysadmin@mypantry.com", ROLE_SYSADMIN, false);
+        String jwtToken = jwtHandler.createSysToken("sysadmin@mypantry.com", ROLE_SYSADMIN);
 
         return RestClient.builder()
                 .baseUrl(securityConfigData.getAuthzServer())
