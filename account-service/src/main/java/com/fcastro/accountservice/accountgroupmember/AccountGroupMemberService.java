@@ -90,7 +90,7 @@ public class AccountGroupMemberService {
     public AccountGroupMemberDto save(AccountGroupMemberDto dto) {
         //User should be OWNER in the group
         var member = repository.findByGroupIdAndEmail(dto.getAccountGroupId(), SecurityContextHolder.getContext().getAuthentication().getName()).get();
-        if (member == null || !AccountGroupMemberRole.OWNER.value.equals(member.getRole().getName())) {
+        if (!AccountGroupMemberRole.OWNER.value.equals(member.getRole().getName())) {
             throw new NotAllowedException("You are not allowed to change the group.");
         }
 
@@ -105,7 +105,7 @@ public class AccountGroupMemberService {
     public void delete(long accountGroupId, long accountId) {
         //User should be OWNER in the Group, or User is deleting his own access to the group
         var member = repository.findByGroupIdAndEmail(accountGroupId, SecurityContextHolder.getContext().getAuthentication().getName()).get();
-        if (member == null || (member.getAccountId() != accountId && !AccountGroupMemberRole.OWNER.value.equals(member.getRole().getName()))) {
+        if (member.getAccountId() != accountId && !AccountGroupMemberRole.OWNER.value.equals(member.getRole().getName())) {
             throw new NotAllowedException("You are not allowed to change the group.");
         }
 
@@ -145,6 +145,12 @@ public class AccountGroupMemberService {
     public List<AccountGroupMemberDto> hasPermissionInObject(String email, String permission, String clazz, Long clazzId) {
         var member = convertToDTO(repository.hasPermissionInObject(email, permission, clazz, clazzId));
         return member == null ? List.of() : List.of(member);
+    }
+
+    //Authorization method
+    public List<AccountGroupMemberDto> hasPermissionInObjectList(String email, String permission, String clazz, List<Long> clazzIds) {
+        var list = repository.hasPermissionInObjectList(email, permission, clazz, clazzIds);
+        return list.stream().map(this::convertToDTO).toList();
     }
 
     private AccountGroupMemberDto convertToDTO(AccountGroupMember entity) {

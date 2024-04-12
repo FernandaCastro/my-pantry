@@ -1,6 +1,7 @@
 package com.fcastro.pantryservice.pantryitem;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.Embeddable;
 import lombok.*;
 
 import java.io.Serializable;
@@ -11,12 +12,13 @@ import java.io.Serializable;
 @EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
+@Embeddable
 public class PantryItemKey implements Serializable {
 
     @Column(name = "pantry_id")
-    private long pantryId;
+    private Long pantryId;
 
     @Column(name = "product_id")
-    private long productId;
+    private Long productId;
 
 }

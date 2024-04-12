@@ -5,6 +5,9 @@ import com.fcastro.purchaseservice.config.PurchaseCompleteEventProducer;
 import com.fcastro.purchaseservice.exception.NoItemToPurchaseException;
 import com.fcastro.purchaseservice.exception.PurchaseAlreadyProcessedException;
 import com.fcastro.purchaseservice.exception.PurchaseItemsMissingException;
+import com.fcastro.purchaseservice.product.ProductDto;
+import com.fcastro.purchaseservice.purchaseItem.PurchaseItem;
+import com.fcastro.purchaseservice.purchaseItem.PurchaseItemDto;
 import com.fcastro.purchaseservice.purchaseItem.PurchaseItemService;
 import com.fcastro.security.authorization.AuthorizationHandler;
 import com.fcastro.security.core.model.AccessControlDto;
@@ -13,6 +16,7 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -34,16 +38,15 @@ public class PurchaseService {
         this.authorizationHandler = authorizationHandler;
     }
 
-    //List purchase orders where all pantries in it are acc"ssible the user has access.
-    public List<PurchaseDto> listPurchaseOrder(String email) {
-        var pantryIds = getPantryIdList(email);
+    //List purchase orders where all pantries in it are accessible by the user.
+    public List<PurchaseDto> listPurchaseOrder(String email, Set<Long> pantryIds) {
+        //var pantryIds = getAllPantriesAllowedToUser(email);
         var entities = repository.findAllOrderByDescCreateAt(pantryIds);
         return convertToDto(entities);
     }
 
-    public PurchaseDto getOpenPurchaseOrder(String email) {
+    public PurchaseDto getOpenPurchaseOrder(String email, Set<Long> pantryIds) {
         //return existing and pending purchase order
-        var pantryIds = getPantryIdList(email);
         var purchase = convertToDto(repository.getPending(pantryIds));
         if (purchase != null) {
             var items = purchaseItemService.listPurchaseByCategory(purchase.getId(), null);
@@ -52,9 +55,9 @@ public class PurchaseService {
         return purchase;
     }
 
-    public PurchaseDto createPurchaseOrder(String email) {
+    public PurchaseDto createPurchaseOrder(String email, Set<Long> pantryIds) {
         //return existing and pending purchase order
-        var pantryIds = getPantryIdList(email);
+        //var pantryIds = getPantryIdList(email);
         var entity = repository.getPending(pantryIds);
         if (entity != null) return convertToDto(entity);
 
@@ -81,9 +84,14 @@ public class PurchaseService {
         var entity = repository.findById(dto.getId())
                 .orElseThrow(() -> new ResourceNotFoundException("Purchase Order was not found."));
 
-        var pantryIds = getPantryIdList(email);
-        if (pantryIds.stream().noneMatch((id) -> id == dto.getId())) {
-            throw new AccessDeniedException("User is not allowed to delete this Purchase Order.");
+        //compare all items' pantries to the access allowed to the user
+        var accessList = getAllPantriesAllowedToUser(email);
+        var allMatch = entity.getItems().stream()
+                .map(PurchaseItem::getPantryId)
+                .allMatch(new HashSet<>(accessList)::contains);
+
+        if (!allMatch) {
+            throw new AccessDeniedException("User is not allowed to close this Purchase Order.");
         }
 
         if (dto.getItems() == null || dto.getItems().size() == 0) {
@@ -103,7 +111,7 @@ public class PurchaseService {
         return convertToDto(entity);
     }
 
-    private Set<Long> getPantryIdList(String email) {
+    private Set<Long> getAllPantriesAllowedToUser(String email) {
         var accessControlList = authorizationHandler.listAccessControl(email, "Pantry", null, null);
         return accessControlList.stream().map(AccessControlDto::getClazzId).collect(Collectors.toSet());
     }
@@ -118,8 +126,38 @@ public class PurchaseService {
         return modelMapper.map(entity, PurchaseDto.class);
     }
 
-    private List<PurchaseDto> convertToDto(List<Purchase> entity) {
-        if (entity == null) return null;
-        return modelMapper.map(entity, List.class);
+    private List<PurchaseDto> convertToDto(List<Purchase> entities) {
+        if (entities == null) return null;
+
+        return entities.stream()
+                .map(entity -> PurchaseDto.builder()
+                        .id(entity.getId())
+                        .createdAt(entity.getCreatedAt())
+                        .processedAt(entity.getProcessedAt())
+                        //.items(convertItemToDto(entity.getItems()))
+                        .build())
+                .collect(Collectors.toList());
+
+    }
+
+    private List<PurchaseItemDto> convertItemToDto(List<PurchaseItem> entities) {
+        if (entities == null) return null;
+
+        return entities.stream()
+                .map(entity ->
+                        PurchaseItemDto.builder()
+                                .id(entity.getId())
+                                .pantryId(entity.getPantryId())
+                                .pantryName(entity.getPantryName())
+                                .product(ProductDto.builder()
+                                        .id(entity.getProduct().getId())
+                                        .code(entity.getProduct().getCode())
+                                        .description(entity.getProduct().getDescription())
+                                        .category(entity.getProduct().getCategory())
+                                        .build())
+                                .qtyProvisioned(entity.getQtyProvisioned())
+                                .qtyPurchased(entity.getQtyPurchased())
+                                .build())
+                .collect(Collectors.toList());
     }
 }

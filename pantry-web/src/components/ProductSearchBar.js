@@ -106,8 +106,10 @@ function ProductSearchBar({ accountGroupId, accountGroupOptions, handleSelectAct
 
     async function handleSaveAndAddNewProduct(jsonProduct) {
         const res = await fetchSaveProduct(jsonProduct);
-        handleSelect(res);
-        showAlert(VariantType.SUCCESS, "Product saved and added to the list successfully ");
+        if (res) {
+            handleSelect(res);
+            showAlert(VariantType.SUCCESS, "Product saved and added to the list successfully ");
+        }
         setShowProductForm(false);
     }
 

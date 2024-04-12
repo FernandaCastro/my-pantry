@@ -12,17 +12,22 @@ import java.util.Optional;
 @Repository
 public interface PantryItemRepository extends JpaRepository<PantryItem, PantryItemKey> {
 
-    @Query("select p from pantryItem p where p.pantryId = :pantryId order by product.code")
+    @Query("select p from pantryItem p where p.pantry.id = :pantryId order by product.code")
     @EntityGraph(attributePaths = {"product"})
     List<PantryItem> findAllByPantryId(@Param("pantryId") Long pantryId);
 
-    @Query("select p from pantryItem p where p.pantryId = :pantryId and p.currentQty > 0 order by product.code")
+    @Deprecated
+    @Query("select p from pantryItem p where p.pantry.id = :pantryId and p.currentQty > 0 order by product.code")
     @EntityGraph(attributePaths = {"product"})
     List<PantryItem> findAllToConsumeByPantryId(@Param("pantryId") Long pantryId);
+
+    @Query("select p from pantryItem p where p.pantry.id in :pantryIds and p.currentQty > 0 order by product.code")
+    @EntityGraph(attributePaths = {"pantry", "product"})
+    List<PantryItem> findAllToConsumeByPantryId(@Param("pantryIds") List<Long> pantryIds);
 
     @EntityGraph(attributePaths = {"pantry", "product"})
     Optional<PantryItem> findEagerByPantryIdAndProductId(Long pantryId, Long productId);
 
-    @Query("select count(p) from pantryItem p where p.productId = :productId")
+    @Query("select count(p) from pantryItem p where p.product.id = :productId")
     Integer countPantryItem(Long productId);
 }

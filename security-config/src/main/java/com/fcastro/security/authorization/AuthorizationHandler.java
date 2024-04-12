@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 public class AuthorizationHandler {
@@ -81,6 +82,24 @@ public class AuthorizationHandler {
                 });
     }
 
+    public List<AccountGroupMemberDto> hasPermissionInObjectList(String email, String permission, String clazz, List<Long> clazzIds) {
+        StringBuilder uri = new StringBuilder("authorization/permission-in-object-list?")
+                .append("email=").append(email)
+                .append("&permission=").append(permission)
+                .append("&clazz=").append(clazz)
+                .append("&clazzIds=").append(clazzIds.stream().map(String::valueOf).collect(Collectors.joining(",")));
+
+        return authzServer.get()
+                .uri(uri.toString())
+                .accept(MediaType.APPLICATION_JSON)
+                .retrieve()
+                .onStatus(status ->
+                        status.value() >= 400, (request, response) -> {
+                    throw new AccessDeniedException("Request to AuthorizationServer(permission-in-object-list) failed: [" + response.getStatusCode() + " : " + response.getStatusText() + "]");
+                })
+                .body(new ParameterizedTypeReference<List<AccountGroupMemberDto>>() {
+                });
+    }
 
     public AccessControlDto getAccessControl(String clazz, Long clazzId) {
         return authzServer.get()

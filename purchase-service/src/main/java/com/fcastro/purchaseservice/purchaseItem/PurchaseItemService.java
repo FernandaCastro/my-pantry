@@ -53,21 +53,19 @@ public class PurchaseItemService {
         return convertToDto(repository.listPendingPurchase(pantryIds));
     }
 
-    public List<PurchaseItemDto> listPendingPurchaseByCategory(String email, String supermarket) {
-        var pantryIds = getPantryIdList(email);
+    public List<PurchaseItemDto> listPendingPurchaseByCategory(String email, Set<Long> pantryIds, String supermarket) {
+        //var pantryIds = getPantryIdList(email);
         var list = convertToDto(repository.listPendingPurchase(pantryIds));
         if (supermarket == null || Strings.isEmpty(supermarket)) return list;
 
-        var categorized = categorize(list, supermarket);
-        return categorized;
+        return categorize(list, supermarket);
     }
 
     public List<PurchaseItemDto> listPurchaseByCategory(Long purchaseId, String supermarket) {
         var list = convertToDto(repository.findAllByPurchaseId(purchaseId));
         if (supermarket == null || Strings.isEmpty(supermarket)) return list;
 
-        var categorized = categorize(list, supermarket);
-        return categorized;
+        return categorize(list, supermarket);
     }
 
     private Set<Long> getPantryIdList(String email) {
@@ -86,7 +84,7 @@ public class PurchaseItemService {
         var property = propertiesService.get(propertyKey)
                 .orElseThrow(() -> new ResourceNotFoundException("Property " + propertyKey + " not found."));
 
-        List<String> categories = new ArrayList<String>();
+        List<String> categories;
 
         try {
             categories = Arrays.asList(jsonMapper.readValue(property.getPropertyValue(), String[].class));
@@ -101,7 +99,7 @@ public class PurchaseItemService {
                 map.remove(c);
             }
         });
-        map.values().forEach(l -> categorized.addAll(l));
+        map.values().forEach(categorized::addAll);
 
         return categorized;
     }
@@ -184,7 +182,7 @@ public class PurchaseItemService {
     private List<PurchaseItemDto> convertToDto(List<PurchaseItem> entities) {
         if (entities == null) return null;
         return entities.stream()
-                .map(entity -> convertToDto(entity))
+                .map(this::convertToDto)
                 .collect(Collectors.toList());
     }
 

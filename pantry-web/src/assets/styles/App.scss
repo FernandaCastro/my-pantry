@@ -61,7 +61,7 @@ table {
     }
 
     td.highlight {
-        background: darken($background, 5%) !important;
+        background: darken($background, 7%) !important;
     }
 
     :hover {
@@ -265,7 +265,50 @@ div.scroll-consume {
     }
 }
 
+div.scroll-selectPantries {
+    overflow-y: auto;
+
+    @media (min-height: 575px) {
+        max-height: 50px;
+    }
+
+    @media (min-height: 576px) {
+        max-height: 100px;
+    }
+
+    @media (min-height: 768px) {
+        max-height: 150px;
+    }
+
+    @media (min-height: 992px) {
+        max-height: 200px;
+    }
+}
+
 div.scroll-purchase {
+    overflow-y: auto;
+    border: 1px solid;
+    border-radius: 5px;
+    border-color: $border-color;
+
+    @media (min-height: 575px) {
+        max-height: 100px;
+    }
+
+    @media (min-height: 576px) {
+        max-height: 200px;
+    }
+
+    @media (min-height: 768px) {
+        max-height: 300px;
+    }
+
+    @media (min-height: 992px) {
+        max-height: 400px;
+    }
+}
+
+div.scroll-purchaseItems {
     overflow-y: auto;
     border: 1px solid;
     border-radius: 5px;

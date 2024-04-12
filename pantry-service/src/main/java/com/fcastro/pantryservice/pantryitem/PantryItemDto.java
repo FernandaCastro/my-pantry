@@ -15,8 +15,6 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class PantryItemDto {
 
-    private Long pantryId;
-    private Long productId;
     private int idealQty;
     private int currentQty;
     private int provisionedQty;
@@ -33,14 +31,14 @@ public class PantryItemDto {
 
         PantryItemDto that = (PantryItemDto) o;
 
-        if (!getPantryId().equals(that.getPantryId())) return false;
-        return getProductId().equals(that.getProductId());
+        if (!getPantry().getId().equals(that.getPantry().getId())) return false;
+        return getProduct().getId().equals(that.getProduct().getId());
     }
 
     @Override
     public int hashCode() {
-        int result = getPantryId().hashCode();
-        result = 31 * result + getProductId().hashCode();
+        int result = getPantry().getId().hashCode();
+        result = 31 * result + getProduct().getId().hashCode();
         return result;
     }
 }

@@ -36,6 +36,11 @@ public class AuthorizationController {
         return ResponseEntity.ok(accountGroupMemberService.hasPermissionInObject(email, permission, clazz, clazzId));
     }
 
+    @GetMapping("/permission-in-object-list")
+    ResponseEntity<List<AccountGroupMemberDto>> hasPermissionInObjectList(@RequestParam String email, @RequestParam String permission, @RequestParam String clazz, @RequestParam List<Long> clazzIds) {
+        return ResponseEntity.ok(accountGroupMemberService.hasPermissionInObjectList(email, permission, clazz, clazzIds));
+    }
+
     @GetMapping("/access-control")
     public ResponseEntity<List<AccessControlDto>> getAllByEmail(@RequestParam String email, @RequestParam String clazz, @RequestParam(required = false) Long clazzId, @RequestParam(required = false) Long accountGroupId) {
         return ResponseEntity.ok(accessControlService.getAllByEmailAndAccessControl(email, clazz, clazzId, accountGroupId));

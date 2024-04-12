@@ -54,7 +54,7 @@ function PantryItemList({ pantryId }) {
 
     async function fetchUpdatePantryItem(item) {
         try {
-            await updatePantryItem(item.pantryId, item.productId, item);
+            await updatePantryItem(item.pantry.id, item.product.id, item);
         } catch (error) {
             showAlert(VariantType.DANGER, error.message);
         } finally {
@@ -63,7 +63,7 @@ function PantryItemList({ pantryId }) {
     }
 
     function handleRemove(item) {
-        fetchDeletePantryItem(item.pantryId, item.productId)
+        fetchDeletePantryItem(item.pantry.id, item.product.id)
         showAlert(VariantType.SUCCESS, "Item removed successfully!");
         return
     }
@@ -79,7 +79,7 @@ function PantryItemList({ pantryId }) {
 
     function renderItem(item) {
         return (
-            <tr key={item.productId} className="border border-primary-subtle align-middle">
+            <tr key={item.product.id} className="border border-primary-subtle align-middle">
                 <td>
                     <Stack direction="horizontal" gap={2}>
                         <div><Image src={food} width={20} height={20} rounded /></div>

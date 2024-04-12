@@ -14,8 +14,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(SpringExtension.class)
 //Loads the application.yml file
@@ -39,7 +38,7 @@ public class JWTHandlerUnitTest {
         boolean rememberMe = false;
 
         //when
-        String token = jwtHandler.createToken(accountDto.getEmail(), role, rememberMe);
+        String token = jwtHandler.createToken(accountDto.getEmail(), rememberMe);
         Authentication authentication = jwtHandler.verifyAndGetAuthentication(token);
 
         //then
@@ -57,7 +56,7 @@ public class JWTHandlerUnitTest {
         boolean rememberMe = false;
 
         //when
-        String token = jwtHandler.createToken(accountDto.getEmail(), role, rememberMe);
+        String token = jwtHandler.createToken(accountDto.getEmail(), rememberMe);
         Authentication authentication = jwtHandler.verifyAndGetAuthentication(token);
 
         //then
@@ -65,7 +64,7 @@ public class JWTHandlerUnitTest {
         assertNotNull(authentication);
         assertEquals(accountDto.getEmail(), authentication.getPrincipal());
         assertEquals(1, authentication.getAuthorities().size());
-        assertEquals(true, authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_SYSADMIN")));
+        assertTrue(authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_SYSADMIN")));
 
     }
 

@@ -11,11 +11,15 @@ import com.fcastro.security.authorization.AuthorizationHandler;
 import com.fcastro.security.core.model.AccessControlDto;
 import com.fcastro.security.exception.AccessControlNotDefinedException;
 import org.modelmapper.ModelMapper;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toSet;
 
 @Service
 public class ProductService {
@@ -61,7 +65,7 @@ public class ProductService {
             throw new RequestParamExpectedException("Expecting to receive SearchParam: code or description value");
 
         var accessControlList = authorizationHandler.listAccessControl(email, Product.class.getSimpleName(), null, groupId);
-        var productIds = accessControlList.stream().map(AccessControlDto::getClazzId).collect(Collectors.toSet());
+        var productIds = accessControlList.stream().map(AccessControlDto::getClazzId).collect(toSet());
 
         var productList = repository.findAllByCodeOrDescription(searchParam.toLowerCase(), productIds).stream()
                 .map(this::convertToDTO).collect(Collectors.toList());
@@ -74,7 +78,7 @@ public class ProductService {
 
         var accessControlList = authorizationHandler.listAccessControl(email, Product.class.getSimpleName(), null, null);
 
-        var productIds = accessControlList.stream().map(AccessControlDto::getClazzId).collect(Collectors.toSet());
+        var productIds = accessControlList.stream().map(AccessControlDto::getClazzId).collect(toSet());
         var productList = repository.findAllByIds(productIds).stream().map(this::convertToDTO).collect(Collectors.toList());
         productList = embedAccountGroup(productList, accessControlList);
         return productList;
@@ -88,7 +92,7 @@ public class ProductService {
     //It finds and attaches AccountGroup to the Product
     private ProductDto embedAccountGroup(ProductDto product, List<AccessControlDto> accessControlList) {
         accessControlList.stream()
-                .filter((accessControl) -> accessControl.getClazzId() == product.getId())
+                .filter((accessControl) -> Objects.equals(accessControl.getClazzId(), product.getId()))
                 .findFirst()
                 .ifPresentOrElse(
                         accessControl -> product.setAccountGroup(accessControl.getAccountGroup()),
@@ -99,7 +103,46 @@ public class ProductService {
         return product;
     }
 
-    public ProductDto save(ProductDto dto) {
+    public ProductDto create(ProductDto dto) {
+        if (dto.getAccountGroup() == null || dto.getAccountGroup().getId() == 0)
+            throw new AccessControlNotDefinedException("Product must be associated to an Account Group");
+
+        existsInAccountGroup(dto);
+
+        var entity = repository.save(convertToEntity(dto));
+        authorizationHandler.saveAccessControl(Product.class.getSimpleName(), entity.getId(), dto.getAccountGroup().getId());
+
+        var storedDto = convertToDTO(entity);
+        storedDto.setAccountGroup(dto.getAccountGroup());
+
+        productEventProducer.send(ProductEventDto.builder()
+                .action(Action.CREATE)
+                .id(entity.getId())
+                .code(entity.getCode())
+                .description(entity.getDescription())
+                .size(entity.getSize())
+                .category(entity.getCategory())
+                .build());
+
+        return storedDto;
+    }
+
+    //TODO: does it scale?
+    private void existsInAccountGroup(ProductDto dto) {
+        var productList = repository.findAllByCode(dto.getCode()); //This can be a huge list
+        var accessList = authorizationHandler.listAccessControl(SecurityContextHolder.getContext().getAuthentication().getName(), "Product", null, dto.getAccountGroup().getId());
+
+        var found = accessList.stream()
+                .map(AccessControlDto::getClazzId)
+                .anyMatch(productList.stream()
+                        .map(Product::getId)
+                        .collect(toSet())::contains);
+
+        if (found)
+            throw new DatabaseConstraintException("Product already exits in the account group!");
+    }
+
+    public ProductDto update(ProductDto dto) {
         if (dto.getAccountGroup() == null || dto.getAccountGroup().getId() == 0)
             throw new AccessControlNotDefinedException("Product must be associated to an Account Group");
 

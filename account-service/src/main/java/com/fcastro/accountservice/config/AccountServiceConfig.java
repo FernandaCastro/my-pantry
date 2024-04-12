@@ -29,7 +29,7 @@ public class AccountServiceConfig {
 
     @Bean
     RestClient accessControlDomain(JWTHandler jwtHandler) {
-        String jwtToken = jwtHandler.createToken("sysadmin@mypantry.com", ROLE_SYSADMIN, false);
+        String jwtToken = jwtHandler.createToken("sysadmin@mypantry.com", false);
 
         return RestClient.builder()
                 .defaultHeader("SYSADMIN-AUTH", jwtToken)

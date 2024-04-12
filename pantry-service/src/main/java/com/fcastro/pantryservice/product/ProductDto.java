@@ -11,7 +11,7 @@ import lombok.*;
 @ToString
 public class ProductDto {
 
-    private long id;
+    private Long id;
     @NotBlank(message = "Code is mandatory")
     private String code;
     private String description;

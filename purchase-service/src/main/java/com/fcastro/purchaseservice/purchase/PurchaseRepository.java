@@ -25,7 +25,8 @@ public interface PurchaseRepository extends JpaRepository<Purchase, Long> {
             "from purchaseItem i " +
             "where i.purchase.id = p.id " +
             "and i.pantryId not in :pantryIds ) " +
-            "order by p.createdAt desc")
+            "order by p.createdAt desc " +
+            "limit 5")
     List<Purchase> findAllOrderByDescCreateAt(Set<Long> pantryIds);
 
 }

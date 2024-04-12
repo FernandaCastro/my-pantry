@@ -40,7 +40,7 @@ public class ProductService {
     public void processProductEvent(ProductEventDto eventDto) {
         try {
             switch (eventDto.getAction()) {
-                case UPDATE -> repository.save(convertToEntity(eventDto));
+                case UPDATE, CREATE -> repository.save(convertToEntity(eventDto));
                 case DELETE -> repository.deleteById(eventDto.getId());
                 default -> throw new IllegalArgumentException("Action not supported: " + eventDto.getAction());
             }

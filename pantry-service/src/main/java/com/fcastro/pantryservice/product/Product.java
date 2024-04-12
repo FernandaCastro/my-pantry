@@ -31,7 +31,7 @@ public class Product {
     @Transient
     private Long accountGroupId;
 
-    @OneToMany(mappedBy = "product", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "product", fetch = FetchType.LAZY)
     private Set<PantryItem> items;
 
     public Product(Long id, String code, String description, String size, String category, Long accountGroupId) {

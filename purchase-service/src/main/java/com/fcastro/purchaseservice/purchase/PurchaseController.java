@@ -3,9 +3,11 @@ package com.fcastro.purchaseservice.purchase;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping("purchases")
@@ -18,21 +20,22 @@ public class PurchaseController {
     }
 
     @GetMapping
-    @PreAuthorize("hasPermissionInAnyGroup('purchase_pantry')")
-    public ResponseEntity<List<PurchaseDto>> listPurchase() {
-        return ResponseEntity.ok(service.listPurchaseOrder(SecurityContextHolder.getContext().getAuthentication().getName()));
+    @PreAuthorize("hasPermissionInObjectList('Pantry', #pantryIds, 'purchase_pantry')")
+    public ResponseEntity<List<PurchaseDto>> listPurchase(@P("pantryIds") @RequestParam Set<Long> pantryIds) {
+        return ResponseEntity.ok(service.listPurchaseOrder(SecurityContextHolder.getContext().getAuthentication().getName(), pantryIds));
     }
 
+    @Deprecated
     @GetMapping("/open")
-    @PreAuthorize("hasPermissionInAnyGroup('purchase_pantry')")
-    public ResponseEntity<PurchaseDto> getOpenPurchaseOrder() {
-        return ResponseEntity.ok(service.getOpenPurchaseOrder(SecurityContextHolder.getContext().getAuthentication().getName()));
+    @PreAuthorize("hasPermissionInObjectList('Pantry', #pantryIds, 'purchase_pantry')")
+    public ResponseEntity<PurchaseDto> getOpenPurchaseOrder(@P("pantryIds") @RequestParam Set<Long> pantryIds) {
+        return ResponseEntity.ok(service.getOpenPurchaseOrder(SecurityContextHolder.getContext().getAuthentication().getName(), pantryIds));
     }
 
     @PostMapping("/new")
-    @PreAuthorize("hasPermissionInAnyGroup('purchase_pantry')")
-    public ResponseEntity<PurchaseDto> createPurchaseOrder() {
-        return ResponseEntity.ok(service.createPurchaseOrder(SecurityContextHolder.getContext().getAuthentication().getName()));
+    @PreAuthorize("hasPermissionInObjectList('Pantry', #pantryIds, 'purchase_pantry')")
+    public ResponseEntity<PurchaseDto> createPurchaseOrder(@P("pantryIds") @RequestBody Set<Long> pantryIds) {
+        return ResponseEntity.ok(service.createPurchaseOrder(SecurityContextHolder.getContext().getAuthentication().getName(), pantryIds));
     }
 
     @PostMapping("/close")

@@ -15,7 +15,6 @@ export default function Pantries() {
     const [refresh, setRefresh] = useState(true);
 
     const [isLoading, setIsLoading] = useState(true);
-    const { pantryCtx, setPantryCtx } = useContext(PantryContext);
     const { showAlert } = useAlert();
 
     useEffect(() => {
@@ -48,11 +47,7 @@ export default function Pantries() {
         return (
             <tr key={item.id} className="align-middle">
                 <td>
-                    <Form.Check size="sm" type="radio" name="group1"
-                        disabled={!item.isActive}
-                        defaultChecked={pantryCtx && Object.keys(pantryCtx).length > 0 && pantryCtx.id === item.id ? true : false}
-                        onClick={(e) => e.target.checked ? handlePantryClick(item) : null}
-                        label={item.name} />
+                    <span disabled={!item.isActive}>{item.name}</span>
                 </td>
                 <td>
                     <span className='d-none d-md-block'>{item.accountGroup.name}</span>
@@ -80,14 +75,9 @@ export default function Pantries() {
         )
     }
 
-    function handlePantryClick(item) {
-        item.isActive ? setPantryCtx(item) : setPantryCtx({});
-    }
-
     function handleRemove(id) {
         fetchDeletePantry(id);
         showAlert(VariantType.SUCCESS, "Pantry removed successfully!");
-        if (pantryCtx.id === id) setPantryCtx({})
     }
 
     return (

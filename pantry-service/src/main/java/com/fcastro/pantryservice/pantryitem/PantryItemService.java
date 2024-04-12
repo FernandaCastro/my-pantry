@@ -7,8 +7,10 @@ import com.fcastro.pantryservice.event.PurchaseCreateEventProducer;
 import com.fcastro.pantryservice.exception.PantryAndProductAccountGroupInconsistentException;
 import com.fcastro.pantryservice.exception.PantryNotActiveException;
 import com.fcastro.pantryservice.exception.QuantityNotAvailableException;
+import com.fcastro.pantryservice.pantry.Pantry;
+import com.fcastro.pantryservice.pantry.PantryDto;
+import com.fcastro.pantryservice.product.Product;
 import com.fcastro.pantryservice.product.ProductDto;
-import org.hibernate.LazyInitializationException;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -46,17 +48,29 @@ public class PantryItemService {
         return listEntity.stream().map(this::convertToDTO).collect(Collectors.toList());
     }
 
+    @Deprecated
     public List<PantryItemDto> getAllConsume(long pantryId) {
         var listEntity = repository.findAllToConsumeByPantryId(pantryId);
         return listEntity.stream().map(this::convertToDTO).collect(Collectors.toList());
     }
 
-    public PantryItemDto save(PantryItemDto dto) {
+    public List<PantryItemDto> getAllConsume(List<Long> pantryIds) {
+        var listEntity = repository.findAllToConsumeByPantryId(pantryIds);
+        return listEntity.stream().map(this::convertToDTO).collect(Collectors.toList());
+    }
+
+    public PantryItemDto create(PantryItemDto dto) {
+        //Check AccountGroups when adding new item
         if (!Objects.equals(dto.getPantry().getAccountGroup().getId(), dto.getProduct().getAccountGroup().getId()) &&
                 (dto.getProduct().getAccountGroup().getParentAccountGroup() == null || !Objects.equals(dto.getPantry().getAccountGroup().getId(), dto.getProduct().getAccountGroup().getParentAccountGroup().getId()))) {
             throw new PantryAndProductAccountGroupInconsistentException("Product " + dto.getProduct().getCode() + " is not allowed in the Pantry.");
         }
 
+        var entity = repository.save(convertToEntity(dto));
+        return convertToDTO(entity);
+    }
+
+    public PantryItemDto update(PantryItemDto dto) {
         var entity = repository.save(convertToEntity(dto));
         return convertToDTO(entity);
     }
@@ -76,7 +90,7 @@ public class PantryItemService {
         return list.stream()
                 .filter(item -> item.qty > 0)
                 .map(item -> {
-                    item.pantryId = pantryId;
+                    item.setPantryId(pantryId);
                     return consumePantryItem(item);
                 })
                 .collect(Collectors.toList());
@@ -130,7 +144,7 @@ public class PantryItemService {
 
     private long calculateUsagePercentage(PantryItem itemEntity) {
         if(itemEntity.getCurrentQty() == 0) return 0;
-        return (100 * itemEntity.getCurrentQty()) / itemEntity.getIdealQty();
+        return (100L * itemEntity.getCurrentQty()) / itemEntity.getIdealQty();
     }
 
     private int calculateProvision(PantryItem itemEntity) {
@@ -196,29 +210,32 @@ public class PantryItemService {
         if (entity == null) return null;
 
         ProductDto product = null;
-        try {
-            if (entity.getProduct() != null) {
-                product = ProductDto.builder()
-                        .id(entity.getProduct().getId())
-                        .code(entity.getProduct().getCode())
-                        .description(entity.getProduct().getDescription())
-                        .size(entity.getProduct().getSize())
-                        .build();
-            }
-        } catch (LazyInitializationException ex) {
+        if (entity.getProduct() != null) {
             product = ProductDto.builder()
-                    .id(entity.getProductId())
+                    .id(entity.getProduct().getId())
+                    .code(entity.getProduct().getCode())
+                    .description(entity.getProduct().getDescription())
+                    .size(entity.getProduct().getSize())
+                    .build();
+        }
+
+        PantryDto pantry = null;
+        if (entity.getPantry() != null) {
+            pantry = PantryDto.builder()
+                    .id(entity.getPantry().getId())
+                    .name(entity.getPantry().getName())
+                    .type(entity.getPantry().getType())
+                    .isActive(entity.getPantry().getIsActive())
                     .build();
         }
 
         return PantryItemDto.builder()
-                .pantryId(entity.getPantryId())
-                .productId(entity.getProductId())
                 .idealQty(entity.getIdealQty())
                 .currentQty(entity.getCurrentQty())
                 .provisionedQty(entity.getProvisionedQty())
                 .lastProvisioning(entity.getLastProvisioning())
                 .product(product)
+                .pantry(pantry)
                 .build();
     }
 
@@ -226,8 +243,12 @@ public class PantryItemService {
         if (dto == null) return null;
 
         return PantryItem.builder()
-                .pantryId(dto.getPantryId())
-                .productId(dto.getProductId())
+                .id(PantryItemKey.builder()
+                        .pantryId(dto.getPantry().getId())
+                        .productId(dto.getProduct().getId())
+                        .build())
+                .pantry(Pantry.builder().id(dto.getPantry().getId()).build())
+                .product(Product.builder().id(dto.getProduct().getId()).build())
                 .idealQty(dto.getIdealQty())
                 .currentQty(dto.getCurrentQty())
                 .provisionedQty(dto.getProvisionedQty())

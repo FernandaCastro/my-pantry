@@ -2,6 +2,8 @@ package com.fcastro.security.authorization;
 
 import org.springframework.security.access.expression.method.MethodSecurityExpressionOperations;
 
+import java.util.List;
+
 public class CustomMethodSecurityExpressionRoot {
 
     private MethodSecurityExpressionOperations expressionOperations;
@@ -29,7 +31,7 @@ public class CustomMethodSecurityExpressionRoot {
 
         var groupMember = authorizationHandler.hasPermissionInAnyGroup(email, permission);
 
-        return groupMember != null && groupMember.size() > 0 ? true : false;
+        return groupMember != null && groupMember.size() > 0;
     }
 
     //Check if connected user has <permission> in the <groupId>
@@ -40,7 +42,7 @@ public class CustomMethodSecurityExpressionRoot {
         String email = expressionOperations.getAuthentication().getName();
 
         var groupMember = authorizationHandler.hasPermissionInAGroup(email, permission, accountGroupId);
-        return groupMember != null && groupMember.size() > 0 ? true : false;
+        return groupMember != null && groupMember.size() > 0;
     }
 
     //Check if connected user has <permission> in the group in which clazz/clazzId belongs
@@ -51,6 +53,17 @@ public class CustomMethodSecurityExpressionRoot {
         String email = expressionOperations.getAuthentication().getName();
 
         var groupMember = authorizationHandler.hasPermissionInObject(email, permission, clazz, clazzId);
-        return groupMember != null && groupMember.size() > 0 ? true : false;
+        return groupMember != null && groupMember.size() > 0;
+    }
+
+    //Check if connected user has <permission> in the group in which clazz/clazzId belongs
+    public boolean hasPermissionInObjectList(String clazz, List<Long> clazzIds, String permission) {
+
+        if (clazz == null || clazz.length() == 0 || clazzIds == null || clazzIds.size() == 0) return false;
+
+        String email = expressionOperations.getAuthentication().getName();
+
+        var groupMember = authorizationHandler.hasPermissionInObjectList(email, permission, clazz, clazzIds);
+        return groupMember != null && groupMember.size() > 0 && clazzIds.size() == groupMember.size();
     }
 }

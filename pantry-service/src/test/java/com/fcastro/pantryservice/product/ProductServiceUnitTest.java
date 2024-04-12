@@ -70,7 +70,7 @@ public class ProductServiceUnitTest {
         doNothing().when(authorizationHandler).saveAccessControl(anyString(), anyLong(), anyLong());
 
         //when
-        var dto = service.save(ProductDto.builder().id(1L).code("MILK").description("Integral").size("1L")
+        var dto = service.update(ProductDto.builder().id(1L).code("MILK").description("Integral").size("1L")
                 .accountGroup(AccountGroupDto.builder().id(1L).build()).build());
 
         //then

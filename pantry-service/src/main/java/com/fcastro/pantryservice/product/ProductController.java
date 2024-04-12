@@ -40,7 +40,7 @@ public class ProductController {
     @PostMapping
     @PreAuthorize("hasPermissionInAGroup(#product.getAccountGroup().getId(), 'create_product')")
     public ResponseEntity<ProductDto> create(@P("product") @Valid @RequestBody ProductDto newDto) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(service.save(newDto));
+        return ResponseEntity.status(HttpStatus.CREATED).body(service.create(newDto));
     }
 
     @PutMapping("/{id}")
@@ -54,7 +54,7 @@ public class ProductController {
                     resource.setSize(newDto.getSize());
                     resource.setCategory(newDto.getCategory());
                     resource.setAccountGroup(newDto.getAccountGroup());
-                    return service.save(resource);
+                    return service.update(resource);
                 })
                 .orElseThrow(() -> new ResourceNotFoundException("Product not found"));
 

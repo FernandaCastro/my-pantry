@@ -82,9 +82,9 @@ public class ProductServiceIntegrationTest {
                 });
 
         var item1 = pantryItemService.get(pantry.getId(), product1.getId())
-                .orElseGet(() -> pantryItemService.save(PantryItemDto.builder()
-                        .pantryId(pantry.getId())
-                        .productId(product1.getId())
+                .orElseGet(() -> pantryItemService.update(PantryItemDto.builder()
+                        .pantry(PantryDto.builder().id(pantry.getId()).build())
+                        .product(ProductDto.builder().id(product1.getId()).build())
                         .build()));
 
         itemList.add(item1);
@@ -93,7 +93,7 @@ public class ProductServiceIntegrationTest {
     //@AfterAll
     public void cleanup() {
         //cleanup
-        itemList.forEach(item -> pantryItemService.delete(item.getPantryId(), item.getProductId()));
+        itemList.forEach(item -> pantryItemService.delete(item.getPantry().getId(), item.getProduct().getId()));
 
         //Avoid calling service.delete since it triggers Kafka event
         productRepository.delete(Product.builder().id(product1.getId()).build());

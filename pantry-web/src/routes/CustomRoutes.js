@@ -48,7 +48,7 @@ function CustomRoutes() {
             element: <Pantry mode="new" />
         },
         {
-            path: "/pantries/:id/consume",
+            path: "/pantries/consume",
             element: <Consume />
         },
         {

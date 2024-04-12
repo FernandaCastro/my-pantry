@@ -35,9 +35,20 @@ public class JWTHandler {
         this.key = Keys.hmacShaKeyFor(baseSecret);
     }
 
-    public String createToken(String email, String role, boolean rememberMe) {
+    public String createToken(String email, boolean rememberMe) {
         long now = (new Date()).getTime();
         Date validity = rememberMe ? new Date(now + TOKEN_VALIDITY_REMEMBER) : new Date(now + TOKEN_VALIDITY);
+
+        return Jwts.builder()
+                .setSubject(email)
+                .setIssuedAt(new Date())
+                .setExpiration(validity)
+                .signWith(key, SignatureAlgorithm.HS512)
+                .compact();
+    }
+
+    public String createSysToken(String email, String role, boolean rememberMe) {
+        long now = (new Date()).getTime();
         Map<String, Object> claims = new HashMap<>();
         if (role != null && role.length() > 0) {
             claims.put("role", role);
@@ -46,7 +57,6 @@ public class JWTHandler {
         return Jwts.builder()
                 .setSubject(email)
                 .setIssuedAt(new Date())
-                .setExpiration(validity)
                 .addClaims(claims)
                 .signWith(key, SignatureAlgorithm.HS512)
                 .compact();

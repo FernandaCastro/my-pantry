@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { PantryContext, ProfileContext } from '../services/context/AppContext';
+import { ProfileContext } from '../services/context/AppContext';
 import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
 import '../assets/styles/Header.scss';
@@ -15,20 +15,9 @@ import ProfileIcon from './ProfileIcon.js';
 import Container from 'react-bootstrap/Container';
 
 export default function Header() {
-    const { pantryCtx } = useContext(PantryContext);
     const { profileCtx } = useContext(ProfileContext);
-    let isPantrySelected = (pantryCtx !== null && pantryCtx.id !== 0 && pantryCtx.isActive) ? true : false;
     let hasActiveProfile = (profileCtx && Object.keys(profileCtx).length > 0) ? true : false;
 
-    function renderSelectedPantry() {
-        if (isPantrySelected)
-            return <Nav><Nav.Link className="link-to-pantry" href={"/pantries/" + pantryCtx.id + "/edit"}>{pantryCtx.name}</Nav.Link></Nav>
-
-        if (hasActiveProfile && !isPantrySelected)
-            return <Nav><Nav.Link className="link-to-pantry" href={"/pantries/"}>Define a Pantry to consume</Nav.Link></Nav>
-
-        return
-    }
     return (
         <div className="header">
             <Navbar collapseOnSelect expand="md">
@@ -47,7 +36,7 @@ export default function Header() {
                 <Navbar.Collapse>
                     <div className="menu">
                         <OverlayTrigger placement="bottom" delay={{ show: 250, hide: 400 }} overlay={<Tooltip id="button-tooltip">Consume Items</Tooltip>}>
-                            <Nav.Item><Nav.Link href={"/pantries/" + pantryCtx.id + "/consume"} eventKey="link-consume" className="menuItem" disabled={!isPantrySelected || !hasActiveProfile} >
+                            <Nav.Item><Nav.Link href={"/pantries/consume"} eventKey="link-consume" className="menuItem" disabled={!hasActiveProfile} >
                                 <Image src={iconConsume} className="menu-icon" /></Nav.Link>
                             </Nav.Item>
                         </OverlayTrigger>
@@ -78,7 +67,7 @@ export default function Header() {
                 </Container>
             </Navbar>
             <div className="d-flex justify-content-center align-items-center p-0">
-                {renderSelectedPantry()}
+
             </div>
         </div>
     )

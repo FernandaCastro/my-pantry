@@ -64,7 +64,7 @@ public class AccountServiceUnitTest {
         AccountDto account = AccountDto.builder().id(1L).email("user@user.com").build();
         when(accountRepository.findByEmail(anyString())).thenReturn(
                 Optional.of(Account.builder().id(account.getId()).email(account.getEmail()).build()));
-        when(jwtHandler.createToken(account.getEmail(), null, false)).thenReturn("jwtToken");
+        when(jwtHandler.createToken(account.getEmail(), false)).thenReturn("jwtToken");
         //when
         var appToken = accountService.login("user@user.com");
 

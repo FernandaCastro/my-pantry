@@ -105,15 +105,13 @@ public class PantryItemControllerUnitTest {
     public void givenNewIds_whenCreate_shouldReturnCreated() throws Exception {
         //given
         var dto = PantryItemDto.builder()
-                .pantryId(1L)
-                .productId(1L)
                 .pantry(PantryDto.builder().id(1L).build())
                 .product(ProductDto.builder().id(1L).build())
                 .idealQty(5)
                 .currentQty(5).build();
 
         given(service.get(anyLong(), anyLong())).willReturn(Optional.empty());
-        given(service.save(any(PantryItemDto.class))).willReturn(dto);
+        given(service.update(any(PantryItemDto.class))).willReturn(dto);
 
         //when //then
         mockMvc.perform(MockMvcRequestBuilders.post("/pantries/1/items")
@@ -136,7 +134,7 @@ public class PantryItemControllerUnitTest {
                 .currentQty(5).build();
 
         given(service.get(1L, 1L)).willReturn(Optional.of(dto));
-        given(service.save(any(PantryItemDto.class))).willReturn(dto);
+        given(service.update(any(PantryItemDto.class))).willReturn(dto);
 
         //when //then
         mockMvc.perform(MockMvcRequestBuilders.put("/pantries/1/items/1")

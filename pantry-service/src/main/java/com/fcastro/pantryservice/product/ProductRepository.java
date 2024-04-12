@@ -11,7 +11,11 @@ import java.util.Set;
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long> {
 
+    @Query("select p from product p where lower(p.code) = lower(:code)")
     Optional<Product> findByCode(String code);
+
+    @Query("select p from product p where lower(p.code) = lower(:code)")
+    List<Product> findAllByCode(String code);
 
     @Query("select p " +
             "from product p " +

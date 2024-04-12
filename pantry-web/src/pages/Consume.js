@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router';
-import { getPantry, getPantryItemsConsume, postPantryConsume } from '../services/apis/mypantry/requests/PantryRequests.js';
-import Button from 'react-bootstrap/Button';
+import { getPantryItemsConsume, postPantryConsumeItem } from '../services/apis/mypantry/requests/PantryRequests.js';
 import Stack from 'react-bootstrap/Stack';
 import Table from 'react-bootstrap/Table';
 import Image from 'react-bootstrap/Image';
@@ -11,12 +10,13 @@ import NumericField from '../components/NumericField.js'
 import { camelCase } from '../services/Utils.js';
 import VariantType from '../components/VariantType.js';
 import useAlert from '../hooks/useAlert.js';
+import PantrySelect from '../components/PantrySelect.js'
 
 export default function Consume() {
 
   let { id } = useParams();
 
-  const [pantry, setPantry] = useState({});
+  const [selectedPantries, setSelectedPantries] = useState([]);
   const [pantryItems, setPantryItems] = useState([]);
   const [filteredItems, setFilteredItems] = useState([]);
   const [consumedItems, setConsumedItems] = useState([]);
@@ -29,22 +29,25 @@ export default function Consume() {
   const { showAlert } = useAlert();
 
   useEffect(() => {
-    fetchPantryData();
-  }, [])
+    if (selectedPantries && selectedPantries.length > 0)
+      fetchPantryItem();
+    else {
+      setPantryItems([]);
+    }
+  }, [selectedPantries])
 
   useEffect(() => {
     filter(searchText);
     loadConsumedItems(pantryItems);
+    checkPantryEmpty();
     setReload(!reload);
   }, [pantryItems])
 
-  async function fetchPantryData() {
+  async function fetchPantryItem() {
     try {
       setIsLoading(true);
-      let res = await getPantry(id);
-      setPantry(res);
 
-      res = await getPantryItemsConsume(res.id);
+      const res = await getPantryItemsConsume(selectedPantries);
       if (res != null && Object.keys(res).length === 0) {
         return showAlert(VariantType.INFO, "Pantry is empty. There is no item to consume.");
       }
@@ -57,13 +60,11 @@ export default function Consume() {
     }
   }
 
-  async function fetchPantryConsume() {
+  async function fetchSaveConsumeItem(consumedItem) {
     try {
       setIsLoading(true);
-      const res = await postPantryConsume(pantry.id, consumedItems);
-      setPantryItems(res);
-
-      showAlert(VariantType.SUCCESS, "Pantry updated successfully!");
+      const res = await postPantryConsumeItem(consumedItem);
+      showAlert(VariantType.SUCCESS, "Item consumed successfully!");
     } catch (error) {
       showAlert(VariantType.DANGER, error.message);
     } finally {
@@ -71,46 +72,38 @@ export default function Consume() {
     }
   }
 
-  function loadConsumedItems(data) {
-    let emptyPantry = true;
+  function loadConsumedItems(pantryItemList) {
     let copy = [];
-
-    data.forEach((item) => {
+    pantryItemList.forEach((item) => {
       copy = [...copy,
       {
-        pantryId: item.pantryId,
-        productId: item.productId,
+        pantryId: item.pantry.id,
+        productId: item.product.id,
         qty: 0
       }]
-      if (emptyPantry && item.currentQty > 0) { emptyPantry = false }
     })
-    setIsPantryEmpty(emptyPantry)
-    return setConsumedItems(copy);
+    setConsumedItems(copy);
   }
 
-  function handleSave() {
-    fetchPantryConsume();
-  }
-
-  function handleClear() {
-    loadConsumedItems(consumedItems);
+  function checkPantryEmpty() {
+    const emptyPantry = pantryItems.every(item => item.currentQtd === 0);
+    setIsPantryEmpty(emptyPantry);
   }
 
   function getConsumedItem(pantryId, productId) {
     return consumedItems.find(item => item.pantryId === pantryId && item.productId === productId);
   }
 
-  function updateConsumedItem(item) {
-    const array = consumedItems.map((c) => {
-      return (c.pantryId === item.pantryId && c.productId === item.productId) ?
-        c = { ...c, qty: c.qty } : c;
-    })
-    setConsumedItems(array);
+  async function updateConsumedItem(item) {
+
+    const consumedItem = { pantryId: item.pantryId, productId: item.productId, qty: item.qty }
+    await fetchSaveConsumeItem(consumedItem);
+    fetchPantryItem();
   }
 
   function renderItem(item) {
 
-    let consumedItem = getConsumedItem(item.pantryId, item.productId);
+    let consumedItem = getConsumedItem(item.pantry.id, item.product.id);
 
     return (
       <tr key={item.productId} className="align-middle">
@@ -123,6 +116,7 @@ export default function Consume() {
             {item.product.description}  {item.product.size}
           </span>
         </td>
+        <td><span>{item.pantry.name}</span></td>
         <td><span>{item.currentQty}</span></td>
         <td><span className='d-none d-md-block align-center'>{item.provisionedQty}</span></td>
         <td><span className='d-none d-md-block'>{item.lastProvisioning}</span></td>
@@ -149,24 +143,27 @@ export default function Consume() {
     setSearchText(text);
   }
 
+  function handleSelectedPantries(list) {
+    setSelectedPantries(list);
+  }
+
   return (
-    <Stack gap={3} hidden={isNull(pantryItems) || pantryItems.length === 0}>
+    //hidden={isNull(pantryItems) || pantryItems.length === 0}
+    <Stack gap={3} >
       <div>
       </div>
       <div>
-        <Stack direction="horizontal" gap={2} className='d-flex'>
-          <div className="me-auto"><h6 className="text-start fs-6 lh-lg title">Consume</h6></div>
-          <Button bsPrefix="btn-custom" size="sm" onClick={handleClear}>Clear</Button>
-          <Button bsPrefix="btn-custom" size="sm" onClick={handleSave} >Save</Button>
-        </Stack>
+        <div className="me-auto"><h6 className="text-start fs-6 lh-lg title">Consume Itens</h6></div>
       </div>
+      <div><PantrySelect handleSelectedPantryList={handleSelectedPantries} /></div>
       <div>
         <Form.Control size="sm" type="text" id="search" className="form-control mb-1" placeholder="Seacrh for items here" value={searchText} onChange={(e) => filter(e.target.value)} />
         <div className='scroll-consume'>
           <Table>
             <thead>
-              <tr key="0:0" className="align-middle">
+              <tr key={0} className="align-middle">
                 <th><h6 className="title"> Code/Desc.</h6></th>
+                <th><h6 className="title">Pantry</h6></th>
                 <th><h6 className="title">Current</h6></th>
                 <th><h6 className="title d-none d-md-block">Prov.</h6></th>
                 <th><h6 className="title d-none d-md-block">Prov. on</h6></th>
@@ -177,13 +174,8 @@ export default function Consume() {
               {renderItems()}
             </tbody>
           </Table>
-          {isLoading ? <h6>Loading...</h6> : <span />}
         </div>
       </div>
-      <Stack direction="horizontal" gap={2} className="d-flex justify-content-end">
-        <Button bsPrefix="btn-custom" size="sm" onClick={handleClear}>Clear</Button>
-        <Button bsPrefix="btn-custom" size="sm" onClick={handleSave}>Save</Button>
-      </Stack>
     </Stack >
   )
 }

@@ -126,7 +126,7 @@ public class AccountService {
         Account existingAccount = accountRepository.findByEmail(account.getEmail())
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
-        if (!account.getPasswordAnswer().toLowerCase().equals(existingAccount.getPasswordAnswer().toLowerCase()))
+        if (!account.getPasswordAnswer().equalsIgnoreCase(existingAccount.getPasswordAnswer()))
             throw new PasswordAnswerNotMatchException("Password reset failed. Answer does not match.");
 
         existingAccount.setPassword(passwordEncoder.encode(account.getPassword()));
@@ -256,17 +256,16 @@ public class AccountService {
     }
 
     private String createJwtToken(AccountDto accountDto) {
-        return jwtHandler.createToken(accountDto.getEmail(), null, false);
+        return jwtHandler.createToken(accountDto.getEmail(), false);
     }
 
     public ResponseCookie createCookie(String jwtToken) {
-        final ResponseCookie cookie = ResponseCookie.from("AUTH-TOKEN", jwtToken)
+        return ResponseCookie.from("AUTH-TOKEN", jwtToken)
                 .httpOnly(true)
                 .maxAge(1 * 24 * 3600)
                 .path("/")
                 .secure(false)  //true= HTTPS only
                 .build();
-        return cookie;
     }
 
     private AccountDto convertToDto(NewAccountDto account) {

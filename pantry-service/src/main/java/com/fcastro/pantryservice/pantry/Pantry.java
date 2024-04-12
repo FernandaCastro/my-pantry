@@ -29,6 +29,6 @@ public class Pantry {
     private String type;
     private Boolean isActive;
 
-    @OneToMany(mappedBy = "pantry", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "pantry", fetch = FetchType.LAZY)
     private List<PantryItem> items;
 }
