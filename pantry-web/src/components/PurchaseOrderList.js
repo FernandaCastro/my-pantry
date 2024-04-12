@@ -35,7 +35,7 @@ export default function PurchaseOrderList({ selectedPantries, handleSelectedPurc
         const highlight = (purchase && purchase.id === p.id) ? "highlight" : '';
         return (
             <tr key={p.id} onClick={(e) => selectPurchase(e, p)} >
-                <td className={highlight}><span>{p.processedAt ? 'Closed' : 'Open'}</span></td>
+                <td className={highlight}><span>{p.id} - {p.processedAt ? 'Closed' : 'Open'}</span></td>
                 <td className={highlight}><span className='text-small'>{p.createdAt}</span></td>
                 <td className={highlight}><span className='text-small'>{p.processedAt}</span></td>
             </tr>
@@ -57,7 +57,7 @@ export default function PurchaseOrderList({ selectedPantries, handleSelectedPurc
             <Table>
                 < thead >
                     <tr key="order:0" className="align-middle">
-                        <th><h6 className='title'>Status</h6></th>
+                        <th><h6 className='title'>Id - Status</h6></th>
                         <th><h6 className='title'>Created at</h6></th>
                         <th><h6 className='title'>Checkout at</h6></th>
                     </tr>

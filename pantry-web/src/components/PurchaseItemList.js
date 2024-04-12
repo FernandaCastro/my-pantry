@@ -98,6 +98,7 @@ export default function PurchaseItemList({ purchase, selectedPantries, setOuterP
             const res = await getPurchaseItems(purchase.id, supermarketOption.value);
 
             if (isNull(res) || res.length === 0) {
+                setPurchaseItems([]);
                 return showAlert(VariantType.INFO, "This Shopping List is empty.");
             }
 

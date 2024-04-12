@@ -141,7 +141,7 @@ export default function Purchase() {
                     </div>
                 </Collapse>
             </div>
-
+            
             <div>
                 <Stack direction="horizontal" gap={2} className="d-flex justify-content-end">
                     {/* <Button bsPrefix="btn-custom" size="sm" onClick={handleClear} disabled={!hasOpenOrder}>Clear</Button> */}
