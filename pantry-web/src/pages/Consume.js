@@ -116,18 +116,13 @@ export default function Consume() {
             {item.product.description}  {item.product.size}
           </span>
         </td>
-        <td><span>{item.pantry.name}</span></td>
+        <td><span className='text-small'>{item.pantry.name}</span></td>
         <td><span>{item.currentQty}</span></td>
         <td><span className='d-none d-md-block align-center'>{item.provisionedQty}</span></td>
         <td><span className='d-none d-md-block'>{item.lastProvisioning}</span></td>
         <td><NumericField key={reload} object={consumedItem} attribute="qty" onValueChange={updateConsumedItem} disabled={isPantryEmpty} /></td>
       </tr>
     )
-  }
-
-  function isNull(object) {
-    if (!object || (Object.keys(object).length === 0 && object.constructor === Object)) return true;
-    return false;
   }
 
   function renderItems() {
@@ -148,7 +143,6 @@ export default function Consume() {
   }
 
   return (
-    //hidden={isNull(pantryItems) || pantryItems.length === 0}
     <Stack gap={3} >
       <div>
       </div>
@@ -162,9 +156,9 @@ export default function Consume() {
           <Table>
             <thead>
               <tr key={0} className="align-middle">
-                <th><h6 className="title"> Code/Desc.</h6></th>
+                <th><h6 className="title">Code/Desc.</h6></th>
                 <th><h6 className="title">Pantry</h6></th>
-                <th><h6 className="title">Current</h6></th>
+                <th><h6 className="title">Qty</h6></th>
                 <th><h6 className="title d-none d-md-block">Prov.</h6></th>
                 <th><h6 className="title d-none d-md-block">Prov. on</h6></th>
                 <th><h6 className="title">Consume</h6></th>

@@ -13,7 +13,7 @@ import java.time.format.DateTimeFormatter;
 @Configuration
 public class PurchaseServiceConfig {
 
-    private static final String dateTimeFormat = "dd-MM-yyyy HH:mm:ss";
+    private static final String dateTimeFormat = "dd-MM-yyyy HH:mm";
 
     @Bean
     public Jackson2ObjectMapperBuilderCustomizer jackson2ObjectMapperBuilderCustomizer() {
