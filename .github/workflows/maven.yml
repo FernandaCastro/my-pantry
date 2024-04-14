@@ -10,13 +10,9 @@ name: Java CI with Maven
 
 on:
   push:
-    branches: 
-      - master
-      - centrilized-access-control
+    branches: []
   pull_request:
-    branches: 
-      - master
-      - centrilized-access-control
+    branches: []
 
 jobs:
   build:
