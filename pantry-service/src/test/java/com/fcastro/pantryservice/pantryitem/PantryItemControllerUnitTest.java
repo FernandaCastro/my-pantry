@@ -19,6 +19,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
@@ -102,6 +103,7 @@ public class PantryItemControllerUnitTest {
     }
 
     @Test
+    @WithMockUser
     public void givenNewIds_whenCreate_shouldReturnCreated() throws Exception {
         //given
         var dto = PantryItemDto.builder()
@@ -111,7 +113,7 @@ public class PantryItemControllerUnitTest {
                 .currentQty(5).build();
 
         given(service.get(anyLong(), anyLong())).willReturn(Optional.empty());
-        given(service.update(any(PantryItemDto.class))).willReturn(dto);
+        given(service.create(any(PantryItemDto.class))).willReturn(dto);
 
         //when //then
         mockMvc.perform(MockMvcRequestBuilders.post("/pantries/1/items")

@@ -47,6 +47,7 @@ public class PantryControllerUnitTest {
     private PantryService pantryService;
 
     @Test
+    @WithMockUser
     public void givenValidPantryId_whenGet_shouldReturnOk() throws Exception {
         //given
         var products = new ArrayList<PantryItemDto>();
@@ -58,7 +59,7 @@ public class PantryControllerUnitTest {
 
         var pantry = PantryDto.builder().id(1L).name("Base Inventory").isActive(true).type("R").items(products).build();
 
-        given(pantryService.get(anyLong())).willReturn(Optional.of(pantry));
+        given(pantryService.getEmbeddingAccountGroup(anyString(), anyLong())).willReturn(Optional.of(pantry));
 
         //when //then
         mockMvc.perform(MockMvcRequestBuilders.get("/pantries/1"))
@@ -87,6 +88,7 @@ public class PantryControllerUnitTest {
     }
 
     @Test
+    @WithMockUser
     public void givenInvalidPantryId_whenGet_shouldReturnNotFound() throws Exception {
         //given
         given(pantryService.get(anyLong())).willReturn(Optional.empty());

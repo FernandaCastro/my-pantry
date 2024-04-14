@@ -13,6 +13,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
@@ -41,11 +42,12 @@ public class ProductControllerUnitTest {
     private ProductService service;
 
     @Test
+    @WithMockUser
     public void givenValidId_whenGet_shouldReturnOk() throws Exception {
         //given
         var dto = ProductDto.builder().id(1L).code("MILK").description("Integral").size("1L").build();
 
-        given(service.get(anyLong())).willReturn(Optional.of(dto));
+        given(service.getEmbeddingAccountGroup(anyString(), anyLong())).willReturn(Optional.of(dto));
 
         //when //then
         mockMvc.perform(MockMvcRequestBuilders.get("/products/1"))
@@ -57,6 +59,7 @@ public class ProductControllerUnitTest {
     }
 
     @Test
+    @WithMockUser
     public void givenInvalidId_whenGet_shouldReturnNoContent() throws Exception {
         //given
         given(service.get(anyLong())).willReturn(Optional.empty());
@@ -67,6 +70,7 @@ public class ProductControllerUnitTest {
     }
 
     @Test
+    @WithMockUser
     public void whenGetAll_shouldReturnOk() throws Exception {
         //given
         var list = new ArrayList<ProductDto>();

@@ -95,7 +95,7 @@ public class PantryItemController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/{pantryId}items/balancing")
+    @GetMapping("/{pantryId}/items/balancing")
     @PreAuthorize("hasPermissionInObject('Pantry', #pantryId, 'analyse_pantry')")
     public ResponseEntity<List<PantryItemDto>> balanceInventory(@P("pantryId") @PathVariable Long pantryId) {
         var list = service.processPurchaseNeed(pantryId);

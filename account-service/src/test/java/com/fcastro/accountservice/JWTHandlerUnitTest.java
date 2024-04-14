@@ -56,7 +56,7 @@ public class JWTHandlerUnitTest {
         boolean rememberMe = false;
 
         //when
-        String token = jwtHandler.createToken(accountDto.getEmail(), rememberMe);
+        String token = jwtHandler.createSysToken(accountDto.getEmail(), "ROLE_SYSADMIN");
         Authentication authentication = jwtHandler.verifyAndGetAuthentication(token);
 
         //then
