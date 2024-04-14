@@ -63,7 +63,7 @@ build/
 ### JSON
 *.json
 
-*.yml
+#*.yml
 .env
 
 docker-compose.yml

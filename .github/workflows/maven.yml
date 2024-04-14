@@ -28,6 +28,10 @@ jobs:
           distribution: 'temurin'
           cache: maven
       - name: Build with Maven
+        env: # Or as an environment variable
+          SECURITY_SECRET: ${{ secrets.SECURITY_SECRET }}
+          GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
+          GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
         run: mvn -B package --file pom.xml
 
       # Optional: Uploads the full dependency graph to GitHub to improve the quality of Dependabot alerts this repository can receive
