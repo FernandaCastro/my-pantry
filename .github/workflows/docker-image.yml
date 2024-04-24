@@ -18,7 +18,7 @@ jobs:
           SECURITY_SECRET: ${{ secrets.SECURITY_SECRET }}
           GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
           GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
-        run: mvn clean install
+        run: mvn -B package --file pom.xml
 
       - name: Set up JDK 17
         uses: actions/setup-java@v3
