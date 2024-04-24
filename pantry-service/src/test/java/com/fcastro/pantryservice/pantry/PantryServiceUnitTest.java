@@ -44,15 +44,16 @@ public class PantryServiceUnitTest {
         given(repository.findById(anyLong())).willReturn(Optional.of(entity));
 
         //when
-        var dto = service.get(1);
+        var optionalPantry = service.get(1);
 
         //then
-        org.assertj.core.api.Assertions.assertThat(dto).isNotNull();
-        assertThat(dto.isPresent()).isEqualTo(true);
-        assertThat(dto.get().getId()).isEqualTo(1L);
-        assertThat(dto.get().getName()).isEqualTo("Base Inventory");
-        assertThat(dto.get().getIsActive()).isEqualTo(true);
-        assertThat(dto.get().getType()).isEqualTo("R");
+        org.assertj.core.api.Assertions.assertThat(optionalPantry).isNotNull();
+        assertThat(optionalPantry.isPresent()).isEqualTo(true);
+        var dto = optionalPantry.get();
+        assertThat(dto.getId()).isEqualTo(1L);
+        assertThat(dto.getName()).isEqualTo("Base Inventory");
+        assertThat(dto.getIsActive()).isEqualTo(true);
+        assertThat(dto.getType()).isEqualTo("R");
     }
 
     @Test

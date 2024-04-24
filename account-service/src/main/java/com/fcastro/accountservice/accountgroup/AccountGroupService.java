@@ -1,10 +1,10 @@
 package com.fcastro.accountservice.accountgroup;
 
+import com.fcastro.accountservice.accesscontrol.AccessControlService;
 import com.fcastro.accountservice.account.Account;
 import com.fcastro.accountservice.accountgroupmember.AccountGroupMemberRole;
 import com.fcastro.accountservice.accountgroupmember.AccountGroupMemberService;
 import com.fcastro.accountservice.exception.NotAllowedException;
-import com.fcastro.accountservice.security.AccessControlHandler;
 import com.fcastro.app.exception.ResourceNotFoundException;
 import com.fcastro.security.core.model.AccountGroupDto;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -20,12 +20,12 @@ public class AccountGroupService {
 
     private final AccountGroupRepository repository;
     private final AccountGroupMemberService groupMemberService;
-    private final AccessControlHandler accessControlHandler;
+    private final AccessControlService accessControlService;
 
-    public AccountGroupService(AccountGroupRepository repository, AccountGroupMemberService groupMemberService, AccessControlHandler accessControlHandler) {
+    public AccountGroupService(AccountGroupRepository repository, AccountGroupMemberService groupMemberService, AccessControlService accessControlService) {
         this.repository = repository;
         this.groupMemberService = groupMemberService;
-        this.accessControlHandler = accessControlHandler;
+        this.accessControlService = accessControlService;
     }
 
     public Optional<AccountGroupDto> get(long id) {
@@ -96,8 +96,8 @@ public class AccountGroupService {
         if (accountGroup.getParentAccountGroup() == null)
             throw new NotAllowedException("This is your main Account Group. It cannot be deleted.");
 
-        var isGroupInUse = accessControlHandler.isInUse(accountGroupId);
-        if (isGroupInUse)
+        var inUse = accessControlService.getAll(accountGroupId);
+        if (inUse.size() > 0)
             throw new NotAllowedException("This Account Group is in use and cannot be deleted. It may contain Pantries, Purchase Orders and/or Products.");
 
         repository.deleteById(accountGroupId);

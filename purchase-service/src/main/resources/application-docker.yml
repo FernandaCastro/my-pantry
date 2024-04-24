@@ -32,11 +32,8 @@ spring:
     encoding: ISO-8859-1
 security-config:
   secret: ${SECURITY_SECRET}
-  allowedOrigin:
-    - http://localhost:3000
-    - http://castrolecar:3000
-    - http://castrolecar.local:3000
-    - http://castrolecar.netbird.cloud:3000
+  allowedOrigin: ${ALLOWED_ORIGINS}
+  #    - http://localhost:3000
   googleClientId: ${GOOGLE_CLIENT_ID}
   googleClientSecret: ${GOOGLE_CLIENT_SECRET}
   authzServer: http://account-service:8082

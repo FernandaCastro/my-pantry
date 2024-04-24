@@ -27,6 +27,7 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
           cache: maven
+
       - name: Build with Maven
         env: # Or as an environment variable
           SECURITY_SECRET: ${{ secrets.SECURITY_SECRET }}

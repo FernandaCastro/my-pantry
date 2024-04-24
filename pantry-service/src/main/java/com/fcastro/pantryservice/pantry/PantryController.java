@@ -1,7 +1,6 @@
 package com.fcastro.pantryservice.pantry;
 
 import com.fcastro.app.exception.ResourceNotFoundException;
-import com.fcastro.security.core.model.AccountGroupDto;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,13 +27,6 @@ public class PantryController {
         return service.getEmbeddingAccountGroup(SecurityContextHolder.getContext().getAuthentication().getName(), id)
                 .map(ResponseEntity::ok)
                 .orElseThrow(() -> new ResourceNotFoundException("Pantry not found."));
-    }
-
-    @GetMapping(path = "/{id}/access-control")
-    public ResponseEntity<AccountGroupDto> getAccessControl(@PathVariable Long id) {
-        return service.getAccessControl(id)
-                .map(ResponseEntity::ok)
-                .orElseThrow(() -> new ResourceNotFoundException("There is no Account Group associated to this Pantry."));
     }
 
     @GetMapping("/all")

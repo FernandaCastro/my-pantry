@@ -3,7 +3,6 @@ package com.fcastro.pantryservice.pantry;
 import com.fcastro.app.exception.ResourceNotFoundException;
 import com.fcastro.security.authorization.AuthorizationHandler;
 import com.fcastro.security.core.model.AccessControlDto;
-import com.fcastro.security.core.model.AccountGroupDto;
 import com.fcastro.security.exception.AccessControlNotDefinedException;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -80,11 +79,6 @@ public class PantryService {
                         }
                 );
         return pantry;
-    }
-
-    public Optional<AccountGroupDto> getAccessControl(Long pantryId) {
-        var access = authorizationHandler.getAccessControl(Pantry.class.getSimpleName(), pantryId);
-        return Optional.of(AccountGroupDto.builder().id(access.getAccountGroup().getId()).build());
     }
 
     public PantryDto save(PantryDto dto) {

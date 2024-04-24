@@ -39,7 +39,7 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>1.18.26</version>
+            <version>1.18.30</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -109,10 +109,6 @@
 							<platforms>
 								<platform>
 									<architecture>arm64</architecture>
-									<os>linux</os>
-								</platform>
-								<platform>
-									<architecture>amd64</architecture>
 									<os>linux</os>
 								</platform>
 							</platforms>

@@ -18,5 +18,4 @@ public class SecurityPropertiesConfig {
     private String googleClientId;
     private String googleClientSecret;
     private String authzServer;
-    private String[] accessControlDomains;
 }

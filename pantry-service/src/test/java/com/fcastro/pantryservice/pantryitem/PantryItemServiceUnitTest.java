@@ -48,15 +48,16 @@ public class PantryItemServiceUnitTest {
         given(repository.findById(any(PantryItemKey.class))).willReturn(Optional.of(entity));
 
         //when
-        var dto = service.get(1L, 1L);
+        var optionalDto = service.get(1L, 1L);
 
         //then
-        assertThat(dto).isNotNull();
-        assertThat(dto.isPresent()).isEqualTo(true);
-        assertThat(dto.get().getPantry().getId()).isEqualTo(1);
-        assertThat(dto.get().getProduct().getId()).isEqualTo(1);
-        assertThat(dto.get().getCurrentQty()).isEqualTo(5);
-        assertThat(dto.get().getIdealQty()).isEqualTo(10);
+        assertThat(optionalDto).isNotNull();
+        assertThat(optionalDto.isPresent()).isEqualTo(true);
+        var dto = optionalDto.get();
+        assertThat(dto.getPantry().getId()).isEqualTo(1);
+        assertThat(dto.getProduct().getId()).isEqualTo(1);
+        assertThat(dto.getCurrentQty()).isEqualTo(5);
+        assertThat(dto.getIdealQty()).isEqualTo(10);
     }
 
     @Test

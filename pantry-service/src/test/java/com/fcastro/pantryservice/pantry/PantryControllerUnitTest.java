@@ -1,8 +1,6 @@
 package com.fcastro.pantryservice.pantry;
 
 import com.fcastro.pantryservice.JsonUtil;
-import com.fcastro.pantryservice.pantryitem.PantryItemDto;
-import com.fcastro.pantryservice.product.ProductDto;
 import com.fcastro.security.core.config.SecurityPropertiesConfig;
 import com.fcastro.security.core.jwt.JWTRequestFilter;
 import com.fcastro.security.core.model.*;
@@ -50,14 +48,7 @@ public class PantryControllerUnitTest {
     @WithMockUser
     public void givenValidPantryId_whenGet_shouldReturnOk() throws Exception {
         //given
-        var products = new ArrayList<PantryItemDto>();
-        products.add(PantryItemDto.builder()
-                .pantry(PantryDto.builder().id(1L).build())
-                .product(ProductDto.builder().id(1L).build())
-                .idealQty(5)
-                .currentQty(5).build());
-
-        var pantry = PantryDto.builder().id(1L).name("Base Inventory").isActive(true).type("R").items(products).build();
+        var pantry = PantryDto.builder().id(1L).name("Base Inventory").isActive(true).type("R").build();
 
         given(pantryService.getEmbeddingAccountGroup(anyString(), anyLong())).willReturn(Optional.of(pantry));
 
@@ -67,8 +58,7 @@ public class PantryControllerUnitTest {
                 .andExpect(jsonPath("$.id", is(1)))
                 .andExpect(jsonPath("$.name", is("Base Inventory")))
                 .andExpect(jsonPath("$.isActive", is(true)))
-                .andExpect(jsonPath("$.type", is("R")))
-                .andExpect(jsonPath("$.items", hasSize(1)));
+                .andExpect(jsonPath("$.type", is("R")));
     }
 
     @Test

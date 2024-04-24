@@ -30,14 +30,8 @@ security-config:
   secret: ${SECURITY_SECRET}
   allowedOrigin:
     - http://localhost:3000
-    - http://castrolecar:3000
-    - http://castrolecar.local:3000
-    - http://castrolecar.netbird.cloud:3000
   googleClientId: ${GOOGLE_CLIENT_ID}
   googleClientSecret: ${GOOGLE_CLIENT_SECRET}
-  accessControlDomains:
-    - http://localhost:8080
-    - http://localhost:8081
 logging:
   level:
     org:

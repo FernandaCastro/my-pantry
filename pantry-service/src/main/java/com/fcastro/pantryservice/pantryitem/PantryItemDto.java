@@ -2,14 +2,12 @@ package com.fcastro.pantryservice.pantryitem;
 
 import com.fcastro.pantryservice.pantry.PantryDto;
 import com.fcastro.pantryservice.product.ProductDto;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
-@Data
+@Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor

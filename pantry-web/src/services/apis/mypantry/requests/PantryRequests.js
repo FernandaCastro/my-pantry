@@ -11,17 +11,10 @@ export async function getPantry(pantryId) {
     return FetchPantry(`pantries/${pantryId}`, "GET");
 }
 
-export async function getPantryAccessControl(pantryId) {
-    return FetchPantry(`pantries/${pantryId}/access-control`, "GET");
-}
-
 export async function getPantryItems(pantryId) {
     return FetchPantry(`pantries/${pantryId}/items`, "GET")
 }
 
-// export async function getPantryItemsConsume(pantryId) {
-//     return FetchPantry(`pantries/${pantryId}/items/consume`, "GET")
-// }
 export async function getPantryItemsConsume(pantryIds) {
     return FetchPantry(`pantries/items/consume?pantryIds=${pantryIds}`, "GET")
 }
