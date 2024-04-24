@@ -1,6 +1,5 @@
 package com.fcastro.purchaseservice.product;
 
-import com.fcastro.app.model.ProductDto;
 import com.fcastro.kafka.event.ProductEventDto;
 import com.fcastro.kafka.exception.EventProcessingException;
 import org.modelmapper.ModelMapper;
@@ -41,8 +40,8 @@ public class ProductService {
     public void processProductEvent(ProductEventDto eventDto) {
         try {
             switch (eventDto.getAction()) {
-                case UPDATE -> repository.save(convertToEntity(eventDto));
-                case DELETE -> repository.deleteById(eventDto.getProduct().getId());
+                case UPDATE, CREATE -> repository.save(convertToEntity(eventDto));
+                case DELETE -> repository.deleteById(eventDto.getId());
                 default -> throw new IllegalArgumentException("Action not supported: " + eventDto.getAction());
             }
         } catch (Throwable ex) {
@@ -53,12 +52,11 @@ public class ProductService {
     private Product convertToEntity(ProductEventDto eventDto) {
         if (eventDto == null) return null;
         return Product.builder()
-                .id(eventDto.getProduct().getId())
-                .code(eventDto.getProduct().getCode())
-                .description(eventDto.getProduct().getDescription())
-                .size(eventDto.getProduct().getSize())
-                .category(eventDto.getProduct().getCategory())
-                .accountGroupId(eventDto.getProduct().getAccountGroupId())
+                .id(eventDto.getId())
+                .code(eventDto.getCode())
+                .description(eventDto.getDescription())
+                .size(eventDto.getSize())
+                .category(eventDto.getCategory())
                 .build();
     }
 

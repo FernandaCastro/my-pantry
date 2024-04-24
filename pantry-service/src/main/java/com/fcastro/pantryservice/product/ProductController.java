@@ -1,7 +1,6 @@
 package com.fcastro.pantryservice.product;
 
 import com.fcastro.app.exception.ResourceNotFoundException;
-import com.fcastro.app.model.ProductDto;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,9 +22,9 @@ public class ProductController {
     }
 
     @GetMapping(path = "/{id}")
-    @PreAuthorize("hasPermission('Product', #productId, 'list_product')")
+    @PreAuthorize("hasPermissionInObject('Product', #productId, 'list_product')")
     public ResponseEntity<ProductDto> get(@P("productId") @PathVariable long id) {
-        return service.get(id)
+        return service.getEmbeddingAccountGroup(SecurityContextHolder.getContext().getAuthentication().getName(), id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
@@ -35,17 +34,17 @@ public class ProductController {
     public ResponseEntity<List<ProductDto>> getAll(@RequestParam(required = false) Long groupId, @RequestParam(required = false) String searchParam) {
         if (searchParam == null)
             return ResponseEntity.ok(service.getAll(SecurityContextHolder.getContext().getAuthentication().getName()));
-        return ResponseEntity.ok(service.getAllBySearchParam(groupId, searchParam));
+        return ResponseEntity.ok(service.getAllBySearchParam(SecurityContextHolder.getContext().getAuthentication().getName(), groupId, searchParam));
     }
 
     @PostMapping
-    @PreAuthorize("hasPermission(#product.getAccountGroupId(), 'create_product')")
+    @PreAuthorize("hasPermissionInAGroup(#product.getAccountGroup().getId(), 'create_product')")
     public ResponseEntity<ProductDto> create(@P("product") @Valid @RequestBody ProductDto newDto) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(service.save(newDto));
+        return ResponseEntity.status(HttpStatus.CREATED).body(service.create(newDto));
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasPermission('Product', #productId, 'edit_product')")
+    @PreAuthorize("hasPermissionInObject('Product', #productId, 'edit_product')")
     ResponseEntity<ProductDto> replace(@Valid @RequestBody ProductDto newDto, @P("productId") @PathVariable Long id) {
 
         var dto = service.get(id)
@@ -54,7 +53,8 @@ public class ProductController {
                     resource.setDescription(newDto.getDescription());
                     resource.setSize(newDto.getSize());
                     resource.setCategory(newDto.getCategory());
-                    return service.save(resource);
+                    resource.setAccountGroup(newDto.getAccountGroup());
+                    return service.update(resource);
                 })
                 .orElseThrow(() -> new ResourceNotFoundException("Product not found"));
 
@@ -64,7 +64,7 @@ public class ProductController {
     }
 
     @DeleteMapping(path = "/{id}")
-    @PreAuthorize("hasPermission('Product', #productId, 'delete_product')")
+    @PreAuthorize("hasPermissionInObject('Product', #productId, 'delete_product')")
     public ResponseEntity<ProductDto> delete(@P("productId") @PathVariable Long id) {
         service.delete(id);
         return ResponseEntity.noContent().build();

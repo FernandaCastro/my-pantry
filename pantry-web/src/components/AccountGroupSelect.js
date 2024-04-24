@@ -1,8 +1,5 @@
 import Form from 'react-bootstrap/Form';
 import Select from './Select';
-import { useState, useEffect, useContext } from 'react';
-import { AlertContext } from '../services/context/AppContext.js';
-import VariantType from '../components/VariantType.js';
 import Col from 'react-bootstrap/Col';
 
 export default function AccountGroupSelect({ accountGroupOption, setAccountGroupOption, accountGroupOptions }) {

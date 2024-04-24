@@ -1,17 +1,14 @@
 package com.fcastro.pantryservice.pantry;
 
 import com.fcastro.app.exception.ResourceNotFoundException;
-import com.fcastro.security.accesscontrol.AccessControlService;
 import com.fcastro.security.authorization.AuthorizationHandler;
-import com.fcastro.security.core.model.AccountGroupDto;
+import com.fcastro.security.core.model.AccessControlDto;
 import com.fcastro.security.exception.AccessControlNotDefinedException;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -19,19 +16,24 @@ public class PantryService {
 
     private final PantryRepository repository;
     private final ModelMapper modelMapper;
-    private final AuthorizationHandler authorizationService;
-    private final AccessControlService accessControlService;
+    private final AuthorizationHandler authorizationHandler;
 
-    public PantryService(PantryRepository repository, ModelMapper modelMapper, AuthorizationHandler authorizationService, AccessControlService accessControlService) {
+    public PantryService(PantryRepository repository, ModelMapper modelMapper, AuthorizationHandler authorizationService) {
         this.repository = repository;
         this.modelMapper = modelMapper;
-        this.authorizationService = authorizationService;
-        this.accessControlService = accessControlService;
+        this.authorizationHandler = authorizationService;
+    }
+
+    public Optional<PantryDto> getEmbeddingAccountGroup(String email, long id) {
+        var accessControlList = authorizationHandler.listAccessControl(email, Pantry.class.getSimpleName(), id, null);
+        var pantry = repository.findById(id).map(this::convertToDTO)
+                .orElseThrow(() -> new ResourceNotFoundException("Pantry not found"));
+        ;
+        return Optional.of(embedAccountGroup(pantry, accessControlList));
     }
 
     public Optional<PantryDto> get(long id) {
-        return repository.findById(id)
-                .map(this::convertToDTO);
+        return repository.findById(id).map(this::convertToDTO);
     }
 
     public Optional<PantryDto> get(String name) {
@@ -40,32 +42,54 @@ public class PantryService {
     }
 
     //TODO: Pageable
+    //Retrieves all pantries the user has access
     public List<PantryDto> getAll(String email) {
-        var accountGroups = authorizationService.getAccountGroupList(email);
-        if (accountGroups == null) return new ArrayList<PantryDto>();
-        var listEntity = repository.findAllByAccountGroup(accountGroups);
-        return listEntity.stream().map(this::convertToDTO).collect(Collectors.toList());
+        var accessControlList = authorizationHandler.listAccessControl(email, Pantry.class.getSimpleName(), null, null);
+        return getAll(accessControlList);
     }
 
-    public List<PantryDto> getAll(Long groupId) {
-        var listEntity = repository.findAllByAccountGroup(Set.of(groupId));
-        return listEntity.stream().map(this::convertToDTO).collect(Collectors.toList());
+    //TODO: Pageable
+    //Retrieves all pantries in the group
+    public List<PantryDto> getAll(String email, Long accountGroupId) {
+        var accessControlList = authorizationHandler.listAccessControl(email, Pantry.class.getSimpleName(), null, accountGroupId);
+        return getAll(accessControlList);
     }
 
-    public Optional<AccountGroupDto> getAccessControl(Long pantryId) {
-        var access = accessControlService.get(Pantry.class.getSimpleName(), pantryId);
-        return Optional.of(AccountGroupDto.builder().id(access.getAccountGroupId()).build());
+    private List<PantryDto> getAll(List<AccessControlDto> accessControlList) {
+        var pantryIds = accessControlList.stream().map(AccessControlDto::getClazzId).collect(Collectors.toSet());
+        var pantryList = repository.findAllByIds(pantryIds).stream().map(this::convertToDTO).collect(Collectors.toList());
+        pantryList = embedAccountGroup(pantryList, accessControlList);
+        return pantryList;
+    }
+
+    //It finds and attaches AccountGroup to each Pantry in the list
+    private List<PantryDto> embedAccountGroup(List<PantryDto> pantryList, List<AccessControlDto> accessControlList) {
+        return pantryList.stream().map((pantry) -> embedAccountGroup(pantry, accessControlList)).collect(Collectors.toList());
+    }
+
+    //It finds and attaches AccountGroup to the Pantry
+    private PantryDto embedAccountGroup(PantryDto pantry, List<AccessControlDto> accessControlList) {
+        accessControlList.stream()
+                .filter((accessControl) -> accessControl.getClazzId() == pantry.getId())
+                .findFirst()
+                .ifPresentOrElse(
+                        accessControl -> pantry.setAccountGroup(accessControl.getAccountGroup()),
+                        () -> {
+                            throw new AccessControlNotDefinedException("Unable to embed AccountGroup to Pantry [" + pantry.getId() + ": " + pantry.getName());
+                        }
+                );
+        return pantry;
     }
 
     public PantryDto save(PantryDto dto) {
-        if (dto.getAccountGroupId() == null)
-            throw new AccessControlNotDefinedException("Pantry must be associated to a group");
+        if (dto.getAccountGroup() == null || dto.getAccountGroup().getId() == 0)
+            throw new AccessControlNotDefinedException("Pantry must be associated to an Account Group");
 
         var entity = repository.save(convertToEntity(dto));
-        accessControlService.save(Pantry.class.getSimpleName(), entity.getId(), dto.getAccountGroupId());
+        authorizationHandler.saveAccessControl(Pantry.class.getSimpleName(), entity.getId(), dto.getAccountGroup().getId());
 
         var storedDto = convertToDTO(entity);
-        storedDto.setAccountGroupId(dto.getAccountGroupId());
+        storedDto.setAccountGroup(dto.getAccountGroup());
 
         return storedDto;
     }
@@ -76,7 +100,7 @@ public class PantryService {
 
         repository.deleteById(id);
 
-        accessControlService.delete(Pantry.class.getSimpleName(), id);
+        authorizationHandler.deleteAccessControl(Pantry.class.getSimpleName(), id);
     }
 
     private PantryDto convertToDTO(Pantry entity) {
@@ -86,7 +110,6 @@ public class PantryService {
                 .name(entity.getName())
                 .type(entity.getType())
                 .isActive(entity.getIsActive())
-                .accountGroupId(entity.getAccountGroupId())
                 .build();
     }
 

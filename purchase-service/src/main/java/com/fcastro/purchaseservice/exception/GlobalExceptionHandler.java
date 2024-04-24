@@ -9,6 +9,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.HttpMediaTypeNotAcceptableException;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
@@ -51,6 +52,7 @@ public class GlobalExceptionHandler {
         exceptionTypes.put(PurchaseItemsMissingException.class, "application-error");
         exceptionTypes.put(NoItemToPurchaseException.class, "application-error");
         exceptionTypes.put(ResourceNotValidException.class, "application-error");
+        exceptionTypes.put(AccessDeniedException.class, "application-error");
 
     }
 
@@ -144,6 +146,22 @@ public class GlobalExceptionHandler {
                 .path(request.getRequestURI())
                 .build();
         return ResponseEntity.status(HttpStatus.UNSUPPORTED_MEDIA_TYPE).body(error);
+    }
+
+
+    @ExceptionHandler(value = {AccessForbiddenException.class})
+    @ResponseStatus(value = HttpStatus.FORBIDDEN)
+    public ResponseEntity<?> accessDeniedException(final AccessForbiddenException ex, final HttpServletRequest request) {
+
+        var error = ApplicationError.builder()
+                .timestamp(Clock.systemUTC().millis())
+                .status(HttpStatus.FORBIDDEN.value())
+                .errorType(exceptionTypes.get(ex.getClass()))
+                .errorMessage(ex.getMessage())
+                .path(request.getRequestURI())
+                .build();
+
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(error);
     }
 
     @ExceptionHandler(value = {DataAccessException.class})

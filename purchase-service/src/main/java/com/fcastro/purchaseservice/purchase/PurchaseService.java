@@ -5,12 +5,21 @@ import com.fcastro.purchaseservice.config.PurchaseCompleteEventProducer;
 import com.fcastro.purchaseservice.exception.NoItemToPurchaseException;
 import com.fcastro.purchaseservice.exception.PurchaseAlreadyProcessedException;
 import com.fcastro.purchaseservice.exception.PurchaseItemsMissingException;
+import com.fcastro.purchaseservice.product.ProductDto;
+import com.fcastro.purchaseservice.purchaseItem.PurchaseItem;
+import com.fcastro.purchaseservice.purchaseItem.PurchaseItemDto;
 import com.fcastro.purchaseservice.purchaseItem.PurchaseItemService;
+import com.fcastro.security.authorization.AuthorizationHandler;
+import com.fcastro.security.core.model.AccessControlDto;
 import org.modelmapper.ModelMapper;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class PurchaseService {
@@ -19,22 +28,26 @@ public class PurchaseService {
     private final PurchaseItemService purchaseItemService;
     private final ModelMapper modelMapper;
     private final PurchaseCompleteEventProducer eventProducer;
+    private final AuthorizationHandler authorizationHandler;
 
-    public PurchaseService(PurchaseRepository repository, PurchaseItemService purchaseItemService, ModelMapper modelMapper, PurchaseCompleteEventProducer eventProducer) {
+    public PurchaseService(PurchaseRepository repository, PurchaseItemService purchaseItemService, ModelMapper modelMapper, PurchaseCompleteEventProducer eventProducer, AuthorizationHandler authorizationHandler) {
         this.repository = repository;
         this.purchaseItemService = purchaseItemService;
         this.modelMapper = modelMapper;
         this.eventProducer = eventProducer;
+        this.authorizationHandler = authorizationHandler;
     }
 
-    public List<PurchaseDto> listPurchaseOrder() {
-        var entities = repository.findAllOrderByDescCreateAt();
+    //List purchase orders where all pantries in it are accessible by the user.
+    public List<PurchaseDto> listPurchaseOrder(String email, Set<Long> pantryIds) {
+        //var pantryIds = getAllPantriesAllowedToUser(email);
+        var entities = repository.findAllOrderByDescCreateAt(pantryIds);
         return convertToDto(entities);
     }
 
-    public PurchaseDto getOpenPurchaseOrder() {
+    public PurchaseDto getOpenPurchaseOrder(String email, Set<Long> pantryIds) {
         //return existing and pending purchase order
-        var purchase = convertToDto(repository.getPending());
+        var purchase = convertToDto(repository.getPending(pantryIds));
         if (purchase != null) {
             var items = purchaseItemService.listPurchaseByCategory(purchase.getId(), null);
             purchase.setItems(items);
@@ -42,13 +55,14 @@ public class PurchaseService {
         return purchase;
     }
 
-    public PurchaseDto createPurchaseOrder() {
+    public PurchaseDto createPurchaseOrder(String email, Set<Long> pantryIds) {
         //return existing and pending purchase order
-        var entity = repository.getPending();
+        //var pantryIds = getPantryIdList(email);
+        var entity = repository.getPending(pantryIds);
         if (entity != null) return convertToDto(entity);
 
         //check existence of items to purchase
-        var pendingPurchase = purchaseItemService.listPendingPurchase();
+        var pendingPurchase = purchaseItemService.listPendingPurchase(email);
         if (pendingPurchase == null || pendingPurchase.size() == 0) {
             throw new NoItemToPurchaseException("No items to Purchase at the moment.");
         }
@@ -65,13 +79,24 @@ public class PurchaseService {
         return dto;
     }
 
-    public PurchaseDto closePurchaseOrder(PurchaseDto dto) {
-        if (dto.getItems() == null || dto.getItems().size() == 0) {
-            throw new PurchaseItemsMissingException("Purchase items list is required to close a Purchase Order.");
-        }
+    public PurchaseDto closePurchaseOrder(String email, PurchaseDto dto) {
 
         var entity = repository.findById(dto.getId())
                 .orElseThrow(() -> new ResourceNotFoundException("Purchase Order was not found."));
+
+        //compare all items' pantries to the access allowed to the user
+        var accessList = getAllPantriesAllowedToUser(email);
+        var allMatch = entity.getItems().stream()
+                .map(PurchaseItem::getPantryId)
+                .allMatch(new HashSet<>(accessList)::contains);
+
+        if (!allMatch) {
+            throw new AccessDeniedException("User is not allowed to close this Purchase Order.");
+        }
+
+        if (dto.getItems() == null || dto.getItems().size() == 0) {
+            throw new PurchaseItemsMissingException("Purchase items list is required to close a Purchase Order.");
+        }
 
         if (entity.getProcessedAt() != null) {
             throw new PurchaseAlreadyProcessedException("Purchase Order had already been closed");
@@ -86,6 +111,10 @@ public class PurchaseService {
         return convertToDto(entity);
     }
 
+    private Set<Long> getAllPantriesAllowedToUser(String email) {
+        var accessControlList = authorizationHandler.listAccessControl(email, "Pantry", null, null);
+        return accessControlList.stream().map(AccessControlDto::getClazzId).collect(Collectors.toSet());
+    }
 
     private Purchase convertToEntity(PurchaseDto dto) {
         if (dto == null) return null;
@@ -97,8 +126,38 @@ public class PurchaseService {
         return modelMapper.map(entity, PurchaseDto.class);
     }
 
-    private List<PurchaseDto> convertToDto(List<Purchase> entity) {
-        if (entity == null) return null;
-        return modelMapper.map(entity, List.class);
+    private List<PurchaseDto> convertToDto(List<Purchase> entities) {
+        if (entities == null) return null;
+
+        return entities.stream()
+                .map(entity -> PurchaseDto.builder()
+                        .id(entity.getId())
+                        .createdAt(entity.getCreatedAt())
+                        .processedAt(entity.getProcessedAt())
+                        //.items(convertItemToDto(entity.getItems()))
+                        .build())
+                .collect(Collectors.toList());
+
+    }
+
+    private List<PurchaseItemDto> convertItemToDto(List<PurchaseItem> entities) {
+        if (entities == null) return null;
+
+        return entities.stream()
+                .map(entity ->
+                        PurchaseItemDto.builder()
+                                .id(entity.getId())
+                                .pantryId(entity.getPantryId())
+                                .pantryName(entity.getPantryName())
+                                .product(ProductDto.builder()
+                                        .id(entity.getProduct().getId())
+                                        .code(entity.getProduct().getCode())
+                                        .description(entity.getProduct().getDescription())
+                                        .category(entity.getProduct().getCategory())
+                                        .build())
+                                .qtyProvisioned(entity.getQtyProvisioned())
+                                .qtyPurchased(entity.getQtyPurchased())
+                                .build())
+                .collect(Collectors.toList());
     }
 }

@@ -4,8 +4,8 @@ import { getPantryList, deletePantry } from '../services/apis/mypantry/requests/
 import Stack from 'react-bootstrap/Stack';
 import Table from 'react-bootstrap/Table';
 import Button from 'react-bootstrap/Button';
-import { AlertContext } from '../services/context/AppContext.js';
 import VariantType from '../components/VariantType.js';
+import useAlert from '../hooks/useAlert.js';
 import { BsPencil, BsTrash } from "react-icons/bs";
 import Form from 'react-bootstrap/Form';
 
@@ -15,8 +15,7 @@ export default function Pantries() {
     const [refresh, setRefresh] = useState(true);
 
     const [isLoading, setIsLoading] = useState(true);
-    const { pantryCtx, setPantryCtx } = useContext(PantryContext);
-    const { setAlert } = useContext(AlertContext);
+    const { showAlert } = useAlert();
 
     useEffect(() => {
         if (refresh) fetchPantries();
@@ -44,23 +43,14 @@ export default function Pantries() {
         }
     }
 
-    function showAlert(type, message) {
-        setAlert({
-            show: true,
-            type: type,
-            message: message
-        })
-    }
-
     function renderItem(item) {
         return (
             <tr key={item.id} className="align-middle">
                 <td>
-                    <Form.Check size="sm" type="radio" name="group1"
-                        disabled={!item.isActive}
-                        defaultChecked={pantryCtx && Object.keys(pantryCtx).length > 0 && pantryCtx.id === item.id ? true : false}
-                        onClick={(e) => e.target.checked ? handlePantryClick(item) : null}
-                        label={item.name} />
+                    <span disabled={!item.isActive}>{item.name}</span>
+                </td>
+                <td>
+                    <span className='d-none d-md-block'>{item.accountGroup.name}</span>
                 </td>
                 <td>
                     <Stack direction="horizontal" gap={1} className="d-flex justify-content-end">
@@ -85,14 +75,9 @@ export default function Pantries() {
         )
     }
 
-    function handlePantryClick(item) {
-        item.isActive ? setPantryCtx(item) : setPantryCtx({});
-    }
-
     function handleRemove(id) {
         fetchDeletePantry(id);
         showAlert(VariantType.SUCCESS, "Pantry removed successfully!");
-        if (pantryCtx.id === id) setPantryCtx({})
     }
 
     return (

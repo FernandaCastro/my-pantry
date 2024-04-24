@@ -11,10 +11,10 @@ public class AuthorizationConfig {
 
     private final String ROLE_SYSADMIN = "ROLE_SYSADMIN";
 
+    //RestClient to the AuthorizationServer
     @Bean
-        //RestClient to the AuthorizationServer
     RestClient authorizationServer(SecurityPropertiesConfig securityConfigData, JWTHandler jwtHandler) {
-        String jwtToken = jwtHandler.createToken("sysadmin@mypantry.com", ROLE_SYSADMIN, false);
+        String jwtToken = jwtHandler.createSysToken("sysadmin@mypantry.com", ROLE_SYSADMIN);
 
         return RestClient.builder()
                 .baseUrl(securityConfigData.getAuthzServer())

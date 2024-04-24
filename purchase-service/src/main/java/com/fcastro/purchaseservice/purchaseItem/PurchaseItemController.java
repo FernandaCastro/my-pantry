@@ -1,9 +1,11 @@
 package com.fcastro.purchaseservice.purchaseItem;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping("purchases")
@@ -16,12 +18,12 @@ public class PurchaseItemController {
     }
 
     @GetMapping("/items")
-    public ResponseEntity<List<PurchaseItemDto>> listPendingPurchase(@RequestParam(required = false) String supermarket) {
-        return ResponseEntity.ok(service.listPendingPurchaseByCategory(supermarket));
+    public ResponseEntity<List<PurchaseItemDto>> listPendingPurchase(@RequestParam Set<Long> pantryIds, @RequestParam(required = false) String supermarket) {
+        return ResponseEntity.ok(service.listPendingPurchaseByCategory(SecurityContextHolder.getContext().getAuthentication().getName(), pantryIds, supermarket));
     }
 
     @GetMapping("/{id}/items")
-    public ResponseEntity<List<PurchaseItemDto>> listPendingPurchase(@PathVariable Long id, @RequestParam(required = false) String supermarket) {
+    public ResponseEntity<List<PurchaseItemDto>> listPurchase(@PathVariable Long id, @RequestParam(required = false) String supermarket) {
         return ResponseEntity.ok(service.listPurchaseByCategory(id, supermarket));
     }
 

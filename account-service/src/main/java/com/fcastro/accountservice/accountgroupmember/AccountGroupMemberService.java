@@ -2,7 +2,8 @@ package com.fcastro.accountservice.accountgroupmember;
 
 import com.fcastro.accountservice.account.Account;
 import com.fcastro.accountservice.account.AccountRepository;
-import com.fcastro.accountservice.exception.AtLeastOneMemberMustExistException;
+import com.fcastro.accountservice.exception.NotAllowedException;
+import com.fcastro.accountservice.exception.OneOwnerMemberMustExistException;
 import com.fcastro.accountservice.role.Role;
 import com.fcastro.accountservice.role.RoleService;
 import com.fcastro.app.exception.ResourceNotFoundException;
@@ -10,6 +11,7 @@ import com.fcastro.security.core.model.AccountDto;
 import com.fcastro.security.core.model.AccountGroupMemberDto;
 import com.fcastro.security.core.model.PermissionDto;
 import com.fcastro.security.core.model.RoleDto;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -86,24 +88,69 @@ public class AccountGroupMemberService {
     }
 
     public AccountGroupMemberDto save(AccountGroupMemberDto dto) {
+        //User should be OWNER in the group
+        var member = repository.findByGroupIdAndEmail(dto.getAccountGroupId(), SecurityContextHolder.getContext().getAuthentication().getName()).get();
+        if (!AccountGroupMemberRole.OWNER.value.equals(member.getRole().getName())) {
+            throw new NotAllowedException("You are not allowed to change the group.");
+        }
+
+        if (AccountGroupMemberRole.OWNER.value.equals(dto.getRole().getName())) {
+            throw new OneOwnerMemberMustExistException("Only one Owner Member is allowed in the group");
+        }
+
         var entity = repository.save(convertToEntity(dto));
         return convertToDTO(entity);
     }
 
     public void delete(long accountGroupId, long accountId) {
+        //User should be OWNER in the Group, or User is deleting his own access to the group
+        var member = repository.findByGroupIdAndEmail(accountGroupId, SecurityContextHolder.getContext().getAuthentication().getName()).get();
+        if (member.getAccountId() != accountId && !AccountGroupMemberRole.OWNER.value.equals(member.getRole().getName())) {
+            throw new NotAllowedException("You are not allowed to change the group.");
+        }
+
         var key = AccountGroupMemberKey.builder().accountGroupId(accountGroupId).accountId(accountId).build();
-        var member = repository.findById(key)
+        member = repository.findById(key)
                 .orElseThrow(() -> new ResourceNotFoundException("AccountGroupMember not found"));
 
-        var ownerRole = roleService.getRole(member.getRole().getId());
-        if (ownerRole.getName().equals(AccountGroupMemberRole.OWNER.value))
-            throw new AtLeastOneMemberMustExistException("Owner cannot be deleted.");
+        //deleting an OWNER: there should be at least one Owner in the group
+        if (AccountGroupMemberRole.OWNER.value.equals(member.getRole().getName())) {
+            throw new OneOwnerMemberMustExistException("Owner cannot be deleted.");
+        }
 
-//        var admins = repository.findAllByRoleAndAccountGroupId(AccountGroupMemberRole.ADMIN.value, accountGroupId);
-//        if (admins.size() == 1 && accountId == admins.get(0).getAccountId())
-//            throw new AtLeastOneMemberMustExistException("Member cannot be deleted. There should be at least one admin member in the group.");
+//        var owners = repository.findAllByAccountGroupId(accountGroupId).stream()
+//                .filter((m)-> AccountGroupMemberRole.OWNER.value.equals(m.getRole().getName()))
+//                .count();
+//
+//        if (owners == 1)
+//            throw new AtLeastOneMemberMustExistException("Member cannot be deleted. There should be at least one owner in the group.");
+//        }
 
         repository.deleteById(key);
+    }
+
+    //Authorization methods
+    public List<AccountGroupMemberDto> hasPermissionInAnyGroup(String email, String permission) {
+        var list = repository.hasPermissionInAnyGroup(email, permission);
+        return list.stream().map(this::convertToDTO).toList();
+    }
+
+    //Authorization method
+    public List<AccountGroupMemberDto> hasPermissionInGroup(String email, String permission, Long accountGroupId) {
+        var member = convertToDTO(repository.hasPermissionInGroup(email, permission, accountGroupId));
+        return member == null ? List.of() : List.of(member);
+    }
+
+    //Authorization method
+    public List<AccountGroupMemberDto> hasPermissionInObject(String email, String permission, String clazz, Long clazzId) {
+        var member = convertToDTO(repository.hasPermissionInObject(email, permission, clazz, clazzId));
+        return member == null ? List.of() : List.of(member);
+    }
+
+    //Authorization method
+    public List<AccountGroupMemberDto> hasPermissionInObjectList(String email, String permission, String clazz, List<Long> clazzIds) {
+        var list = repository.hasPermissionInObjectList(email, permission, clazz, clazzIds);
+        return list.stream().map(this::convertToDTO).toList();
     }
 
     private AccountGroupMemberDto convertToDTO(AccountGroupMember entity) {

@@ -1,14 +1,9 @@
 package com.fcastro.pantryservice.pantry;
 
-import com.fcastro.app.model.ProductDto;
 import com.fcastro.pantryservice.JsonUtil;
-import com.fcastro.pantryservice.pantryitem.PantryItemDto;
 import com.fcastro.security.core.config.SecurityPropertiesConfig;
 import com.fcastro.security.core.jwt.JWTRequestFilter;
-import com.fcastro.security.core.model.AccessControlDto;
-import com.fcastro.security.core.model.AccountGroupMemberDto;
-import com.fcastro.security.core.model.PermissionDto;
-import com.fcastro.security.core.model.RoleDto;
+import com.fcastro.security.core.model.*;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
@@ -50,18 +45,12 @@ public class PantryControllerUnitTest {
     private PantryService pantryService;
 
     @Test
+    @WithMockUser
     public void givenValidPantryId_whenGet_shouldReturnOk() throws Exception {
         //given
-        var products = new ArrayList<PantryItemDto>();
-        products.add(PantryItemDto.builder()
-                .pantry(PantryDto.builder().id(1L).build())
-                .product(ProductDto.builder().id(1L).build())
-                .idealQty(5)
-                .currentQty(5).build());
+        var pantry = PantryDto.builder().id(1L).name("Base Inventory").isActive(true).type("R").build();
 
-        var pantry = PantryDto.builder().id(1L).name("Base Inventory").isActive(true).type("R").items(products).build();
-
-        given(pantryService.get(anyLong())).willReturn(Optional.of(pantry));
+        given(pantryService.getEmbeddingAccountGroup(anyString(), anyLong())).willReturn(Optional.of(pantry));
 
         //when //then
         mockMvc.perform(MockMvcRequestBuilders.get("/pantries/1"))
@@ -69,8 +58,7 @@ public class PantryControllerUnitTest {
                 .andExpect(jsonPath("$.id", is(1)))
                 .andExpect(jsonPath("$.name", is("Base Inventory")))
                 .andExpect(jsonPath("$.isActive", is(true)))
-                .andExpect(jsonPath("$.type", is("R")))
-                .andExpect(jsonPath("$.items", hasSize(1)));
+                .andExpect(jsonPath("$.type", is("R")));
     }
 
     @Test
@@ -90,6 +78,7 @@ public class PantryControllerUnitTest {
     }
 
     @Test
+    @WithMockUser
     public void givenInvalidPantryId_whenGet_shouldReturnNotFound() throws Exception {
         //given
         given(pantryService.get(anyLong())).willReturn(Optional.empty());
@@ -102,7 +91,8 @@ public class PantryControllerUnitTest {
     @Test
     public void givenNewPantry_whenCreate_shouldReturnCreated() throws Exception {
         //given
-        var pantry = PantryDto.builder().id(10L).name("New Base Inventory").isActive(true).type("R").accountGroupId(1L).build();
+        var pantry = PantryDto.builder().id(10L).name("New Base Inventory").isActive(true).type("R")
+                .accountGroup(AccountGroupDto.builder().id(1L).build()).build();
 
         given(pantryService.save(any(PantryDto.class))).willReturn(pantry);
 
@@ -155,7 +145,7 @@ public class PantryControllerUnitTest {
         var access = AccessControlDto.builder()
                 .clazz("pantry")
                 .clazzId(1L)
-                .accountGroupId(10L)
+                .accountGroup(AccountGroupDto.builder().id(10L).build())
                 .build();
         var permissions = List.of(PermissionDto.builder().name("list_pantry").build());
         var role = RoleDto.builder().permissions(permissions).build();

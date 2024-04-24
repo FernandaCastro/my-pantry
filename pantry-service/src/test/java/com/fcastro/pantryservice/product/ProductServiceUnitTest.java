@@ -1,12 +1,11 @@
 package com.fcastro.pantryservice.product;
 
 import com.fcastro.app.exception.ResourceNotFoundException;
-import com.fcastro.app.model.ProductDto;
 import com.fcastro.pantryservice.event.ProductEventProducer;
 import com.fcastro.pantryservice.exception.DatabaseConstraintException;
 import com.fcastro.pantryservice.pantryitem.PantryItemRepository;
-import com.fcastro.security.accesscontrol.AccessControlService;
 import com.fcastro.security.authorization.AuthorizationHandler;
+import com.fcastro.security.core.model.AccountGroupDto;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -43,9 +42,6 @@ public class ProductServiceUnitTest {
     ModelMapper modelMapper;
 
     @Mock
-    private AccessControlService accessControlService;
-
-    @Mock
     private AuthorizationHandler authorizationHandler;
 
     @Test
@@ -55,7 +51,7 @@ public class ProductServiceUnitTest {
         given(repository.findById(anyLong())).willReturn(Optional.of(entity));
 
         //when
-        var dto = service.get(1);
+        var dto = service.get(1L);
 
         //then
         assertThat(dto).isNotNull();
@@ -71,10 +67,11 @@ public class ProductServiceUnitTest {
         //given
         var entity = Product.builder().id(1L).code("MILK").description("Integral").size("1L").build();
         given(repository.save(any(Product.class))).willReturn(entity);
-        doNothing().when(accessControlService).save(anyString(), anyLong(), anyLong());
+        doNothing().when(authorizationHandler).saveAccessControl(anyString(), anyLong(), anyLong());
 
         //when
-        var dto = service.save(ProductDto.builder().id(1L).code("MILK").description("Integral").size("1L").accountGroupId(1L).build());
+        var dto = service.update(ProductDto.builder().id(1L).code("MILK").description("Integral").size("1L")
+                .accountGroup(AccountGroupDto.builder().id(1L).build()).build());
 
         //then
         assertThat(dto).isNotNull();
@@ -91,7 +88,7 @@ public class ProductServiceUnitTest {
         given(repository.findById(anyLong())).willReturn(Optional.of(dto));
         given(pantryItemRepository.countPantryItem(anyLong())).willReturn(0);
         doNothing().when(repository).deleteById(anyLong());
-        doNothing().when(accessControlService).delete(anyString(), anyLong());
+        doNothing().when(authorizationHandler).deleteAccessControl(anyString(), anyLong());
 
         //when //then
         service.delete(1);

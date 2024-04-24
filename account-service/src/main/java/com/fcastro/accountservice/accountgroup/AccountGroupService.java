@@ -1,9 +1,10 @@
 package com.fcastro.accountservice.accountgroup;
 
+import com.fcastro.accountservice.accesscontrol.AccessControlService;
 import com.fcastro.accountservice.account.Account;
+import com.fcastro.accountservice.accountgroupmember.AccountGroupMemberRole;
 import com.fcastro.accountservice.accountgroupmember.AccountGroupMemberService;
-import com.fcastro.accountservice.exception.DeletionNotAllowedException;
-import com.fcastro.accountservice.security.AccessControlHandler;
+import com.fcastro.accountservice.exception.NotAllowedException;
 import com.fcastro.app.exception.ResourceNotFoundException;
 import com.fcastro.security.core.model.AccountGroupDto;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -19,12 +20,12 @@ public class AccountGroupService {
 
     private final AccountGroupRepository repository;
     private final AccountGroupMemberService groupMemberService;
-    private final AccessControlHandler accessControlHandler;
+    private final AccessControlService accessControlService;
 
-    public AccountGroupService(AccountGroupRepository repository, AccountGroupMemberService groupMemberService, AccessControlHandler accessControlHandler) {
+    public AccountGroupService(AccountGroupRepository repository, AccountGroupMemberService groupMemberService, AccessControlService accessControlService) {
         this.repository = repository;
         this.groupMemberService = groupMemberService;
-        this.accessControlHandler = accessControlHandler;
+        this.accessControlService = accessControlService;
     }
 
     public Optional<AccountGroupDto> get(long id) {
@@ -46,7 +47,7 @@ public class AccountGroupService {
     @Transactional
     public AccountGroupDto createParentGroup(Account account) {
         var accountGroup = AccountGroup.builder()
-                .name("Default Group - " + account.getName())
+                .name("Group " + account.getName())
                 .build();
 
         accountGroup = repository.save(accountGroup);
@@ -59,6 +60,12 @@ public class AccountGroupService {
 
         //update
         if (dto.getId() != null && repository.findById(dto.getId()).isPresent()) {
+
+            var member = groupMemberService.getByGroupIdAndEmail(dto.getId(), SecurityContextHolder.getContext().getAuthentication().getName()).get();
+            if (member == null || !AccountGroupMemberRole.OWNER.value.equals(member.getRole())) {
+                throw new NotAllowedException("You are not allowed to update the group.");
+            }
+
             var accountGroup = repository.save(convertToEntity(dto));
             return convertToDTO(accountGroup);
         }
@@ -77,16 +84,21 @@ public class AccountGroupService {
     }
 
     public void delete(long accountGroupId) {
-        //TODO: Guarantee that groups associated to objects (pantries ie) should not be deleted
         var accountGroup = repository.findById(accountGroupId)
                 .orElseThrow(() -> new ResourceNotFoundException("AccountGroup not found"));
 
-        if (accountGroup.getParentAccountGroup() == null)
-            throw new DeletionNotAllowedException("This is your main Account Group. It cannot be deleted.");
+        var member = groupMemberService.getByGroupIdAndEmail(accountGroupId, SecurityContextHolder.getContext().getAuthentication().getName()).get();
+        if (member == null || !AccountGroupMemberRole.OWNER.value.equals(member.getRole())) {
+            throw new NotAllowedException("You are not allowed to delete the group.");
+        }
 
-        var isGroupInUse = accessControlHandler.isInUse(accountGroupId);
-        if (isGroupInUse)
-            throw new DeletionNotAllowedException("This Account Group is in use and cannot be deleted. It may contain Pantries, Purchase Orders and/or Products.");
+
+        if (accountGroup.getParentAccountGroup() == null)
+            throw new NotAllowedException("This is your main Account Group. It cannot be deleted.");
+
+        var inUse = accessControlService.getAll(accountGroupId);
+        if (inUse.size() > 0)
+            throw new NotAllowedException("This Account Group is in use and cannot be deleted. It may contain Pantries, Purchase Orders and/or Products.");
 
         repository.deleteById(accountGroupId);
     }

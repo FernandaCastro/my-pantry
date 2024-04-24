@@ -2,22 +2,24 @@ package com.fcastro.pantryservice.product;
 
 import com.fcastro.app.exception.ResourceNotFoundException;
 import com.fcastro.app.model.Action;
-import com.fcastro.app.model.ProductDto;
 import com.fcastro.kafka.event.ProductEventDto;
 import com.fcastro.pantryservice.event.ProductEventProducer;
 import com.fcastro.pantryservice.exception.DatabaseConstraintException;
 import com.fcastro.pantryservice.exception.RequestParamExpectedException;
 import com.fcastro.pantryservice.pantryitem.PantryItemRepository;
-import com.fcastro.security.accesscontrol.AccessControlService;
 import com.fcastro.security.authorization.AuthorizationHandler;
+import com.fcastro.security.core.model.AccessControlDto;
 import com.fcastro.security.exception.AccessControlNotDefinedException;
 import org.modelmapper.ModelMapper;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toSet;
 
 @Service
 public class ProductService {
@@ -26,19 +28,25 @@ public class ProductService {
     private final PantryItemRepository pantryItemRepository;
     private final ProductEventProducer productEventProducer;
     private final ModelMapper modelMapper;
-    private final AuthorizationHandler authorizationService;
-    private final AccessControlService accessControlService;
+    private final AuthorizationHandler authorizationHandler;
 
-    public ProductService(ProductRepository repository, PantryItemRepository pantryItemRepository, ProductEventProducer productEventProducer, ModelMapper modelMapper, AuthorizationHandler authorizationService, AccessControlService accessControlService) {
+    public ProductService(ProductRepository repository, PantryItemRepository pantryItemRepository, ProductEventProducer productEventProducer, ModelMapper modelMapper, AuthorizationHandler authorizationHandler) {
         this.repository = repository;
         this.pantryItemRepository = pantryItemRepository;
         this.productEventProducer = productEventProducer;
         this.modelMapper = modelMapper;
-        this.authorizationService = authorizationService;
-        this.accessControlService = accessControlService;
+        this.authorizationHandler = authorizationHandler;
     }
 
-    public Optional<ProductDto> get(long id) {
+    public Optional<ProductDto> getEmbeddingAccountGroup(String email, long id) {
+        var accessControlList = authorizationHandler.listAccessControl(email, Product.class.getSimpleName(), id, null);
+        var product = repository.findById(id).map(this::convertToDTO)
+                .orElseThrow(() -> new ResourceNotFoundException("Product not found"));
+        return Optional.of(embedAccountGroup(product, accessControlList));
+    }
+
+
+    public Optional<ProductDto> get(Long id) {
         return repository.findById(id)
                 .map(this::convertToDTO);
     }
@@ -49,43 +57,108 @@ public class ProductService {
     }
 
     //TODO: Pageable
-    public List<ProductDto> getAllBySearchParam(Long groupId, String searchParam) {
+    public List<ProductDto> getAllBySearchParam(String email, Long groupId, String searchParam) {
         if (groupId == null)
             throw new RequestParamExpectedException("Expecting to receive parameter groupId");
 
         if (searchParam == null)
             throw new RequestParamExpectedException("Expecting to receive SearchParam: code or description value");
 
-        var listEntity = repository.findAllByCodeOrDescription(searchParam.toLowerCase(), groupId);
-        return listEntity.stream().map(this::convertToDTO).collect(Collectors.toList());
+        var accessControlList = authorizationHandler.listAccessControl(email, Product.class.getSimpleName(), null, groupId);
+        var productIds = accessControlList.stream().map(AccessControlDto::getClazzId).collect(toSet());
+
+        var productList = repository.findAllByCodeOrDescription(searchParam.toLowerCase(), productIds).stream()
+                .map(this::convertToDTO).collect(Collectors.toList());
+
+        productList = embedAccountGroup(productList, accessControlList);
+        return productList;
     }
 
     public List<ProductDto> getAll(String email) {
-        var accountGroups = authorizationService.getAccountGroupList(email);
-        if (accountGroups == null) return new ArrayList<ProductDto>();
-        List<Product> listEntity = repository.findAll(accountGroups);
-        return listEntity.stream().map(this::convertToDTO).collect(Collectors.toList());
+
+        var accessControlList = authorizationHandler.listAccessControl(email, Product.class.getSimpleName(), null, null);
+
+        var productIds = accessControlList.stream().map(AccessControlDto::getClazzId).collect(toSet());
+        var productList = repository.findAllByIds(productIds).stream().map(this::convertToDTO).collect(Collectors.toList());
+        productList = embedAccountGroup(productList, accessControlList);
+        return productList;
     }
 
-    public ProductDto save(ProductDto dto) {
-        if (dto.getAccountGroupId() == null)
+    //It finds and attaches AccountGroup to each Product in the list
+    private List<ProductDto> embedAccountGroup(List<ProductDto> productList, List<AccessControlDto> accessControlList) {
+        return productList.stream().map((product) -> embedAccountGroup(product, accessControlList)).collect(Collectors.toList());
+    }
+
+    //It finds and attaches AccountGroup to the Product
+    private ProductDto embedAccountGroup(ProductDto product, List<AccessControlDto> accessControlList) {
+        accessControlList.stream()
+                .filter((accessControl) -> Objects.equals(accessControl.getClazzId(), product.getId()))
+                .findFirst()
+                .ifPresentOrElse(
+                        accessControl -> product.setAccountGroup(accessControl.getAccountGroup()),
+                        () -> {
+                            throw new AccessControlNotDefinedException("Unable to embed AccountGroup to Product [" + product.getId() + ": " + product.getCode());
+                        }
+                );
+        return product;
+    }
+
+    public ProductDto create(ProductDto dto) {
+        if (dto.getAccountGroup() == null || dto.getAccountGroup().getId() == 0)
+            throw new AccessControlNotDefinedException("Product must be associated to an Account Group");
+
+        existsInAccountGroup(dto);
+
+        var entity = repository.save(convertToEntity(dto));
+        authorizationHandler.saveAccessControl(Product.class.getSimpleName(), entity.getId(), dto.getAccountGroup().getId());
+
+        var storedDto = convertToDTO(entity);
+        storedDto.setAccountGroup(dto.getAccountGroup());
+
+        productEventProducer.send(ProductEventDto.builder()
+                .action(Action.CREATE)
+                .id(entity.getId())
+                .code(entity.getCode())
+                .description(entity.getDescription())
+                .size(entity.getSize())
+                .category(entity.getCategory())
+                .build());
+
+        return storedDto;
+    }
+
+    //TODO: does it scale?
+    private void existsInAccountGroup(ProductDto dto) {
+        var productList = repository.findAllByCode(dto.getCode()); //This can be a huge list
+        var accessList = authorizationHandler.listAccessControl(SecurityContextHolder.getContext().getAuthentication().getName(), "Product", null, dto.getAccountGroup().getId());
+
+        var found = accessList.stream()
+                .map(AccessControlDto::getClazzId)
+                .anyMatch(productList.stream()
+                        .map(Product::getId)
+                        .collect(toSet())::contains);
+
+        if (found)
+            throw new DatabaseConstraintException("Product already exits in the account group!");
+    }
+
+    public ProductDto update(ProductDto dto) {
+        if (dto.getAccountGroup() == null || dto.getAccountGroup().getId() == 0)
             throw new AccessControlNotDefinedException("Product must be associated to an Account Group");
 
         var entity = repository.save(convertToEntity(dto));
-        accessControlService.save(Product.class.getSimpleName(), entity.getId(), dto.getAccountGroupId());
+        authorizationHandler.saveAccessControl(Product.class.getSimpleName(), entity.getId(), dto.getAccountGroup().getId());
 
         var storedDto = convertToDTO(entity);
-        storedDto.setAccountGroupId(dto.getAccountGroupId());
+        storedDto.setAccountGroup(dto.getAccountGroup());
 
         productEventProducer.send(ProductEventDto.builder()
                 .action(Action.UPDATE)
-                .product(ProductDto.builder()
-                        .id(entity.getId())
-                        .code(entity.getCode())
-                        .description(entity.getDescription())
-                        .size(entity.getSize())
-                        .category(entity.getCategory())
-                        .build())
+                .id(entity.getId())
+                .code(entity.getCode())
+                .description(entity.getDescription())
+                .size(entity.getSize())
+                .category(entity.getCategory())
                 .build());
 
         return storedDto;
@@ -99,13 +172,11 @@ public class ProductService {
             throw new DatabaseConstraintException("Product can not be removed. It is referred in one or more pantry items.");
 
         repository.deleteById(id);
-        accessControlService.delete(Product.class.getSimpleName(), id);
+        authorizationHandler.deleteAccessControl(Product.class.getSimpleName(), id);
 
         productEventProducer.send(ProductEventDto.builder()
                 .action(Action.DELETE)
-                .product(ProductDto.builder()
-                        .id(id)
-                        .build())
+                .id(id)
                 .build());
     }
 

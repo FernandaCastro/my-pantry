@@ -14,17 +14,19 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Entity(name = "pantryItem")
 @Table(name = "PANTRY_ITEM")
-@IdClass(PantryItemKey.class)
+//@IdClass(PantryItemKey.class)
 //@NamedEntityGraph(name = "pantryItem.pantry",
 //        attributeNodes = @NamedAttributeNode("pantry")
 //)
 public class PantryItem {
 
-    @Id
-    private Long pantryId;
-
-    @Id
-    private Long productId;
+    //    @Id
+//    private Long pantryId;
+//
+//    @Id
+//    private Long productId;
+    @EmbeddedId
+    private PantryItemKey id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("pantryId")
@@ -48,14 +50,14 @@ public class PantryItem {
 
         PantryItem that = (PantryItem) o;
 
-        if (!getPantryId().equals(that.getPantryId())) return false;
-        return getProductId().equals(that.getProductId());
+        if (!getId().equals(that.getId())) return false;
+        return getId().equals(that.getId());
     }
 
     @Override
     public int hashCode() {
-        int result = getPantryId().hashCode();
-        result = 31 * result + getProductId().hashCode();
+        int result = getId().getPantryId().hashCode();
+        result = 31 * result + getId().getProductId().hashCode();
         return result;
     }
 }

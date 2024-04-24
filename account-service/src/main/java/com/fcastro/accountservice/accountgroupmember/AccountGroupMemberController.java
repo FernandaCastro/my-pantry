@@ -1,6 +1,5 @@
 package com.fcastro.accountservice.accountgroupmember;
 
-import com.fcastro.app.exception.ResourceNotFoundException;
 import com.fcastro.security.core.model.AccountGroupMemberDto;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -18,13 +17,6 @@ public class AccountGroupMemberController {
 
     public AccountGroupMemberController(AccountGroupMemberService accountGroupMemberService) {
         this.service = accountGroupMemberService;
-    }
-
-    @GetMapping("/{groupId}/{email}")
-    public ResponseEntity<AccountGroupMemberDto> get(@PathVariable long groupId, @PathVariable String email) {
-        return service.getByGroupIdAndEmail(groupId, email)
-                .map(ResponseEntity::ok)
-                .orElseThrow(() -> new ResourceNotFoundException("AccountGroupMember not found"));
     }
 
     @GetMapping()

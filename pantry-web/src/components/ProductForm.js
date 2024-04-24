@@ -21,7 +21,7 @@ export default function ProductForm({ product, accountGroupId, categories, accou
     }, []);
 
     useEffect(() => {
-        const searchGroupId = (Object.keys(product).length > 0 && product.id > 0) ? product.accountGroupId : accountGroupId;
+        const searchGroupId = (Object.keys(product).length > 0 && product.id > 0) ? product.accountGroup.id : accountGroupId;
 
         if (searchGroupId && searchGroupId > 0) {
             const found = accountGroupOptions.find(a => a.value === searchGroupId);
@@ -62,7 +62,7 @@ export default function ProductForm({ product, accountGroupId, categories, accou
         formJson = {
             ...formJson,
             category: categoryOption.value,
-            accountGroupId: accountGroupOption.value
+            accountGroup: { id: accountGroupOption.value }
         }
 
         handleSave(formJson);
@@ -71,7 +71,7 @@ export default function ProductForm({ product, accountGroupId, categories, accou
     }
 
     return (
-        <Form key={product} onSubmit={handleSubmit}>
+        <Form onSubmit={handleSubmit}>
             <Row>
                 <Form.Group as={Col} className="mb-2" controlId="formAccountGroups" size="sm">
                     <Form.Label size="sm" className="title mb-1">Account Group</Form.Label>
@@ -92,7 +92,7 @@ export default function ProductForm({ product, accountGroupId, categories, accou
                 </Form.Group>
             </Row>
             <Row>
-                <Form.Group className="w-25" controlId="formSize">
+                <Form.Group key={categoryOption.value} className="w-25" controlId="formSize">
                     <Form.Label size="sm" className="title mb-1">Size</Form.Label>
                     <Form.Control size="sm" className="mb-1 input-custom" type="text" name="size" defaultValue={product.size} />
                 </Form.Group>

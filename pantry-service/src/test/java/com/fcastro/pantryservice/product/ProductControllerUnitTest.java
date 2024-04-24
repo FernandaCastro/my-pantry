@@ -1,6 +1,5 @@
 package com.fcastro.pantryservice.product;
 
-import com.fcastro.app.model.ProductDto;
 import com.fcastro.pantryservice.JsonUtil;
 import com.fcastro.security.core.config.SecurityPropertiesConfig;
 import com.fcastro.security.core.jwt.JWTRequestFilter;
@@ -14,6 +13,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
@@ -22,8 +22,7 @@ import java.util.Optional;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.hasSize;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -43,11 +42,12 @@ public class ProductControllerUnitTest {
     private ProductService service;
 
     @Test
+    @WithMockUser
     public void givenValidId_whenGet_shouldReturnOk() throws Exception {
         //given
-        var dto = ProductDto.builder().id(1).code("MILK").description("Integral").size("1L").build();
+        var dto = ProductDto.builder().id(1L).code("MILK").description("Integral").size("1L").build();
 
-        given(service.get(anyLong())).willReturn(Optional.of(dto));
+        given(service.getEmbeddingAccountGroup(anyString(), anyLong())).willReturn(Optional.of(dto));
 
         //when //then
         mockMvc.perform(MockMvcRequestBuilders.get("/products/1"))
@@ -59,6 +59,7 @@ public class ProductControllerUnitTest {
     }
 
     @Test
+    @WithMockUser
     public void givenInvalidId_whenGet_shouldReturnNoContent() throws Exception {
         //given
         given(service.get(anyLong())).willReturn(Optional.empty());
@@ -69,13 +70,14 @@ public class ProductControllerUnitTest {
     }
 
     @Test
+    @WithMockUser
     public void whenGetAll_shouldReturnOk() throws Exception {
         //given
         var list = new ArrayList<ProductDto>();
-        list.add(ProductDto.builder().id(1).code("MILK").description("Integral").size("1L").build());
-        list.add(ProductDto.builder().id(2).code("VOLLMILK").description("Integral").size("2L").build());
+        list.add(ProductDto.builder().id(1L).code("MILK").description("Integral").size("1L").build());
+        list.add(ProductDto.builder().id(2L).code("VOLLMILK").description("Integral").size("2L").build());
 
-        given(service.getAllBySearchParam(1L, "MILK")).willReturn(list);
+        given(service.getAllBySearchParam(anyString(), anyLong(), anyString())).willReturn(list);
 
         //when //then
         mockMvc.perform(MockMvcRequestBuilders.get("/products")
@@ -89,9 +91,9 @@ public class ProductControllerUnitTest {
     @Test
     public void givenNewDto_whenCreate_shouldReturnCreated() throws Exception {
         //given
-        var dto = ProductDto.builder().id(1).code("MILK").description("Integral").size("1L").build();
+        var dto = ProductDto.builder().id(1L).code("MILK").description("Integral").size("1L").build();
 
-        given(service.save(any(ProductDto.class))).willReturn(dto);
+        given(service.create(any(ProductDto.class))).willReturn(dto);
 
         //when //then
         mockMvc.perform(MockMvcRequestBuilders.post("/products")
@@ -107,10 +109,10 @@ public class ProductControllerUnitTest {
     @Test
     public void givenValidId_whenReplace_shouldReturnCreated() throws Exception {
         //given
-        var dto = ProductDto.builder().id(1).code("MILK").description("Integral").size("1L").build();
+        var dto = ProductDto.builder().id(1L).code("MILK").description("Integral").size("1L").build();
 
         given(service.get(anyLong())).willReturn(Optional.of(dto));
-        given(service.save(any(ProductDto.class))).willReturn(dto);
+        given(service.update(any(ProductDto.class))).willReturn(dto);
 
         //when //then
         mockMvc.perform(MockMvcRequestBuilders.put("/products/1")
@@ -126,7 +128,7 @@ public class ProductControllerUnitTest {
     @Test
     public void givenInvalidId_whenReplace_shouldReturnCreated() throws Exception {
         //given
-        var dto = ProductDto.builder().id(10).code("MILK").description("Integral").size("1L").build();
+        var dto = ProductDto.builder().id(10L).code("MILK").description("Integral").size("1L").build();
         given(service.get(anyLong())).willReturn(Optional.empty());
 
         //when //then

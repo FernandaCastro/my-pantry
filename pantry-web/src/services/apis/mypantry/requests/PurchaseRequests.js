@@ -3,14 +3,18 @@
 // ============================================================
 import FetchPurchase from '../FetchPurchase';
 
-export async function getOpenPurchaseOrder() {
-    return FetchPurchase(`purchases/open`, "GET");
+export async function getAllPurchaseOrders(pantryIds) {
+    return FetchPurchase(`purchases?pantryIds=${pantryIds}`, "GET");
 }
 
-export async function getPendingPurchaseItems(supermarket) {
+export async function getOpenPurchaseOrder(pantryIds) {
+    return FetchPurchase(`purchases/open?pantryIds=${pantryIds}`, "GET");
+}
+
+export async function getPendingPurchaseItems(pantryIds, supermarket) {
     return !supermarket || supermarket === '' || supermarket === '-' ?
-        FetchPurchase(`purchases/items`, "GET") :
-        FetchPurchase(`purchases/items?supermarket=${supermarket}`, "GET");
+        FetchPurchase(`purchases/items?pantryIds=${pantryIds}`, "GET") :
+        FetchPurchase(`purchases/items?pantryIds=${pantryIds}&supermarket=${supermarket}`, "GET");
 }
 
 export async function getPurchaseItems(id, supermarket) {
@@ -19,8 +23,8 @@ export async function getPurchaseItems(id, supermarket) {
         FetchPurchase(`purchases/${id}/items?supermarket=${supermarket}`, "GET");
 }
 
-export async function postNewPurchaseOrder() {
-    return FetchPurchase(`purchases/new`, "POST", {});
+export async function postNewPurchaseOrder(pantryIds) {
+    return FetchPurchase(`purchases/new`, "POST", pantryIds);
 }
 
 export async function postClosePurchaseOrder(purchasedItems) {

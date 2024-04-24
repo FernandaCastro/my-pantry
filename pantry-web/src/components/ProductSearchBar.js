@@ -1,14 +1,13 @@
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
-import { useState, useContext } from 'react';
+import { useState } from 'react';
 import { BsEraser, BsCheck2All, BsChevronDown, BsPlusLg } from "react-icons/bs";
 import VariantType from './VariantType.js';
+import useAlert from '../hooks/useAlert.js';
 import { getFilteredProductList, createProduct } from '../services/apis/mypantry/requests/PantryRequests.js';
-import { AlertContext } from '../services/context/AppContext.js';
 import Card from 'react-bootstrap/Card';
 import Stack from 'react-bootstrap/Stack';
 import CloseButton from 'react-bootstrap/CloseButton';
-import '../assets/styles/ProductSearchBar.css';
 import ProductForm from './ProductForm.js';
 import { camelCase } from '../services/Utils.js';
 import Collapse from 'react-bootstrap/Collapse';
@@ -21,8 +20,7 @@ function ProductSearchBar({ accountGroupId, accountGroupOptions, handleSelectAct
     const [notFoundMessage, setNotFoundMessage] = useState("");
     const [showProductForm, setShowProductForm] = useState(false);
     const [show, setShow] = useState(true);
-    const { setAlert } = useContext(AlertContext);
-
+    const { showAlert } = useAlert();
     const [product, setProduct] = useState({});
 
     function handleSearch(e) {
@@ -51,11 +49,7 @@ function ProductSearchBar({ accountGroupId, accountGroupOptions, handleSelectAct
             setNotFoundMessage(res.length === 0 ? notFound : "");
             setResults(res);
         } catch (error) {
-            setAlert({
-                show: true,
-                type: VariantType.DANGER,
-                message: error.message
-            });
+            showAlert(VariantType.DANGER, error.message);
         }
     }
 
@@ -95,14 +89,6 @@ function ProductSearchBar({ accountGroupId, accountGroupOptions, handleSelectAct
         );
     }
 
-    function showAlert(type, message) {
-        setAlert({
-            show: true,
-            type: type,
-            message: message
-        })
-    }
-
     async function fetchSaveProduct(body) {
         try {
             const res = await createProduct(body);
@@ -120,8 +106,10 @@ function ProductSearchBar({ accountGroupId, accountGroupOptions, handleSelectAct
 
     async function handleSaveAndAddNewProduct(jsonProduct) {
         const res = await fetchSaveProduct(jsonProduct);
-        handleSelect(res);
-        showAlert(VariantType.SUCCESS, "Product saved and added to the list successfully ");
+        if (res) {
+            handleSelect(res);
+            showAlert(VariantType.SUCCESS, "Product saved and added to the list successfully ");
+        }
         setShowProductForm(false);
     }
 

@@ -7,11 +7,15 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 public interface PurchaseItemRepository extends JpaRepository<PurchaseItem, Long> {
 
-    @Query("select i, p from purchaseItem i, product p where i.product.id = p.id and i.purchase.id is null order by p.category, p.code")
-    List<PurchaseItem> listPendingPurchase();
+    @Query("select i, p from purchaseItem i, product p " +
+            "where i.product.id = p.id and i.purchase.id is null " +
+            "and i.pantryId in :pantryIds " +
+            "order by p.category, p.code")
+    List<PurchaseItem> listPendingPurchase(Set<Long> pantryIds);
 
     @Modifying
     @Query("update purchaseItem set purchase.id = :purchaseId where purchase.id is null")

@@ -23,6 +23,7 @@ import org.springframework.test.context.ContextConfiguration;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
@@ -64,7 +65,7 @@ public class AccountServiceUnitTest {
         AccountDto account = AccountDto.builder().id(1L).email("user@user.com").build();
         when(accountRepository.findByEmail(anyString())).thenReturn(
                 Optional.of(Account.builder().id(account.getId()).email(account.getEmail()).build()));
-        when(jwtHandler.createToken(account.getEmail(), null, false)).thenReturn("jwtToken");
+        when(jwtHandler.createToken(anyString(), anyBoolean())).thenReturn("jwtToken");
         //when
         var appToken = accountService.login("user@user.com");
 

@@ -1,7 +1,6 @@
-import { useState, useEffect, useContext } from 'react';
+import { useState, useEffect } from 'react';
 import { FormCheck, Stack } from "react-bootstrap";
 import Button from 'react-bootstrap/Button';
-import { AlertContext } from '../services/context/AppContext.js';
 import VariantType from '../components/VariantType.js';
 import {
     getAccountGroupList, createAccountGroup, editAccountGroup,
@@ -14,6 +13,7 @@ import AccountSearchBar from '../components/AccountSearchBar';
 import Form from 'react-bootstrap/Form';
 import Modal from 'react-bootstrap/Modal';
 import { getAssociatedPantries } from '../services/apis/mypantry/requests/PantryRequests.js'
+import useAlert from '../hooks/useAlert.js';
 
 function GroupMembers() {
 
@@ -26,13 +26,13 @@ function GroupMembers() {
     const [associatedPantries, setAssociatedPantries] = useState([]);
 
     const [groupName, setGroupName] = useState("");
-    const [selectedGroup, setSelectedGroup] = useState({id: 0});
+    const [selectedGroup, setSelectedGroup] = useState({ id: 0 });
     const [editGroup, setEditGroup] = useState(0);
 
     const [showNewGroup, setShowNewGroup] = useState(false);
     const [showModal, setShowModal] = useState(false);
 
-    const { setAlert } = useContext(AlertContext);
+    const { showAlert } = useAlert();
 
     useEffect(() => {
         if (refresh) fetchGroups();
@@ -72,13 +72,13 @@ function GroupMembers() {
         }
     }
 
-    function showAlert(type, message) {
-        setAlert({
-            show: true,
-            type: type,
-            message: message
-        })
-    }
+    // function showAlert(type, message) {
+    //     setAlert({
+    //         show: true,
+    //         type: type,
+    //         message: message
+    //     })
+    // }
 
     async function fetchAssociatedPantries(groupId) {
         try {
@@ -298,7 +298,7 @@ function GroupMembers() {
                     {renderGroups()}
                 </div>
                 <div>
-                    <AccountSearchBar key={selectedGroup.id} handleSelectAction={handleAddMember} disabled={selectedGroup.id === 0}/>
+                    <AccountSearchBar key={selectedGroup.id} handleSelectAction={handleAddMember} disabled={selectedGroup.id === 0} />
                 </div>
                 <div>
                     <h6 className='title'>Members</h6>

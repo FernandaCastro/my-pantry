@@ -1,11 +1,11 @@
 package com.fcastro.pantryservice.pantryitem;
 
 import com.fcastro.app.exception.ResourceNotFoundException;
-import com.fcastro.app.model.ProductDto;
 import com.fcastro.pantryservice.JsonUtil;
 import com.fcastro.pantryservice.exception.PantryNotActiveException;
 import com.fcastro.pantryservice.exception.QuantityNotAvailableException;
 import com.fcastro.pantryservice.pantry.PantryDto;
+import com.fcastro.pantryservice.product.ProductDto;
 import com.fcastro.security.core.config.SecurityPropertiesConfig;
 import com.fcastro.security.core.jwt.JWTRequestFilter;
 import org.junit.jupiter.api.Test;
@@ -19,6 +19,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
@@ -102,18 +103,17 @@ public class PantryItemControllerUnitTest {
     }
 
     @Test
+    @WithMockUser
     public void givenNewIds_whenCreate_shouldReturnCreated() throws Exception {
         //given
         var dto = PantryItemDto.builder()
-                .pantryId(1L)
-                .productId(1L)
                 .pantry(PantryDto.builder().id(1L).build())
                 .product(ProductDto.builder().id(1L).build())
                 .idealQty(5)
                 .currentQty(5).build();
 
         given(service.get(anyLong(), anyLong())).willReturn(Optional.empty());
-        given(service.save(any(PantryItemDto.class))).willReturn(dto);
+        given(service.create(any(PantryItemDto.class))).willReturn(dto);
 
         //when //then
         mockMvc.perform(MockMvcRequestBuilders.post("/pantries/1/items")
@@ -136,7 +136,7 @@ public class PantryItemControllerUnitTest {
                 .currentQty(5).build();
 
         given(service.get(1L, 1L)).willReturn(Optional.of(dto));
-        given(service.save(any(PantryItemDto.class))).willReturn(dto);
+        given(service.update(any(PantryItemDto.class))).willReturn(dto);
 
         //when //then
         mockMvc.perform(MockMvcRequestBuilders.put("/pantries/1/items/1")

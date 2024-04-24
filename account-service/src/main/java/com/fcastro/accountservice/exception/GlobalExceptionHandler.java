@@ -57,9 +57,10 @@ public class GlobalExceptionHandler {
         exceptionTypes.put(TokenVerifierException.class, "application-error");
         exceptionTypes.put(AccountAlreadyExistsException.class, "application-error");
         exceptionTypes.put(PasswordAnswerNotMatchException.class, "application-error");
-        exceptionTypes.put(AtLeastOneMemberMustExistException.class, "application-error");
-        exceptionTypes.put(DeletionNotAllowedException.class, "application-error");
+        exceptionTypes.put(OneOwnerMemberMustExistException.class, "application-error");
+        exceptionTypes.put(NotAllowedException.class, "application-error");
         exceptionTypes.put(RequestParamExpectedException.class, "application-error");
+        exceptionTypes.put(AccessControlNotDefinedException.class, "application-error");
     }
 
     @ExceptionHandler(value = {
@@ -68,9 +69,10 @@ public class GlobalExceptionHandler {
             HttpMessageNotReadableException.class,
             AccountAlreadyExistsException.class,
             PasswordAnswerNotMatchException.class,
-            AtLeastOneMemberMustExistException.class,
-            DeletionNotAllowedException.class,
-            RequestParamExpectedException.class})
+            OneOwnerMemberMustExistException.class,
+            NotAllowedException.class,
+            RequestParamExpectedException.class,
+            AccessControlNotDefinedException.class})
     public ResponseEntity<?> badRequest(final Exception ex, final HttpServletRequest request) {
 
         final var error = ApplicationError.builder()

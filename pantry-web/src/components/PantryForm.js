@@ -3,21 +3,19 @@ import Stack from 'react-bootstrap/Stack';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
-import { useState, useEffect, useContext } from 'react';
+import { useState, useEffect } from 'react';
 import Select from './Select';
 //import Select from 'react-select';
-import { AlertContext } from '../services/context/AppContext.js';
 
 export default function PantryForm({ pantry, handleSave, accountGroupOptions }) {
 
     const [isActiveLabel, setIsActiveLabel] = useState(pantry.isActive ? "Active" : "Inactive");
     const [accountGroupOption, setAccountGroupOption] = useState({ value: 0, label: "" });
-    const { setAlert } = useContext(AlertContext);
     const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
         if (Object.keys(pantry).length > 0 && pantry.id > 0) {
-            const found = accountGroupOptions.find(a => a.value === pantry.accountGroupId);
+            const found = accountGroupOptions.find(a => a.value === pantry.accountGroup.id);
             setAccountGroupOption(() => found);
         }
     }, [pantry.id]);
@@ -33,7 +31,8 @@ export default function PantryForm({ pantry, handleSave, accountGroupOptions }) 
         let formJson = Object.fromEntries(formData.entries());
         formJson.isActive = formJson.isActive === 'on' ? true : false;
 
-        formJson = { ...formJson, accountGroupId: accountGroupOption.value }
+        const accountGroup = { id: accountGroupOption.value };
+        formJson = { ...formJson, accountGroup: accountGroup }
 
         handleSave(formJson);
 
@@ -57,7 +56,7 @@ export default function PantryForm({ pantry, handleSave, accountGroupOptions }) 
             <Row>
                 <Form.Group className="mb-2 w-25" controlId="formId">
                     <Form.Label size="sm" className="mb-1 title">Id</Form.Label>
-                    <Form.Control size="sm" className="mb-1 input-custom" type="text" name="id" defaultValue={pantry.id} disabled />
+                    <Form.Control key={pantry.id} size="sm" className="mb-1 input-custom" type="text" name="id" defaultValue={pantry.id} disabled />
                 </Form.Group>
                 <Form.Group as={Col} className="mb-2" controlId="formName">
                     <Form.Label size="sm" className="mb-1 title">Name</Form.Label>

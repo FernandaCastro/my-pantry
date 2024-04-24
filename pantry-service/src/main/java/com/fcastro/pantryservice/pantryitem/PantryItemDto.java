@@ -1,22 +1,18 @@
 package com.fcastro.pantryservice.pantryitem;
 
-import com.fcastro.app.model.ProductDto;
 import com.fcastro.pantryservice.pantry.PantryDto;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.fcastro.pantryservice.product.ProductDto;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
-@Data
+@Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class PantryItemDto {
 
-    private Long pantryId;
-    private Long productId;
     private int idealQty;
     private int currentQty;
     private int provisionedQty;
@@ -33,14 +29,14 @@ public class PantryItemDto {
 
         PantryItemDto that = (PantryItemDto) o;
 
-        if (!getPantryId().equals(that.getPantryId())) return false;
-        return getProductId().equals(that.getProductId());
+        if (!getPantry().getId().equals(that.getPantry().getId())) return false;
+        return getProduct().getId().equals(that.getProduct().getId());
     }
 
     @Override
     public int hashCode() {
-        int result = getPantryId().hashCode();
-        result = 31 * result + getProductId().hashCode();
+        int result = getPantry().getId().hashCode();
+        result = 31 * result + getProduct().getId().hashCode();
         return result;
     }
 }

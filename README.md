@@ -1,19 +1,29 @@
-![diagram](readme_images/MyPantry.png)
+![diagram](readme_images/my-pantry_v0.0.4.png)
 
 # My Pantry
 
-version: 0.0.3-snapshot <br />
-Plans for next version:
+version: 0.0.4 <br />
 
+- Access Control is now centralized in account_service, as part of the authorization.
+  - Why? So far, Pantry and Product are the only relevant entities when it comes to access control. So instead of making
+    purchase-service request access-control data to pantry-service, I decided to centralize it together with
+    authorization logic in account-service.
+- New Permission: PURCHASE_PANTRY Permissions refactored: CONSUME_PANTRY, ANALYSE_PANTRY
+- Control the access to Purchases
+- Purchase by selecting specific pantries or all
+
+Plans for next versions:
+
+- CRUD for Role and Permissions
 - Wizards that create basic products and pantry with basic items
-- Add permissions and manage access control on purchase-service objects
+- CRUD for Supermarkets and its particular order of categories
 
 My Pantry manages pantries and automatically creates shopping lists as products are consumed from the
 inventory. <br/> <br/>
 You can also share your Pantries, Shopping Lists and Products with other users, by adding users to your Account Group.
 
 The frontend is developed in Reactjs and Javascript, while backend is written in Java 17, Spring Boot and Spring
-Security. The Authentication is possible by either Google Signin (Google IDToken - having localhost as callback) or
+Security. The Authentication is possible by either Google Sign-in (Google IDToken - having localhost as callback) or
 user/password.
 
 <b>Run it from Docker</b> by getting docker-compose.yml file from the project root folder: <br/>

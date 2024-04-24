@@ -29,17 +29,6 @@ public class Pantry {
     private String type;
     private Boolean isActive;
 
-    @OneToMany(mappedBy = "pantry", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "pantry", fetch = FetchType.LAZY)
     private List<PantryItem> items;
-
-    @Transient
-    private Long accountGroupId;
-
-    public Pantry(Long id, String name, String type, Boolean isActive, Long accountGroupId) {
-        this.id = id;
-        this.name = name;
-        this.type = type;
-        this.isActive = isActive;
-        this.accountGroupId = accountGroupId;
-    }
 }

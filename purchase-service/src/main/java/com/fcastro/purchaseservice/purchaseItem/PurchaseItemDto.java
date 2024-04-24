@@ -1,7 +1,7 @@
 package com.fcastro.purchaseservice.purchaseItem;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fcastro.app.model.ProductDto;
+import com.fcastro.purchaseservice.product.ProductDto;
 import com.fcastro.purchaseservice.purchase.PurchaseDto;
 import lombok.*;
 

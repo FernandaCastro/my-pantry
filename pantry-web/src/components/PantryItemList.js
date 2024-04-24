@@ -1,6 +1,5 @@
-import { AlertContext } from '../services/context/AppContext.js';
 import { getPantryItems, deletePantryItem, updatePantryItem } from '../services/apis/mypantry/requests/PantryRequests.js';
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useEffect, useState } from 'react';
 import VariantType from '../components/VariantType.js';
 import Button from 'react-bootstrap/Button';
 import { BsTrash } from "react-icons/bs";
@@ -11,6 +10,7 @@ import Image from 'react-bootstrap/Image';
 import food from '../assets/images/healthy-food.png'
 import Stack from 'react-bootstrap/Stack';
 import { camelCase } from '../services/Utils.js';
+import useAlert from '../hooks/useAlert.js';
 
 function PantryItemList({ pantryId }) {
 
@@ -19,7 +19,7 @@ function PantryItemList({ pantryId }) {
     const [pantryItems, setPantryItems] = useState([]);
     const [filteredItems, setFilteredItems] = useState([]);
     const [searchText, setSearchText] = useState("");
-    const { setAlert } = useContext(AlertContext);
+    const { showAlert } = useAlert();
 
     useEffect(() => {
         setIsLoading(true);
@@ -54,15 +54,16 @@ function PantryItemList({ pantryId }) {
 
     async function fetchUpdatePantryItem(item) {
         try {
-            await updatePantryItem(item.pantryId, item.productId, item);
-            setRefresh(true);
+            await updatePantryItem(item.pantry.id, item.product.id, item);
         } catch (error) {
             showAlert(VariantType.DANGER, error.message);
+        } finally {
+            setRefresh(true);
         }
     }
 
     function handleRemove(item) {
-        fetchDeletePantryItem(item.pantryId, item.productId)
+        fetchDeletePantryItem(item.pantry.id, item.product.id)
         showAlert(VariantType.SUCCESS, "Item removed successfully!");
         return
     }
@@ -72,21 +73,13 @@ function PantryItemList({ pantryId }) {
         //showAlert(VariantType.SUCCESS, "Item updated successfully!");
     }
 
-    function showAlert(type, message) {
-        setAlert({
-            show: true,
-            type: type,
-            message: message
-        })
-    }
-
     function renderItems() {
         return filteredItems.map((item) => renderItem(item))
     }
 
     function renderItem(item) {
         return (
-            <tr key={item.productId} className="border border-primary-subtle align-middle">
+            <tr key={item.product.id} className="border border-primary-subtle align-middle">
                 <td>
                     <Stack direction="horizontal" gap={2}>
                         <div><Image src={food} width={20} height={20} rounded /></div>
@@ -96,8 +89,8 @@ function PantryItemList({ pantryId }) {
                         {item.product.description}  {item.product.size}
                     </p>
                 </td>
-                <td><NumericField object={item} attribute="idealQty" onValueChange={handleSave} /></td>
-                <td><NumericField object={item} attribute="currentQty" onValueChange={handleSave} /></td>
+                <td><NumericField key={item.idealQty} object={item} attribute="idealQty" onValueChange={handleSave} /></td>
+                <td><NumericField key={item.currentQty} object={item} attribute="currentQty" onValueChange={handleSave} /></td>
                 <td className='ms-0 pe-0'><span>{item.provisionedQty}</span></td>
                 <td className='ms-0 ps-0 me-2 pe-2'>
                     <Button onClick={() => handleRemove(item)} variant="link" className='pt-0 pb-0 pe-0'><BsTrash className='icon' /></Button>
