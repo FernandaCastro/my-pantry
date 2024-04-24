@@ -1,0 +1,70 @@
+
+name: Build and Publish Docker images
+
+on:
+  pull_request:
+     types:
+      - closed
+jobs:
+  if_merged:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    steps:
+        - name: Check out
+          uses: actions/checkout@v3
+  
+        - name: Build with Maven
+          env: # Or as an environment variable
+            SECURITY_SECRET: ${{ secrets.SECURITY_SECRET }}
+            GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
+            GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
+          run: mvn clean install
+  
+        - name: Set up JDK 17
+          uses: actions/setup-java@v3
+          with:
+            java-version: '17'
+            distribution: 'temurin'
+            cache: maven
+  
+        - name: Log in to Docker Hub
+          uses: docker/login-action@f4ef78c080cd8ba55a85445d5b36e214a81df20a
+          with:
+            username: ${{ secrets.DOCKER_USERNAME }}
+            password: ${{ secrets.DOCKER_PASSWORD }}
+
+        - name: Extract tag from branch name
+          id: extract_tag
+          run: echo "::set-output name=version::$(echo ${{ github.head_ref }} | cut -d '/' -f 2)"   
+  
+        - name: Build and Push pantry_service to Dockerhub
+          uses: docker/build-push-action@3b5e8027fcad23fda98b2e3ac259d8d67585f671
+          with:
+            context: pantry-service
+            file: ./Dockerfile
+            push: true
+            tags: fernandacastro/pantry_service:${{ steps.extract_tag.outputs.version }}
+  
+        - name: Build and Push purchase_service to Dockerhub
+          uses: docker/build-push-action@3b5e8027fcad23fda98b2e3ac259d8d67585f671
+          with:
+            context: purchase-service
+            file: ./Dockerfile
+            push: true
+            tags: fernandacastro/purchase_service:${{ steps.extract_tag.outputs.version }}
+  
+        - name: Build and Push purchase_service to Dockerhub
+          uses: docker/build-push-action@3b5e8027fcad23fda98b2e3ac259d8d67585f671
+          with:
+            context: account-service
+            file: ./Dockerfile
+            push: true
+            tags: fernandacastro/account_service:${{ steps.extract_tag.outputs.version }}
+            
+        - name: Build and Push pantry_web to Dockerhub
+          uses: docker/build-push-action@3b5e8027fcad23fda98b2e3ac259d8d67585f671
+          with:
+            context: pantry-web
+            file: ./Dockerfile
+            push: true
+            tags: fernandacastro/pantry-web:${{ steps.extract_tag.outputs.version }}   
