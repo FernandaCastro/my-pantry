@@ -9,6 +9,15 @@ jobs:
   if_merged:
     if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
+    env:
+      SECURITY_SECRET: ${{ secrets.SECURITY_SECRET }}
+      GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
+      GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
+      ALLOWED_ORIGINS: http://localhost:3000
+      REACT_APP_GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
+      REACT_APP_API_URL_PANTRY: http://localhost:8080
+      REACT_APP_API_URL_PURCHASE: http://localhost:8081
+      REACT_APP_API_URL_ACCOUNT: http://localhost:8082
     steps:
       - name: Check out
         uses: actions/checkout@v3
@@ -29,11 +38,6 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Build and Publish with Maven
-        env: # Or as an environment variable
-          SECURITY_SECRET: ${{ secrets.SECURITY_SECRET }}
-          GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
-          GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
-          ALLOWED_ORIGINS: http://localhost:3000
         run: mvn clean package -P 'build-publish-image'
 
       - name: get-pantry-web-version
@@ -43,8 +47,6 @@ jobs:
           path: "pantry-web"
 
       - name: Build and Push pantry_web
-        env:
-          REACT_APP_GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
         uses: docker/build-push-action@3b5e8027fcad23fda98b2e3ac259d8d67585f671
         with:
           context: "{{defaultContext}}:pantry-web"
