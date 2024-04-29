@@ -107,6 +107,8 @@ services:
       - "8080:8080"
     environment:
       - SPRING_PROFILES_ACTIVE=docker
+    env_file:
+      - .env
     networks:
       - spring
       - postgres
@@ -117,12 +119,14 @@ services:
     restart: always
 
   purchase-service:
-    image: fernandacastro/purchase-service:0.0.3-SNAPSHOT
+    image: fernandacastro/purchase-service:0.0.4
     container_name: purchase-service
     ports:
       - "8081:8081"
     environment:
       - SPRING_PROFILES_ACTIVE=docker
+    env_file:
+      - .env
     networks:
       - spring
       - postgres
@@ -139,6 +143,8 @@ services:
       - "8082:8082"
     environment:
       - SPRING_PROFILES_ACTIVE=docker
+    env_file:
+      - .env
     networks:
       - spring
       - postgres
@@ -151,6 +157,8 @@ services:
     image: fernandacastro/pantry-web:0.0.4
     ports:
       - "3000:3000"
+    env_file:
+      - .env
     networks:
       - spring
     depends_on:
