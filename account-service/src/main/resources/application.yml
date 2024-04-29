@@ -30,6 +30,8 @@ security-config:
   secret: ${SECURITY_SECRET}
   allowedOrigin:
     - http://localhost:3000
+    - http://localhost:8080
+    - http://localhost:8081
   googleClientId: ${GOOGLE_CLIENT_ID}
   googleClientSecret: ${GOOGLE_CLIENT_SECRET}
 logging:
