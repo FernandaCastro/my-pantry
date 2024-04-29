@@ -104,7 +104,7 @@
     <!--This says this module is able to be packaged and pushed to docker-->
     <profiles>
         <profile>
-            <id>build-docker-image</id>
+            <id>build-publish-image</id>
             <build>
                 <plugins>
                     <plugin>
