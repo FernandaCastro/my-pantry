@@ -14,10 +14,9 @@ jobs:
       GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
       GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
       ALLOWED_ORIGINS: http://localhost:3000
-      REACT_APP_GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
-      REACT_APP_API_URL_PANTRY: http://localhost:8080
-      REACT_APP_API_URL_PURCHASE: http://localhost:8081
-      REACT_APP_API_URL_ACCOUNT: http://localhost:8082
+      API_URL_PANTRY: http://localhost:8080
+      API_URL_PURCHASE: http://localhost:8081
+      API_URL_ACCOUNT: http://localhost:8082
     steps:
       - name: Check out
         uses: actions/checkout@v3
