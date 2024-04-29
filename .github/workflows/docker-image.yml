@@ -33,6 +33,7 @@ jobs:
           SECURITY_SECRET: ${{ secrets.SECURITY_SECRET }}
           GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
           GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
+          ALLOWED_ORIGINS: http://localhost:3000
         run: mvn clean package -P 'build-publish-image'
 
       - name: get-pantry-web-version
@@ -44,6 +45,9 @@ jobs:
       - name: Build and Push pantry_web
         env:
           REACT_APP_GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
+          URL_PANTRY: http://localhost:8080
+          URL_PURCHASE: http://localhost:8081
+          URL_ACCOUNT: http://localhost:8082
         uses: docker/build-push-action@3b5e8027fcad23fda98b2e3ac259d8d67585f671
         with:
           context: "{{defaultContext}}:pantry-web"
