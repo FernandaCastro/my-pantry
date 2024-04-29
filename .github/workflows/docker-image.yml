@@ -35,6 +35,12 @@ jobs:
           GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
         run: mvn clean package -P 'build-publish-image'
 
+      - name: get-pantry-web-version
+        id: package-version
+        uses: martinbeentjes/npm-get-version-action@v1.3.1
+        with:
+          path: "{{defaultContext}}:pantry-web"
+
       - name: Build and Push pantry_web
         env:
           REACT_APP_GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
@@ -43,4 +49,4 @@ jobs:
           context: "{{defaultContext}}:pantry-web"
           file: ./Dockerfile
           push: true
-          tags: fernandacastro/pantry-web:0.0.4-SNAPSHOT
+          tags: fernandacastro/pantry-web:${{ steps.package-version.outputs.current-version}}
