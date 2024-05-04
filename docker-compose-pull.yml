@@ -155,10 +155,13 @@ services:
   pantry-web:
     container_name: pantry-web
     image: fernandacastro/pantry-web:0.0.4
+    environment:
+      - REACT_APP_API_URL_PANTRY=http://localhost:8080
+      - REACT_APP_API_URL_PURCHASE=http://localhost:8081
+      - REACT_APP_API_URL_ACCOUNT=http://localhost:8082
+      - REACT_APP_GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
     ports:
       - "3000:3000"
-    env_file:
-      - .env
     networks:
       - spring
     depends_on:
