@@ -1,11 +1,12 @@
 #baseline
 FROM node:21-alpine AS base
+ARG REACT_APP_API_URL_PANTRY
+ENV REACT_APP_API_URL_PANTRY ${REACT_APP_API_URL_PANTRY}
 RUN apk add curl
 RUN mkdir -p /home/node/app
 RUN chown -R node:node /home/node && chmod -R 770 /home/node
-WORKDIR /home/node/app
-
 RUN echo REACT_APP_API_URL_PANTRY = $REACT_APP_API_URL_PANTRY
+WORKDIR /home/node/app
 
 #server-side production dependencies: requires build tools (make, python, g++, etc)
 FROM base AS builder-server
