@@ -14,16 +14,10 @@ jobs:
       GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
       GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
       ALLOWED_ORIGINS: ${{ vars.ALLOWED_ORIGINS }}
-      API_URL_PANTRY: ${{ vars.API_URL_PANTRY }}
-      API_URL_PURCHASE: ${{ vars.API_URL_PURCHASE }}
-      API_URL_ACCOUNT: ${{ vars.API_URL_ACCOUNT }}
     steps:
       - name: Variables in use
         run: |
           echo ALLOWED_ORIGINS = ${{ vars.ALLOWED_ORIGINS }}
-          echo API_URL_PANTRY = ${{ vars.API_URL_PANTRY }}
-          echo API_URL_PURCHASE = ${{ vars.API_URL_PURCHASE }}
-          echo API_URL_ACCOUNT = ${{ vars.API_URL_ACCOUNT }}
 
       - name: Check out
         uses: actions/checkout@v3
@@ -58,6 +52,9 @@ jobs:
           context: "{{defaultContext}}:pantry-web"
           build-args: |
             "REACT_APP_API_URL_PANTRY=${{ vars.API_URL_PANTRY }}"
+            "REACT_APP_API_URL_PURCHASE=${{ vars.API_URL_PURCHASE }}"
+            "REACT_APP_API_URL_ACCOUNT=${{ vars.API_URL_ACCOUNT }}"
+            "REACT_APP_GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}"
           file: ./Dockerfile
           push: true
           tags: fernandacastro/pantry-web:${{ steps.package-version.outputs.current-version}}
