@@ -110,8 +110,10 @@ services:
       - "8080:8080"
     environment:
       - SPRING_PROFILES_ACTIVE=docker
-    env_file:
-      - .env
+      - SECURITY_SECRET=${SECURITY_SECRET}
+      - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
+      - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
+      - ALLOWED_ORIGINS=http://localhost:3000
     networks:
       - spring
       - postgres
@@ -131,8 +133,10 @@ services:
       - "8081:8081"
     environment:
       - SPRING_PROFILES_ACTIVE=docker
-    env_file:
-      - .env
+      - SECURITY_SECRET=${SECURITY_SECRET}
+      - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
+      - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
+      - ALLOWED_ORIGINS=http://localhost:3000
     networks:
       - spring
       - postgres
@@ -152,8 +156,10 @@ services:
       - "8082:8082"
     environment:
       - SPRING_PROFILES_ACTIVE=docker
-    env_file:
-      - .env
+      - SECURITY_SECRET=${SECURITY_SECRET}
+      - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
+      - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
+      - ALLOWED_ORIGINS=http://localhost:3000, http://localhost:8080, http://localhost:8081
     networks:
       - spring
       - postgres
@@ -168,10 +174,10 @@ services:
       context: pantry-web
       dockerfile: Dockerfile
       args:
-        REACT_APP_API_URL_PANTRY: http://localhost:8080
-        REACT_APP_API_URL_PURCHASE: http://localhost:8081
-        REACT_APP_API_URL_ACCOUNT: http://localhost:8082
-        REACT_APP_GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
+        API_URL_PANTRY: http://localhost:8080
+        API_URL_PURCHASE: http://localhost:8081
+        API_URL_ACCOUNT: http://localhost:8082
+        GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
     ports:
       - "3000:3000"
     networks:
