@@ -1,0 +1,196 @@
+services:
+  pantry-db:
+    container_name: pantry-db
+    image: postgres
+    environment:
+      POSTGRES_DB: pantry-db
+      POSTGRES_USER: pantry
+      POSTGRES_PASSWORD: pantry
+      PGDATA: /data/postgres
+    volumes:
+      - pantry-db:/data/postgres
+    ports:
+      - "5432:5432"
+    networks:
+      - postgres
+      - spring
+    restart: always
+
+  purchase-db:
+    container_name: purchase-db
+    image: postgres
+    environment:
+      POSTGRES_DB: purchase-db
+      POSTGRES_USER: purchase
+      POSTGRES_PASSWORD: purchase
+      PGDATA: /data/postgres
+    volumes:
+      - purchase-db:/data/postgres
+    ports:
+      - "5433:5432"
+    networks:
+      - postgres
+      - spring
+    restart: always
+
+  account-db:
+    container_name: account-db
+    image: postgres
+    environment:
+      POSTGRES_DB: account-db
+      POSTGRES_USER: account
+      POSTGRES_PASSWORD: account
+      PGDATA: /data/postgres
+    volumes:
+      - account-db:/data/postgres
+    ports:
+      - "5434:5432"
+    networks:
+      - postgres
+      - spring
+    restart: always
+
+  pgadmin:
+    container_name: pgadmin
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-pgadmin4@pgadmin.org}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-admin}
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+    volumes:
+      - pgadmin:/var/lib/pgadmin
+    ports:
+      - "5050:80"
+    networks:
+      - postgres
+    restart: unless-stopped
+
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.3.0
+    container_name: zookeeper
+    ports:
+      - "2181:2181"
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    networks:
+      - kafka
+    restart: always
+
+  kafka-broker:
+    image: confluentinc/cp-kafka:7.3.0
+    container_name: kafka-broker
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_LISTENERS: LISTENER_INTERNAL://kafka-broker:29092,LISTENER_EXTERNAL://kafka-broker:9092
+      KAFKA_ADVERTISED_LISTENERS: LISTENER_INTERNAL://kafka-broker:29092,LISTENER_EXTERNAL://localhost:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: LISTENER_INTERNAL:PLAINTEXT,LISTENER_EXTERNAL:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: LISTENER_INTERNAL
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_LOG_RETENTION_HOURS: 2
+      KAFKA_LOG_RETENTION_BYTES: 536870912  #536Mb
+      KAFKA_LOG_CLEANUP_POLICY: delete
+      KAFKA_CLEANER_ENABLE: "true"
+    depends_on:
+      - zookeeper
+    networks:
+      - kafka
+    restart: always
+
+  pantry-service:
+    image: fernandacastro/pantry-service:local
+    build:
+      context: pantry-service
+      dockerfile: Dockerfile
+    container_name: pantry-service
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    env_file:
+      - .env
+    networks:
+      - spring
+      - postgres
+      - kafka
+    depends_on:
+      - kafka-broker
+      - pantry-db
+    restart: always
+
+  purchase-service:
+    image: fernandacastro/purchase-service:local
+    build:
+      context: purchase-service
+      dockerfile: Dockerfile
+    container_name: purchase-service
+    ports:
+      - "8081:8081"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    env_file:
+      - .env
+    networks:
+      - spring
+      - postgres
+      - kafka
+    depends_on:
+      - kafka-broker
+      - purchase-db
+    restart: always
+
+  account-service:
+    image: fernandacastro/account-service:local
+    build:
+      context: account-service
+      dockerfile: Dockerfile
+    container_name: account-service
+    ports:
+      - "8082:8082"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    env_file:
+      - .env
+    networks:
+      - spring
+      - postgres
+    depends_on:
+      - account-db
+    restart: always
+
+  pantry-web:
+    container_name: pantry-web
+    image: fernandacastro/pantry-web:local
+    build:
+      context: pantry-web
+      dockerfile: Dockerfile
+      args:
+        REACT_APP_API_URL_PANTRY: http://localhost:8080
+        REACT_APP_API_URL_PURCHASE: http://localhost:8081
+        REACT_APP_API_URL_ACCOUNT: http://localhost:8082
+        REACT_APP_GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
+    ports:
+      - "3000:3000"
+    networks:
+      - spring
+    depends_on:
+      - account-service
+      - pantry-service
+      - purchase-service
+    restart: always
+
+volumes:
+  account-db:
+  pantry-db:
+  purchase-db:
+  pgadmin:
+networks:
+  postgres:
+    driver: bridge
+  spring:
+    driver: bridge
+  kafka:
+    driver: bridge
