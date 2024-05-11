@@ -17,7 +17,7 @@ jobs:
     steps:
       - name: Variables in use
         run: |
-          echo ALLOWED_ORIGINS = ${{vars.ALLOWED_ORIGINS[@]}}
+          echo ALLOWED_ORIGINS = $vars.ALLOWED_ORIGINS
 
       - name: Check out
         uses: actions/checkout@v3
