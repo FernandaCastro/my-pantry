@@ -62,7 +62,7 @@ public class AccountGroupService {
         if (dto.getId() != null && repository.findById(dto.getId()).isPresent()) {
 
             var member = groupMemberService.getByGroupIdAndEmail(dto.getId(), SecurityContextHolder.getContext().getAuthentication().getName()).get();
-            if (member == null || !AccountGroupMemberRole.OWNER.value.equals(member.getRole())) {
+            if (member == null || !AccountGroupMemberRole.OWNER.value.equals(member.getRole().getName())) {
                 throw new NotAllowedException("You are not allowed to update the group.");
             }
 
@@ -88,7 +88,7 @@ public class AccountGroupService {
                 .orElseThrow(() -> new ResourceNotFoundException("AccountGroup not found"));
 
         var member = groupMemberService.getByGroupIdAndEmail(accountGroupId, SecurityContextHolder.getContext().getAuthentication().getName()).get();
-        if (member == null || !AccountGroupMemberRole.OWNER.value.equals(member.getRole())) {
+        if (member == null || !AccountGroupMemberRole.OWNER.value.equals(member.getRole().getName())) {
             throw new NotAllowedException("You are not allowed to delete the group.");
         }
 
