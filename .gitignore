@@ -65,5 +65,3 @@ build/
 
 #*.yml
 .env
-
-docker-compose.yml

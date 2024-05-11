@@ -73,9 +73,10 @@ This section has moved
 here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
 
 Build and run Prod docker image:
-cd pantry-web folder docker build -t fernandacastro/pantry-web:0.0.3-SNAPSHOT . docker build -t
-fernandacastro/pantry-web:latest .
+cd pantry-web folder docker build -t fernandacastro/pantry-web:0.0.3-SNAPSHOT .
+docker build -t fernandacastro/pantry-web:latest .
 
-change .env docker build -t fernandacastro/pantry-web:castrolecar-latest .
+change .env
+docker build -t fernandacastro/pantry-web:castrolecar-latest .
 
 Run a docker container docker run -d --name=pantry-web -p 3000:3000 -it fernandacastro/pantry-web:latest

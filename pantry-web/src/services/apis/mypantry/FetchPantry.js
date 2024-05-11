@@ -7,6 +7,7 @@ export default async function FetchPantry(endpoint, method, data) {
     var redirecting = false;
 
     try {
+
         const res = await fetch(process.env.REACT_APP_API_URL_PANTRY + '/' + endpoint, {
             method,
             "headers": {

@@ -86,7 +86,7 @@ services:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
       KAFKA_LISTENERS: LISTENER_INTERNAL://kafka-broker:29092,LISTENER_EXTERNAL://kafka-broker:9092
-      KAFKA_ADVERTISED_LISTENERS: LISTENER_INTERNAL://kafka-broker:29092,LISTENER_EXTERNAL://kafka-broker:9092
+      KAFKA_ADVERTISED_LISTENERS: LISTENER_INTERNAL://kafka-broker:29092,LISTENER_EXTERNAL://localhost:9092
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: LISTENER_INTERNAL:PLAINTEXT,LISTENER_EXTERNAL:PLAINTEXT
       KAFKA_INTER_BROKER_LISTENER_NAME: LISTENER_INTERNAL
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
@@ -101,14 +101,19 @@ services:
     restart: always
 
   pantry-service:
-    image: fernandacastro/pantry-service:0.0.4
+    image: fernandacastro/pantry-service:local
+    build:
+      context: pantry-service
+      dockerfile: Dockerfile
     container_name: pantry-service
     ports:
       - "8080:8080"
     environment:
       - SPRING_PROFILES_ACTIVE=docker
-    env_file:
-      - .env
+      - SECURITY_SECRET=${SECURITY_SECRET}
+      - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
+      - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
+      - ALLOWED_ORIGINS=http://localhost:3000
     networks:
       - spring
       - postgres
@@ -119,14 +124,19 @@ services:
     restart: always
 
   purchase-service:
-    image: fernandacastro/purchase-service:0.0.4
+    image: fernandacastro/purchase-service:local
+    build:
+      context: purchase-service
+      dockerfile: Dockerfile
     container_name: purchase-service
     ports:
       - "8081:8081"
     environment:
       - SPRING_PROFILES_ACTIVE=docker
-    env_file:
-      - .env
+      - SECURITY_SECRET=${SECURITY_SECRET}
+      - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
+      - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
+      - ALLOWED_ORIGINS=http://localhost:3000
     networks:
       - spring
       - postgres
@@ -137,14 +147,19 @@ services:
     restart: always
 
   account-service:
-    image: fernandacastro/account-service:0.0.4
+    image: fernandacastro/account-service:local
+    build:
+      context: account-service
+      dockerfile: Dockerfile
     container_name: account-service
     ports:
       - "8082:8082"
     environment:
       - SPRING_PROFILES_ACTIVE=docker
-    env_file:
-      - .env
+      - SECURITY_SECRET=${SECURITY_SECRET}
+      - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
+      - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
+      - ALLOWED_ORIGINS=http://localhost:3000, http://localhost:8080, http://localhost:8081
     networks:
       - spring
       - postgres
@@ -154,12 +169,15 @@ services:
 
   pantry-web:
     container_name: pantry-web
-    image: fernandacastro/pantry-web:0.0.4
-    environment:
-      - REACT_APP_API_URL_PANTRY=http://localhost:8085
-      - REACT_APP_API_URL_PURCHASE=http://localhost:8081
-      - REACT_APP_API_URL_ACCOUNT=http://localhost:8082
-      - REACT_APP_GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
+    image: fernandacastro/pantry-web:local
+    build:
+      context: pantry-web
+      dockerfile: Dockerfile
+      args:
+        API_URL_PANTRY: http://localhost:8080
+        API_URL_PURCHASE: http://localhost:8081
+        API_URL_ACCOUNT: http://localhost:8082
+        GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
     ports:
       - "3000:3000"
     networks:
