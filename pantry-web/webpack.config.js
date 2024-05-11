@@ -1,10 +1,10 @@
-// import 'dotenv/config';
-// const dotEnv = require('dotenv').config();
+import 'dotenv/config';
+const dotEnv = require('dotenv').config();
 
 const path = require('path');
 // const webpack = require('webpack');
 
-const NodePolyfillPlugin = require('node-polyfill-webpack-plugin')
+// const NodePolyfillPlugin = require('node-polyfill-webpack-plugin')
 
 module.exports = {
     mode: 'development',
@@ -14,10 +14,10 @@ module.exports = {
         path: path.resolve(__dirname, 'dist'),
     },
     plugins: [
-        new NodePolyfillPlugin(),
+        // new NodePolyfillPlugin(),
         // new webpack.DefinePlugin({
         //     'process.env': {
-        //         HELLO: JSON.stringify(process.env.HELLO)
+        //         REACT_APP_API_URL_PANTRY: JSON.stringify(process.env.REACT_APP_API_URL_PANTRY)
         //     }
         // }),
     ],
