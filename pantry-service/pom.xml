@@ -7,39 +7,30 @@
     <parent>
         <groupId>com.fcastro</groupId>
         <artifactId>my-pantry</artifactId>
-        <version>${revision}</version>
+        <version>0.0.4</version>
     </parent>
 
     <artifactId>pantry-service</artifactId>
+    <version>0.0.4</version>
     <packaging>jar</packaging>
 
     <dependencies>
         <dependency>
             <groupId>com.fcastro</groupId>
             <artifactId>common-config-data</artifactId>
-            <version>${revision}</version>
+            <version>${common-config-data-version}</version>
         </dependency>
 
         <dependency>
             <groupId>com.fcastro</groupId>
             <artifactId>security-config</artifactId>
-            <version>${revision}</version>
+            <version>${security-config-version}</version>
         </dependency>
 
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter</artifactId>
-        </dependency>
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.modelmapper</groupId>
-            <artifactId>modelmapper</artifactId>
-            <version>3.1.1</version>
         </dependency>
 
         <dependency>
@@ -48,8 +39,8 @@
         </dependency>
 
         <dependency>
-            <groupId>org.postgresql</groupId>
-            <artifactId>postgresql</artifactId>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-validation</artifactId>
         </dependency>
 
         <dependency>
@@ -58,28 +49,61 @@
         </dependency>
 
         <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+        </dependency>
+
+        <dependency>
             <groupId>org.flywaydb</groupId>
             <artifactId>flyway-core</artifactId>
         </dependency>
 
         <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>${lombok-version}</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.modelmapper</groupId>
+            <artifactId>modelmapper</artifactId>
+            <version>${modelmapper-version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.kafka</groupId>
+            <artifactId>spring-kafka-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
             <groupId>org.testcontainers</groupId>
             <artifactId>junit-jupiter</artifactId>
-            <version>1.17.3</version>
             <scope>test</scope>
         </dependency>
 
         <dependency>
             <groupId>org.testcontainers</groupId>
             <artifactId>postgresql</artifactId>
-            <version>1.17.3</version>
             <scope>test</scope>
         </dependency>
 
         <dependency>
             <groupId>org.testcontainers</groupId>
             <artifactId>kafka</artifactId>
-            <version>1.17.3</version>
             <scope>test</scope>
         </dependency>
 
@@ -101,7 +125,7 @@
         </plugins>
     </build>
 
-    <!--This says this module is able to be packaged and pushed to docker-->
+    <!--This says this module is able to be packaged and pushed to docker -->
     <profiles>
         <profile>
             <id>build-publish-image</id>

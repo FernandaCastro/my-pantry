@@ -7,16 +7,20 @@
     <parent>
         <groupId>com.fcastro</groupId>
         <artifactId>my-pantry</artifactId>
-        <version>${revision}</version>
+        <version>0.0.4</version>
     </parent>
 
     <artifactId>common-config-data</artifactId>
+    <version>0.0.4</version>
+
+    <properties>
+        <spring-boot-starter-version>3.2.0</spring-boot-starter-version>
+        <spring-kafka-version>3.1.0</spring-kafka-version>
+        <lombok-version>1.18.30</lombok-version>
+    </properties>
 
     <dependencies>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot</artifactId>
-        </dependency>
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
@@ -25,13 +29,35 @@
         <dependency>
             <groupId>org.springframework.kafka</groupId>
             <artifactId>spring-kafka</artifactId>
+            <version>${spring-kafka-version}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
+            <version>${lombok-version}</version>
             <scope>provided</scope>
         </dependency>
-
     </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.11.0</version>
+                <configuration>
+                    <release>17</release>
+                    <target>17</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <argLine>-Dfile.encoding=ISO-8859-1</argLine>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>
