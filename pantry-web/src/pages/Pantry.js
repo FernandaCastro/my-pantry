@@ -151,10 +151,10 @@ export default function Pantry({ mode }) {
                     <h6>Loading...</h6> :
                     <PantryForm pantry={pantry} handleSave={handleSave} accountGroupOptions={accountGroupOptions} />}
             </div>
-            <div>
+            <div className="add-product" style={{ display: pantry && pantry.id > 0 ? 'block' : 'none' }}>
                 <ProductSearchBar accountGroupId={pantry.accountGroup.id} accountGroupOptions={accountGroupOptions} handleSelectAction={handleAddItem} addButtonVisible={true} />
             </div>
-            <div>
+            <div className="pantry-items" style={{ display: pantry && pantry.id > 0 ? 'block' : 'none' }}>
                 {isLoading && !pantry ?
                     <h6>Loading...</h6> : renderPantryList()}
             </div>
