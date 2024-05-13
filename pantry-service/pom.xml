@@ -125,7 +125,7 @@
         </plugins>
     </build>
 
-    <!--This says this module is able to be packaged and pushed to docker -->
+    <!--This says this module is able to be packaged and pushed to docker-->
     <profiles>
         <profile>
             <id>build-publish-image</id>
