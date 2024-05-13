@@ -1,4 +1,4 @@
-name: Build and Publish pantry-web
+name: Publish pantry-web
 
 on:
   pull_request:

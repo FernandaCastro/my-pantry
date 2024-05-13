@@ -1,11 +1,11 @@
-name: Build and Publish account-service
+name: Publish pantry-service
 
 on:
   pull_request:
     types:
       - closed
     paths:
-      - 'account-service/**'
+      - 'pantry-service/**'
 jobs:
   if_merged:
     if: github.event.pull_request.merged == true
@@ -39,4 +39,4 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Build and Publish with Maven
-        run: mvn clean package -pl account-service -am -P 'build-publish-image'
+        run: mvn clean package -pl pantry-service -am -P 'build-publish-image'
