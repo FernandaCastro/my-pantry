@@ -32,9 +32,7 @@ jobs:
           SECURITY_SECRET: ${{ secrets.SECURITY_SECRET }}
           GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
           GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
-        run: |
-          cd pantry-service
-          mvn -B package --file pom.xml
+        run: mvn clean install -pl pantry-service -am
 
       # Optional: Uploads the full dependency graph to GitHub to improve the quality of Dependabot alerts this repository can receive
       #- name: Update dependency graph

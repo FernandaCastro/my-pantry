@@ -39,6 +39,4 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Build and Publish with Maven
-        run: |
-          cd pantry-service
-          mvn clean package -P 'build-publish-image'
+        run: mvn clean package -pl pantry-service -am -P 'build-publish-image'
