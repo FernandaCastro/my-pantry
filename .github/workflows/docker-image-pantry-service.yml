@@ -1,10 +1,11 @@
-
-name: Build and Publish Docker images
+name: Build and Publish pantry-service
 
 on:
   pull_request:
     types:
       - closed
+    paths:
+      - 'pantry-service/**'
 jobs:
   if_merged:
     if: github.event.pull_request.merged == true
@@ -38,23 +39,6 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Build and Publish with Maven
-        run: mvn clean package -P 'build-publish-image'
-
-      - name: get-pantry-web-version
-        id: package-version
-        uses: martinbeentjes/npm-get-version-action@v1.3.1
-        with:
-          path: "pantry-web"
-
-      - name: Build and Push pantry_web
-        uses: docker/build-push-action@3b5e8027fcad23fda98b2e3ac259d8d67585f671
-        with:
-          context: "{{defaultContext}}:pantry-web"
-          build-args: |
-            "API_URL_PANTRY=${{ vars.API_URL_PANTRY }}"
-            "API_URL_PURCHASE=${{ vars.API_URL_PURCHASE }}"
-            "API_URL_ACCOUNT=${{ vars.API_URL_ACCOUNT }}"
-            "GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}"
-          file: ./Dockerfile
-          push: true
-          tags: fernandacastro/pantry-web:${{ steps.package-version.outputs.current-version}}
+        run: |
+          cd pantry-service
+          mvn clean package -P 'build-publish-image'
