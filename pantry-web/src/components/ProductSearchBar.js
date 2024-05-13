@@ -80,7 +80,7 @@ function ProductSearchBar({ accountGroupId, accountGroupOptions, handleSelectAct
                         <td className="w-0 p-0 border-end-0 colorfy">
                             <span>{camelCase(item.code)} {item.description === "" ? "" : ' - ' + item.description}</span></td>
                         <td className="w-0 p-0 border-start-0 colorfy">
-                            <Button onClick={() => handleSelect(item)} variant="link" title='Select this product'><BsCheck2All className='icon' /></Button>
+                            <Button onClick={() => handleSelect(item)} variant="link" title='Add to Pantry'><BsCheck2All className='icon' /></Button>
                         </td>
                     </tr>
 
