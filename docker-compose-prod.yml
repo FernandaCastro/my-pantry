@@ -74,7 +74,7 @@ services:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
     networks:
-      - kafka
+      - spring
     restart: always
 
   kafka-broker:
@@ -97,7 +97,7 @@ services:
     depends_on:
       - zookeeper
     networks:
-      - kafka
+      - spring
     restart: always
 
   pantry-service:
@@ -114,7 +114,6 @@ services:
     networks:
       - spring
       - postgres
-      - kafka
     depends_on:
       - kafka-broker
       - pantry-db
@@ -134,7 +133,6 @@ services:
     networks:
       - spring
       - postgres
-      - kafka
     depends_on:
       - kafka-broker
       - purchase-db
