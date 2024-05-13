@@ -80,3 +80,4 @@ change .env
 docker build -t fernandacastro/pantry-web:castrolecar-latest .
 
 Run a docker container docker run -d --name=pantry-web -p 3000:3000 -it fernandacastro/pantry-web:latest
+.
