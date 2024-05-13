@@ -1,0 +1,49 @@
+name: Build and Publish pantry-web
+
+on:
+  pull_request:
+    types:
+      - closed
+    paths:
+      - 'pantry-web/**'
+jobs:
+  if_merged:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out
+        uses: actions/checkout@v3
+        with:
+          ref: 'master'
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: maven
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@f4ef78c080cd8ba55a85445d5b36e214a81df20a
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: get-pantry-web-version
+        id: package-version
+        uses: martinbeentjes/npm-get-version-action@v1.3.1
+        with:
+          path: "pantry-web"
+
+      - name: Build and Push pantry_web
+        uses: docker/build-push-action@3b5e8027fcad23fda98b2e3ac259d8d67585f671
+        with:
+          context: "{{defaultContext}}:pantry-web"
+          build-args: |
+            "API_URL_PANTRY=${{ vars.API_URL_PANTRY }}"
+            "API_URL_PURCHASE=${{ vars.API_URL_PURCHASE }}"
+            "API_URL_ACCOUNT=${{ vars.API_URL_ACCOUNT }}"
+            "GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}"
+          file: ./Dockerfile
+          push: true
+          tags: fernandacastro/pantry-web:${{ steps.package-version.outputs.current-version}}
