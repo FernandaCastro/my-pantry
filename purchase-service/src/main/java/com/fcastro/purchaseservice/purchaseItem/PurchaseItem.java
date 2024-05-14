@@ -23,7 +23,7 @@ public class PurchaseItem {
     private String pantryName;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_id")
+    @JoinColumn(name = "product_id", nullable = false)
     private Product product;
 
     private int qtyProvisioned;
@@ -31,6 +31,6 @@ public class PurchaseItem {
 
     @JsonIgnoreProperties("items")
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "purchase_id")
+    @JoinColumn(name = "purchase_id", nullable = true)
     private Purchase purchase;
 }

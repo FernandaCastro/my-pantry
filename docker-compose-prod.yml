@@ -179,5 +179,3 @@ networks:
     driver: bridge
   spring:
     driver: bridge
-  kafka:
-    driver: bridge
