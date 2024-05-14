@@ -120,7 +120,7 @@ services:
     restart: always
 
   purchase-service:
-    image: fernandacastro/purchase-service:0.0.5
+    image: fernandacastro/purchase-service:0.0.6
     container_name: purchase-service
     ports:
       - "8081:8081"
