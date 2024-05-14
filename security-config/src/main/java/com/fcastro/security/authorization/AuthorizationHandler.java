@@ -113,13 +113,14 @@ public class AuthorizationHandler {
                 .body(AccessControlDto.class);
     }
 
-    public List<AccessControlDto> listAccessControl(String email, String clazz, Long clazzId, Long accountGroupId) {
+    public List<AccessControlDto> listAccessControl(String email, String clazz, Long clazzId, Long accountGroupId, String permission) {
         StringBuilder uri = new StringBuilder("/authorization/access-control?")
                 .append("email=").append(email)
                 .append("&clazz=").append(clazz);
 
         if (clazzId != null) uri.append("&clazzId=").append(clazzId);
         if (accountGroupId != null) uri.append("&accountGroupId=").append(accountGroupId);
+        if (permission != null && !permission.isEmpty()) uri.append("&permission=").append(permission);
 
         return authzServer.get()
                 .uri(uri.toString())
@@ -157,10 +158,10 @@ public class AuthorizationHandler {
 
         StringBuilder uri = new StringBuilder("authorization/access-control?")
                 .append("clazz=").append(clazz)
-                .append("&clazzId={clazzId}");
+                .append("&clazzId=").append(clazzId);
 
         authzServer.delete()
-                .uri(uri.toString(), clazz, clazzId)
+                .uri(uri.toString())
                 .retrieve()
                 .onStatus(status ->
                         status.value() >= 400, (request, response) -> {

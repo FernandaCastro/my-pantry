@@ -35,6 +35,11 @@ public class PantryController {
         return ResponseEntity.ok(service.getAll(SecurityContextHolder.getContext().getAuthentication().getName()));
     }
 
+    @GetMapping("/all-with-permission")
+    public ResponseEntity<List<PantryDto>> getAllWithPermission(@RequestParam String permission) {
+        return ResponseEntity.ok(service.getAllWithPermission(SecurityContextHolder.getContext().getAuthentication().getName(), permission));
+    }
+
     @GetMapping
     @PreAuthorize("hasPermissionInAGroup(#groupId, 'list_pantry')")
     public ResponseEntity<List<PantryDto>> getAll(@P("groupId") @RequestParam Long groupId) {

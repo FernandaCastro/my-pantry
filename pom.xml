@@ -20,7 +20,7 @@
     <properties>
         <common-config-data-version>0.0.4</common-config-data-version>
         <security-core-version>0.0.4</security-core-version>
-        <security-config-version>0.0.4</security-config-version>
+        <security-config-version>0.0.5</security-config-version>
         <lombok-version>1.18.30</lombok-version>
         <modelmapper-version>3.1.1</modelmapper-version>
         <!--        <spring-boot-starter-version>3.2.0</spring-boot-starter-version>-->

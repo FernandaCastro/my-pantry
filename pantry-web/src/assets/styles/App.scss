@@ -274,6 +274,9 @@ div.scroll-consume {
 
 div.scroll-selectPantries {
     overflow-y: auto;
+    border: 1px solid;
+    border-radius: 6px;
+    border-color: $border-color;
 
     @media (min-height: 575px) {
         max-height: 50px;
@@ -284,7 +287,7 @@ div.scroll-selectPantries {
     }
 
     @media (min-height: 768px) {
-        max-height: 150px;
+        max-height: 105px;
     }
 
     @media (min-height: 992px) {
@@ -307,7 +310,7 @@ div.scroll-purchase {
     }
 
     @media (min-height: 768px) {
-        max-height: 150px;
+        max-height: 130px;
     }
 
     @media (min-height: 992px) {

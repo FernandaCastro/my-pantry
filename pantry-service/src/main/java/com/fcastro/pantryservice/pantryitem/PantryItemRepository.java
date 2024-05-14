@@ -2,6 +2,7 @@ package com.fcastro.pantryservice.pantryitem;
 
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -30,4 +31,8 @@ public interface PantryItemRepository extends JpaRepository<PantryItem, PantryIt
 
     @Query("select count(p) from pantryItem p where p.product.id = :productId")
     Integer countPantryItem(Long productId);
+
+    @Modifying
+    @Query("delete pantryItem p where p.pantry.id = :pantryId")
+    void deleteByPantryId(@Param("pantryId") Long pantryId);
 }

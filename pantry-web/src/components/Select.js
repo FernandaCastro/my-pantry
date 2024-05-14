@@ -8,6 +8,7 @@ const customStyles = {
         borderColor: '#909df4',
         minHeight: '31px',
         height: '31px',
+        minWidth: '300px',
         boxShadow: null,
         "&:hover": {
             borderColor: 'rgb(63, 6, 250)'
@@ -40,7 +41,7 @@ const customStyles = {
         backgroundColor: isFocused ? 'lavender' : '#fff',
         color: 'hsl(219, 11%, 25%)',
         minHeight: '30px',
-        height: '30px',
+        height: '30px'
     }),
 };
 

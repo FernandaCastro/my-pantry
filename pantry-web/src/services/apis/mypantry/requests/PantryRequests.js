@@ -7,6 +7,10 @@ export async function getPantryList() {
     return FetchPantry(`pantries/all`, "GET");
 }
 
+export async function getPantryListWithPermission(permission) {
+    return FetchPantry(`pantries/all-with-permission?permission=${permission}`, "GET");
+}
+
 export async function getPantry(pantryId) {
     return FetchPantry(`pantries/${pantryId}`, "GET");
 }

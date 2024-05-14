@@ -101,7 +101,7 @@ services:
     restart: always
 
   pantry-service:
-    image: fernandacastro/pantry-service:0.0.4
+    image: fernandacastro/pantry-service:0.0.5
     container_name: pantry-service
     ports:
       - "8080:8080"
@@ -120,7 +120,7 @@ services:
     restart: always
 
   purchase-service:
-    image: fernandacastro/purchase-service:0.0.4
+    image: fernandacastro/purchase-service:0.0.5
     container_name: purchase-service
     ports:
       - "8081:8081"
@@ -139,7 +139,7 @@ services:
     restart: always
 
   account-service:
-    image: fernandacastro/account-service:0.0.4
+    image: fernandacastro/account-service:0.0.5
     container_name: account-service
     ports:
       - "8082:8082"
@@ -158,7 +158,7 @@ services:
 
   pantry-web:
     container_name: pantry-web
-    image: fernandacastro/pantry-web:0.0.4
+    image: fernandacastro/pantry-web:0.0.5
     ports:
       - "3000:3000"
     networks:

@@ -68,4 +68,18 @@ public interface AccessControlRepository extends JpaRepository<AccessControl, Ac
             "and (( acc.accountGroup.id = :accountGroupId and acc.accountGroup.id = ag.id ) " +
             "or ( ag.id = :accountGroupId and acc.accountGroup.id = ag.parentAccountGroup.id))")
     List<AccessControl> findAllByEmailAndClazzAndAccountGroupId(String email, String clazz, Long accountGroupId);
+
+    @Query("select distinct acc " +
+            "from accountGroupMember gm," +
+            "account ac, " +
+            "accessControl acc, " +
+            "role role " +
+            "JOIN role.permissions per " +
+            "where ac.id = gm.accountId " +
+            "and acc.accountGroup.id = gm.accountGroup.id " +
+            "and role.id = gm.role.id " +
+            "and ac.email = :email " +
+            "and acc.clazz = :clazz " +
+            "and lower(per.name) = lower(:permission) ")
+    List<AccessControl> findAllByEmailAndClazzAndPermission(String email, String clazz, String permission);
 }

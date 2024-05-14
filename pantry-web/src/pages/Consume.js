@@ -11,6 +11,7 @@ import { camelCase } from '../services/Utils.js';
 import VariantType from '../components/VariantType.js';
 import useAlert from '../hooks/useAlert.js';
 import PantrySelect from '../components/PantrySelect.js'
+import { FormCheck } from "react-bootstrap";
 
 export default function Consume() {
 
@@ -27,6 +28,8 @@ export default function Consume() {
   const [isLoading, setIsLoading] = useState(true);
   const [reload, setReload] = useState(false);
   const { showAlert } = useAlert();
+  const [expand, setExpand] = useState(false);
+
 
   useEffect(() => {
     if (selectedPantries && selectedPantries.length > 0)
@@ -107,18 +110,20 @@ export default function Consume() {
 
     return (
       <tr key={item.productId} className="align-middle">
-        <td>
+        <td >
           <Stack direction="horizontal" gap={2}>
             <Image src={food} width={20} height={20} rounded />
             <span>{camelCase(item.product.code)}</span>
           </Stack>
-          <span className='d-none d-md-block' hidden={item.product.description === ''}>
-            {item.product.description}  {item.product.size}
-          </span>
+          <div style={{ display: expand ? 'block' : 'none' }}>
+            <span className='d-none d-md-block' hidden={item.product.description === ''}>
+              {item.product.description}  {item.product.size}
+            </span>
+          </div>
         </td>
-        <td><span className='text-small'>{item.pantry.name}</span></td>
-        <td><span>{item.currentQty}</span></td>
-        <td><span className='d-none d-md-block align-center'>{item.provisionedQty}</span></td>
+        <td><span>{item.pantry.name}</span></td>
+        <td><span className='pe-5'>{item.currentQty}</span></td>
+        <td><span className='d-none ps-5 d-md-block'>{item.provisionedQty}</span></td>
         <td><span className='d-none d-md-block'>{item.lastProvisioning}</span></td>
         <td><NumericField key={reload} object={consumedItem} attribute="qty" onValueChange={updateConsumedItem} disabled={isPantryEmpty} /></td>
       </tr>
@@ -149,17 +154,22 @@ export default function Consume() {
       <div>
         <div className="me-auto"><h6 className="text-start fs-6 lh-lg title">Consume Itens</h6></div>
       </div>
-      <div><PantrySelect handleSelectedPantryList={handleSelectedPantries} /></div>
+      <div><PantrySelect handleSelectedPantryList={handleSelectedPantries} permission='consume_pantry' /></div>
       <div>
         <Form.Control size="sm" type="text" id="search" className="form-control mb-1" placeholder="Seacrh for items here" value={searchText} onChange={(e) => filter(e.target.value)} />
         <div className='scroll-consume'>
-          <Table>
+          <Table size='sm'>
             <thead>
               <tr key={0} className="align-middle">
-                <th><h6 className="title">Code/Desc.</h6></th>
+                <th className='d-flex flex-row align-items-center gap-2'>
+                  <FormCheck
+                    className='d-none d-md-block'
+                    defaultChecked={expand}
+                    onChange={() => setExpand(!expand)} />
+                  <h6 className="title">Code/Desc.</h6></th>
                 <th><h6 className="title">Pantry</h6></th>
-                <th><h6 className="title">Qty</h6></th>
-                <th><h6 className="title d-none d-md-block">Prov.</h6></th>
+                <th><h6 className="title pe-5">Qty</h6></th>
+                <th><h6 className="title ps-5 d-none d-md-block">Prov.</h6></th>
                 <th><h6 className="title d-none d-md-block">Prov. on</h6></th>
                 <th><h6 className="title">Consume</h6></th>
               </tr>

@@ -1,6 +1,7 @@
 package com.fcastro.pantryservice.pantry;
 
 import com.fcastro.app.exception.ResourceNotFoundException;
+import com.fcastro.pantryservice.pantryitem.PantryItemService;
 import com.fcastro.security.authorization.AuthorizationHandler;
 import com.fcastro.security.core.model.AccountGroupDto;
 import org.junit.jupiter.api.Assertions;
@@ -34,6 +35,9 @@ public class PantryServiceUnitTest {
 
     @Mock
     private AuthorizationHandler authorizationHandler;
+
+    @Mock
+    private PantryItemService pantryItemService;
 
     private static final String MOCK_USER = "MOCK_USER";
 
@@ -81,6 +85,7 @@ public class PantryServiceUnitTest {
         var dto = Pantry.builder().id(1L).name("Base Inventory").isActive(true).type("R").build();
         given(repository.findById(anyLong())).willReturn(Optional.of(dto));
         doNothing().when(repository).deleteById(anyLong());
+        doNothing().when(pantryItemService).deleteAllItems(anyLong());
         doNothing().when(authorizationHandler).deleteAccessControl(anyString(), anyLong());
 
         //when //then
