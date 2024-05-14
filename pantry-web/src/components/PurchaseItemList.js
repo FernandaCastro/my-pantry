@@ -13,6 +13,7 @@ import Select from '../components/Select.js';
 import Collapse from 'react-bootstrap/Collapse';
 import { camelCase } from '../services/Utils.js';
 import { BsArrow90DegRight } from "react-icons/bs";
+import { FormCheck } from "react-bootstrap";
 
 export default function PurchaseItemList({ purchase, selectedPantries, setOuterPurchaseItems }) {
 
@@ -27,6 +28,9 @@ export default function PurchaseItemList({ purchase, selectedPantries, setOuterP
     const { showAlert } = useAlert();
     const [isLoading, setIsLoading] = useState(true);
     const [isOpenOrder, setIsOpenOrder] = useState(false);
+
+    const [expandProdDetail, setExpandProdDetail] = useState(false);
+
 
     useEffect(() => {
         fetchSupermarketOptions();
@@ -262,9 +266,13 @@ export default function PurchaseItemList({ purchase, selectedPantries, setOuterP
                             <div><Image src={food} width={20} height={20} rounded /></div>
                             <div><span>{camelCase(item.product.code)}</span></div>
                         </Stack>
-                        <span className='d-none d-md-block' hidden={item.productDescription === ''}>
-                            {item.product.description}  {item.product.size}
-                        </span>
+
+                        <div id="productDetail" style={{display: expandProdDetail ? 'block' : 'none'}}>
+                            <span className='d-none d-md-block' hidden={item.productDescription === ''}>
+                                {item.product.description}  {item.product.size}
+                            </span>
+                        </div>
+
                     </td>
                     <td><span className='d-none d-md-block'>{item.pantryName}</span></td>
                     <td><span>{item.qtyProvisioned}</span></td>
@@ -276,24 +284,27 @@ export default function PurchaseItemList({ purchase, selectedPantries, setOuterP
 
     return (
         <>
-            <div className="d-flex justify-content-between align-items-center">
-                <div className="d-flex justify-content-start align-items-center pt-3">
-                    <span className="title pe-2 ">Sort Items by: </span>
-                    <Select name="supermarket"
-                        placeholder="your favorite Supermarket?"
-                        options={supermarkets}
-                        onChange={setSupermarketOption}
-                    />
-                </div>
+            <div className="d-flex justify-content-between align-items-center gap-2 pt-2">
+                <Select name="supermarket"
+                    placeholder="Sort by Supermarket?"
+                    options={supermarkets}
+                    onChange={setSupermarketOption}
+                />
                 <Button bsPrefix="btn-custom" size="sm" onClick={handleRefresh} disabled={purchase}>Refresh</Button>
             </div>
-            <div className="pt-3">
-                <Form.Control size="sm" type="text" id="search" className="form-control mb-1" placeholder="Seacrh for items here" value={searchText} onChange={(e) => filter(e.target.value)} />
+            <div className="pt-2">
+                <Form.Control size="sm" type="text" id="search" className="form-control mb-1" placeholder="Search for items here" value={searchText} onChange={(e) => filter(e.target.value)} />
                 <div className='scroll-purchaseItems'>
-                    <Table >
+                    <Table size='sm'>
                         <thead >
                             <tr className="align-middle">
-                                <th><h6 className="title">Code/Desc.</h6></th>
+                                <th className='d-flex flex-row align-items-center gap-2'>
+                                    <FormCheck
+                                        className='d-none d-md-block'
+                                        defaultChecked={expandProdDetail}
+                                        onChange={() => setExpandProdDetail(!expandProdDetail)} />
+                                    <h6 className="title">Code/Desc.</h6>
+                                </th>
                                 <th><h6 className="title d-none d-md-block ">Pantry</h6></th>
                                 <th><h6 className="title">Provis.</h6></th>
                                 <th><h6 className="title">Purchased</h6></th>

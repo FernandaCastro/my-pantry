@@ -54,7 +54,7 @@ export default function PurchaseOrderList({ selectedPantries, handleSelectedPurc
 
     return (
         <div className="scroll-purchase">
-            <Table>
+            <Table size='sm'>
                 < thead >
                     <tr key="order:0" className="align-middle">
                         <th><h6 className='title'>Id - Status</h6></th>
