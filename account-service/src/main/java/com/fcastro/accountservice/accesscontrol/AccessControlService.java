@@ -5,6 +5,7 @@ import com.fcastro.accountservice.exception.AccessControlNotDefinedException;
 import com.fcastro.security.core.model.AccessControlDto;
 import com.fcastro.security.core.model.AccountGroupDto;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -34,21 +35,25 @@ public class AccessControlService {
     }
 
     //Authorization method
-    public List<AccessControlDto> getAllByEmailAndAccessControl(String email, String clazz, Long clazzId, Long accountGroupId) {
+    public List<AccessControlDto> getAllByEmailAndAccessControl(String email, String clazz, Long clazzId, Long accountGroupId, String permission) {
         if (email.isEmpty()) return List.of();
 
         List<AccessControl> list = null;
 
         //Email + Clazz + AccountGroup
-        if (!clazz.isEmpty() && accountGroupId != null) {
+        if (clazz != null && !clazz.isEmpty() && accountGroupId != null) {
             list = accessControlRepository.findAllByEmailAndClazzAndAccountGroupId(email, clazz, accountGroupId);
 
             //Email + Clazz + ClazzId
-        } else if (!clazz.isEmpty() && clazzId != null) {
+        } else if (clazz != null && !clazz.isEmpty() && clazzId != null) {
             list = accessControlRepository.findAllByEmailAndClazzAndClazzId(email, clazz, clazzId);
 
+            //Email + Clazz + Permission
+        } else if (clazz != null && !clazz.isEmpty() && permission != null && !permission.isEmpty()) {
+            list = accessControlRepository.findAllByEmailAndClazzAndPermission(email, clazz, permission);
+
             //Email + Clazz
-        } else if (!clazz.isEmpty()) {
+        } else if (clazz != null && !clazz.isEmpty()) {
             list = accessControlRepository.findAllByEmailAndClazz(email, clazz);
 
         } else {
@@ -63,6 +68,7 @@ public class AccessControlService {
         accessControlRepository.save(accessControl);
     }
 
+    @Transactional
     public void delete(String clazz, Long clazzId) {
         accessControlRepository.deleteAllByClazzAndClazzId(clazz, clazzId);
     }
