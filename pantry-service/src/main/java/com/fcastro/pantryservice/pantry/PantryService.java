@@ -1,11 +1,13 @@
 package com.fcastro.pantryservice.pantry;
 
 import com.fcastro.app.exception.ResourceNotFoundException;
+import com.fcastro.pantryservice.pantryitem.PantryItemService;
 import com.fcastro.security.authorization.AuthorizationHandler;
 import com.fcastro.security.core.model.AccessControlDto;
 import com.fcastro.security.exception.AccessControlNotDefinedException;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -17,15 +19,17 @@ public class PantryService {
     private final PantryRepository repository;
     private final ModelMapper modelMapper;
     private final AuthorizationHandler authorizationHandler;
+    private final PantryItemService pantryItemService;
 
-    public PantryService(PantryRepository repository, ModelMapper modelMapper, AuthorizationHandler authorizationService) {
+    public PantryService(PantryRepository repository, ModelMapper modelMapper, AuthorizationHandler authorizationService, PantryItemService pantryItemService) {
         this.repository = repository;
         this.modelMapper = modelMapper;
         this.authorizationHandler = authorizationService;
+        this.pantryItemService = pantryItemService;
     }
 
     public Optional<PantryDto> getEmbeddingAccountGroup(String email, long id) {
-        var accessControlList = authorizationHandler.listAccessControl(email, Pantry.class.getSimpleName(), id, null);
+        var accessControlList = authorizationHandler.listAccessControl(email, Pantry.class.getSimpleName(), id, null, null);
         var pantry = repository.findById(id).map(this::convertToDTO)
                 .orElseThrow(() -> new ResourceNotFoundException("Pantry not found"));
         ;
@@ -44,14 +48,19 @@ public class PantryService {
     //TODO: Pageable
     //Retrieves all pantries the user has access
     public List<PantryDto> getAll(String email) {
-        var accessControlList = authorizationHandler.listAccessControl(email, Pantry.class.getSimpleName(), null, null);
+        var accessControlList = authorizationHandler.listAccessControl(email, Pantry.class.getSimpleName(), null, null, null);
+        return getAll(accessControlList);
+    }
+
+    public List<PantryDto> getAllWithPermission(String email, String permission) {
+        var accessControlList = authorizationHandler.listAccessControl(email, Pantry.class.getSimpleName(), null, null, permission);
         return getAll(accessControlList);
     }
 
     //TODO: Pageable
     //Retrieves all pantries in the group
     public List<PantryDto> getAll(String email, Long accountGroupId) {
-        var accessControlList = authorizationHandler.listAccessControl(email, Pantry.class.getSimpleName(), null, accountGroupId);
+        var accessControlList = authorizationHandler.listAccessControl(email, Pantry.class.getSimpleName(), null, accountGroupId, null);
         return getAll(accessControlList);
     }
 
@@ -94,10 +103,12 @@ public class PantryService {
         return storedDto;
     }
 
+    @Transactional
     public void delete(long id) {
         repository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Pantry not found"));
 
+        pantryItemService.deleteAllItems(id);
         repository.deleteById(id);
 
         authorizationHandler.deleteAccessControl(Pantry.class.getSimpleName(), id);

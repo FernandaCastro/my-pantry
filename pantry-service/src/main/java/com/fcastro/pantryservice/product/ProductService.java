@@ -39,7 +39,7 @@ public class ProductService {
     }
 
     public Optional<ProductDto> getEmbeddingAccountGroup(String email, long id) {
-        var accessControlList = authorizationHandler.listAccessControl(email, Product.class.getSimpleName(), id, null);
+        var accessControlList = authorizationHandler.listAccessControl(email, Product.class.getSimpleName(), id, null, null);
         var product = repository.findById(id).map(this::convertToDTO)
                 .orElseThrow(() -> new ResourceNotFoundException("Product not found"));
         return Optional.of(embedAccountGroup(product, accessControlList));
@@ -64,7 +64,7 @@ public class ProductService {
         if (searchParam == null)
             throw new RequestParamExpectedException("Expecting to receive SearchParam: code or description value");
 
-        var accessControlList = authorizationHandler.listAccessControl(email, Product.class.getSimpleName(), null, groupId);
+        var accessControlList = authorizationHandler.listAccessControl(email, Product.class.getSimpleName(), null, groupId, null);
         var productIds = accessControlList.stream().map(AccessControlDto::getClazzId).collect(toSet());
 
         var productList = repository.findAllByCodeOrDescription(searchParam.toLowerCase(), productIds).stream()
@@ -76,7 +76,7 @@ public class ProductService {
 
     public List<ProductDto> getAll(String email) {
 
-        var accessControlList = authorizationHandler.listAccessControl(email, Product.class.getSimpleName(), null, null);
+        var accessControlList = authorizationHandler.listAccessControl(email, Product.class.getSimpleName(), null, null, null);
 
         var productIds = accessControlList.stream().map(AccessControlDto::getClazzId).collect(toSet());
         var productList = repository.findAllByIds(productIds).stream().map(this::convertToDTO).collect(Collectors.toList());
@@ -130,7 +130,7 @@ public class ProductService {
     //TODO: does it scale?
     private void existsInAccountGroup(ProductDto dto) {
         var productList = repository.findAllByCode(dto.getCode()); //This can be a huge list
-        var accessList = authorizationHandler.listAccessControl(SecurityContextHolder.getContext().getAuthentication().getName(), "Product", null, dto.getAccountGroup().getId());
+        var accessList = authorizationHandler.listAccessControl(SecurityContextHolder.getContext().getAuthentication().getName(), "Product", null, dto.getAccountGroup().getId(), null);
 
         var found = accessList.stream()
                 .map(AccessControlDto::getClazzId)

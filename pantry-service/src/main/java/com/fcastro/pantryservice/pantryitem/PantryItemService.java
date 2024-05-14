@@ -83,6 +83,11 @@ public class PantryItemService {
         repository.deleteById(pk);
     }
 
+    public void deleteAllItems(long pantryId) {
+        repository.deleteByPantryId(pantryId);
+        //TODO: Notify Purchase
+    }
+
     //Updates pantryProduct table and send ProductConsumedEvent
     @Transactional
     public List<PantryItemDto> consumePantryItem(Long pantryId, List<PantryItemConsumedDto> list) {
