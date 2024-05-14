@@ -112,7 +112,7 @@ public class PurchaseService {
     }
 
     private Set<Long> getAllPantriesAllowedToUser(String email) {
-        var accessControlList = authorizationHandler.listAccessControl(email, "Pantry", null, null);
+        var accessControlList = authorizationHandler.listAccessControl(email, "Pantry", null, null, null);
         return accessControlList.stream().map(AccessControlDto::getClazzId).collect(Collectors.toSet());
     }
 
