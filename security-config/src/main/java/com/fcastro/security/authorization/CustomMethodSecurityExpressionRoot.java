@@ -64,6 +64,7 @@ public class CustomMethodSecurityExpressionRoot {
         String email = expressionOperations.getAuthentication().getName();
 
         var groupMember = authorizationHandler.hasPermissionInObjectList(email, permission, clazz, clazzIds);
-        return groupMember != null && groupMember.size() > 0 && clazzIds.size() == groupMember.size();
+
+        return groupMember != null && groupMember.size() > 0;
     }
 }
