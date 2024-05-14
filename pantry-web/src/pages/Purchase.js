@@ -95,24 +95,20 @@ export default function Purchase() {
 
     return (
         <Stack gap={3}>
+            <div />
             <div>
-            </div>
-
-            <div className="d-flex justify-content-between align-items-start " onClick={() => setShowPantries(!showPantries)}>
-                <div className='d-flex justify-content-start align-items-center gap-2'>
+                <div className='d-flex justify-content-start align-items-center gap-2' onClick={() => setShowPantries(!showPantries)}>
                     <h6 className="text-start fs-6 lh-lg title">Pantries </h6>
                     <BsChevronDown className='icon' />
                 </div>
-            </div>
 
-            <div>
                 <Collapse in={showPantries} >
-                    <div><PantrySelect handleSelectedPantryList={handleSelectedPantries} /></div>
+                    <div><PantrySelect handleSelectedPantryList={handleSelectedPantries} permission='purchase_pantry' /></div>
                 </Collapse>
             </div>
-
-            <div className="item d-flex justify-content-between align-items-start" onClick={() => setShowOrder(!showOrder)}>
-                <div className='d-flex justify-content-start align-items-center gap-2'>
+            <div />
+            <div className="item d-flex justify-content-between align-items-start" >
+                <div className='d-flex justify-content-start align-items-center gap-2' onClick={() => setShowOrder(!showOrder)}>
                     <h6 className='title'>Shopping Lists</h6>
                     <BsChevronDown className='icon' />
                 </div>
@@ -127,26 +123,26 @@ export default function Purchase() {
                 </Collapse>
             </div>
 
-            <div className="d-flex justify-content-between align-items-start " onClick={() => setShowOrderDetails(!showOrderDetails)}>
-                <div className='d-flex justify-content-start align-items-center gap-2'>
+            <div />
+            <div>
+                <div className='d-flex justify-content-start align-items-center gap-2' onClick={() => setShowOrderDetails(!showOrderDetails)} aria-controls="purchaseItems" >
                     <h6 className='title'>{purchase ? purchase.processedAt ? 'Closed Shopping List - Details' : 'Open Shopping List - Details' : 'Items not in a Shopping List'}</h6>
                     <BsChevronDown className='icon' />
                 </div>
-            </div>
-
-            <div>
                 <Collapse in={showOrderDetails} >
-                    <div>
+                    <div id="purchaseItems" className='purchaseList'>
                         <PurchaseItemList purchase={purchase} selectedPantries={selectedPantries} setOuterPurchaseItems={setPurchaseItems} />
                     </div>
                 </Collapse>
             </div>
-            
+
             <div>
-                <Stack direction="horizontal" gap={2} className="d-flex justify-content-end">
-                    {/* <Button bsPrefix="btn-custom" size="sm" onClick={handleClear} disabled={!hasOpenOrder}>Clear</Button> */}
-                    <Button bsPrefix="btn-custom" size="sm" onClick={handleSave} disabled={!hasOpenOrder}>Checkout</Button>
-                </Stack >
+
+            </div>
+
+            <div className='d-flex justify-content-end gap-2'>
+                {/* <Button bsPrefix="btn-custom" size="sm" onClick={handleClear} disabled={!hasOpenOrder}>Clear</Button> */}
+                <Button bsPrefix="btn-custom" size="sm" onClick={handleSave} disabled={!hasOpenOrder}>Checkout</Button>
             </div>
 
         </Stack >

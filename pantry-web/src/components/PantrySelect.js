@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react';
-import { FormCheck, Stack } from "react-bootstrap";
+import { FormCheck } from "react-bootstrap";
 import Table from 'react-bootstrap/Table';
 import VariantType from '../components/VariantType.js';
 import useAlert from '../hooks/useAlert.js';
-import { getPantryList } from '../services/apis/mypantry/requests/PantryRequests.js';
+import { getPantryListWithPermission } from '../services/apis/mypantry/requests/PantryRequests.js';
 
-export default function PantrySelect({ handleSelectedPantryList }) {
+export default function PantrySelect({ handleSelectedPantryList, permission }) {
 
     const [pantries, setPantries] = useState([]);
 
@@ -18,7 +18,7 @@ export default function PantrySelect({ handleSelectedPantryList }) {
 
     async function fetchPantries() {
         try {
-            const res = await getPantryList();
+            const res = await getPantryListWithPermission(permission);
             setPantries(res);
             loadSelectedPantries(res);
         } catch (error) {
@@ -60,7 +60,7 @@ export default function PantrySelect({ handleSelectedPantryList }) {
 
     return (
         <div className="scroll-selectPantries">
-            <Table className='bordered'>
+            <Table size='sm'>
                 <tbody>
                     {pantries.map((item) => renderItem(item))}
                 </tbody>
