@@ -33,4 +33,4 @@ logging:
     root: ${LOG_LEVEL}
     org.hibernate.SQL: ${LOG_LEVEL}
     org.springframework.web: ${LOG_LEVEL}
-    og.springframework.security: ${LOG_TRACE}
+    og.springframework.security: ${LOG_LEVEL}
