@@ -13,4 +13,12 @@ import java.util.List;
 public class PurchaseCompleteEvent implements Serializable {
 
     private List<PurchaseEventDto> items;
+
+    @Override
+    public String toString() {
+        final StringBuffer sb = new StringBuffer("PurchaseCompleteEvent{");
+        sb.append("items=").append(items);
+        sb.append('}');
+        return sb.toString();
+    }
 }

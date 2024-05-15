@@ -11,7 +11,7 @@
     </parent>
 
     <artifactId>security-core-config</artifactId>
-    <version>0.0.4</version>
+    <version>0.0.5</version>
 
     <properties>
         <spring-boot-starter-version>3.2.0</spring-boot-starter-version>

@@ -2,6 +2,7 @@ package com.fcastro.pantryservice.exception;
 
 import com.fcastro.app.exception.ApplicationError;
 import com.fcastro.app.exception.ResourceNotFoundException;
+import com.fcastro.security.core.exception.TokenVerifierException;
 import com.fcastro.security.exception.AccessControlNotDefinedException;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.context.request.ServletWebRequest;
+import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.multipart.support.MissingServletRequestPartException;
 
@@ -171,9 +173,9 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
     }
 
-    @ExceptionHandler(value = {ExpiredJwtException.class, AccessDeniedException.class})
+    @ExceptionHandler(value = {TokenVerifierException.class, AccessDeniedException.class})
     @ResponseStatus(value = HttpStatus.FORBIDDEN)
-    public ResponseEntity<Object> expiredToken(final Exception ex, final HttpServletRequest request) {
+    public ResponseEntity<Object> expiredToken(final Exception ex, final WebRequest request) {
 
         String requestUri = ((ServletWebRequest) request).getRequest().getRequestURI().toString();
 
@@ -185,7 +187,7 @@ public class GlobalExceptionHandler {
                 .path(requestUri)
                 .build();
 
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(error);
     }
 
     @ExceptionHandler(value = {Exception.class})

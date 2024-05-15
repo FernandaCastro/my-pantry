@@ -16,7 +16,6 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         format_sql: true
-    show-sql: true
   sql:
     init:
         mode: always
@@ -29,3 +28,9 @@ security-config:
   allowedOrigin: ${ALLOWED_ORIGINS}
   googleClientId: ${GOOGLE_CLIENT_ID}
   googleClientSecret: ${GOOGLE_CLIENT_SECRET}
+logging:
+  level:
+    root: ${LOG_LEVEL}
+    org.hibernate.SQL: ${LOG_LEVEL}
+    org.springframework.web: ${LOG_LEVEL}
+    og.springframework.security: ${LOG_TRACE}

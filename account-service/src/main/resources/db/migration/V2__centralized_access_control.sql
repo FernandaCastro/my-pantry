@@ -7,16 +7,16 @@ CREATE TABLE IF NOT EXISTS account.ACCESS_CONTROL(
 );
 
 --Copy access-control data from pantry_db to account_db
-create extension IF NOT EXISTS dblink;
-select dblink_connect('pantry_conn', 'postgresql://pantry:pantry@pantry-db:5432/pantry-db');
-
-insert into account.ACCESS_CONTROL (clazz, clazz_id, account_group_id)
-( select clazz, clazz_id, account_group_id
-         from dblink('pantry_conn', 'SELECT * FROM access_control')
-         AS t(clazz text, clazz_id int, account_group_id int) ) on conflict do nothing;
-
-select dblink_disconnect('pantry_conn');
-drop extension IF EXISTS dblink;
+--create extension IF NOT EXISTS dblink;
+--select dblink_connect('pantry_conn', 'postgresql://pantry:pantry@pantry-db:5432/pantry-db');
+--
+--insert into account.ACCESS_CONTROL (clazz, clazz_id, account_group_id)
+--( select clazz, clazz_id, account_group_id
+--         from dblink('pantry_conn', 'SELECT * FROM access_control')
+--         AS t(clazz text, clazz_id int, account_group_id int) ) on conflict do nothing;
+--
+--select dblink_disconnect('pantry_conn');
+--drop extension IF EXISTS dblink;
 
 --Updates on Permissions
 UPDATE account.PERMISSION set name = 'CONSUME_PANTRY' where name = 'CONSUME_PANTRY_ITEM';
