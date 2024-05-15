@@ -195,7 +195,7 @@ public class GlobalExceptionHandler {
                 .path(requestUri)
                 .build();
 
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(error);
     }
 
     @ExceptionHandler(value = {Exception.class})

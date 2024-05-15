@@ -25,5 +25,4 @@ public class Properties {
     @Column(columnDefinition = "jsonb")
     private String propertyValue;
 
-    private Long accountGroupId;
 }

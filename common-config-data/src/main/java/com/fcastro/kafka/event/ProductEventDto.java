@@ -18,4 +18,17 @@ public class ProductEventDto implements Serializable {
     private String description;
     private String size;
     private String category;
+
+    @Override
+    public String toString() {
+        final StringBuffer sb = new StringBuffer("ProductEventDto{");
+        sb.append("action=").append(action);
+        sb.append(", id=").append(id);
+        sb.append(", code='").append(code).append('\'');
+        sb.append(", description='").append(description).append('\'');
+        sb.append(", size='").append(size).append('\'');
+        sb.append(", category='").append(category).append('\'');
+        sb.append('}');
+        return sb.toString();
+    }
 }

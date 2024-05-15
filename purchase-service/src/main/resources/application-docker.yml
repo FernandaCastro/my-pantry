@@ -1,7 +1,7 @@
 server:
   port: 8081
 kafka-config:
-  bootstrap-servers-config: kafka-broker:29092
+  bootstrap-servers-config: kafka-broker:9092
   purchase-create-topic: purchaseCreateTopic
   purchase-complete-topic: purchaseCompleteTopic
   product-topic: productTopic
@@ -22,7 +22,6 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         format_sql: true
-    show-sql: true
   sql:
     init:
       mode: always
@@ -36,3 +35,9 @@ security-config:
   googleClientId: ${GOOGLE_CLIENT_ID}
   googleClientSecret: ${GOOGLE_CLIENT_SECRET}
   authzServer: http://account-service:8082
+logging:
+  level:
+    root: ${LOG_LEVEL}
+    org.hibernate.SQL: ${LOG_LEVEL}
+    org.springframework.web: ${LOG_LEVEL}
+    og.springframework.security: ${LOG_TRACE}
