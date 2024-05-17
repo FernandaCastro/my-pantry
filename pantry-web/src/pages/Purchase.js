@@ -106,7 +106,7 @@ export default function Purchase() {
                     <div><PantrySelect handleSelectedPantryList={handleSelectedPantries} permission='purchase_pantry' /></div>
                 </Collapse>
             </div>
-            <div />
+            
             <div className="item d-flex justify-content-between align-items-start" >
                 <div className='d-flex justify-content-start align-items-center gap-2' onClick={() => setShowOrder(!showOrder)}>
                     <h6 className='title'>Shopping Lists</h6>
@@ -123,7 +123,6 @@ export default function Purchase() {
                 </Collapse>
             </div>
 
-            <div />
             <div>
                 <div className='d-flex justify-content-start align-items-center gap-2' onClick={() => setShowOrderDetails(!showOrderDetails)} aria-controls="purchaseItems" >
                     <h6 className='title'>{purchase ? purchase.processedAt ? 'Closed Shopping List - Details' : 'Open Shopping List - Details' : 'Items not in a Shopping List'}</h6>
@@ -136,9 +135,6 @@ export default function Purchase() {
                 </Collapse>
             </div>
 
-            <div>
-
-            </div>
 
             <div className='d-flex justify-content-end gap-2'>
                 {/* <Button bsPrefix="btn-custom" size="sm" onClick={handleClear} disabled={!hasOpenOrder}>Clear</Button> */}

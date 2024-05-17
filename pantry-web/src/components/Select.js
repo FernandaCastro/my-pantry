@@ -2,13 +2,13 @@ import Select from 'react-select';
 import '../assets/styles/App.scss';
 
 const customStyles = {
+
     control: (provided, state) => ({
         ...provided,
         backgroundColor: '#fff',
-        borderColor: '#909df4',
+        borderColor: 'lightgray',
         minHeight: '31px',
         height: '31px',
-        minWidth: '300px',
         boxShadow: null,
         "&:hover": {
             borderColor: 'rgb(63, 6, 250)'
@@ -45,7 +45,7 @@ const customStyles = {
     }),
 };
 
-export default ({ name, placeholder, options, onChange, defaultValue , disabled}) =>
+export default ({ name, placeholder, options, onChange, defaultValue , disabled, customMinWidth}) =>
 (<Select styles={customStyles}
     name={name}
     placeholder={placeholder}

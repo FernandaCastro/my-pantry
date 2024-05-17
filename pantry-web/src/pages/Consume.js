@@ -12,6 +12,10 @@ import VariantType from '../components/VariantType.js';
 import useAlert from '../hooks/useAlert.js';
 import PantrySelect from '../components/PantrySelect.js'
 import { FormCheck } from "react-bootstrap";
+import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
+import Tooltip from 'react-bootstrap/Tooltip';
+import { BsChevronDown } from "react-icons/bs";
+import Collapse from 'react-bootstrap/Collapse';
 
 export default function Consume() {
 
@@ -29,7 +33,8 @@ export default function Consume() {
   const [reload, setReload] = useState(false);
   const { showAlert } = useAlert();
   const [expand, setExpand] = useState(false);
-
+  const [showPantries, setShowPantries] = useState(true);
+  const [showPantryCol, setShowPantryCol] = useState(true);
 
   useEffect(() => {
     if (selectedPantries && selectedPantries.length > 0)
@@ -113,19 +118,24 @@ export default function Consume() {
         <td >
           <Stack direction="horizontal" gap={2}>
             <Image src={food} width={20} height={20} rounded />
-            <span>{camelCase(item.product.code)}</span>
+            <span className='text-wrap'>{camelCase(item.product.code)}</span>
           </Stack>
           <div style={{ display: expand ? 'block' : 'none' }}>
-            <span className='d-none d-md-block' hidden={item.product.description === ''}>
+            <span hidden={item.product.description === ''}>
               {item.product.description}  {item.product.size}
             </span>
           </div>
         </td>
-        <td><span>{item.pantry.name}</span></td>
-        <td><span className='pe-5'>{item.currentQty}</span></td>
-        <td><span className='d-none ps-5 d-md-block'>{item.provisionedQty}</span></td>
+        <td hidden={!showPantryCol}><span className='text-left text-wrap'>{item.pantry.name}</span></td>
+        <td><span className='text-left'>{item.currentQty}</span></td>
+        <td><span className='d-none d-md-block text-left ps-5'>{item.provisionedQty}</span></td>
         <td><span className='d-none d-md-block'>{item.lastProvisioning}</span></td>
-        <td><NumericField key={reload} object={consumedItem} attribute="qty" onValueChange={updateConsumedItem} disabled={isPantryEmpty} /></td>
+        <td >
+          <div className='d-flex justify-content-end me-2'>
+            <NumericField key={reload} object={consumedItem} attribute="qty" onValueChange={updateConsumedItem} disabled={isPantryEmpty} />
+          </div>
+        </td>
+
       </tr>
     )
   }
@@ -152,26 +162,61 @@ export default function Consume() {
       <div>
       </div>
       <div>
-        <div className="me-auto"><h6 className="text-start fs-6 lh-lg title">Consume Itens</h6></div>
+        <div className='d-flex justify-content-start align-items-center gap-2' onClick={() => setShowPantries(!showPantries)}>
+          <h6 className="text-start fs-6 lh-lg title">Consume from Pantry</h6>
+          <BsChevronDown className='icon' />
+        </div>
+
+        <Collapse in={showPantries} >
+          <div><PantrySelect handleSelectedPantryList={handleSelectedPantries} permission='consume_pantry' /></div>
+        </Collapse>
       </div>
-      <div><PantrySelect handleSelectedPantryList={handleSelectedPantries} permission='consume_pantry' /></div>
       <div>
         <Form.Control size="sm" type="text" id="search" className="form-control mb-1" placeholder="Seacrh for items here" value={searchText} onChange={(e) => filter(e.target.value)} />
         <div className='scroll-consume'>
           <Table size='sm'>
             <thead>
-              <tr key={0} className="align-middle">
-                <th className='d-flex flex-row align-items-center gap-2'>
-                  <FormCheck
-                    className='d-none d-md-block'
-                    defaultChecked={expand}
-                    onChange={() => setExpand(!expand)} />
-                  <h6 className="title">Code/Desc.</h6></th>
-                <th><h6 className="title">Pantry</h6></th>
-                <th><h6 className="title pe-5">Qty</h6></th>
-                <th><h6 className="title ps-5 d-none d-md-block">Prov.</h6></th>
-                <th><h6 className="title d-none d-md-block">Prov. on</h6></th>
-                <th><h6 className="title">Consume</h6></th>
+              <tr className="align-middle">
+                <th className='d-flex flex-row align-items-center'>
+                  <OverlayTrigger
+                    placement="bottom"
+                    delay={{ show: 250, hide: 250 }}
+                    overlay={
+                      <Tooltip className="custom-tooltip">
+                        Show Product Detail
+                      </Tooltip>
+                    }
+                  >
+                    <FormCheck
+                      className='form-switch'
+                      defaultChecked={expand}
+                      onChange={() => setExpand(!expand)} />
+                  </OverlayTrigger>
+                  <h6 className="title">Code/Desc.</h6>
+                </th>
+                <th hidden={!showPantryCol}><h6 className="title text-left">Pantry</h6></th>
+                <th><h6 className="title">Qty</h6></th>
+                <th><h6 className="title ps-5 d-none d-md-block">Prov</h6></th>
+                <th><h6 className="title text-left d-none d-md-block">Prov. on</h6></th>
+                <th>
+                  <div className='d-flex justify-content-end align-items-center gap-2 pe-2'>
+                    <OverlayTrigger
+                      placement="bottom"
+                      delay={{ show: 250, hide: 250 }}
+                      overlay={
+                        <Tooltip className="custom-tooltip">
+                          Show Pantry
+                        </Tooltip>
+                      }
+                    >
+                      <FormCheck
+                        className='d-block form-switch'
+                        defaultChecked={showPantryCol}
+                        onChange={() => setShowPantryCol(!showPantryCol)}
+                      />
+                    </OverlayTrigger>
+                  </div>
+                </th>
               </tr>
             </thead>
             <tbody>

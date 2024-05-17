@@ -1,5 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
-import { PantryContext } from '../services/context/AppContext.js';
+import React, { useState, useEffect } from 'react';
 import { getPantryList, deletePantry } from '../services/apis/mypantry/requests/PantryRequests.js';
 import Stack from 'react-bootstrap/Stack';
 import Table from 'react-bootstrap/Table';
@@ -7,7 +6,6 @@ import Button from 'react-bootstrap/Button';
 import VariantType from '../components/VariantType.js';
 import useAlert from '../hooks/useAlert.js';
 import { BsPencil, BsTrash } from "react-icons/bs";
-import Form from 'react-bootstrap/Form';
 
 export default function Pantries() {
 
@@ -67,7 +65,7 @@ export default function Pantries() {
             return (<span>Loading...</span>)
 
         return (
-            <Table className='bordered'>
+            <Table className='bordered' size='sm'>
                 <tbody>
                     {pantries.map((item) => (renderItem(item)))}
                 </tbody>
@@ -85,7 +83,7 @@ export default function Pantries() {
             <div></div>
             <div className="d-flex justify-content-between align-items-center">
                 <h6 className='title'>Pantry List</h6>
-                <Button bsPrefix="btn-custom" size="sm" href={"/pantries/new"} className="pe-2 ps-2">New Pantry</Button>
+                <Button bsPrefix='btn-custom' size="sm" href={"/pantries/new"} className="pe-2 ps-2">New Pantry</Button>
             </div>
             <div>
                 {renderItems()}
