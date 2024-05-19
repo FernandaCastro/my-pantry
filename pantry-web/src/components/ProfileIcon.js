@@ -41,7 +41,7 @@ function ProfileIcon() {
         clearNewAccountStates();
         setProfileCtx(null);
         setShowProfile(false);
-        navigate('/logout');
+        navigate('/login');
     };
 
     const handlePostLogin = (profile) => {
@@ -314,6 +314,14 @@ function ProfileIcon() {
         )
     }
 
+    function renderUserIcon() {
+        return (
+            <Button variant='link'>
+                <Image className='hover-effect' width={30} height={30} roundedCircle referrerPolicy="no-referrer" src={iNoAccount} />
+            </Button>
+        )
+    }
+
     //Reset Password Form
     function renderResetPasswordPopover() {
         const popoverResetPassword = (
@@ -343,7 +351,7 @@ function ProfileIcon() {
 
     return (
         <div>
-            {profileCtx && Object.keys(profileCtx).length > 0 ? renderProfilePopovers() : renderPopovers()}
+            {profileCtx && Object.keys(profileCtx).length > 0 ? renderProfilePopovers() : renderUserIcon()}
         </div>
     )
 }

@@ -1,5 +1,6 @@
 import { PantryContext, ProfileContext } from '../services/context/AppContext.js';
 import { useEffect, useContext } from 'react';
+import { Link } from 'react-router-dom';
 
 export default function Logout() {
 
@@ -13,6 +14,9 @@ export default function Logout() {
     }, []);
 
     return (
-        <h6 className="mt-3 title"><br /> You have been logged out, or your session is not valid anymore. <br /> <br /> Please <b>log in</b> to continue...</h6>
+        <h6 className="mt-3 title">
+            <br /> You have been logged out, or your session is not valid anymore. <br /> 
+            <br /> Please <Link to={`/login`} >log in</Link>  to continue...
+        </h6>
     )
 }

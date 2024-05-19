@@ -60,6 +60,45 @@ a.btn-custom:disabled {
     background-color: $btn-disabled-color !important;
 }
 
+.btn-custom-login {
+    min-width: 15%;
+    width: fit-content;
+    height: fit-content;
+    color: $link-color;
+    text-decoration: none;
+    background-color: $background;
+    border: 1px transparent;
+    border-radius: 5px;
+    align-items: center;
+    text-align: center;
+    pointer-events: all;
+
+}
+
+.btn-custom-login:hover {
+    background-color: $hover-background !important;
+}
+
+.btn-custom-register {
+    min-width: 15%;
+    width: fit-content;
+    height: fit-content;
+    color: $text-color;
+    font-size: smaller;
+    text-decoration: none;
+    background-color: $background;
+    border: 1px transparent;
+    border-radius: 5px;
+    align-items: center;
+    text-align: center;
+    pointer-events: all;
+    margin-top: 3px;
+}
+
+.btn-custom-register:hover {
+    background-color: $hover-background !important;
+}
+
 table {
     background-color: $border-color;
     color: $text-color;
@@ -151,6 +190,17 @@ table.bordered {
     margin: initial;
 }
 
+.bigger-title {
+    color: $title-text-color;
+    margin: initial;
+    font-size: bigger;
+    padding: 5px;
+}
+
+.link {
+    color: $link-color;
+}
+
 span {
     color: $text-color;
 }
@@ -232,8 +282,105 @@ div.settings {
     background-color: $background !important;
 }
 
-.custom-alert {
+.logoText {
+    font-family: cursive;
+    font-size: 27px;
+    font-weight: bold;
+    padding-left: 10px;
+    background: linear-gradient(90deg, rgba(228, 132, 252, 1) 0%, rgba(132, 212, 255, 1) 100%);
+    ;
+    background-clip: text;
+}
 
+.logo {
+    height: 250px;
+    width: 350px;
+    position: absolute;
+    top: 150px;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.bigger-title-box {
+    height: 100px;
+    width: 350px;
+    position: absolute;
+    top: 150px;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    border: 1px solid $border-color;
+    border-radius: 5px;
+}
+
+.login {
+    height: 250px;
+    width: 350px;
+    position: absolute;
+    top: 350px;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    padding: 30px;
+    border: 1px solid $border-color;
+    border-radius: 5px;
+}
+
+.signin {
+    height: 100px;
+    width: 350px;
+
+    position: absolute;
+    top: 540px;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    padding: 30px;
+    border: 1px solid $border-color;
+    border-radius: 5px;
+}
+
+.register {
+    width: 350px;
+
+    position: absolute;
+    top: 400px;
+    left: 50%;
+
+    transform: translate(-50%, -30%);
+}
+
+.reset-password-box {
+    width: 350px;
+
+    position: absolute;
+    top: 400px;
+    left: 50%;
+
+    transform: translate(-50%, -30%);
+}
+
+.custom-alert {
     .custom-alert-body {
         border: 1px solid $border-color;
         border-radius: 8px;
