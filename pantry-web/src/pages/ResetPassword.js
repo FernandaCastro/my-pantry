@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useParams } from 'react-router';
 import { Button } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
@@ -15,6 +15,7 @@ export default function ResetPassword() {
     const [errors, setErrors] = useState({});
     const [validForm, setValidForm] = useState(false);
     const { enteredEmail } = useParams();
+    const [refresh, setRefresh] = useState(false);
 
     const [account, setAccount] = useState({
         email: enteredEmail,
@@ -69,18 +70,16 @@ export default function ResetPassword() {
             }
         }
 
-        setErrors({
-            ...errors,
-            [name]: error
+        setErrors((errors) => {
+            return { ...errors, [name]: error };
         });
 
-        const copy = {
-            ...valid,
-            [name]: validated
-        }
-        setValid(copy);
+        setValid((valid) => {
+            return { ...valid, [name]: validated };
+        });
 
-        isFormValid(copy);
+        const copyValid = { ...valid, [name]: validated }
+        isFormValid(copyValid);
 
         return validated;
 
@@ -89,7 +88,7 @@ export default function ResetPassword() {
     function isFormValid(copyValid) {
         let isValid;
         if (Object.keys(copyValid).length >= 4) {
-            let found = Object.keys(copyValid).find(key => copyValid[key] === 0);
+            let found = Object.keys(copyValid).find(key => !copyValid[key]);
             isValid = !found;
         } else {
             isValid = false;
@@ -107,17 +106,6 @@ export default function ResetPassword() {
         });
     };
 
-    function clearAccount() {
-        setAccount({
-            ...account,
-            email: "",
-            password: "",
-            confirmPassword: "",
-            passwordQuestion: "",
-            passwordAnswer: ""
-        })
-    }
-
     const handleOnBlurCapture = (e) => {
         const { name, value } = e.target;
         validateField(name, value);
@@ -131,11 +119,27 @@ export default function ResetPassword() {
         }
     }
 
-    function clearResetQuestion() {
-        setAccount({
+    function clearAccount() {
+        const tempAccount = {
             ...account,
-            passwordQuestion: ""
-        });
+            password: "",
+            confirmPassword: "",
+            passwordAnswer: ""
+        }
+        setAccount(tempAccount);
+        setRefresh(!refresh);
+    }
+
+    function clearResetQuestion() {
+        const tempAccount = { ...account, passwordQuestion: "" }
+        setAccount(tempAccount);
+        setRefresh(!refresh);
+    }
+
+    function clearResetAnswer() {
+        const tempAccount = { ...account, passwordAnswer: "" };
+        setAccount(tempAccount);
+        setRefresh(!refresh);
     }
 
     async function handleSubmit(e) {
@@ -143,7 +147,7 @@ export default function ResetPassword() {
             // Prevent the browser from reloading the page
             e.preventDefault();
             const form = e.currentTarget;
-            if (form.checkValidity() === false) {
+            if (!isFormValid) {
                 e.stopPropagation();
             } else {
                 await handleResetPassword();
@@ -160,6 +164,7 @@ export default function ResetPassword() {
             navigate('/login');
         } catch (error) {
             showAlert(VariantType.DANGER, error.message);
+            clearResetAnswer();
         } finally {
             setIsProcessing(false);
         }
@@ -190,7 +195,7 @@ export default function ResetPassword() {
                 <h6 className='bigger-title'>Reset Password</h6>
             </div>
             <div className='centralized-box'>
-                <Form onSubmit={handleSubmit} className='w-100'>
+                <Form key={refresh} onSubmit={handleSubmit} className='w-100'>
                     <Form.Group className="mb-2" controlId="formId">
                         <Form.Label size="sm" className="mb-0 title">Email</Form.Label>
                         <Form.Control type="text" name="email" defaultValue={account.email}
@@ -207,8 +212,8 @@ export default function ResetPassword() {
 
                     <Form.Group className="mb-2" controlId="formId">
                         <Form.Label size="sm" className="mb-0 title">Question</Form.Label>
-                        <Form.Control type="text" name="passwordQuestion" defaultValue={account.passwordQuestion} disabled={true} 
-                        className="reset-question-field"/>
+                        <Form.Control type="text" name="passwordQuestion" defaultValue={account.passwordQuestion} disabled={true}
+                            className="reset-question-field" />
                     </Form.Group>
 
                     <Form.Group className="mb-2" controlId="formId">
@@ -217,7 +222,7 @@ export default function ResetPassword() {
                             required
                             isInvalid={!account.passwordAnswer}
                             onChange={handleOnChange}
-                            onBlurCapture={handleOnBlurCapture}
+                            onBlur={handleOnBlurCapture}
                             className={`form-control ${!valid.passwordAnswer ? '' : valid.passwordAnswer ? 'is-valid' : 'is-invalid'}`} />
                         <Form.Control.Feedback type="invalid">
                             {errors.passwordAnswer}
@@ -231,7 +236,7 @@ export default function ResetPassword() {
                             minLength={6}
                             isInvalid={!account.password || account.password.length < 6}
                             onChange={handleOnChange}
-                            onBlurCapture={handleOnBlurCapture}
+                            onBlur={handleOnBlurCapture}
                             className={`form-control ${!valid.password ? '' : valid.password ? 'is-valid' : 'is-invalid'}`} />
                         <Form.Control.Feedback type="invalid">
                             {errors.password}
@@ -246,7 +251,7 @@ export default function ResetPassword() {
                             pattern={account.password}
                             isInvalid={!account.confirmPassword || account.confirmPassword != account.password}
                             onChange={handleOnChange}
-                            onBlurCapture={handleOnBlurCapture}
+                            onBlur={handleOnBlurCapture}
                             className={`form-control ${!valid.confirmPassword ? '' : valid.confirmPassword ? 'is-valid' : 'is-invalid'}`} />
                         <Form.Control.Feedback type="invalid">
                             {errors.confirmPassword}
