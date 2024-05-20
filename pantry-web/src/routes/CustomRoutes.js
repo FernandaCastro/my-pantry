@@ -28,12 +28,20 @@ function CustomRoutes() {
             element: <Welcome />
         },
         {
-            path: "/register",
-            element: <Register />
+            path: "/account/new",
+            element: <Register mode="new" />
+        },
+        {
+            path: "/account/edit",
+            element: <Register mode="edit" />
         },
         {
             path: "/reset-password/:enteredEmail",
-            element: <ResetPassword/>
+            element: <ResetPassword />
+        },
+        {
+            path: "/reset-password",
+            element: <ResetPassword />
         },
         {
             path: "/login",

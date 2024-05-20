@@ -76,7 +76,9 @@ export const FetchAccount = async function (endpoint, method, data) {
         const errorMsg = content ? content.errorMessage : res.statusText;
         console.log("Fetch API Account-Service: $s - $s", res.status, errorMsg);
         throw new RequestError(errorMsg, res.status, content)
-
+    }
+    catch (error) {
+        throw new RequestError(error.message, error.status)
     } finally {
         if (redirecting) { History.navigate("/logout") }
     }

@@ -1,20 +1,12 @@
-import Image from 'react-bootstrap/Image';
-import iAccount from '../assets/images/profile.png';
-import iNoAccount from '../assets/images/no-login.png';
 import { ProfileContext } from '../services/context/AppContext';
-import React, { useContext, useState, useRef } from 'react';
-import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
-import Popover from 'react-bootstrap/Popover';
+import React, { useContext, useState} from 'react';
 import { Button } from 'react-bootstrap';
-import { LoginWithGoogle, LogoutFromGoogle } from '../components/LoginWithGoogle.js';
-import { logout, register, login } from '../services/LoginService';
+import { LoginWithGoogle } from '../components/LoginWithGoogle.js';
+import { login } from '../services/LoginService';
 import { useNavigate } from 'react-router-dom';
 import Form from 'react-bootstrap/Form';
 import VariantType from '../components/VariantType.js';
 import useAlert from '../hooks/useAlert.js';
-import Tooltip from 'react-bootstrap/Tooltip';
-import { getAccount, postResetPassword, getResetPassword, updateAccount } from '../services/apis/mypantry/requests/AccountRequests';
-import { Link } from 'react-router-dom';
 
 export default function Login() {
 
@@ -57,7 +49,8 @@ export default function Login() {
     }
 
     function clearAccount() {
-        setAccount({... account,
+        setAccount({
+            ...account,
             email: "",
             password: ""
         })
@@ -76,15 +69,15 @@ export default function Login() {
 
     return (
         <>
-            <div className='logo'>
+            <div className='login-header-box'>
                 <span className="homeText">My Pantry</span>
                 <span>Sign in to My Pantry</span>
             </div>
-            <div className='login'>
+            <div className='login-box'>
                 <Form onSubmit={handleSubmitLogin} className='w-100'>
                     <Form.Group className="mb-2" controlId="formId">
                         <Form.Label size="sm" className="mb-0 title">Email</Form.Label>
-                        <Form.Control type="text" name="email" defaultValue={account.email} onChange={(v) => setAccount({ ...account, email: v.target.value })} 
+                        <Form.Control type="text" name="email" defaultValue={account.email} onChange={(v) => setAccount({ ...account, email: v.target.value })}
                         />
                     </Form.Group>
                     <Form.Group className="mb-2" controlId="formId">
@@ -101,9 +94,9 @@ export default function Login() {
                     </div>
                 </Form>
             </div>
-            <div className='signin'>
+            <div className='login-footer-box'>
                 <LoginWithGoogle handlePostLogin={handlePostLogin} />
-                <Button bsPrefix="btn-custom-register" size="sm" href='/register'>New to My Pantry? <span className="link">Create an Account</span></Button>
+                <Button bsPrefix="btn-custom-register" size="sm" href='/account/new'>New to My Pantry? <span className="link">Create an Account</span></Button>
             </div>
         </>
 

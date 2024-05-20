@@ -1,20 +1,11 @@
-import Image from 'react-bootstrap/Image';
-import iAccount from '../assets/images/profile.png';
-import iNoAccount from '../assets/images/no-login.png';
-import { ProfileContext } from '../services/context/AppContext';
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router';
-import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
-import Popover from 'react-bootstrap/Popover';
 import { Button } from 'react-bootstrap';
-import { LoginWithGoogle, LogoutFromGoogle } from '../components/LoginWithGoogle.js';
-import { logout, register, login } from '../services/LoginService';
 import { useNavigate } from 'react-router-dom';
 import Form from 'react-bootstrap/Form';
 import VariantType from '../components/VariantType.js';
 import useAlert from '../hooks/useAlert.js';
-import Tooltip from 'react-bootstrap/Tooltip';
-import { getAccount, postResetPassword, getResetPassword, updateAccount } from '../services/apis/mypantry/requests/AccountRequests';
+import { postResetPassword, getResetPassword, updateAccount } from '../services/apis/mypantry/requests/AccountRequests';
 
 export default function ResetPassword() {
 
@@ -35,7 +26,7 @@ export default function ResetPassword() {
     const [isProcessing, setIsProcessing] = useState(false);
 
     useEffect(() => {
-        if (enteredEmail && validateField('email', enteredEmail)){
+        if (enteredEmail && validateField('email', enteredEmail)) {
             fetchPasswordQuestion();
         }
     }, [])
@@ -53,7 +44,7 @@ export default function ResetPassword() {
 
         else if (name === 'passwordAnswer') {
             if (!value || value.length === 0) {
-                error = ' Please enter the answer to be used when resetting your password.';
+                error = ' Please enter the answer for the question above.';
                 validated = false;
             }
         }
@@ -195,10 +186,10 @@ export default function ResetPassword() {
 
     return (
         <>
-            <div className='bigger-title-box'>
+            <div className='centralized-header-box'>
                 <h6 className='bigger-title'>Reset Password</h6>
             </div>
-            <div className='reset-password-box'>
+            <div className='centralized-box'>
                 <Form onSubmit={handleSubmit} className='w-100'>
                     <Form.Group className="mb-2" controlId="formId">
                         <Form.Label size="sm" className="mb-0 title">Email</Form.Label>
@@ -216,7 +207,8 @@ export default function ResetPassword() {
 
                     <Form.Group className="mb-2" controlId="formId">
                         <Form.Label size="sm" className="mb-0 title">Question</Form.Label>
-                        <Form.Control type="text" name="passwordQuestion" defaultValue={account.passwordQuestion} disabled={true} />
+                        <Form.Control type="text" name="passwordQuestion" defaultValue={account.passwordQuestion} disabled={true} 
+                        className="reset-question-field"/>
                     </Form.Group>
 
                     <Form.Group className="mb-2" controlId="formId">
@@ -228,7 +220,7 @@ export default function ResetPassword() {
                             onBlurCapture={handleOnBlurCapture}
                             className={`form-control ${!valid.passwordAnswer ? '' : valid.passwordAnswer ? 'is-valid' : 'is-invalid'}`} />
                         <Form.Control.Feedback type="invalid">
-                            {errors.password}
+                            {errors.passwordAnswer}
                         </Form.Control.Feedback>
                     </Form.Group>
 
@@ -247,7 +239,7 @@ export default function ResetPassword() {
                     </Form.Group>
 
                     <Form.Group className="mb-2" controlId="formId">
-                        <Form.Label size="sm" className="mb-0 title">Confirm New Password</Form.Label>
+                        <Form.Label size="sm" className="mb-0 title">Repeat Password</Form.Label>
                         <Form.Control type="password" name="confirmPassword" defaultValue={account.confirmPassword}
                             required
                             minLength={6}

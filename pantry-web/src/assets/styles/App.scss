@@ -94,8 +94,27 @@ a.btn-custom:disabled {
     pointer-events: all;
     margin-top: 3px;
 }
-
 .btn-custom-register:hover {
+    background-color: $hover-background !important;
+}
+
+.btn-profile-menu {
+    margin-top: 3px;
+    
+    color: $link-color;
+    font-size: small;
+    text-decoration: none;
+    
+    background-color: $background;
+    border: 1px transparent;
+    border-radius: 5px;
+   
+    align-items: center;
+    text-align: center;
+    pointer-events: all;
+}
+
+.btn-profile-menu:hover {
     background-color: $hover-background !important;
 }
 
@@ -229,6 +248,10 @@ p {
     transform: scale(1.4);
 }
 
+.reset-question-field {
+    background-color: darken($background , 2%) !important;
+}
+
 .custom-card {
     padding-top: 5px;
     border-bottom: 0.8px solid $border-color;
@@ -282,102 +305,78 @@ div.settings {
     background-color: $background !important;
 }
 
-.logoText {
-    font-family: cursive;
-    font-size: 27px;
-    font-weight: bold;
-    padding-left: 10px;
-    background: linear-gradient(90deg, rgba(228, 132, 252, 1) 0%, rgba(132, 212, 255, 1) 100%);
-    ;
-    background-clip: text;
+.bordered {
+    border: 1px solid $border-color;
+    border-radius: 5px;
 }
 
-.logo {
-    height: 250px;
-    width: 350px;
-    position: absolute;
-    top: 150px;
-    left: 50%;
-    transform: translate(-50%, -50%);
-
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-}
-
-.bigger-title-box {
+.login-header-box {
     height: 100px;
     width: 350px;
-    position: absolute;
-    top: 150px;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    margin: 0 auto;
+    margin-top: 60px;
 
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-
-    border: 1px solid $border-color;
-    border-radius: 5px;
 }
 
-.login {
+.login-box {
     height: 250px;
     width: 350px;
-    position: absolute;
-    top: 350px;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    margin: 0 auto;
+    margin-top: 10px;
 
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
 
-    padding: 30px;
+    padding: 20px;
     border: 1px solid $border-color;
     border-radius: 5px;
 }
 
-.signin {
+.login-footer-box {
     height: 100px;
     width: 350px;
 
-    position: absolute;
-    top: 540px;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    margin: 0 auto;
+    margin-top: 10px;
 
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
 
-    padding: 30px;
+    padding: 20px;
     border: 1px solid $border-color;
     border-radius: 5px;
 }
 
-.register {
+.centralized-header-box {
+    height: 100px;
     width: 350px;
+    margin: 0 auto;
+    margin-top: 60px;
+    border: 1px solid $border-color;
 
-    position: absolute;
-    top: 400px;
-    left: 50%;
-
-    transform: translate(-50%, -30%);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 
-.reset-password-box {
+.centralized-box {
     width: 350px;
+    margin: 0 auto;
+    margin-top: 20px;
 
-    position: absolute;
-    top: 400px;
-    left: 50%;
-
-    transform: translate(-50%, -30%);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 
 .custom-alert {
