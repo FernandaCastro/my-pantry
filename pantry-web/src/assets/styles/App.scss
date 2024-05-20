@@ -1,7 +1,7 @@
 $background: lavender;
 $border-color: #909df4;
 $btn-background-color: #6c66d8;
-$btn-disabled-color: lighten($btn-background-color, 25%);
+$btn-disabled-color: lighten($btn-background-color, 20%);
 $footer-background: hsl(219, 11%, 25%);
 $text-color: hsl(219, 11%, 25%);
 $title-text-color: indigo;
@@ -12,8 +12,8 @@ $link-color: rgb(63, 6, 250);
 //     border: 1px solid blue;
 // }
 
-.btn-custom {
-    min-width: 20%;
+button.btn-custom {
+    min-width: 15%;
     width: fit-content;
     height: fit-content;
     color: white;
@@ -24,15 +24,98 @@ $link-color: rgb(63, 6, 250);
     align-items: center;
     text-align: center;
     pointer-events: all;
+
 }
 
-.btn-custom:hover {
+button.btn-custom:enabled:hover {
     border-color: $link-color !important;
-    color: $link-color !important;
+    transform: scale(1.1);
 }
 
-.btn-custom.disabled {
-    background-color: $btn-disabled-color;
+button.btn-custom:disabled {
+    background-color: $btn-disabled-color !important;
+}
+
+a.btn-custom {
+    min-width: 15%;
+    width: fit-content;
+    height: fit-content;
+    color: white;
+    text-decoration: none;
+    background-color: $btn-background-color;
+    border: 1px solid $border-color;
+    border-radius: 5px;
+    align-items: center;
+    text-align: center;
+    pointer-events: all;
+
+}
+
+a.btn-custom:hover {
+    border-color: $link-color !important;
+    transform: scale(1.1);
+}
+
+a.btn-custom:disabled {
+    background-color: $btn-disabled-color !important;
+}
+
+.btn-custom-login {
+    min-width: 15%;
+    width: fit-content;
+    height: fit-content;
+    color: $link-color;
+    text-decoration: none;
+    background-color: $background;
+    border: 1px transparent;
+    border-radius: 5px;
+    align-items: center;
+    text-align: center;
+    pointer-events: all;
+
+}
+
+.btn-custom-login:hover {
+    background-color: $hover-background !important;
+}
+
+.btn-custom-register {
+    min-width: 15%;
+    width: fit-content;
+    height: fit-content;
+    color: $text-color;
+    font-size: smaller;
+    text-decoration: none;
+    background-color: $background;
+    border: 1px transparent;
+    border-radius: 5px;
+    align-items: center;
+    text-align: center;
+    pointer-events: all;
+    margin-top: 3px;
+}
+.btn-custom-register:hover {
+    background-color: $hover-background !important;
+}
+
+.btn-profile-menu {
+    margin-top: 3px;
+    
+    color: $link-color;
+    font-size: small;
+    text-decoration: none;
+    
+    background-color: $background;
+    border: 1px transparent;
+    border-radius: 5px;
+   
+    align-items: center;
+    text-align: center;
+    pointer-events: all;
+}
+
+.btn-profile-menu:hover {
+    background-color: $hover-background !important;
 }
 
 table {
@@ -41,6 +124,7 @@ table {
     width: 100%;
     white-space: nowrap;
     table-layout: auto !important;
+    margin-bottom: 0px !important;
 
     thead {
         position: sticky;
@@ -53,17 +137,17 @@ table {
     }
 
     tr {
-        border-color: $border-color;
+        // border-color: $border-color;
         background: $background !important;
     }
 
     td {
-        border-color: $border-color;
+        // border-color: $border-color;
         background: $background !important;
     }
 
     td.highlight {
-        background: darken($background, 7%) !important;
+        background: darken($background, 3%) !important;
     }
 
     :hover {
@@ -122,7 +206,18 @@ table.bordered {
 
 .title {
     color: $title-text-color;
-    margin: inherit;
+    margin: initial;
+}
+
+.bigger-title {
+    color: $title-text-color;
+    margin: initial;
+    font-size: bigger;
+    padding: 5px;
+}
+
+.link {
+    color: $link-color;
 }
 
 span {
@@ -151,6 +246,10 @@ p {
     border-color: $link-color;
     color: $link-color;
     transform: scale(1.4);
+}
+
+.reset-question-field {
+    background-color: darken($background , 2%) !important;
 }
 
 .custom-card {
@@ -206,8 +305,81 @@ div.settings {
     background-color: $background !important;
 }
 
-.custom-alert {
+.bordered {
+    border: 1px solid $border-color;
+    border-radius: 5px;
+}
 
+.login-header-box {
+    height: 100px;
+    width: 350px;
+    margin: 0 auto;
+    margin-top: 60px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.login-box {
+    height: 250px;
+    width: 350px;
+    margin: 0 auto;
+    margin-top: 10px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    padding: 20px;
+    border: 1px solid $border-color;
+    border-radius: 5px;
+}
+
+.login-footer-box {
+    height: 100px;
+    width: 350px;
+
+    margin: 0 auto;
+    margin-top: 10px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    padding: 20px;
+    border: 1px solid $border-color;
+    border-radius: 5px;
+}
+
+.centralized-header-box {
+    height: 100px;
+    width: 350px;
+    margin: 0 auto;
+    margin-top: 60px;
+    border: 1px solid $border-color;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.centralized-box {
+    width: 350px;
+    margin: 0 auto;
+    margin-top: 20px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.custom-alert {
     .custom-alert-body {
         border: 1px solid $border-color;
         border-radius: 8px;
@@ -241,7 +413,8 @@ div.scroll-pantryItems {
     }
 
     @media (min-height: 768px) {
-        max-height: 450px;
+        min-height: 350px;
+        max-height: 650px;
     }
 
     @media (min-height: 992px) {
@@ -277,6 +450,7 @@ div.scroll-selectPantries {
     border: 1px solid;
     border-radius: 6px;
     border-color: $border-color;
+
 
     @media (min-height: 575px) {
         max-height: 50px;
@@ -333,7 +507,8 @@ div.scroll-purchaseItems {
     }
 
     @media (min-height: 768px) {
-        max-height: 450px;
+        min-height: 400px;
+        max-height: 550px;
     }
 
     @media (min-height: 992px) {
@@ -408,4 +583,17 @@ div.scroll-product {
 .form-radio-input:checked {
     background-color: btn-background-color !important;
     border-color: $border-color !important;
+}
+
+.custom-tooltip {
+    .tooltip-inner {
+        --bs-tooltip-bg: $btn-background-color;
+        background-color: $btn-background-color;
+        color: #fff;
+        border-radius: 5px;
+    }
+}
+
+.bs-tooltip-bottom .tooltip-arrow::before {
+    border-bottom-color: $btn-background-color !important;
 }

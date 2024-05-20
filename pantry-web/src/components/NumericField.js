@@ -26,9 +26,9 @@ function NumericField({ object, attribute, onValueChange, disabled }) {
 
     return (
         <Stack direction="horizontal" gap={1} >
-            <div><Button className='m-0 p-0 d-flex align-items-start' variant='link' onClick={handleDecrease} disabled={disabled || value === 0} ><BsCaretDown className='icon' disabled={disabled || value === 0} /></Button></div>
+            <div><Button className='m-0 p-0 d-flex align-items-start' variant='link' onClick={handleDecrease} disabled={disabled || value === 0} ><BsCaretDown className='icon' hidden={disabled} disabled={value === 0} /></Button></div>
             <div><span className='ms-1 me-1 ps-1 pe-1'>{value} </span></div>
-            <div><Button className='m-0 p-0 d-flex align-items-start' variant='link' onClick={handleIncrease} disabled={disabled} ><BsCaretUp className='icon' disabled={disabled} /></Button></div>
+            <div><Button className='m-0 p-0 d-flex align-items-start' variant='link' onClick={handleIncrease} disabled={disabled} ><BsCaretUp className='icon' hidden={disabled} /></Button></div>
         </Stack>
     )
 }

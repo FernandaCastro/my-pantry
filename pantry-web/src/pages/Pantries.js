@@ -1,5 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
-import { PantryContext } from '../services/context/AppContext.js';
+import React, { useState, useEffect } from 'react';
 import { getPantryList, deletePantry } from '../services/apis/mypantry/requests/PantryRequests.js';
 import Stack from 'react-bootstrap/Stack';
 import Table from 'react-bootstrap/Table';
@@ -7,7 +6,7 @@ import Button from 'react-bootstrap/Button';
 import VariantType from '../components/VariantType.js';
 import useAlert from '../hooks/useAlert.js';
 import { BsPencil, BsTrash } from "react-icons/bs";
-import Form from 'react-bootstrap/Form';
+import Modal from 'react-bootstrap/Modal';
 
 export default function Pantries() {
 
@@ -16,6 +15,8 @@ export default function Pantries() {
 
     const [isLoading, setIsLoading] = useState(true);
     const { showAlert } = useAlert();
+    const [showModal, setShowModal] = useState(false);
+    const [pantryToDelete, setPantryToDelete] = useState();
 
     useEffect(() => {
         if (refresh) fetchPantries();
@@ -35,12 +36,26 @@ export default function Pantries() {
     }
 
     async function fetchDeletePantry(id) {
+        setRefresh(false);
         try {
             await deletePantry(id);
             setRefresh(true);
+            showAlert(VariantType.SUCCESS, "Pantry removed successfully!");
         } catch (error) {
             showAlert(VariantType.DANGER, error.message);
         }
+    }
+
+    function showConfirmDeletion(item) {
+        setPantryToDelete(item);
+        setShowModal(!showModal);
+    }
+
+    function handleRemove() {
+        if (pantryToDelete) {
+            fetchDeletePantry(pantryToDelete.id);
+        }
+        setShowModal(false);
     }
 
     function renderItem(item) {
@@ -55,7 +70,7 @@ export default function Pantries() {
                 <td>
                     <Stack direction="horizontal" gap={1} className="d-flex justify-content-end">
                         <div><Button href={"/pantries/" + item.id + "/edit"} variant="link"><BsPencil className='icon' /></Button></div>
-                        <div><Button onClick={() => handleRemove(item.id)} variant="link"><BsTrash className='icon' /></Button></div>
+                        <div><Button onClick={() => showConfirmDeletion(item)} variant="link"><BsTrash className='icon' /></Button></div>
                     </Stack>
                 </td>
             </tr>
@@ -67,7 +82,7 @@ export default function Pantries() {
             return (<span>Loading...</span>)
 
         return (
-            <Table className='bordered'>
+            <Table className='bordered' size='sm'>
                 <tbody>
                     {pantries.map((item) => (renderItem(item)))}
                 </tbody>
@@ -75,22 +90,31 @@ export default function Pantries() {
         )
     }
 
-    function handleRemove(id) {
-        fetchDeletePantry(id);
-        showAlert(VariantType.SUCCESS, "Pantry removed successfully!");
-    }
-
     return (
-        <Stack gap={3}>
-            <div></div>
-            <div className="d-flex justify-content-between align-items-center">
-                <h6 className='title'>Pantry List</h6>
-                <Button bsPrefix="btn-custom" size="sm" href={"/pantries/new"} className="pe-2 ps-2">New Pantry</Button>
-            </div>
-            <div>
-                {renderItems()}
-            </div>
-        </Stack>
+        <>
+            <Stack gap={3}>
+                <div></div>
+                <div className="d-flex justify-content-between align-items-center">
+                    <h6 className='title'>Pantry List</h6>
+                    <Button bsPrefix='btn-custom' size="sm" href={"/pantries/new"} className="pe-2 ps-2">New Pantry</Button>
+                </div>
+                <div>
+                    {renderItems()}
+                </div>
+            </Stack>
+            <Modal className='custom-alert' size='sm' show={showModal} onHide={() => setShowModal(false)} >
+                <Modal.Body className='custom-alert-body pb-0'>
+                    <span className='title text-center'>
+                        Do you really want to delete this pantry and all its items?
+                    </span>
+                </Modal.Body>
+                <Modal.Footer className='custom-alert-footer p-2'>
+                    <Button bsPrefix='btn-custom' size='sm' onClick={handleRemove}>Yes</Button>
+                    <Button bsPrefix='btn-custom' size='sm' onClick={() => setShowModal(false)}>No</Button>
+                </Modal.Footer>
+            </Modal >
+
+        </>
     )
 }
 

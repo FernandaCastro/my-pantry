@@ -3,6 +3,8 @@ import { useRoutes } from "react-router-dom";
 
 import NotFound from "../pages/NotFound";
 import Login from '../pages/Login';
+import Register from '../pages/Register';
+import ResetPassword from '../pages/ResetPassword';
 import Logout from '../pages/Logout';
 
 import Home from '../pages/Home';
@@ -12,12 +14,34 @@ import Pantry from '../pages/Pantry';
 import Product from '../pages/Product';
 import GroupMembers from '../pages/GroupMembers';
 import Pantries from '../pages/Pantries';
+import Welcome from '../pages/Welcome';
+
 
 function CustomRoutes() {
     let routes = useRoutes([
         {
             path: "*",
             element: <NotFound />
+        },
+        {
+            path: "/welcome",
+            element: <Welcome />
+        },
+        {
+            path: "/account/new",
+            element: <Register mode="new" />
+        },
+        {
+            path: "/account/edit",
+            element: <Register mode="edit" />
+        },
+        {
+            path: "/reset-password/:enteredEmail",
+            element: <ResetPassword />
+        },
+        {
+            path: "/reset-password",
+            element: <ResetPassword />
         },
         {
             path: "/login",

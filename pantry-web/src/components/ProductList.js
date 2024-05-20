@@ -1,4 +1,4 @@
-import React, { useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import Table from 'react-bootstrap/Table';
 import { getProductList, deleteProduct } from '../services/apis/mypantry/requests/PantryRequests.js';
 import VariantType from './VariantType.js';
@@ -10,6 +10,9 @@ import food from '../assets/images/healthy-food.png';
 import Button from 'react-bootstrap/Button';
 import { BsPencil, BsTrash } from "react-icons/bs";
 import { camelCase } from '../services/Utils.js';
+import { FormCheck } from "react-bootstrap";
+import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
+import Tooltip from 'react-bootstrap/Tooltip';
 
 function ProductList({ disabled, onEdit, onRemove }) {
 
@@ -19,6 +22,8 @@ function ProductList({ disabled, onEdit, onRemove }) {
     const [filteredItems, setFilteredItems] = useState([]);
     const [searchText, setSearchText] = useState("");
     const { showAlert } = useAlert();
+    const [showGroup, setShowGroup] = useState(true);
+    const [expandProdDetail, setExpandProdDetail] = useState(false);
 
     useEffect(() => {
         if (refresh) fetchProductList();
@@ -71,20 +76,22 @@ function ProductList({ disabled, onEdit, onRemove }) {
 
     function renderItem(item) {
         return (
-            <tr key={item.id} className="align-middle">
+            <tr key={item.id} >
                 <td>
-                    <Stack direction="horizontal" gap={10}>
+                    <div className="d-flex flex-row gap-1">
                         <div><Image src={food} width={20} height={20} rounded /></div>
-                        <div><span>{camelCase(item.code)}</span></div>
-                    </Stack>
-                    <p hidden={item.description === ''} className='ms-4 mb-0'>{item.description}  {item.size}</p>
+                        <div><span className='text-wrap'>{camelCase(item.code)}</span></div>
+                    </div>
+                    <div id="productDetail" style={{ display: expandProdDetail ? 'block' : 'none' }}>
+                        <p hidden={item.description === ''} className='ms-4 mb-0'>{item.description}  {item.size}</p>
+                    </div>
                 </td>
-                <td><span>{item.accountGroup.name}</span></td>
+                <td hidden={!showGroup}><span className='text-wrap'>{item.accountGroup.name}</span></td>
                 <td className="border-start-0">
-                    <Stack direction="horizontal" gap={1} className="d-flex justify-content-end">
-                        <div><Button onClick={() => onEdit(item)} variant="link" disabled={disabled}><BsPencil className='icon' /></Button></div>
-                        <div><Button onClick={() => handleRemove(item.id)} variant="link" disabled={disabled}><BsTrash className='icon' /></Button></div>
-                    </Stack>
+                    <div className="d-flex flex-row justify-content-end align-items-start">
+                        <Button onClick={() => onEdit(item)} variant="link" disabled={disabled}><BsPencil className='icon' /></Button>
+                        <Button onClick={() => handleRemove(item.id)} variant="link" disabled={disabled}><BsTrash className='icon' /></Button>
+                    </div>
                 </td>
             </tr >
         )
@@ -94,10 +101,47 @@ function ProductList({ disabled, onEdit, onRemove }) {
         <div>
             <Form.Control size="sm" type="text" id="search" className="form-control mb-1 input-custom" value={searchText} placeholder="Seacrh for items here" onChange={(e) => filter(e.target.value)} />
             <div className="scroll-product">
-                <Table>
+                <Table size='sm'>
                     <thead>
-                        <tr key="0:0" className="align-middle">
-                            <th colSpan={3}><h6 className='title'>Products</h6></th>
+                        <tr key="0:0" >
+                            <th >
+                                <div className='d-flex justify-content-start align-items-center gap-2'>
+                                <OverlayTrigger
+                                        placement="bottom"
+                                        overlay={
+                                            <Tooltip className='custom-tooltip'>
+                                                Show Product Detail
+                                            </Tooltip>
+                                        }
+                                    >
+                                    <FormCheck
+                                        className='d-block form-switch'
+                                        defaultChecked={expandProdDetail}
+                                        onChange={() => setExpandProdDetail(!expandProdDetail)} />
+                                        </OverlayTrigger>
+                                    <h6 className='title'>Products</h6>
+                                </div>
+
+                            </th>
+                            <th hidden={!showGroup} />
+                            <th >
+                                <div className='d-flex justify-content-end align-items-center gap-2 pe-2'>
+                                    <OverlayTrigger
+                                        placement="bottom"
+                                        overlay={
+                                            <Tooltip className="custom-tooltip">
+                                                Show Account Group
+                                            </Tooltip>
+                                        }
+                                    >
+                                        <FormCheck
+                                            className='d-block form-switch'
+                                            defaultChecked={showGroup}
+                                            onChange={() => setShowGroup(!showGroup)}
+                                        />
+                                    </OverlayTrigger>
+                                </div>
+                            </th>
                         </tr>
                     </thead>
                     <tbody>

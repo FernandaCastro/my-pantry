@@ -210,8 +210,8 @@ public class AccountService {
         existingAccount.setPasswordQuestion(newAccount.getPasswordQuestion());
         existingAccount.setPasswordAnswer(newAccount.getPasswordAnswer());
 
-        existingAccount = accountRepository.save(existingAccount);
-        return convertToDto(existingAccount);
+        var updatedAccount = accountRepository.save(existingAccount);
+        return convertToDto(updatedAccount);
     }
 
     /**

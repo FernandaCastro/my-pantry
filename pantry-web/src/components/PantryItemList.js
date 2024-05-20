@@ -12,7 +12,7 @@ import Stack from 'react-bootstrap/Stack';
 import { camelCase } from '../services/Utils.js';
 import useAlert from '../hooks/useAlert.js';
 
-function PantryItemList({ pantryId }) {
+function PantryItemList({ pantryId, setIsEmpty}) {
 
     const [isLoading, setIsLoading] = useState(true);
     const [refresh, setRefresh] = useState(true);
@@ -30,6 +30,7 @@ function PantryItemList({ pantryId }) {
 
     useEffect(() => {
         filter(searchText);
+        setIsEmpty(!pantryItems ||  pantryItems.length === 0);
     }, [pantryItems])
 
     async function fetchPantryItems() {

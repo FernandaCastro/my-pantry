@@ -35,25 +35,25 @@ export default function Header() {
 
                 <Navbar.Collapse>
                     <div className="menu">
-                        <OverlayTrigger placement="bottom" delay={{ show: 250, hide: 400 }} overlay={<Tooltip id="button-tooltip">Consume Items</Tooltip>}>
+                        <OverlayTrigger placement="bottom" delay={{ show: 250, hide: 400 }} overlay={<Tooltip className="custom-tooltip">Consume Items</Tooltip>}>
                             <Nav.Item><Nav.Link href={"/pantries/consume"} eventKey="link-consume" className="menuItem" disabled={!hasActiveProfile} >
                                 <Image src={iconConsume} className="menu-icon" /></Nav.Link>
                             </Nav.Item>
                         </OverlayTrigger>
-                        <OverlayTrigger placement="bottom" delay={{ show: 250, hide: 400 }} overlay={<Tooltip id="button-tooltip">Shopping List</Tooltip>}>
+                        <OverlayTrigger placement="bottom" delay={{ show: 250, hide: 400 }} overlay={<Tooltip className="custom-tooltip">Shopping List</Tooltip>}>
                             <Nav.Item>
                                 <Nav.Link href="/purchase" eventKey="link-purchases" className="menuItem" disabled={!hasActiveProfile}>
                                     <Image src={iconPurchase} className="menu-icon" />
                                 </Nav.Link>
                             </Nav.Item>
                         </OverlayTrigger>
-                        <OverlayTrigger placement="bottom" delay={{ show: 250, hide: 400 }} overlay={<Tooltip id="button-tooltip">Pantries</Tooltip>}>
+                        <OverlayTrigger placement="bottom" delay={{ show: 250, hide: 400 }} overlay={<Tooltip className="custom-tooltip">Pantries</Tooltip>}>
                             <Nav.Item><Nav.Link href="/pantries" eventKey="link-pantries" className="menuItem" disabled={!hasActiveProfile}>
                                 <Image src={iconPantry} className="menu-icon" />
                             </Nav.Link>
                             </Nav.Item>
                         </OverlayTrigger>
-                        <OverlayTrigger placement="bottom" delay={{ show: 250, hide: 400 }} overlay={<Tooltip id="button-tooltip">Products</Tooltip>}>
+                        <OverlayTrigger placement="bottom" delay={{ show: 250, hide: 400 }} overlay={<Tooltip className="custom-tooltip">Products</Tooltip>}>
                             <Nav.Item><Nav.Link href="/product" eventKey="link-products" className="menuItem" disabled={!hasActiveProfile}>
                                 <Image src={iconProduct} className="menu-icon" />
                             </Nav.Link>

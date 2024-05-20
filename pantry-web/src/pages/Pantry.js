@@ -8,18 +8,22 @@ import PantryForm from '../components/PantryForm.js';
 import ProductSearchBar from '../components/ProductSearchBar.js'
 import PantryItemList from '../components/PantryItemList.js';
 import Button from 'react-bootstrap/Button';
+import { BsChevronDown } from "react-icons/bs";
+import Collapse from 'react-bootstrap/Collapse';
 import { getAccountGroupList } from '../services/apis/mypantry/requests/AccountRequests.js';
 
 export default function Pantry({ mode }) {
 
     let { id } = useParams();
     const [accountGroupOptions, setAccountGroupOptions] = useState([]);
+    const [showPantry, setShowPantry] = useState(true);
+    const [isEmpty, setIsEmpty] = useState(true);
 
     const [pantry, setPantry] = useState(
         {
             id: 0,
             name: "",
-            type: "",
+            type: "R",
             isActive: true,
             accountGroup: { id: 0 }
         });
@@ -118,10 +122,6 @@ export default function Pantry({ mode }) {
         }
     }
 
-    function handleSave(body) {
-        fetchSavePantry(body);
-    }
-
     function handleAddItem(product) {
         const body = {
             pantry: pantry,
@@ -137,8 +137,8 @@ export default function Pantry({ mode }) {
     function renderPantryList() {
         return (
             <Stack gap={2}>
-                <div className="d-flex justify-content-end"><Button bsPrefix='btn-custom' size="sm" onClick={handleRebalance} title='Analyse and provision items'>Balance Inventory</Button></div>
-                <div><PantryItemList key={refresh} pantryId={pantry.id} /></div>
+                <div className="d-flex justify-content-end"><Button bsPrefix='btn-custom' size="sm" onClick={handleRebalance} title='Analyse and provision items' disabled={isEmpty}>Balance Inventory</Button></div>
+                <div><PantryItemList key={refresh} pantryId={pantry.id} setIsEmpty={setIsEmpty} /></div>
             </Stack>
         )
     }
@@ -147,9 +147,17 @@ export default function Pantry({ mode }) {
         <Stack gap={3}>
             <div></div>
             <div>
-                {mode === "edit" && isLoading ?
-                    <h6>Loading...</h6> :
-                    <PantryForm pantry={pantry} handleSave={handleSave} accountGroupOptions={accountGroupOptions} />}
+                <div className='d-flex justify-content-start align-items-center gap-2' onClick={() => setShowPantry(!showPantry)}>
+                    <h6 className="text-start fs-6 lh-lg title">Pantry Details </h6>
+                    <BsChevronDown className='icon' />
+                </div>
+                <Collapse in={showPantry} >
+                    <div>
+                        {mode === "edit" && isLoading ?
+                            <h6>Loading...</h6> :
+                            <PantryForm key={pantry.id} pantry={pantry} handleSave={fetchSavePantry} accountGroupOptions={accountGroupOptions} />}
+                    </div>
+                </Collapse>
             </div>
             <div className="add-product" style={{ display: pantry && pantry.id > 0 ? 'block' : 'none' }}>
                 <ProductSearchBar accountGroupId={pantry.accountGroup.id} accountGroupOptions={accountGroupOptions} handleSelectAction={handleAddItem} addButtonVisible={true} />

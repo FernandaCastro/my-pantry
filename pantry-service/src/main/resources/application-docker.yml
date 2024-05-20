@@ -33,7 +33,7 @@ security-config:
   secret: ${SECURITY_SECRET}
   allowedOrigin: ${ALLOWED_ORIGINS}
   googleClientId: ${GOOGLE_CLIENT_ID}
-  googleClientSecret: $[GOOGLE_CLIENT_SECRET}
+  googleClientSecret: ${GOOGLE_CLIENT_SECRET}
   authzServer: http://account-service:8082
 logging:
   level:

@@ -12,39 +12,72 @@ export default function PantryForm({ pantry, handleSave, accountGroupOptions }) 
     const [isActiveLabel, setIsActiveLabel] = useState(pantry.isActive ? "Active" : "Inactive");
     const [accountGroupOption, setAccountGroupOption] = useState({ value: 0, label: "" });
     const [isLoading, setIsLoading] = useState(false);
+    const [isProcessing, setIsProcessing] = useState(false);
+    const [id, setId] = useState(pantry.id);
+    const [typeOptions, setTypeOptions] = useState([
+        { value: "R", label: "Recurring" },
+        { value: "N", label: "No Recurring" },
+    ]);
+    const [typeOption, setTypeOption] = useState({ value: "", label: "" });
 
     useEffect(() => {
-        if (Object.keys(pantry).length > 0 && pantry.id > 0) {
-            const found = accountGroupOptions.find(a => a.value === pantry.accountGroup.id);
-            setAccountGroupOption(() => found);
+        if (pantry && pantry.id > 0) {
+            if (accountGroupOptions && accountGroupOptions.length > 0) {
+                const group = accountGroupOptions.find(a => a.value === pantry.accountGroup.id);
+                setAccountGroupOption(() => group);
+            }
+            if (typeOptions && typeOptions.length > 0) {
+                const type = typeOptions.find(a => a.value === pantry.type);
+                setTypeOption(() => type);
+            }
         }
+
     }, [pantry.id]);
 
-    function handleSubmit(e) {
-        // Prevent the browser from reloading the page
-        e.preventDefault();
+    useEffect(() => {
+        if (pantry && pantry.id === 0 && accountGroupOptions && accountGroupOptions.length > 0) {
+            const group = accountGroupOptions[0];
+            setAccountGroupOption(() => group);
+        }
+    }, [accountGroupOptions])
 
-        // Read the form data
-        const form = e.target;
-        const formData = new FormData(form);
+    useEffect(() => {
+        if (pantry && pantry.id === 0 && typeOptions && typeOptions.length > 0) {
+            const type = typeOptions[0];
+            setTypeOption(() => type);
+        }
+    }, [])
 
-        let formJson = Object.fromEntries(formData.entries());
-        formJson.isActive = formJson.isActive === 'on' ? true : false;
+    async function handleSubmit(e) {
+        if (!isProcessing) {
+            setIsProcessing(true);
 
-        const accountGroup = { id: accountGroupOption.value };
-        formJson = { ...formJson, accountGroup: accountGroup }
+            // Prevent the browser from reloading the page
+            e.preventDefault();
 
-        handleSave(formJson);
+            // Read the form data
+            const form = e.target;
+            const formData = new FormData(form);
 
-        console.log(formJson);
+            let formJson = Object.fromEntries(formData.entries());
+            formJson.id = id;
+            formJson.isActive = formJson.isActive === 'on' ? true : false;
+            formJson.type = typeOption.value;
+
+            const accountGroup = { id: accountGroupOption.value };
+            formJson = { ...formJson, accountGroup: accountGroup }
+
+            await handleSave(formJson);
+
+            setIsProcessing(false);
+        }
     }
 
 
     return (
         <Form onSubmit={handleSubmit}>
             <Row>
-                <Form.Group as={Col} className="mb-2" controlId="formAccountGroups" size="sm">
-                    <Form.Label size="sm" className="title mb-1">Account Group</Form.Label>
+                <Form.Group className="mb-2" controlId="formAccountGroups" size="sm">
                     {isLoading ? <span>Loading...</span> :
                         <Select name="accountGroup" key={accountGroupOption.value}
                             defaultValue={accountGroupOption}
@@ -56,7 +89,7 @@ export default function PantryForm({ pantry, handleSave, accountGroupOptions }) 
             <Row>
                 <Form.Group className="mb-2 w-25" controlId="formId">
                     <Form.Label size="sm" className="mb-1 title">Id</Form.Label>
-                    <Form.Control key={pantry.id} size="sm" className="mb-1 input-custom" type="text" name="id" defaultValue={pantry.id} disabled />
+                    <Form.Control size="sm" className="mb-1 input-custom" type="text" name="id" defaultValue={id} disabled />
                 </Form.Group>
                 <Form.Group as={Col} className="mb-2" controlId="formName">
                     <Form.Label size="sm" className="mb-1 title">Name</Form.Label>
@@ -74,17 +107,16 @@ export default function PantryForm({ pantry, handleSave, accountGroupOptions }) 
                 </Form.Group>
                 <Form.Group as={Col} className="mb-2" controlId="formType">
                     <Form.Label size="sm" className="mb-1 title">Type</Form.Label>
-                    <Form.Select key={pantry.id} size="sm" className="mb-1" name="type" defaultValue={pantry.type}>
-                        <option value='' disabled >Select a type</option>
-                        <option value='R'>Recurring</option>
-                        <option value='S'>Single</option>
-                    </Form.Select>
+                    <Select name="type" key={typeOption.value}
+                        defaultValue={typeOption}
+                        options={typeOptions}
+                        onChange={setTypeOption} />
                 </Form.Group>
             </Row>
             <Row>
                 <Stack direction="horizontal" gap={2} className="mb-3 d-flex justify-content-end">
-                    <Button bsPrefix='btn-custom' type="reset" size="sm">Clear</Button>
-                    <Button bsPrefix='btn-custom' type="submit" size="sm">Save</Button>
+                    <Button bsPrefix='btn-custom' type="reset" size="sm" disabled={isProcessing}>Clear</Button>
+                    <Button bsPrefix='btn-custom' type="submit" size="sm" disabled={isProcessing}>Save</Button>
                 </Stack>
             </Row>
         </Form>
