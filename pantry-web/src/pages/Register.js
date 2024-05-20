@@ -17,6 +17,7 @@ export default function Register({ mode }) {
     const [isValidForm, setIsValidForm] = useState(false);
     const { profileCtx, setProfileCtx } = useContext(ProfileContext);
     const [validateAllFields, setValidateAllFields] = useState(false);
+    const [refresh, setRefresh] = useState(false);
 
     const [account, setAccount] = useState({
         name: "",
@@ -228,6 +229,7 @@ export default function Register({ mode }) {
         } else {
             fetchAccount(profileCtx.id);
         }
+        setRefresh(!refresh);
     }
 
     return (
@@ -236,7 +238,7 @@ export default function Register({ mode }) {
                 <h6 className='bigger-title'>{mode === 'new' ? 'New Account' : 'Edit Account'}</h6>
             </div>
             <div className='centralized-box'>
-                <Form onSubmit={handleSubmit} className='w-100' noValidate>
+                <Form key={refresh} onSubmit={handleSubmit} className='w-100' noValidate>
 
                     <Form.Group className="mb-2" controlId="formId">
                         <Form.Label size="sm" className="mb-0 title">Your Name</Form.Label>
