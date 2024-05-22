@@ -287,7 +287,7 @@ function GroupMembers() {
             <Stack gap={4}>
                 <div></div>
                 <div className="d-flex align-items-center gap-2">
-                    <h6 className='title flex-grow-1'>Account Groups</h6>
+                    <h6 className='title flex-grow-1'>Groups</h6>
                     <Button bsPrefix="btn-custom" size="sm" onClick={() => setShowPermissionsView(!showPermissionsView)} className="pe-2 ps-2">View Permissions</Button>
                     <Button bsPrefix="btn-custom" size="sm" onClick={() => setShowNewGroup(true)} className="pe-2 ps-2">New Group</Button>
                 </div>
