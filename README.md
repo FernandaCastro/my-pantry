@@ -2,16 +2,19 @@
 
 # My Pantry
 
-version: 0.0.7 <br />
+version: 0.0.6
+
+v0.0.7-SNAPSHOT <br />
 
 - List Roles and Permissions (Profile Icon -> Groups & Members -> View permissions)
 
 Plans for next versions:
 
+- Delete provisioned products from the shopping cart
+- Wizard to create pantries based on a suggested list of basic items, instead of manually enter them.
 - Internationalization
-- CRUD for Role and Permissions
-- Wizards that create basic products and pantry with basic items
 - CRUD for Supermarkets and its particular order of categories
+- CRUD for Role and Permissions
 
 ### Description:
 
