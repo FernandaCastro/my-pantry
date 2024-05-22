@@ -4,10 +4,10 @@ import com.fcastro.accountservice.permission.Permission;
 import com.fcastro.app.exception.ResourceNotFoundException;
 import com.fcastro.security.core.model.PermissionDto;
 import com.fcastro.security.core.model.RoleDto;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -21,7 +21,8 @@ public class RoleService {
     }
 
     public List<RoleDto> getAll() {
-        var list = roleRepository.findAll(Sort.by("name"));
+        //var list = roleRepository.findAll(Sort.by("name"));
+        var list = roleRepository.findAllOrderByAccessLevel();
         return list.stream().map(this::convertToDto).collect(Collectors.toList());
     }
 
@@ -55,6 +56,7 @@ public class RoleService {
                         .id(e.getId())
                         .name(e.getName())
                         .build()));
+        list.sort(Comparator.comparing(PermissionDto::getName));
         return list;
     }
 }
