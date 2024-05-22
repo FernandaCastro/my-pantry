@@ -82,40 +82,37 @@ function AccountSearchBar({ handleSelectAction, handleClearAction, disabled }) {
 
     function renderResults() {
         return (
-            <Table hover>
-                <tbody>
-                    {results.map((item) => {
-                        return (
-                            <tr key={item.id} className="w-0 p-0 colorfy">
-                                <td className="w-0 p-0 border-end-0 colorfy">
-                                    <span>{item.name} {item.email === "" ? "" : ' - ' + item.email}</span></td>
-                                <td className="w-0 p-0 colorfy">
-                                    {/* <Form.Check size="sm" className="mb-1 title"
-                                onClick={e => item = { ...item, groupRole: (e.target.checked ? "ADMIN" : "USER") }}
-                                label="as Admin" /> */}
-                                    <RoleSelect setSelectedRole={setSelectedRole} />
-                                </td>
-                                <td className="w-0 p-0 colorfy">
-                                    <Button onClick={() => handleSelect(item)} variant="link" title='Add Member to the group'><BsCheck2All className='icon' /></Button>
-                                </td>
-                            </tr>
-
-                        );
-                    })}
-                </tbody>
-            </Table>
-            )
+            <div >
+                {results.map((item) => {
+                    return (
+                        <div className='d-flex justify-content-between align-items-center gap-2'>
+                            <div className='d-lg-none d-flex flex-column flex-grow-1 align-items-start'>
+                                <span>{item.name}</span>
+                                <span>{item.email}</span>
+                            </div>
+                            <div className='d-none d-lg-block d-flex flex-column align-items-start'>
+                                <span>{item.name} - {item.email}</span>
+                            </div>
+                            <div className='d-flex align-items-start gap-2'>
+                                <RoleSelect setSelectedRole={setSelectedRole} />
+                                <Button onClick={() => handleSelect(item)} variant="link" title='Add Member to the group'><BsCheck2All className='icon' /></Button>
+                            </div>
+                        </div>
+                    )
+                })}
+            </div>
+        )
     }
 
     function renderAccountForm() {
-            return (
-                <div>
-                    <div className="me-3 d-flex justify-content-end align-items-center">
-                        <CloseButton aria-label="Hide" onClick={() => setShowAccountForm(false)} />
-                    </div>
-                    <AccountForm handleSaveSuccess={handleSaveSuccess} />
+        return (
+            <div>
+                <div className="me-3 d-flex justify-content-end align-items-center">
+                    <CloseButton aria-label="Hide" onClick={() => setShowAccountForm(false)} />
                 </div>
-            );
+                <AccountForm handleSaveSuccess={handleSaveSuccess} />
+            </div>
+        );
     }
 
     return (
@@ -132,8 +129,8 @@ function AccountSearchBar({ handleSelectAction, handleClearAction, disabled }) {
                         </Card.Header>
                         <Card.Body className="m-0 p-2">
                             <span style={{ color: 'red', fontSize: '11px' }}>{notFoundMessage}</span>
-                            {showAccountForm ? renderAccountForm() : <span/>}
-                            {results ?  renderResults() : <span /> }
+                            {showAccountForm ? renderAccountForm() : <span />}
+                            {results ? renderResults() : <span />}
                         </Card.Body>
                     </Card>
 
