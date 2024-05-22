@@ -2,6 +2,7 @@ import { Form, Col } from 'react-bootstrap';
 import { useEffect, useState } from 'react';
 import Select from './Select';
 import { getRoles } from '../services/apis/mypantry/requests/AccountRequests';
+import { camelCase } from '../services/Utils';
 
 export default function RoleSelect({ setSelectedRole }) {
 
@@ -14,12 +15,12 @@ export default function RoleSelect({ setSelectedRole }) {
 
     async function fetchRoles() {
         const res = await getRoles();
-        let list = [{}];
+        let list = [];
         res.map(r => {
             list = [...list,
             {
                 value: r.id,
-                label: r.name
+                label: camelCase(r.name)
             }]
         })
         setRoles(list);
@@ -33,7 +34,7 @@ export default function RoleSelect({ setSelectedRole }) {
     return (
         <>
             <Form.Group as={Col} className="mb-2" controlId="formRole" size="sm">
-                <Select name="role" placeholder={"Select a Role"}
+                <Select name="role" placeholder={"Role"}
                     defaultValue={role}
                     options={roles}
                     onChange={(e) => selectRole(e)} />

@@ -14,6 +14,8 @@ import Form from 'react-bootstrap/Form';
 import Modal from 'react-bootstrap/Modal';
 import { getAssociatedPantries } from '../services/apis/mypantry/requests/PantryRequests.js'
 import useAlert from '../hooks/useAlert.js';
+import PermissionsView from '../components/PermissionsView.js'
+import { camelCase } from '../services/Utils.js'
 
 function GroupMembers() {
 
@@ -29,6 +31,7 @@ function GroupMembers() {
     const [selectedGroup, setSelectedGroup] = useState({ id: 0 });
     const [editGroup, setEditGroup] = useState(0);
 
+    const [showPermissionsView, setShowPermissionsView] = useState(false);
     const [showNewGroup, setShowNewGroup] = useState(false);
     const [showModal, setShowModal] = useState(false);
 
@@ -52,6 +55,7 @@ function GroupMembers() {
         try {
             const res = await getAccountGroupList();
             setGroups(res);
+            if (res.length > 0 ? setSelectedGroup(res[0]) : "");
             setRefresh(false);
             setIsLoading(false);
         } catch (error) {
@@ -60,25 +64,17 @@ function GroupMembers() {
     }
 
     async function fetchMembers() {
-        setRefresh(true);
+        // setRefresh(true);
         setIsLoading(true);
         try {
             const res = await getAccountGroupMemberList(selectedGroup.id);
             setMembers(res);
-            setRefresh(false);
+            // setRefresh(false);
             setIsLoading(false);
         } catch (error) {
             showAlert(VariantType.DANGER, error.message);
         }
     }
-
-    // function showAlert(type, message) {
-    //     setAlert({
-    //         show: true,
-    //         type: type,
-    //         message: message
-    //     })
-    // }
 
     async function fetchAssociatedPantries(groupId) {
         try {
@@ -199,7 +195,7 @@ function GroupMembers() {
             return (<span>Loading...</span>)
 
         return (
-            <Table className='bordered'>
+            <Table size='sm' className='bordered'>
                 <tbody>
                     {showNewGroup ? renderNewGroup() : <></>}
                     {groups.map((item) => (renderGroup(item)))}
@@ -261,7 +257,7 @@ function GroupMembers() {
             return (<span>Loading...</span>)
 
         return (
-            <Table className='bordered'>
+            <Table size='sm' className='bordered'>
                 <tbody>
                     {members.map((item) => (renderMember(item)))}
                 </tbody>
@@ -275,10 +271,10 @@ function GroupMembers() {
                 <td >
                     <span>{item.account.name}</span></td>
                 <td >
-                    <span>{item.role.name}</span></td>
+                    <span>{camelCase(item.role.name)}</span></td>
                 <td>
                     <Stack direction="horizontal" gap={1} className="d-flex justify-content-end">
-                        <div><Button onClick={() => handleRemoveMember(item.accountGroupId, item.accountId)} variant="link" disabled={members.length === 1}><BsTrash className='icon' /></Button></div>
+                        <div><Button onClick={() => handleRemoveMember(item.accountGroupId, item.accountId)} variant="link" disabled={members.length === 1}><BsTrash className='icon'/></Button></div>
                     </Stack>
                 </td>
             </tr>
@@ -288,10 +284,11 @@ function GroupMembers() {
     return (
         <>
 
-            <Stack gap={3}>
+            <Stack gap={4}>
                 <div></div>
-                <div className="d-flex justify-content-between align-items-center">
-                    <h6 className='title'>Groups</h6>
+                <div className="d-flex align-items-center gap-2">
+                    <h6 className='title flex-grow-1'>Account Groups</h6>
+                    <Button bsPrefix="btn-custom" size="sm" onClick={() => setShowPermissionsView(!showPermissionsView)} className="pe-2 ps-2">View Permissions</Button>
                     <Button bsPrefix="btn-custom" size="sm" onClick={() => setShowNewGroup(true)} className="pe-2 ps-2">New Group</Button>
                 </div>
                 <div>
@@ -303,6 +300,10 @@ function GroupMembers() {
                 <div>
                     <h6 className='title'>Members</h6>
                     {renderMembers()}
+                </div>
+                <div hidden={!showPermissionsView}>
+                    <h6 className='title pb-3'>Permissions</h6>
+                    <PermissionsView />
                 </div>
             </Stack>
             <Modal className='custom-alert' size='sm' show={showModal} onHide={() => setShowModal(false)} >
@@ -318,7 +319,7 @@ function GroupMembers() {
                     </ul>
                 </Modal.Body>
                 <Modal.Footer className='custom-alert-footer p-2'>
-                    <Button bsPrefix='btn-custom' onClick={() => setShowModal(false)}>
+                    <Button bsPrefix='btn-custom' size='sm' onClick={() => setShowModal(false)}>
                         Close
                     </Button>
                 </Modal.Footer>
