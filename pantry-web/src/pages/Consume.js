@@ -34,7 +34,7 @@ export default function Consume() {
   const { showAlert } = useAlert();
   const [expand, setExpand] = useState(false);
   const [showPantries, setShowPantries] = useState(true);
-  const [showPantryCol, setShowPantryCol] = useState(true);
+  const [showPantryCol, setShowPantryCol] = useState(false);
 
   useEffect(() => {
     if (selectedPantries && selectedPantries.length > 0)
