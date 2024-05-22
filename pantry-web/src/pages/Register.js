@@ -12,12 +12,16 @@ export default function Register({ mode }) {
 
     const navigate = useNavigate();
     const { showAlert } = useAlert();
-    const [valid, setValid] = useState({});
-    const [errors, setErrors] = useState({});
-    const [isValidForm, setIsValidForm] = useState(false);
-    const { profileCtx, setProfileCtx } = useContext(ProfileContext);
-    const [validateAllFields, setValidateAllFields] = useState(false);
+    const { profileCtx } = useContext(ProfileContext);
+
+
+    const [validateForm, setValidateForm] = useState(false);
+
     const [refresh, setRefresh] = useState(false);
+
+    const [formFields, setFormFields] = useState({});
+
+    const [isFormValid, setIsFormValid] = useState(false);
 
     const [account, setAccount] = useState({
         name: "",
@@ -38,33 +42,32 @@ export default function Register({ mode }) {
     }, [])
 
     useEffect(() => {
-        if (validateAllFields) {
+        if (validateForm) {
             Object.entries(account).forEach(entry => validateField(entry[0], entry[1]));
-            setValidateAllFields(false);
-            setIsValidForm(valid);
+            setValidateForm(!validateForm);
+            setRefresh(!refresh);
         }
 
-    }, [validateAllFields])
+    }, [validateForm])
 
     async function fetchAccount(id) {
         setIsProcessing(true);
         try {
             const res = await getAccount(id);
 
-            setAccount((account) => {
-                return {
-                    ...account,
-                    id: res.id,
-                    name: res.name,
-                    email: res.email,
-                    password: res.password,
-                    confirmPassword: res.password,
-                    passwordQuestion: res.passwordQuestion,
-                    passwordAnswer: res.passwordAnswer
-                };
-            });
+            setAccount((prev) => ({
+                ...prev,
+                id: res.id,
+                name: res.name,
+                email: res.email,
+                password: res.password,
+                confirmPassword: res.password,
+                passwordQuestion: res.passwordQuestion,
+                passwordAnswer: res.passwordAnswer
+            }));
 
-            setValidateAllFields(true);
+            setValidateForm(true);
+
 
         } catch (error) {
             showAlert(VariantType.DANGER, error.message);
@@ -75,29 +78,29 @@ export default function Register({ mode }) {
 
     const validateField = (name, value) => {
         let error;
-        let validated = true;
+        let isValid = true;
 
         if (name === 'name') {
             if (!value || value.length === 0) {
                 error = 'Please enter a valid name.';
-                validated = false;
+                isValid = false;
             }
         }
 
         else if (name === 'email') {
             if (!value || !/\S+@\S+\.\S+/.test(value)) {
                 error = 'Please enter a valid email address.';
-                validated = false;
+                isValid = false;
             }
         }
 
         else if (name === 'password') {
             if (!value) {
                 error = 'Password is required';
-                validated = false;
+                isValid = false;
             } else if (value.length < 6) {
                 error = 'Password must be at least 6 characters long.';
-                validated = false;
+                isValid = false;
             }
         }
 
@@ -105,53 +108,65 @@ export default function Register({ mode }) {
         else if (name === 'confirmPassword') {
             if (!value) {
                 error = 'Repeat the password';
-                validated = false;
-            } else if (value != account.password) {
+                isValid = false;
+            } else if (value !== account.password) {
                 error = 'Passwords do not match.';
-                validated = false;
+                isValid = false;
             }
         }
 
         else if (name === 'passwordQuestion') {
             if (!value || value.length === 0) {
                 error = 'Please enter a question to be used when resetting your password.';
-                validated = false;
+                isValid = false;
             }
         }
 
         else if (name === 'passwordAnswer') {
             if (!value || value.length === 0) {
                 error = ' Please enter the answer to be used when resetting your password.';
-                validated = false;
+                isValid = false;
             }
         }
 
         else if (name === 'id') {
-            validated = true;
+            isValid = true;
         }
 
-        setErrors((errors) => {
-            return { ...errors, [name]: error };
-        });
+        setFormFields((prev) => (
+            {
+                ...prev,
+                [name]: {
+                    isValid: isValid,
+                    error: error,
+                },
+            }));
 
-        setValid((valid) => {
-            return { ...valid, [name]: validated };
-        });
+        const copyFormFields = {
+            ...formFields,
+            [name]: {
+                isValid: isValid,
+                error: error,
+            }
+        }
 
-        const copyValid = { ...valid, [name]: validated }
-        checkForm(copyValid);
+        checkFormValidation(copyFormFields);
 
     };
 
-    function checkForm(copyValid) {
-        let isValid;
-        if (Object.keys(copyValid).length >= 6) {
-            let found = Object.keys(copyValid).find(key => !copyValid[key]);
-            isValid = !found;
-        } else {
-            isValid = false;
+    function checkFormValidation(copyFormFields) {
+        let formValid = false;
+        if (Object.keys(copyFormFields).length >= 6) {
+            let foundAnyInvalid = Object.keys(copyFormFields).find(key => !copyFormFields[key].isValid);
+            formValid = !foundAnyInvalid;
         }
-        setIsValidForm(isValid);
+        setIsFormValid(formValid);
+    }
+
+    function getError(field) {
+        if (!formFields[field]) return "";
+        const { error } = formFields[field];
+        return error;
     }
 
     const handleOnBlur = (e) => {
@@ -161,8 +176,7 @@ export default function Register({ mode }) {
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        const form = event.currentTarget;
-        if (!isValidForm) {
+        if (!isFormValid) {
             event.stopPropagation();
         } else {
             mode === 'new' ? handleCreateAccount() : handleUpdateAccount();
@@ -210,26 +224,27 @@ export default function Register({ mode }) {
 
     const handleOnChange = (event) => {
         const { name, value } = event.target;
-        setAccount((account) => {
-            return { ...account, [name]: value };
-        });
+        setAccount((prev) => ({ ...prev, [name]: value }));
     };
 
     function clearAccount() {
+        setFormFields({});
+
         if (mode === 'new') {
-            setAccount({
-                ...account,
+            setAccount(prev => ({
+                ...prev,
                 name: "",
                 email: "",
                 password: "",
                 confirmPassword: "",
                 passwordQuestion: "",
                 passwordAnswer: ""
-            })
+            }))
+            setRefresh(!refresh);
+
         } else {
             fetchAccount(profileCtx.id);
         }
-        setRefresh(!refresh);
     }
 
     return (
@@ -247,9 +262,9 @@ export default function Register({ mode }) {
                             isInvalid={!account.name || account.name.length === 0}
                             onChange={handleOnChange}
                             onBlur={handleOnBlur}
-                            className={`form-control ${!valid.name ? '' : valid.name ? 'is-valid' : 'is-invalid'}`} />
+                            className={`form-control ${!formFields.name ? '' : formFields.name.isValid ? 'is-valid' : 'is-invalid'}`} />
                         <Form.Control.Feedback type="invalid">
-                            {errors.name}
+                            {getError('name')}
                         </Form.Control.Feedback>
                     </Form.Group>
 
@@ -260,9 +275,9 @@ export default function Register({ mode }) {
                             isInvalid={!account.email || !/\S+@\S+\.\S+/.test(account.email)}
                             onChange={handleOnChange}
                             onBlur={handleOnBlur}
-                            className={`form-control ${!valid.email ? '' : valid.email ? 'is-valid' : 'is-invalid'}`} />
+                            className={`form-control ${!formFields?.email ? '' : formFields.email.isValid ? 'is-valid' : 'is-invalid'}`} />
                         <Form.Control.Feedback type="invalid">
-                            {errors.email}
+                            {getError('email')}
                         </Form.Control.Feedback>
                     </Form.Group>
 
@@ -274,9 +289,9 @@ export default function Register({ mode }) {
                             isInvalid={!account.password || account.password.length < 6}
                             onChange={handleOnChange}
                             onBlur={handleOnBlur}
-                            className={`form-control ${!valid.password ? '' : valid.password ? 'is-valid' : 'is-invalid'}`} />
+                            className={`form-control ${!formFields?.password ? '' : formFields.password.isValid ? 'is-valid' : 'is-invalid'}`} />
                         <Form.Control.Feedback type="invalid">
-                            {errors.password}
+                            {getError('password')}
                         </Form.Control.Feedback>
                     </Form.Group>
                     <Form.Group className="mb-2" controlId="formId">
@@ -288,9 +303,9 @@ export default function Register({ mode }) {
                             isInvalid={!account.confirmPassword || account.confirmPassword != account.password}
                             onChange={handleOnChange}
                             onBlur={handleOnBlur}
-                            className={`form-control ${!valid.confirmPassword ? '' : valid.confirmPassword ? 'is-valid' : 'is-invalid'}`} />
+                            className={`form-control ${!formFields?.confirmPassword ? '' : formFields.confirmPassword.isValid ? 'is-valid' : 'is-invalid'}`} />
                         <Form.Control.Feedback type="invalid">
-                            {errors.confirmPassword}
+                            {getError('confirmPassword')}
                         </Form.Control.Feedback>
                     </Form.Group>
                     <Form.Group className="mb-2" controlId="formId">
@@ -300,9 +315,9 @@ export default function Register({ mode }) {
                             isInvalid={!account.passwordQuestion || account.passwordQuestion.length === 0}
                             onChange={handleOnChange}
                             onBlur={handleOnBlur}
-                            className={`form-control ${!valid.passwordQuestion ? '' : valid.passwordQuestion ? 'is-valid' : 'is-invalid'}`} />
+                            className={`form-control ${!formFields?.passwordQuestion ? '' : formFields.passwordQuestion.isValid ? 'is-valid' : 'is-invalid'}`} />
                         <Form.Control.Feedback type="invalid">
-                            {errors.passwordQuestion}
+                            {getError('passwordQuestion')}
                         </Form.Control.Feedback>
                     </Form.Group>
                     <Form.Group className="mb-2" controlId="formId">
@@ -312,16 +327,16 @@ export default function Register({ mode }) {
                             isInvalid={!account.passwordAnswer || account.passwordAnswer.length === 0}
                             onChange={handleOnChange}
                             onBlur={handleOnBlur}
-                            className={`form-control ${!valid.passwordAnswer ? '' : valid.passwordAnswer ? 'is-valid' : 'is-invalid'}`} />
+                            className={`form-control ${!formFields?.passwordAnswer ? '' : formFields.passwordAnswer.isValid ? 'is-valid' : 'is-invalid'}`} />
                         <Form.Control.Feedback type="invalid">
-                            {errors.passwordAnswer}
+                            {getError('passwordAnswer')}
                         </Form.Control.Feedback>
 
                     </Form.Group>
 
                     <div className="d-flex justify-content-end gap-1 pt-2 pb-2">
                         <Button bsPrefix='btn-custom' onClick={clearAccount} size="sm" >Clear</Button>
-                        <Button bsPrefix='btn-custom' type="submit" size="sm" disabled={!isValidForm}>{mode === 'new' ? 'Create Account' : 'Save'} </Button>
+                        <Button bsPrefix='btn-custom' type="submit" size="sm" disabled={!isFormValid}>{mode === 'new' ? 'Create Account' : 'Save'} </Button>
                     </div>
                 </Form>
             </div>
