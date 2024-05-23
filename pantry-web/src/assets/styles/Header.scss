@@ -141,10 +141,10 @@ $gradient-color: linear-gradient(90deg, rgba(228, 132, 252, 1) 0%, rgba(132, 212
     display: flex;
     direction: row;
     align-items: center;
-    justify-content: space-around;
+    justify-content: space-evenly;
     gap: 30px;
     margin-right: 30px;
-    padding-top: 5px;
+    padding-top: 0px;
 }
 
 .menuItem {
