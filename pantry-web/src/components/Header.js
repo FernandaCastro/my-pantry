@@ -13,10 +13,16 @@ import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Tooltip from 'react-bootstrap/Tooltip';
 import ProfileIcon from './ProfileIcon.js';
 import Container from 'react-bootstrap/Container';
+import i18n from 'i18next';
+import LanguageSelect from '../components/LanguageSelect';
 
 export default function Header() {
     const { profileCtx } = useContext(ProfileContext);
     let hasActiveProfile = (profileCtx && Object.keys(profileCtx).length > 0) ? true : false;
+
+    function setLanguage(code) {
+        i18n.changeLanguage(code)
+    }
 
     return (
         <div className="header">
@@ -30,14 +36,19 @@ export default function Header() {
                 </Container>
 
                 <Container bsPrefix='fix-login-btn-before'>
-                    <ProfileIcon />
+                    <div className='d-flex align-items-center gap-1 p-0 m-0'>
+                        <Navbar>
+                            <LanguageSelect className="menuItem" language={i18n.language} onChange={setLanguage} />
+                        </Navbar>
+                        <ProfileIcon />
+                    </div>
                 </Container>
 
-                <Navbar.Collapse>
+                <Navbar.Collapse >
                     <div className="menu">
                         <OverlayTrigger placement="bottom" delay={{ show: 250, hide: 400 }} overlay={<Tooltip className="custom-tooltip">Consume Items</Tooltip>}>
                             <Nav.Item><Nav.Link href={"/pantries/consume"} eventKey="link-consume" className="menuItem" disabled={!hasActiveProfile} >
-                                <Image src={iconConsume} className="menu-icon" /></Nav.Link>
+                                <Image src={iconConsume} className="menu-icon " /></Nav.Link>
                             </Nav.Item>
                         </OverlayTrigger>
                         <OverlayTrigger placement="bottom" delay={{ show: 250, hide: 400 }} overlay={<Tooltip className="custom-tooltip">Shopping List</Tooltip>}>
@@ -62,13 +73,15 @@ export default function Header() {
                     </div>
                 </Navbar.Collapse>
 
-                <Container bsPrefix='fix-login-btn-after'>
-                    <ProfileIcon />
+                <Container bsPrefix='fix-login-btn-after' >
+                    <div className='d-flex align-items-center gap-1'>
+                        <Navbar>
+                            <LanguageSelect language={i18n.language} onChange={setLanguage} />
+                        </Navbar>
+                        <ProfileIcon />
+                    </div>
                 </Container>
             </Navbar>
-            <div className="d-flex justify-content-center align-items-center p-0">
-
-            </div>
         </div>
     )
 }

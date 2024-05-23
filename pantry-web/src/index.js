@@ -6,6 +6,7 @@ import App from './pages/App.js';
 import 'bootstrap/dist/css/bootstrap.min.css'
 import './index.css';
 import { BrowserRouter } from 'react-router-dom';
+import  './i18n';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
