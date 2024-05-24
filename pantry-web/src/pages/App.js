@@ -9,7 +9,6 @@ import '../assets/styles/App.scss';
 import History from '../routes/History.js';
 import NavigateSetter from "../routes/NavigateSetter.js";
 import { Suspense } from 'react';
-import i18n from 'i18next';
 
 import { PantryContext, AlertContext, ProfileContext } from '../services/context/AppContext.js';
 

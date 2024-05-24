@@ -9,8 +9,11 @@ import ProductList from '../components/ProductList.js';
 import Button from 'react-bootstrap/Button';
 import CloseButton from 'react-bootstrap/CloseButton';
 import { getAccountGroupList } from '../services/apis/mypantry/requests/AccountRequests.js';
+import { useTranslation } from 'react-i18next';
 
 export default function Product() {
+
+    const { t } = useTranslation(['product']);
 
     const [product, setProduct] = useState({});
     const [mode, setMode] = useState("");
@@ -46,7 +49,7 @@ export default function Product() {
 
             setCategories(list);
         } catch (error) {
-            showAlert(VariantType.DANGER, "Unable to load categories: " + error.message);
+            showAlert(VariantType.DANGER, t('fetch-categories-error') + error.message);
         }
     }
 
@@ -77,7 +80,8 @@ export default function Product() {
             const res = mode === 'new' ? await createProduct(body) : await updateProduct(product.id, body);
             setProduct(res);
             setRefresh(res.id);
-            showAlert(VariantType.SUCCESS, "Product saved successfully ");
+            showAlert(VariantType.SUCCESS, t('save-product-success'));
+            handleClearAction();
         } catch (error) {
             showAlert(VariantType.DANGER, error.message);
         }
@@ -107,7 +111,6 @@ export default function Product() {
 
     async function handleSave(jsonProduct) {
         await fetchSaveProduct(jsonProduct);
-        handleClearAction();
     }
 
     function handleRemove(productId) {
@@ -133,7 +136,7 @@ export default function Product() {
             <div hidden={showForm} className="mt-4">
                 <Stack direction="horizontal" gap={2} className='mb-3 d-flex justify-content-between'>
                     <h6 className="text-start fs-6 lh-lg title">{productLabel} </h6>
-                    <Button bsPrefix="btn-custom" size="sm" onClick={handleNew} className='me-2' disabled={(mode === "edit") || (product && Object.keys(product) > 0)}>New Product</Button>
+                    <Button bsPrefix="btn-custom" size="sm" onClick={handleNew} className='me-2' disabled={(mode === "edit") || (product && Object.keys(product) > 0)}>{t('btn-new-product')}</Button>
                 </Stack>
 
                 <ProductList key={refresh} disabled={showForm} onEdit={handleOnListSelection} onRemove={handleRemove} />

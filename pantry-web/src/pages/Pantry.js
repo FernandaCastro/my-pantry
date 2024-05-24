@@ -11,8 +11,11 @@ import Button from 'react-bootstrap/Button';
 import { BsChevronDown } from "react-icons/bs";
 import Collapse from 'react-bootstrap/Collapse';
 import { getAccountGroupList } from '../services/apis/mypantry/requests/AccountRequests.js';
+import { useTranslation } from 'react-i18next';
 
 export default function Pantry({ mode }) {
+
+    const { t } = useTranslation(['pantry', 'common']);
 
     let { id } = useParams();
     const [accountGroupOptions, setAccountGroupOptions] = useState([]);
@@ -83,7 +86,7 @@ export default function Pantry({ mode }) {
         try {
             await getPantryRebalance(id);
 
-            showAlert(VariantType.SUCCESS, "Pantry rebalanced successfully! ");
+            showAlert(VariantType.SUCCESS, t('balance-success'));
         } catch (error) {
             showAlert(VariantType.DANGER, error.message);
         } finally {
@@ -98,8 +101,8 @@ export default function Pantry({ mode }) {
             const res = mode === 'new' ? await createPantry(body) : await updatePantry(id, body);
             setPantry(res);
 
-            const msg = mode === 'edit' ? "updated!" : "created!";
-            showAlert(VariantType.SUCCESS, "Pantry successfully " + msg);
+            const msg = mode === 'edit' ? t('update-pantry-success') : t('create-pantry-success');
+            showAlert(VariantType.SUCCESS, msg);
 
         } catch (error) {
             showAlert(VariantType.DANGER, error.message);
@@ -113,7 +116,7 @@ export default function Pantry({ mode }) {
         setRefresh(true);
         try {
             await createPantryItem(pantry.id, body);
-            showAlert(VariantType.SUCCESS, "Item added successfully.");
+            showAlert(VariantType.SUCCESS, t('add-item-success'));
         } catch (error) {
             showAlert(VariantType.DANGER, error.message);
         } finally {
@@ -137,7 +140,7 @@ export default function Pantry({ mode }) {
     function renderPantryList() {
         return (
             <Stack gap={2}>
-                <div className="d-flex justify-content-end"><Button bsPrefix='btn-custom' size="sm" onClick={handleRebalance} title='Analyse and provision items' disabled={isEmpty}>Balance Inventory</Button></div>
+                <div className="d-flex justify-content-end"><Button bsPrefix='btn-custom' size="sm" onClick={handleRebalance} title={t('tooltip-btn-balance-inventory')} disabled={isEmpty}>{t('btn-balance-inventtory')}</Button></div>
                 <div><PantryItemList key={refresh} pantryId={pantry.id} setIsEmpty={setIsEmpty} /></div>
             </Stack>
         )
@@ -148,7 +151,7 @@ export default function Pantry({ mode }) {
             <div></div>
             <div>
                 <div className='d-flex justify-content-start align-items-center gap-2' onClick={() => setShowPantry(!showPantry)}>
-                    <h6 className="text-start fs-6 lh-lg title">Pantry Details </h6>
+                    <h6 className="text-start fs-6 lh-lg title">{ t('pantry-title')}</h6>
                     <BsChevronDown className='icon' />
                 </div>
                 <Collapse in={showPantry} >

@@ -36,7 +36,7 @@ export default function Header() {
                 </Container>
 
                 <Container bsPrefix='fix-login-btn-before'>
-                    <div className='d-flex align-items-center gap-1 p-0 m-0'>
+                    <div className='d-flex align-items-center gap-2'>
                         <Navbar>
                             <LanguageSelect className="menuItem" language={i18n.language} onChange={setLanguage} />
                         </Navbar>
@@ -74,7 +74,7 @@ export default function Header() {
                 </Navbar.Collapse>
 
                 <Container bsPrefix='fix-login-btn-after' >
-                    <div className='d-flex align-items-center gap-1'>
+                    <div className='d-flex align-items-center gap-2'>
                         <Navbar>
                             <LanguageSelect language={i18n.language} onChange={setLanguage} />
                         </Navbar>
