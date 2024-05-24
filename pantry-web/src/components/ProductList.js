@@ -4,7 +4,6 @@ import { getProductList, deleteProduct } from '../services/apis/mypantry/request
 import VariantType from './VariantType.js';
 import useAlert from '../hooks/useAlert.js';
 import Form from 'react-bootstrap/Form';
-import Stack from 'react-bootstrap/Stack';
 import Image from 'react-bootstrap/Image';
 import food from '../assets/images/healthy-food.png';
 import Button from 'react-bootstrap/Button';
@@ -13,10 +12,12 @@ import { camelCase } from '../services/Utils.js';
 import { FormCheck } from "react-bootstrap";
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Tooltip from 'react-bootstrap/Tooltip';
+import { useTranslation } from 'react-i18next';
 
 function ProductList({ disabled, onEdit, onRemove }) {
 
-    const [isLoading, setIsLoading] = useState(true);
+    const { t } = useTranslation(['product', 'common']);
+
     const [refresh, setRefresh] = useState(true);
     const [productList, setProductList] = useState([]);
     const [filteredItems, setFilteredItems] = useState([]);
@@ -35,10 +36,8 @@ function ProductList({ disabled, onEdit, onRemove }) {
 
     async function fetchProductList() {
         try {
-            setIsLoading(true);
             const res = await getProductList();
             setProductList(res);
-            setIsLoading(false);
             setRefresh(false);
         } catch (error) {
             showAlert(VariantType.DANGER, error.message);
@@ -63,7 +62,7 @@ function ProductList({ disabled, onEdit, onRemove }) {
         try {
             setRefresh(false);
             await deleteProduct(productId);
-            showAlert(VariantType.SUCCESS, "Product removed successfully ");
+            showAlert(VariantType.SUCCESS, t('delete-product-success'));
             setRefresh(true);
         } catch (error) {
             showAlert(VariantType.DANGER, error.message);
@@ -99,7 +98,7 @@ function ProductList({ disabled, onEdit, onRemove }) {
 
     return (
         <div>
-            <Form.Control size="sm" type="text" id="search" className="form-control mb-1 input-custom" value={searchText} placeholder="Seacrh for items here" onChange={(e) => filter(e.target.value)} />
+            <Form.Control size="sm" type="text" id="search" className="form-control mb-1 input-custom" value={searchText} placeholder={t('placeholder-search-product')} onChange={(e) => filter(e.target.value)} />
             <div className="scroll-product">
                 <Table size='sm'>
                     <thead>
@@ -110,7 +109,7 @@ function ProductList({ disabled, onEdit, onRemove }) {
                                         placement="bottom"
                                         overlay={
                                             <Tooltip className='custom-tooltip'>
-                                                Show Product Detail
+                                                {t('tooltip-switch-product-detail', { ns: 'common'})}
                                             </Tooltip>
                                         }
                                     >
@@ -119,7 +118,7 @@ function ProductList({ disabled, onEdit, onRemove }) {
                                         defaultChecked={expandProdDetail}
                                         onChange={() => setExpandProdDetail(!expandProdDetail)} />
                                         </OverlayTrigger>
-                                    <h6 className='title'>Products</h6>
+                                    <h6 className='title'>{t('product-list-title')}</h6>
                                 </div>
 
                             </th>
@@ -130,7 +129,7 @@ function ProductList({ disabled, onEdit, onRemove }) {
                                         placement="bottom"
                                         overlay={
                                             <Tooltip className="custom-tooltip">
-                                                Show Account Group
+                                                {t('tooltip-switch-account-group')}
                                             </Tooltip>
                                         }
                                     >

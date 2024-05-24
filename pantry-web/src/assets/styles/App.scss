@@ -602,7 +602,7 @@ div.scroll-product {
 
 .language-dropdown {
     >button {
-        --bs-btn-color: hsl(219, 11%, 25%);
+        --bs-btn-color: lavender;
         --bs-btn-bg: transparent;
         --bs-btn-border-color: transparent;
 
@@ -610,21 +610,28 @@ div.scroll-product {
         --bs-btn-hover-color: hsl(219, 11%, 25%);
         --bs-btn-hover-bg: transparent;
 
-        --bs-btn-active-color: hsl(219, 11%, 25%);
+        --bs-btn-active-color: lavender;
         --bs-btn-active-bg: transparent;
         --bs-btn-active-border-color: transparent;
-
     }
 
     >div {
-        margin-top: 0px !important;
-        padding-top: 0px;
-        --bs-dropdown-min-width: 28px;
-        --bs-dropdown-min-height: 30px;
-        --bs-dropdown-bg: transparent;
-        --bs-dropdown-border-color: transparent;
+        top: 85% !important;
+        margin: 0px !important;
+        padding: 0px !important;
+        margin-left: -3px !important;
 
-        --bs-dropdown-item-border-radius: 5px;
-        --bs-dropdown-link-hover-bg: #6c66d8;
+        --bs-dropdown-min-width: 32px;
+
+        --bs-dropdown-bg: lavender;
+        --bs-dropdown-border-color: #6c66d8;
+        --bs-dropdown-link-hover-bg: indigo;
+
+        >a {
+            padding-left: 4px !important;
+            padding-right: 2px !important;
+            padding-bottom: 2px !important;
+
+        }
     }
 }

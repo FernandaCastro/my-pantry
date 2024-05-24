@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router';
 import { getPantryItemsConsume, postPantryConsumeItem } from '../services/apis/mypantry/requests/PantryRequests.js';
 import Stack from 'react-bootstrap/Stack';
 import Table from 'react-bootstrap/Table';
@@ -16,10 +15,11 @@ import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Tooltip from 'react-bootstrap/Tooltip';
 import { BsChevronDown } from "react-icons/bs";
 import Collapse from 'react-bootstrap/Collapse';
+import { useTranslation } from 'react-i18next';
 
 export default function Consume() {
 
-  let { id } = useParams();
+  const { t } = useTranslation(['consume', 'common']);
 
   const [selectedPantries, setSelectedPantries] = useState([]);
   const [pantryItems, setPantryItems] = useState([]);
@@ -29,7 +29,6 @@ export default function Consume() {
   const [searchText, setSearchText] = useState("");
   const [isPantryEmpty, setIsPantryEmpty] = useState(true);
 
-  const [isLoading, setIsLoading] = useState(true);
   const [reload, setReload] = useState(false);
   const { showAlert } = useAlert();
   const [expand, setExpand] = useState(false);
@@ -53,30 +52,23 @@ export default function Consume() {
 
   async function fetchPantryItem() {
     try {
-      setIsLoading(true);
-
       const res = await getPantryItemsConsume(selectedPantries);
       if (res != null && Object.keys(res).length === 0) {
-        return showAlert(VariantType.INFO, "Pantry is empty. There is no item to consume.");
+        return showAlert(VariantType.INFO, t('fetch-pantry-empty-alert'));
       }
 
       setPantryItems(res);
     } catch (error) {
       showAlert(VariantType.DANGER, error.message);
-    } finally {
-      setIsLoading(false);
     }
   }
 
   async function fetchSaveConsumeItem(consumedItem) {
     try {
-      setIsLoading(true);
       const res = await postPantryConsumeItem(consumedItem);
-      showAlert(VariantType.SUCCESS, "Item consumed successfully!");
+      showAlert(VariantType.SUCCESS, t('consume-item-success'));
     } catch (error) {
       showAlert(VariantType.DANGER, error.message);
-    } finally {
-      setIsLoading(false);
     }
   }
 
@@ -129,7 +121,7 @@ export default function Consume() {
         <td hidden={!showPantryCol}><span className='text-left text-wrap'>{item.pantry.name}</span></td>
         <td><span className='text-left'>{item.currentQty}</span></td>
         <td><span className='d-none d-md-block text-left ps-5'>{item.provisionedQty}</span></td>
-        <td><span className='d-none d-md-block'>{item.lastProvisioning}</span></td>
+        <td><span className='d-none d-md-block'>{t('provisioned-date', { date: new Date(item.lastProvisioning) })}</span></td>
         <td >
           <div className='d-flex justify-content-end me-2'>
             <NumericField key={reload} object={consumedItem} attribute="qty" onValueChange={updateConsumedItem} disabled={isPantryEmpty} />
@@ -163,7 +155,7 @@ export default function Consume() {
       </div>
       <div>
         <div className='d-flex justify-content-start align-items-center gap-2' onClick={() => setShowPantries(!showPantries)}>
-          <h6 className="text-start fs-6 lh-lg title">Consume from Pantry</h6>
+          <h6 className="text-start fs-6 lh-lg title">{t('consume-title')}</h6>
           <BsChevronDown className='icon' />
         </div>
 
@@ -172,7 +164,7 @@ export default function Consume() {
         </Collapse>
       </div>
       <div>
-        <Form.Control size="sm" type="text" id="search" className="form-control mb-1" placeholder="Seacrh for items here" value={searchText} onChange={(e) => filter(e.target.value)} />
+        <Form.Control size="sm" type="text" id="search" className="form-control mb-1" placeholder={t('placeholder-search-items', { ns: 'common' })} value={searchText} onChange={(e) => filter(e.target.value)} />
         <div className='scroll-consume'>
           <Table size='sm'>
             <thead>
@@ -183,7 +175,7 @@ export default function Consume() {
                     delay={{ show: 250, hide: 250 }}
                     overlay={
                       <Tooltip className="custom-tooltip">
-                        Show Product Detail
+                        {t('tooltip-switch-product-detail', { ns: 'common' })}
                       </Tooltip>
                     }
                   >
@@ -192,12 +184,12 @@ export default function Consume() {
                       defaultChecked={expand}
                       onChange={() => setExpand(!expand)} />
                   </OverlayTrigger>
-                  <h6 className="title">Code/Desc.</h6>
+                  <h6 className="title">{t('code-description', { ns: 'common' })}</h6>
                 </th>
-                <th hidden={!showPantryCol}><h6 className="title text-left">Pantry</h6></th>
-                <th><h6 className="title">Qty</h6></th>
-                <th><h6 className="title ps-5 d-none d-md-block">Prov</h6></th>
-                <th><h6 className="title text-left d-none d-md-block">Prov. on</h6></th>
+                <th hidden={!showPantryCol}><h6 className="title text-left">{t('pantry', { ns: 'common' })}</h6></th>
+                <th><h6 className="title">{t('quantity', { ns: 'common' })}</h6></th>
+                <th><h6 className="title ps-5 d-none d-md-block">{t('provisioned', { ns: 'common' })}</h6></th>
+                <th><h6 className="title text-left d-none d-md-block">{t('provisioned-on', { ns: 'common' })}</h6></th>
                 <th>
                   <div className='d-flex justify-content-end align-items-center gap-2 pe-2'>
                     <OverlayTrigger
@@ -205,7 +197,7 @@ export default function Consume() {
                       delay={{ show: 250, hide: 250 }}
                       overlay={
                         <Tooltip className="custom-tooltip">
-                          Show Pantry
+                          {t('tooltip-switch-pantry', { ns: 'common' })}
                         </Tooltip>
                       }
                     >
