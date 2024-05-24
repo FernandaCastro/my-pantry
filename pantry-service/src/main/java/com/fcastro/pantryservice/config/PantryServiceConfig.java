@@ -13,7 +13,7 @@ import java.time.format.DateTimeFormatter;
 @Configuration
 public class PantryServiceConfig {
 
-    private static final String dateTimeFormat = "dd-MM-yyyy HH:mm:ss";
+    private static final String dateTimeFormat = "yyyy-MM-dd HH:mm:ss";
 
     @Bean
     public Jackson2ObjectMapperBuilderCustomizer jackson2ObjectMapperBuilderCustomizer() {
