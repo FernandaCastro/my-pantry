@@ -17,10 +17,10 @@ export async function getPendingPurchaseItems(pantryIds, supermarket) {
         FetchPurchase(`purchases/items?pantryIds=${pantryIds}&supermarket=${supermarket}`, "GET");
 }
 
-export async function getPurchaseItems(id, supermarket) {
+export async function getPurchaseItems(id, pantryIds, supermarket) {
     return !supermarket || supermarket === '' || supermarket === '-' ?
-        FetchPurchase(`purchases/${id}/items`, "GET") :
-        FetchPurchase(`purchases/${id}/items?supermarket=${supermarket}`, "GET");
+        FetchPurchase(`purchases/${id}/items?pantryIds=${pantryIds}`, "GET") :
+        FetchPurchase(`purchases/${id}/items?pantryIds=${pantryIds}&supermarket=${supermarket}`, "GET");
 }
 
 export async function postNewPurchaseOrder(pantryIds) {
