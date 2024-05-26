@@ -73,14 +73,36 @@ public class AccessControlService {
         accessControlRepository.deleteAllByClazzAndClazzId(clazz, clazzId);
     }
 
+    //Authorization method
+    public AccessControlDto hasPermissionInObject(String email, String permission, String clazz, Long clazzId) {
+        var accessControl = convertToDto(accessControlRepository.hasPermissionInObject(email, permission, clazz, clazzId));
+        return accessControl;
+    }
+
+    //Authorization method
+    public List<AccessControlDto> hasPermissionInObjectList(String email, String permission, String clazz, List<Long> clazzIds) {
+        var list = accessControlRepository.hasPermissionInObjectList(email, permission, clazz, clazzIds);
+        return list.stream().map(this::convertToDto).toList();
+    }
+
+
     private AccessControlDto convertToDto(AccessControl entity) {
         if (entity == null) return null;
+
+        AccountGroupDto parentAccountGroup = null;
+        if (entity.getAccountGroup().getParentAccountGroup() != null) {
+            parentAccountGroup = AccountGroupDto.builder()
+                    .id(entity.getAccountGroup().getParentAccountGroup().getId())
+                    .name(entity.getAccountGroup().getParentAccountGroup().getName())
+                    .build();
+        }
         return AccessControlDto.builder()
                 .clazz(entity.getClazz())
                 .clazzId(entity.getClazzId())
                 .accountGroup(AccountGroupDto.builder()
-                        .id(entity.getAccountGroup()
-                                .getId()).name(entity.getAccountGroup().getName())
+                        .id(entity.getAccountGroup().getId())
+                        .name(entity.getAccountGroup().getName())
+                        .parentAccountGroup(parentAccountGroup)
                         .build())
                 .build();
     }
