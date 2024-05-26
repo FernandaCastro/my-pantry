@@ -5,7 +5,7 @@
 
     <groupId>com.fcastro</groupId>
     <artifactId>my-pantry</artifactId>
-    <version>0.0.4</version>
+    <version>0.0.7</version>
 
     <description>It manages the pantry inventory and creates shopping list</description>
     <packaging>pom</packaging>
