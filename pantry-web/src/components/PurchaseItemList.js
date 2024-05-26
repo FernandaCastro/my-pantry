@@ -101,7 +101,7 @@ export default function PurchaseItemList({ purchase, selectedPantries, setOuterP
     async function fetchPurchaseItems(clear) {
         try {
             setIsLoading(true);
-            const res = await getPurchaseItems(purchase.id, supermarketOption.value);
+            const res = await getPurchaseItems(purchase.id, selectedPantries, supermarketOption.value);
 
             if (isNull(res) || res.length === 0) {
                 setPurchaseItems([]);

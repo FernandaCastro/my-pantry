@@ -55,34 +55,4 @@ public interface AccountGroupMemberRepository extends JpaRepository<AccountGroup
             "and lower(per.name) = lower(:permission) " +
             "and gm.accountGroup.id = :accountGroupId")
     AccountGroupMember hasPermissionInGroup(String email, String permission, Long accountGroupId);
-
-    @Query("select distinct gm " +
-            "from accountGroupMember gm, " +
-            "account ac, " +
-            "accessControl acc, " +
-            "role role " +
-            "JOIN role.permissions per " +
-            "where ac.id = gm.account.id " +
-            "and acc.accountGroup.id = gm.accountGroup.id " +
-            "and role.id = gm.role.id " +
-            "and ac.email = :email " +
-            "and lower(per.name) = lower(:permission) " +
-            "and acc.clazz = :clazz " +
-            "and acc.clazzId = :clazzId")
-    AccountGroupMember hasPermissionInObject(String email, String permission, String clazz, Long clazzId);
-
-    @Query("select distinct gm " +
-            "from accountGroupMember gm, " +
-            "account ac, " +
-            "accessControl acc, " +
-            "role role " +
-            "JOIN role.permissions per " +
-            "where ac.id = gm.account.id " +
-            "and acc.accountGroup.id = gm.accountGroup.id " +
-            "and role.id = gm.role.id " +
-            "and ac.email = :email " +
-            "and lower(per.name) = lower(:permission) " +
-            "and acc.clazz = :clazz " +
-            "and acc.clazzId in :clazzIds")
-    List<AccountGroupMember> hasPermissionInObjectList(String email, String permission, String clazz, List<Long> clazzIds);
 }

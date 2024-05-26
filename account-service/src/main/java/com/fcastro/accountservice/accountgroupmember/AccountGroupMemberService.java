@@ -141,18 +141,6 @@ public class AccountGroupMemberService {
         return member == null ? List.of() : List.of(member);
     }
 
-    //Authorization method
-    public List<AccountGroupMemberDto> hasPermissionInObject(String email, String permission, String clazz, Long clazzId) {
-        var member = convertToDTO(repository.hasPermissionInObject(email, permission, clazz, clazzId));
-        return member == null ? List.of() : List.of(member);
-    }
-
-    //Authorization method
-    public List<AccountGroupMemberDto> hasPermissionInObjectList(String email, String permission, String clazz, List<Long> clazzIds) {
-        var list = repository.hasPermissionInObjectList(email, permission, clazz, clazzIds);
-        return list.stream().map(this::convertToDTO).toList();
-    }
-
     private AccountGroupMemberDto convertToDTO(AccountGroupMember entity) {
         if (entity == null) return null;
 

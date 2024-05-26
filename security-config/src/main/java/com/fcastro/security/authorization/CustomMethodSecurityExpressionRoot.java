@@ -45,26 +45,26 @@ public class CustomMethodSecurityExpressionRoot {
         return groupMember != null && groupMember.size() > 0;
     }
 
-    //Check if connected user has <permission> in the group in which clazz/clazzId belongs
+    //Check if connected user has <permission> in the object informed
     public boolean hasPermissionInObject(String clazz, Long clazzId, String permission) {
 
         if (clazz == null || clazz.length() == 0 || clazzId == null || clazzId == 0) return false;
 
         String email = expressionOperations.getAuthentication().getName();
 
-        var groupMember = authorizationHandler.hasPermissionInObject(email, permission, clazz, clazzId);
-        return groupMember != null && groupMember.size() > 0;
+        var accessControl = authorizationHandler.hasPermissionInObject(email, permission, clazz, clazzId);
+        return accessControl != null;
     }
 
-    //Check if connected user has <permission> in the group in which clazz/clazzId belongs
+    //Check if connected user has the <permission> in all informed objects
     public boolean hasPermissionInObjectList(String clazz, List<Long> clazzIds, String permission) {
 
         if (clazz == null || clazz.length() == 0 || clazzIds == null || clazzIds.size() == 0) return false;
 
         String email = expressionOperations.getAuthentication().getName();
 
-        var groupMember = authorizationHandler.hasPermissionInObjectList(email, permission, clazz, clazzIds);
+        var list = authorizationHandler.hasPermissionInObjectList(email, permission, clazz, clazzIds);
 
-        return groupMember != null && groupMember.size() > 0;
+        return list != null && list.size() == clazzIds.size();
     }
 }

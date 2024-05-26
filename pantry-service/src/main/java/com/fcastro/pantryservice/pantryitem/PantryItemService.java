@@ -19,7 +19,6 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -60,14 +59,18 @@ public class PantryItemService {
     }
 
     public PantryItemDto create(PantryItemDto dto) {
-        //Check AccountGroups when adding new item
-        if (!Objects.equals(dto.getPantry().getAccountGroup().getId(), dto.getProduct().getAccountGroup().getId()) &&
-                (dto.getProduct().getAccountGroup().getParentAccountGroup() == null || !Objects.equals(dto.getPantry().getAccountGroup().getId(), dto.getProduct().getAccountGroup().getParentAccountGroup().getId()))) {
-            throw new PantryAndProductAccountGroupInconsistentException("Product " + dto.getProduct().getCode() + " is not allowed in the Pantry.");
+        //Check AccountGroups when adding new item:
+        //Product can be in either in the same level or in higher group of the pantry, never in a lower level
+        if (dto.getProduct().getAccountGroup().getId() == dto.getPantry().getAccountGroup().getId() || //pantry & product are in the same level group
+                (dto.getPantry().getAccountGroup().getParentAccountGroup() != null && // pantry is in a lower level
+                        (dto.getPantry().getAccountGroup().getParentAccountGroup().getId() == dto.getProduct().getAccountGroup().getId() // product in a high level group
+                        ))) {
+
+            var entity = repository.save(convertToEntity(dto));
+            return convertToDTO(entity);
         }
 
-        var entity = repository.save(convertToEntity(dto));
-        return convertToDTO(entity);
+        throw new PantryAndProductAccountGroupInconsistentException("Product " + dto.getProduct().getCode() + " is not allowed in this Pantry.");
     }
 
     public PantryItemDto update(PantryItemDto dto) {

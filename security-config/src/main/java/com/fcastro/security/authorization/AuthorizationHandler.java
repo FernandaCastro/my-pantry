@@ -62,7 +62,7 @@ public class AuthorizationHandler {
                 });
     }
 
-    public List<AccountGroupMemberDto> hasPermissionInObject(String email, String permission, String clazz, Long clazzId) {
+    public AccessControlDto hasPermissionInObject(String email, String permission, String clazz, Long clazzId) {
 
         StringBuilder uri = new StringBuilder("authorization/permission-in-object?")
                 .append("email=").append(email)
@@ -78,11 +78,11 @@ public class AuthorizationHandler {
                         status.value() >= 400, (request, response) -> {
                     throw new AccessDeniedException("Request to AuthorizationServer(permission-in-object) failed: [" + response.getStatusCode() + " : " + response.getStatusText() + "]");
                 })
-                .body(new ParameterizedTypeReference<List<AccountGroupMemberDto>>() {
+                .body(new ParameterizedTypeReference<AccessControlDto>() {
                 });
     }
 
-    public List<AccountGroupMemberDto> hasPermissionInObjectList(String email, String permission, String clazz, List<Long> clazzIds) {
+    public List<AccessControlDto> hasPermissionInObjectList(String email, String permission, String clazz, List<Long> clazzIds) {
         StringBuilder uri = new StringBuilder("authorization/permission-in-object-list?")
                 .append("email=").append(email)
                 .append("&permission=").append(permission)
@@ -97,7 +97,7 @@ public class AuthorizationHandler {
                         status.value() >= 400, (request, response) -> {
                     throw new AccessDeniedException("Request to AuthorizationServer(permission-in-object-list) failed: [" + response.getStatusCode() + " : " + response.getStatusText() + "]");
                 })
-                .body(new ParameterizedTypeReference<List<AccountGroupMemberDto>>() {
+                .body(new ParameterizedTypeReference<List<AccessControlDto>>() {
                 });
     }
 
