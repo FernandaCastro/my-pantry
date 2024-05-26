@@ -199,7 +199,7 @@ public class AccountService {
         String password = existingAccount.getPassword();
 
         //In case password has changed, encode it again
-        if (!password.equals(newAccount.getPassword()) &&
+        if (!newAccount.getPassword().equals(password) &&
                 !passwordEncoder.matches(newAccount.getPassword(), password)) {
             password = passwordEncoder.encode(newAccount.getPassword());
         }
