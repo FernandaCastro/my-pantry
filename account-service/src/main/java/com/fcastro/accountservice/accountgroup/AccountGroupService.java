@@ -110,6 +110,7 @@ public class AccountGroupService {
         if (entity.getParentAccountGroup() != null) {
             parentAccountGroup = AccountGroupDto.builder()
                     .id(entity.getParentAccountGroup().getId())
+                    .name(entity.getParentAccountGroup().getName())
                     .build();
         }
 
