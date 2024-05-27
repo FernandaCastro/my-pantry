@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useParams } from 'react-router';
 import { getPantryItemsConsume, postPantryConsumeItem } from '../services/apis/mypantry/requests/PantryRequests.js';
 import Stack from 'react-bootstrap/Stack';
 import Table from 'react-bootstrap/Table';
@@ -15,7 +16,6 @@ import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Tooltip from 'react-bootstrap/Tooltip';
 import { BsChevronDown } from "react-icons/bs";
 import Collapse from 'react-bootstrap/Collapse';
-import { useTranslation } from 'react-i18next';
 
 export default function Consume() {
 
@@ -29,6 +29,7 @@ export default function Consume() {
   const [searchText, setSearchText] = useState("");
   const [isPantryEmpty, setIsPantryEmpty] = useState(true);
 
+  const [isLoading, setIsLoading] = useState(true);
   const [reload, setReload] = useState(false);
   const { showAlert } = useAlert();
   const [expand, setExpand] = useState(false);
