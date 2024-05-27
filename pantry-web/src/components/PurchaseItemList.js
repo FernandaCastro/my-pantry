@@ -44,7 +44,7 @@ export default function PurchaseItemList({ purchase, selectedPantries, setOuterP
         }
         else {
             if (!purchase) {
-                fetchPendingPurchaseItems();
+                fetchPendingItems();
             }
         }
     }, [selectedPantries])
@@ -71,9 +71,9 @@ export default function PurchaseItemList({ purchase, selectedPantries, setOuterP
         const shouldSort = supermarketOption.value.length > 0;
 
         if (hasPurchaseItems && shouldSort) {
-            hasPurchaseItems ?
+            purchase && purchase.id > 0 ?
                 fetchPurchaseItems() :
-                fetchPendingPurchaseItems();
+                fetchPendingItems();
         }
     }, [supermarketOption])
 
@@ -126,7 +126,7 @@ export default function PurchaseItemList({ purchase, selectedPantries, setOuterP
         }
     }
 
-    async function fetchPendingPurchaseItems() {
+    async function fetchPendingItems() {
         try {
             setIsLoading(true);
             const res = await getPendingPurchaseItems(selectedPantries, supermarketOption.value);
@@ -213,7 +213,7 @@ export default function PurchaseItemList({ purchase, selectedPantries, setOuterP
     }
 
     function handleRefresh() {
-        fetchPendingPurchaseItems();
+        fetchPendingItems();
     }
 
     function renderPurchaseItems() {
@@ -308,7 +308,7 @@ export default function PurchaseItemList({ purchase, selectedPantries, setOuterP
                             <tr className="align-middle">
                                 <th className='d-flex flex-row align-items-center gap-2'>
                                     <OverlayTrigger
-                                        placement="bottom"
+                                        placement="top"
                                         delay={{ show: 250, hide: 250 }}
                                         overlay={
                                             <Tooltip className="custom-tooltip">
