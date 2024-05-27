@@ -4,8 +4,11 @@ import useAlert from '../hooks/useAlert.js';
 import VariantType from '../components/VariantType.js';
 import { getRoles } from '../services/apis/mypantry/requests/AccountRequests.js'
 import { camelCase, fullCamelCase } from '../services/Utils.js';
+import { useTranslation } from 'react-i18next';
 
 export default function PermissionsView() {
+
+    const { t } = useTranslation(['group-members']);
 
     const { showAlert } = useAlert();
     const [roles, setRoles] = useState([]);
@@ -27,7 +30,7 @@ export default function PermissionsView() {
         return (
             <Table key={role.id} size='sm' className='hover-disabled' >
                 <thead>
-                    <tr key={role.id}><th><span className='title'>{camelCase(role.name)}</span></th></tr>
+                    <tr key={role.id}><th><span className='title'>{t((role.name.toLowerCase()))}</span></th></tr>
                 </thead>
                 <tbody>
                     {role.permissions.map((permission) => { return renderPermission(permission) })}

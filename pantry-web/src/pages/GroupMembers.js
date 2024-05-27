@@ -15,7 +15,6 @@ import Modal from 'react-bootstrap/Modal';
 import { getAssociatedPantries } from '../services/apis/mypantry/requests/PantryRequests.js'
 import useAlert from '../hooks/useAlert.js';
 import PermissionsView from '../components/PermissionsView.js'
-import { camelCase } from '../services/Utils.js'
 import { useTranslation } from 'react-i18next';
 
 function GroupMembers() {
@@ -226,7 +225,7 @@ function GroupMembers() {
                             onChange={() => setSelectedGroup(item)} style={{ color: "hsl(219, 11%, 25%)" }}
                             label={item.name} />
                         </td>
-                        <td><span>{!item.parentAccountGroup ? "parent" : "child"}</span></td>
+                        <td><span>{!item.parentAccountGroup ? t('parent') : t('child')}</span></td>
                         <td>
                             <Stack direction="horizontal" gap={1} className="d-flex justify-content-end">
                                 <div><Button onClick={() => setEditGroup(item.id)} variant="link"><BsPencil className='icon' /></Button></div>
@@ -274,7 +273,7 @@ function GroupMembers() {
                 <td >
                     <span>{item.account.name}</span></td>
                 <td >
-                    <span>{camelCase(item.role.name)}</span></td>
+                    <span>{t(item.role.name.toLowerCase())}</span></td>
                 <td>
                     <Stack direction="horizontal" gap={1} className="d-flex justify-content-end">
                         <div><Button onClick={() => handleRemoveMember(item.accountGroupId, item.accountId)} variant="link" disabled={members.length === 1}><BsTrash className='icon'/></Button></div>

@@ -2,17 +2,6 @@ import getResponseContent from '../getResponseContent.js';
 import RequestError from '../RequestError.js';
 import History from '../../../routes/History.js';
 
-// function getCookie(name) {
-//     const cookieValue = document.cookie.match('(^|;)\\s*' + name + '\\s*=\\s*([^;]+)');
-//     return cookieValue ? cookieValue.pop() : '';
-// }
-
-// function isCSRFMethod(method) {
-//     if (method === 'POST' || method === 'PUT' || method === 'PATCH')
-//         return true;
-//     return false;
-// }
-
 export const FetchAccountHeader = async function (endpoint) {
     const service = process.env.REACT_APP_API_URL_ACCOUNT;
 
