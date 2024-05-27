@@ -16,6 +16,7 @@ import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Tooltip from 'react-bootstrap/Tooltip';
 import { BsChevronDown } from "react-icons/bs";
 import Collapse from 'react-bootstrap/Collapse';
+import { useTranslation } from 'react-i18next';
 
 export default function Consume() {
 
