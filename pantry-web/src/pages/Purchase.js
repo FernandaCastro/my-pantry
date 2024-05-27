@@ -125,7 +125,7 @@ export default function Purchase() {
 
             <div>
                 <div className='d-flex justify-content-start align-items-center gap-2' onClick={() => setShowOrderDetails(!showOrderDetails)} aria-controls="purchaseItems" >
-                    <h6 className='title'>{purchase ? purchase.processedAt ? 'Closed Shopping List - Details' : 'Open Shopping List - Details' : 'Items not in a Shopping List'}</h6>
+                    <h6 className='title'>{purchase ? purchase.processedAt ? 'Closed Shopping List' : 'Open Shopping List' : 'Pending Items'}</h6>
                     <BsChevronDown className='icon' />
                 </div>
                 <Collapse in={showOrderDetails} >
