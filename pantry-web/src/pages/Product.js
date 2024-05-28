@@ -13,7 +13,7 @@ import { useTranslation } from 'react-i18next';
 
 export default function Product() {
 
-    const { t } = useTranslation(['product']);
+    const { t } = useTranslation(['product', 'categories']);
 
     const [product, setProduct] = useState({});
     const [mode, setMode] = useState("");
@@ -43,7 +43,7 @@ export default function Product() {
                 list = [...list,
                 {
                     value: category,
-                    label: category
+                    label: t(category, { ns: 'categories' })
                 }]
             });
 
