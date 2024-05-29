@@ -2,7 +2,10 @@
 UPDATE properties
 SET property_value = (
     SELECT jsonb_agg(
-               lower(regexp_replace(element::text, '\s', '-', 'g'))::jsonb
+               CASE
+                   WHEN element::text = '""' THEN '"other"'
+                   ELSE lower(regexp_replace(element::text, '\s', '-', 'g'))::jsonb
+               END
            )
     FROM jsonb_array_elements(property_value) AS element
 );
