@@ -15,7 +15,7 @@ import Product from '../pages/Product';
 import GroupMembers from '../pages/GroupMembers';
 import Pantries from '../pages/Pantries';
 import Welcome from '../pages/Welcome';
-
+import {Supermarket} from '../pages/Supermarket';
 
 function CustomRoutes() {
     let routes = useRoutes([
@@ -86,6 +86,10 @@ function CustomRoutes() {
         {
             path: "/group-members",
             element: <GroupMembers />
+        },
+        {
+            path: "/supermarkets",
+            element: <Supermarket />
         },
     ]);
 

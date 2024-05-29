@@ -1,5 +1,8 @@
 $background: lavender;
 $border-color: #909df4;
+
+$border-color: #c5cbfb;
+
 $btn-background-color: #6c66d8;
 $btn-disabled-color: lighten($btn-background-color, 20%);
 $footer-background: hsl(219, 11%, 25%);
@@ -12,7 +15,7 @@ $link-color: rgb(63, 6, 250);
 //     border: 1px solid blue;
 // }
 
-button.btn-custom {
+.btn-custom {
     min-width: 15%;
     width: fit-content;
     height: fit-content;
@@ -27,36 +30,12 @@ button.btn-custom {
 
 }
 
-button.btn-custom:enabled:hover {
+.btn-custom:enabled:hover {
     border-color: $link-color !important;
     transform: scale(1.1);
 }
 
-button.btn-custom:disabled {
-    background-color: $btn-disabled-color !important;
-}
-
-a.btn-custom {
-    min-width: 15%;
-    width: fit-content;
-    height: fit-content;
-    color: white;
-    text-decoration: none;
-    background-color: $btn-background-color;
-    border: 1px solid $border-color;
-    border-radius: 5px;
-    align-items: center;
-    text-align: center;
-    pointer-events: all;
-
-}
-
-a.btn-custom:hover {
-    border-color: $link-color !important;
-    transform: scale(1.1);
-}
-
-a.btn-custom:disabled {
+.btn-custom:disabled {
     background-color: $btn-disabled-color !important;
 }
 
@@ -291,7 +270,7 @@ div.category {
 div.settings {
     display: flex;
     flex-direction: column;
-    align-items: start;
+    align-items: flex-start;
     justify-content: flex-start;
     gap: 2px;
     padding: 0px;
@@ -634,4 +613,17 @@ div.scroll-product {
 
         }
     }
+}
+
+
+.items {
+    margin-top: 50px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    min-height: 150px;
+    min-width: 180px;
+    border: 0.5px solid gray;  
+    display: flex;
+    flex-direction: column;
+    align-items: center; 
 }

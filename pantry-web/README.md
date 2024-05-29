@@ -80,5 +80,6 @@ here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-
   Session storage, cookies, local storage, directories, and HTML elements are also supported across several locales)
 * `i18next-http-backend` (Store them in dedicated JSON files, and load them asynchronously (on demand))
 * `luxon` (Datetime Translations)
+* `react-beautiful-dnd` (Beautiful and accessible drag and drop for lists with React)
 
 

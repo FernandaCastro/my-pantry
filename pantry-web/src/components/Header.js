@@ -31,7 +31,7 @@ export default function Header() {
     return (
         <div className="header">
             <Navbar collapseOnSelect expand="md">
-                <Navbar.Brand className="homeLink" href="/home" ><span className="homeText">{t("app-name", {ns: "common"})}</span></Navbar.Brand>
+                <Navbar.Brand className="homeLink" href="/home" ><span className="homeText">{t("app-name", { ns: "common" })}</span></Navbar.Brand>
                 <Container className='container fix-pantry-name'></Container>
                 <Container bsPrefix='fix-toggle-btn'>
                     <Navbar.Toggle className='hover-effect'>
@@ -70,6 +70,12 @@ export default function Header() {
                         </OverlayTrigger>
                         <OverlayTrigger placement="bottom" delay={{ show: 250, hide: 400 }} overlay={<Tooltip className="custom-tooltip">{t("tooltip-products")}</Tooltip>}>
                             <Nav.Item><Nav.Link href="/product" eventKey="link-products" className="menuItem" disabled={!hasActiveProfile}>
+                                <Image src={iconProduct} className="menu-icon" />
+                            </Nav.Link>
+                            </Nav.Item>
+                        </OverlayTrigger>
+                        <OverlayTrigger placement="bottom" delay={{ show: 250, hide: 400 }} overlay={<Tooltip className="custom-tooltip">{t("tooltip-products")}</Tooltip>}>
+                            <Nav.Item><Nav.Link href="/supermarkets" eventKey="link-supermarkets" className="menuItem" disabled={!hasActiveProfile}>
                                 <Image src={iconProduct} className="menu-icon" />
                             </Nav.Link>
                             </Nav.Item>
