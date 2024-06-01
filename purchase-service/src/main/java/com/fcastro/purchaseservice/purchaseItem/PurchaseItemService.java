@@ -1,35 +1,34 @@
 package com.fcastro.purchaseservice.purchaseItem;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fcastro.app.exception.ResourceNotFoundException;
 import com.fcastro.kafka.event.PurchaseEventDto;
-import com.fcastro.purchaseservice.exception.ResourceNotValidException;
 import com.fcastro.purchaseservice.product.Product;
-import com.fcastro.purchaseservice.properties.PropertiesService;
-import com.fcastro.purchaseservice.properties.PropertyKey;
+import com.fcastro.purchaseservice.supermarket.SupermarketService;
 import com.fcastro.security.authorization.AuthorizationHandler;
 import com.fcastro.security.core.model.AccessControlDto;
-import org.apache.logging.log4j.util.Strings;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
 public class PurchaseItemService {
 
     private final PurchaseItemRepository repository;
-    private final PropertiesService propertiesService;
+    private final SupermarketService supermarketService;
     private final ModelMapper modelMapper;
     private final AuthorizationHandler authorizationHandler;
     private ObjectMapper jsonMapper;
 
-    public PurchaseItemService(PurchaseItemRepository repository, PropertiesService propertiesService, ModelMapper modelMapper, AuthorizationHandler authorizationHandler) {
+    public PurchaseItemService(PurchaseItemRepository repository, SupermarketService supermarketService, ModelMapper modelMapper, AuthorizationHandler authorizationHandler) {
         this.repository = repository;
-        this.propertiesService = propertiesService;
+        this.supermarketService = supermarketService;
         this.modelMapper = modelMapper;
         this.authorizationHandler = authorizationHandler;
         this.jsonMapper = new ObjectMapper();
@@ -53,19 +52,19 @@ public class PurchaseItemService {
         return convertToDto(repository.listPendingPurchase(pantryIds));
     }
 
-    public List<PurchaseItemDto> listPendingPurchaseByCategory(String email, Set<Long> pantryIds, String supermarket) {
+    public List<PurchaseItemDto> listPendingPurchaseByCategory(String email, Set<Long> pantryIds, Long supermarketId) {
         //var pantryIds = getPantryIdList(email);
         var list = convertToDto(repository.listPendingPurchase(pantryIds));
-        if (supermarket == null || Strings.isEmpty(supermarket)) return list;
+        if (supermarketId == null || supermarketId == 0) return list;
 
-        return categorize(list, supermarket);
+        return categorize(list, supermarketId);
     }
 
-    public List<PurchaseItemDto> listPurchaseByCategory(Long purchaseId, String supermarket) {
+    public List<PurchaseItemDto> listPurchaseByCategory(Long purchaseId, Long supermarketId) {
         var list = convertToDto(repository.findAllByPurchaseId(purchaseId));
-        if (supermarket == null || Strings.isEmpty(supermarket)) return list;
+        if (supermarketId == null || supermarketId == 0) return list;
 
-        return categorize(list, supermarket);
+        return categorize(list, supermarketId);
     }
 
     private Set<Long> getPantryIdList(String email) {
@@ -73,27 +72,18 @@ public class PurchaseItemService {
         return accessControlList.stream().map(AccessControlDto::getClazzId).collect(Collectors.toSet());
     }
 
-    private List<PurchaseItemDto> categorize(List<PurchaseItemDto> list, String supermarket) {
+    private List<PurchaseItemDto> categorize(List<PurchaseItemDto> list, Long supermarketId) {
         var map = list.stream()
                 .collect(Collectors.groupingBy((item) ->
                         item.getProduct().getCategory() == null || Objects.equals(item.getProduct().getCategory(), "") ?
                                 "Other" : item.getProduct().getCategory()
                 ));
 
-        String propertyKey = supermarket.toLowerCase() + "." + PropertyKey.SUPERMARKET_CATEGORIES.key;
-        var property = propertiesService.get(propertyKey)
-                .orElseThrow(() -> new ResourceNotFoundException("Property " + propertyKey + " not found."));
-
-        List<String> categories;
-
-        try {
-            categories = Arrays.asList(jsonMapper.readValue(property.getPropertyValue(), String[].class));
-        } catch (JsonProcessingException e) {
-            throw new ResourceNotValidException("Invalid Json value for property: " + PropertyKey.SUPERMARKET_CATEGORIES.key);
-        }
+        var supermarket = supermarketService.get(supermarketId)
+                .orElseThrow(() -> new ResourceNotFoundException("Supermarket not found."));
 
         var categorized = new ArrayList<PurchaseItemDto>();
-        categories.forEach((c) -> {
+        supermarket.getCategories().forEach((c) -> {
             if (map.containsKey(c)) {
                 categorized.addAll(map.get(c));
                 map.remove(c);

@@ -10,8 +10,11 @@ import { LogoutFromGoogle } from './LoginWithGoogle.js';
 import { logout } from '../services/LoginService';
 import { useNavigate } from 'react-router-dom';
 import Tooltip from 'react-bootstrap/Tooltip';
+import { useTranslation } from 'react-i18next';
 
-function ProfileIcon() {
+function AccountMenu() {
+
+    const { t } = useTranslation(['header']);
 
     const navigate = useNavigate();
     const { profileCtx, setProfileCtx } = useContext(ProfileContext);
@@ -35,12 +38,12 @@ function ProfileIcon() {
                     <span className='title'>{profileCtx.name}</span>
                     <span className='small'>{profileCtx.email}</span>
 
-                    <div className='section pt-1'><span className='title small'>Settings:</span></div>
+                    <div className='section pt-1'><span className='title small'>{t("settings")}</span></div>
                     <div className="settings pb-2">
-                        <Button bsPrefix="btn-profile-menu" href={"/account/edit"}>Edit my profile</Button>
-                        <Button bsPrefix="btn-profile-menu" href="/group-members">Groups & Members</Button>
+                        <Button bsPrefix="btn-profile-menu" href={"/account/edit"}>{t("edit-account-link")}</Button>
+                        <Button bsPrefix="btn-profile-menu" href="/group-members">{t("group-members-link")}</Button>
                     </div >
-                    <LogoutFromGoogle handleLogout={handleLogout}>Logout</LogoutFromGoogle>
+                    <LogoutFromGoogle handleLogout={handleLogout} text={t("btn-logout")}/>
                 </Popover.Body >
             </Popover >
         );
@@ -61,7 +64,7 @@ function ProfileIcon() {
 
     function renderUserIcon() {
         return (
-            <OverlayTrigger placement="bottom" delay={{ show: 250, hide: 400 }} overlay={<Tooltip className="custom-tooltip">Login</Tooltip>}>
+            <OverlayTrigger placement="bottom" delay={{ show: 250, hide: 400 }} overlay={<Tooltip className="custom-tooltip">{t("tooltip-login")}</Tooltip>}>
                 <Button variant='link' href="/login" >
                     <Image className='hover-effect' width={30} height={30} roundedCircle referrerPolicy="no-referrer" src={iNoAccount} />
                 </Button>
@@ -75,4 +78,4 @@ function ProfileIcon() {
         </div>
     )
 }
-export default ProfileIcon;
+export default AccountMenu;

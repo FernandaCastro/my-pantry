@@ -1,7 +1,7 @@
 import Form from 'react-bootstrap/Form';
 import Table from 'react-bootstrap/Table';
 import React, { useState, useEffect } from 'react';
-import { getPendingPurchaseItems, getPurchaseItems, getAllProperty } from '../services/apis/mypantry/requests/PurchaseRequests';
+import { getPendingPurchaseItems, getPurchaseItems, getAllSupermarkets } from '../services/apis/mypantry/requests/PurchaseRequests';
 import Button from 'react-bootstrap/Button';
 import Stack from 'react-bootstrap/Stack';
 import Image from 'react-bootstrap/Image';
@@ -16,14 +16,17 @@ import { BsArrow90DegRight } from "react-icons/bs";
 import { FormCheck } from "react-bootstrap";
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Tooltip from 'react-bootstrap/Tooltip';
+import { useTranslation } from 'react-i18next';
 
 export default function PurchaseItemList({ purchase, selectedPantries, setOuterPurchaseItems }) {
+
+    const { t } = useTranslation(['purchase', 'common', 'categories']);
 
     const [purchaseItems, setPurchaseItems] = useState([]);
     const [filteredItems, setFilteredItems] = useState([]);
     const [categories, setCategories] = useState([]);
 
-    const [supermarketOption, setSupermarketOption] = useState({ value: "", label: "" });
+    const [supermarketOption, setSupermarketOption] = useState({ value: "", label: "", categories: [] });
     const [supermarkets, setSupermarkets] = useState([]);
 
     const [searchText, setSearchText] = useState("");
@@ -68,27 +71,25 @@ export default function PurchaseItemList({ purchase, selectedPantries, setOuterP
 
     useEffect(() => {
         const hasPurchaseItems = purchaseItems && purchaseItems.length > 0;
-        const shouldSort = supermarketOption.value.length > 0;
 
-        if (hasPurchaseItems && shouldSort) {
+        if (hasPurchaseItems) {
             purchase && purchase.id > 0 ?
                 fetchPurchaseItems() :
                 fetchPendingItems();
         }
-    }, [supermarketOption])
+    }, [supermarketOption.value])
 
     async function fetchSupermarketOptions() {
         try {
-            const res = await getAllProperty("%25.supermarket.categories");
+            const res = await getAllSupermarkets();
 
-            var list = [{ value: " ", label: "Alphabetically" }];
+            var list = [];
             res.forEach(s => {
-                var name = s.propertyKey.substring(0, s.propertyKey.indexOf("."));
-
                 list = [...list,
                 {
-                    value: name,
-                    label: camelCase(name)
+                    value: s.id,
+                    label: camelCase(s.name),
+                    categories: s.categories
                 }]
             });
 
@@ -105,7 +106,7 @@ export default function PurchaseItemList({ purchase, selectedPantries, setOuterP
 
             if (isNull(res) || res.length === 0) {
                 setPurchaseItems([]);
-                return showAlert(VariantType.INFO, "This Shopping List is empty.");
+                return showAlert(VariantType.INFO, t("purchase-order-empty"));
             }
 
             //keep the already entered qtyPurchased when sorting by supermarket
@@ -132,7 +133,7 @@ export default function PurchaseItemList({ purchase, selectedPantries, setOuterP
             const res = await getPendingPurchaseItems(selectedPantries, supermarketOption.value);
 
             if (isNull(res) || res.length === 0) {
-                return showAlert(VariantType.INFO, "No item to purchase at the moment.");
+                return showAlert(VariantType.INFO, t("no-item-to-purchase"));
             }
 
             setPurchaseItems(res);
@@ -185,11 +186,15 @@ export default function PurchaseItemList({ purchase, selectedPantries, setOuterP
 
         purchaseItems.forEach((i) => {
             if (category !== i.product.category) {
+
                 category = i.product.category;
+                var found = categories.find(c => c.id == category);
+
                 list = [...list,
                 {
                     id: i.product.category,
-                    isOpen: true
+                    isOpen: found != null ? found.isOpen : true,
+                    isSupermarketCategory: supermarketOption.categories.some(c => c === i.product.category)
                 }
                 ]
             }
@@ -230,6 +235,17 @@ export default function PurchaseItemList({ purchase, selectedPantries, setOuterP
         }))
     }
 
+    function isSupermarketCategory(category) {
+        if (supermarketOption.value > 0) {
+            var found = categories.find(c => c.id == category);
+            if (found) {
+                return found.isSupermarketCategory;
+            }
+            return false;
+        }
+        return true;
+    }
+
     function renderCategory(category, item) {
         return (
             <>
@@ -238,7 +254,7 @@ export default function PurchaseItemList({ purchase, selectedPantries, setOuterP
                         <td className="highlight" colSpan={4}>
                             <div className="category">
                                 <Button variant="link" aria-controls={category} onClick={() => handleExpansion(category)}><BsArrow90DegRight className='icon' /></Button>
-                                <h6 className='title'>{!category || category === "" ? "Other" : category}</h6>
+                                <h6 className='title' style={{ color: !isSupermarketCategory(category) ? "red" : "" }} data-title={!isSupermarketCategory(category) ? t('tooltip-category-not-associated-to-supermarket', { ns: "common" }) : null}>{!category || category === "" ? t("other") : t(category, { ns: 'categories' })}</h6>
                             </div>
                         </td>
                     </tr>
@@ -293,15 +309,15 @@ export default function PurchaseItemList({ purchase, selectedPantries, setOuterP
             <div className="d-flex justify-content-between align-items-center gap-2 pt-2">
                 <div style={{ width: '82%' }}>
                     <Select name="supermarket"
-                        placeholder="Sort by Supermarket?"
+                        placeholder={t("placeholder-select-supermarket")}
                         options={supermarkets}
                         onChange={setSupermarketOption}
                     />
                 </div>
-                <Button bsPrefix="btn-custom" size="sm" onClick={handleRefresh} disabled={purchase}>Refresh</Button>
+                <Button bsPrefix="btn-custom" size="sm" onClick={handleRefresh} disabled={purchase}>{t("btn-refresh")}</Button>
             </div>
             <div className="pt-2">
-                <Form.Control size="sm" type="text" id="search" className="form-control mb-1" placeholder="Search for items here" value={searchText} onChange={(e) => filter(e.target.value)} />
+                <Form.Control size="sm" type="text" id="search" className="form-control mb-1" placeholder={t("placeholder-search-items", { ns: "common" })} value={searchText} onChange={(e) => filter(e.target.value)} />
                 <div className='scroll-purchaseItems'>
                     <Table size='sm'>
                         <thead >
@@ -312,7 +328,7 @@ export default function PurchaseItemList({ purchase, selectedPantries, setOuterP
                                         delay={{ show: 250, hide: 250 }}
                                         overlay={
                                             <Tooltip className="custom-tooltip">
-                                                Show Product Detail
+                                                {t("tooltip-switch-product-detail", { ns: "common" })}
                                             </Tooltip>
                                         }
                                     >
@@ -320,11 +336,11 @@ export default function PurchaseItemList({ purchase, selectedPantries, setOuterP
                                             defaultChecked={expandProdDetail}
                                             onChange={() => setExpandProdDetail(!expandProdDetail)} />
                                     </OverlayTrigger>
-                                    <h6 className="title">Code/Desc.</h6>
+                                    <h6 className="title">{t("code-description", { ns: "common" })}</h6>
                                 </th>
-                                <th><h6 className="title d-none d-md-block ">Pantry</h6></th>
-                                <th className='text-center'><h6 className="title">Prov.</h6></th>
-                                <th></th>
+                                <th><h6 className="title d-none d-md-block ">{t("pantry", { ns: "common" })}</h6></th>
+                                <th className='text-center'><h6 className="title">{t("provisioned", { ns: "common" })}</h6></th>
+                                <th className='text-center'><h6 className="title">{t("quantity", { ns: "common" })}</h6></th>
                             </tr>
                         </thead>
                         {renderPurchaseItems()}

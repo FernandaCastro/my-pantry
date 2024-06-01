@@ -2,21 +2,19 @@
 
 # My Pantry
 
-version: 0.0.4 <br />
+version: 0.1.0
 
-- Access Control is now centralized in account_service, as part of the authorization.
-  - Why? So far, Pantry and Product are the only relevant entities when it comes to access control. So instead of making
-    purchase-service request access-control data to pantry-service, I decided to centralize it together with
-    authorization logic in account-service.
-- New Permission: PURCHASE_PANTRY Permissions refactored: CONSUME_PANTRY, ANALYSE_PANTRY
-- Control the access to Purchases
-- Purchase by selecting specific pantries or all
+- Internationalization (EN-PT)
+- CRUD for Supermarkets and its particular order of categories
+- New Permissions: list_supermarket, create_supermarket, edit_supermarket and delete_supermarket
+- Add permissions to ROLE ADMIN: It has all ROLE OWNER permissions, except the delete permissions.
+- All Roles and its associated Permissions are listed on the Group & Members page.
 
 Plans for next versions:
 
+- Delete provisioned products from the shopping cart
+- Wizard to create pantries based on a suggested list of basic items, instead of manually enter them.
 - CRUD for Role and Permissions
-- Wizards that create basic products and pantry with basic items
-- CRUD for Supermarkets and its particular order of categories
 
 ### Description:
 
@@ -56,12 +54,15 @@ Security.
 
 Screenshots: <br />
 <img height="400" width="200" title="Login" src="./readme_images/login.png"/>
+<img height="400" width="200" title="Login" src="./readme_images/new-account.png"/>
+<img height="400" width="200" title="Login" src="./readme_images/reset-password.png"/>
 <img height="400" width="200" src="./readme_images/pantries.png"/>
 <img height="400" width="200" src="./readme_images/pantry.png"/>
 <img height="400" width="200" src="./readme_images/consume.png"/>
 <img height="400" width="200" src="./readme_images/purchase.png"/>
 <img height="400" width="200" src="./readme_images/products.png"/>
-<img height="400" width="200" src="./readme_images/account-groups.png"/>
+<img height="400" width="200" src="./readme_images/supermarkets.png"/>
+<img height="400" width="200" src="./readme_images/groups-members.png"/>
 <img height="400" width="200" src="./readme_images/logout.png"/>
 
 ### pantry-web (localhost:3000) :

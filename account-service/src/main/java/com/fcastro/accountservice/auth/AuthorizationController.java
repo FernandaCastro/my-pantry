@@ -41,6 +41,10 @@ public class AuthorizationController {
         return ResponseEntity.ok(accessControlService.hasPermissionInObjectList(email, permission, clazz, clazzIds));
     }
 
+    @GetMapping("/access-control-strict")
+    public ResponseEntity<List<AccessControlDto>> getAllByEmail(@RequestParam String email, @RequestParam String clazz, @RequestParam Long accountGroupId) {
+        return ResponseEntity.ok(accessControlService.getAllByEmailAndAccessControlStrict(email, clazz, accountGroupId));
+    }
 
     @GetMapping("/access-control")
     public ResponseEntity<List<AccessControlDto>> getAllByEmail(@RequestParam String email, @RequestParam String clazz, @RequestParam(required = false) Long clazzId, @RequestParam(required = false) Long accountGroupId, @RequestParam(required = false) String permission) {

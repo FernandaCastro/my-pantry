@@ -3,10 +3,11 @@ import { getAllPurchaseOrders } from '../services/apis/mypantry/requests/Purchas
 import VariantType from '../components/VariantType.js';
 import useAlert from '../hooks/useAlert.js';
 import Table from 'react-bootstrap/Table';
-import Button from 'react-bootstrap/Button';
-import { BsXCircle } from 'react-icons/bs';
+import { useTranslation } from 'react-i18next';
 
 export default function PurchaseOrderList({ selectedPantries, handleSelectedPurchase }) {
+    
+    const { t } = useTranslation(['purchase', 'common']);
 
     const [purchases, setPurchases] = useState([]);
     const [purchase, setPurchase] = useState();
@@ -35,9 +36,9 @@ export default function PurchaseOrderList({ selectedPantries, handleSelectedPurc
         const highlight = (purchase && purchase.id === p.id) ? "highlight" : '';
         return (
             <tr key={p.id} onClick={(e) => selectPurchase(e, p)} >
-                <td className={highlight}><span>{p.id} - {p.processedAt ? 'Closed' : 'Open'}</span></td>
-                <td className={highlight}><span className='text-small'>{p.createdAt}</span></td>
-                <td className={highlight}><span className='text-small'>{p.processedAt}</span></td>
+                <td className={highlight}><span>{p.id} - {p.processedAt ? t("closed") : t("open")}</span></td>
+                <td className={highlight}><span className='text-small'>{t('datetime', { ns: "common", date: new Date(p.createdAt) })}</span></td>
+                <td className={highlight}><span className='text-small'>{t('datetime', { ns: "common", date: new Date(p.processedAt) })}</span></td>
             </tr>
         )
     }
@@ -57,9 +58,9 @@ export default function PurchaseOrderList({ selectedPantries, handleSelectedPurc
             <Table size='sm'>
                 < thead >
                     <tr key="order:0" className="align-middle">
-                        <th><h6 className='title'>Id - Status</h6></th>
-                        <th><h6 className='title'>Created at</h6></th>
-                        <th><h6 className='title'>Checkout at</h6></th>
+                        <th><h6 className='title'>{t("id-status")}</h6></th>
+                        <th><h6 className='title'>{t("createdAt")}</h6></th>
+                        <th><h6 className='title'>{t("checkoutAt")}</h6></th>
                     </tr>
                 </thead >
                 <tbody>

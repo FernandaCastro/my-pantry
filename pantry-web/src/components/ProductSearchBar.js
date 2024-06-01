@@ -11,8 +11,11 @@ import CloseButton from 'react-bootstrap/CloseButton';
 import ProductForm from './ProductForm.js';
 import { camelCase } from '../services/Utils.js';
 import Collapse from 'react-bootstrap/Collapse';
+import { useTranslation } from 'react-i18next';
 
 function ProductSearchBar({ accountGroupId, accountGroupOptions, handleSelectAction, handleClearAction, addButtonVisible }) {
+
+    const { t } = useTranslation(['product', 'common']);
 
     const notFound = "No product found";
     const [searchText, setSearchText] = useState("");
@@ -57,16 +60,16 @@ function ProductSearchBar({ accountGroupId, accountGroupOptions, handleSelectAct
         return (
             <Stack direction="horizontal" gap={2} className="w-100">
                 <div className="w-75 pe-0">
-                    <Form.Control size="sm" type="text" placeholder='Search for products here'
+                    <Form.Control size="sm" type="text" placeholder={t('placeholder-search-product')}
                         value={searchText}
                         onChange={(e) => handleSearch(e)} />
                 </div>
                 <div>
-                    <Button className="w-0 p-0" type="reset" variant="link" onClick={handleClear} title='Clear search text'><BsEraser className='icon' /></Button>
+                    <Button id='btn-seacrh-clear' className="w-0 p-0" type="reset" variant="link" onClick={handleClear} title={t('tooltip-btn-search-clear')}><BsEraser className='icon' /></Button>
                 </div>
                 <div>
                     {addButtonVisible === true ?
-                        <Button className="w-0 p-0" variant="link" onClick={handleNewProduct} title='Create new product' disabled={results && results.length > 0}><BsPlusLg className='icon' /></Button> : <span />}
+                        <Button id='btn-new' className="w-0 p-0" variant="link" onClick={handleNewProduct} title={t('tooltip-btn-new')} disabled={results && results.length > 0}><BsPlusLg className='icon' /></Button> : <span />}
                 </div>
             </Stack>
         );
@@ -80,7 +83,7 @@ function ProductSearchBar({ accountGroupId, accountGroupOptions, handleSelectAct
                         <td className="w-0 p-0 border-end-0 colorfy">
                             <span>{camelCase(item.code)} {item.description === "" ? "" : ' - ' + item.description}</span></td>
                         <td className="w-0 p-0 border-start-0 colorfy">
-                            <Button onClick={() => handleSelect(item)} variant="link" title='Add to Pantry'><BsCheck2All className='icon' /></Button>
+                            <Button onClick={() => handleSelect(item)} variant="link" title={t('tooltip-add-to-pantry')}><BsCheck2All className='icon' /></Button>
                         </td>
                     </tr>
 
@@ -108,7 +111,7 @@ function ProductSearchBar({ accountGroupId, accountGroupOptions, handleSelectAct
         const res = await fetchSaveProduct(jsonProduct);
         if (res) {
             handleSelect(res);
-            showAlert(VariantType.SUCCESS, "Product saved and added to the list successfully ");
+            showAlert(VariantType.SUCCESS, t('create-add-product-to-pantry-success'));
         }
         setShowProductForm(false);
     }
@@ -129,7 +132,7 @@ function ProductSearchBar({ accountGroupId, accountGroupOptions, handleSelectAct
     return (
         <>
             <div onClick={() => setShow(!show)} className="d-flex justify-content-start gap-3 align-items-center">
-                <h6 className='title'> Add Product to Pantry</h6>
+                <h6 className='title'>{t('search-product-title')}</h6>
                 <BsChevronDown className='icon' />
             </div>
             <div className='custom-card'>

@@ -134,6 +134,24 @@ public class AuthorizationHandler {
                 });
     }
 
+    public List<AccessControlDto> listAccessControlStrict(String email, String clazz, Long accountGroupId) {
+        StringBuilder uri = new StringBuilder("/authorization/access-control-strict?")
+                .append("email=").append(email)
+                .append("&clazz=").append(clazz)
+                .append("&accountGroupId=").append(accountGroupId);
+
+        return authzServer.get()
+                .uri(uri.toString())
+                .accept(MediaType.APPLICATION_JSON)
+                .retrieve()
+                .onStatus(status ->
+                        status.value() >= 400, (request, response) -> {
+                    throw new AccessDeniedException("Request AuthorizationServer(access-control-strict) failed: [" + response.getStatusCode() + " : " + response.getStatusText() + "]");
+                })
+                .body(new ParameterizedTypeReference<List<AccessControlDto>>() {
+                });
+    }
+
     public void saveAccessControl(String clazz, Long clazzId, Long accountGroupId) {
 
         var body = AccessControlDto.builder()

@@ -9,19 +9,31 @@ import iconPurchase from '../assets/images/shoppingcart-gradient.png';
 import iconProduct from '../assets/images/food-gradient.png';
 import iconPantry from '../assets/images/cupboard-gradient.png';
 import iconMenu from '../assets/images/menu-gradient.png';
+import iconSupermarket from '../assets/images/supermarket-gradient.png';
+
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Tooltip from 'react-bootstrap/Tooltip';
-import ProfileIcon from './ProfileIcon.js';
+import AccountMenu from './AccountMenu.js';
 import Container from 'react-bootstrap/Container';
+import i18n from 'i18next';
+import { useTranslation } from 'react-i18next';
+
+import LanguageSelect from './LanguageSelect';
 
 export default function Header() {
+    const { t } = useTranslation(['header', 'common']);
+
     const { profileCtx } = useContext(ProfileContext);
     let hasActiveProfile = (profileCtx && Object.keys(profileCtx).length > 0) ? true : false;
+
+    function setLanguage(code) {
+        i18n.changeLanguage(code)
+    }
 
     return (
         <div className="header">
             <Navbar collapseOnSelect expand="md">
-                <Navbar.Brand className="homeLink" href="/home" ><span className="homeText">My Pantry</span></Navbar.Brand>
+                <Navbar.Brand className="homeLink" href="/home" ><span className="homeText">{t("app-name", { ns: "common" })}</span></Navbar.Brand>
                 <Container className='container fix-pantry-name'></Container>
                 <Container bsPrefix='fix-toggle-btn'>
                     <Navbar.Toggle className='hover-effect'>
@@ -30,45 +42,58 @@ export default function Header() {
                 </Container>
 
                 <Container bsPrefix='fix-login-btn-before'>
-                    <ProfileIcon />
+                    <div className='d-flex align-items-center gap-2'>
+                        <Navbar>
+                            <LanguageSelect className="menuItem" language={i18n.language} onChange={setLanguage} />
+                        </Navbar>
+                        <AccountMenu />
+                    </div>
                 </Container>
 
-                <Navbar.Collapse>
+                <Navbar.Collapse >
                     <div className="menu">
-                        <OverlayTrigger placement="bottom" delay={{ show: 250, hide: 400 }} overlay={<Tooltip className="custom-tooltip">Consume Items</Tooltip>}>
+                        <OverlayTrigger placement="bottom" delay={{ show: 250, hide: 400 }} overlay={<Tooltip className="custom-tooltip">{t("tooltip-consume")}</Tooltip>}>
                             <Nav.Item><Nav.Link href={"/pantries/consume"} eventKey="link-consume" className="menuItem" disabled={!hasActiveProfile} >
-                                <Image src={iconConsume} className="menu-icon" /></Nav.Link>
+                                <Image src={iconConsume} className="menu-icon " /></Nav.Link>
                             </Nav.Item>
                         </OverlayTrigger>
-                        <OverlayTrigger placement="bottom" delay={{ show: 250, hide: 400 }} overlay={<Tooltip className="custom-tooltip">Shopping List</Tooltip>}>
+                        <OverlayTrigger placement="bottom" delay={{ show: 250, hide: 400 }} overlay={<Tooltip className="custom-tooltip">{t("tooltip-purchase")}</Tooltip>}>
                             <Nav.Item>
                                 <Nav.Link href="/purchase" eventKey="link-purchases" className="menuItem" disabled={!hasActiveProfile}>
                                     <Image src={iconPurchase} className="menu-icon" />
                                 </Nav.Link>
                             </Nav.Item>
                         </OverlayTrigger>
-                        <OverlayTrigger placement="bottom" delay={{ show: 250, hide: 400 }} overlay={<Tooltip className="custom-tooltip">Pantries</Tooltip>}>
+                        <OverlayTrigger placement="bottom" delay={{ show: 250, hide: 400 }} overlay={<Tooltip className="custom-tooltip">{t("tooltip-pantries")}</Tooltip>}>
                             <Nav.Item><Nav.Link href="/pantries" eventKey="link-pantries" className="menuItem" disabled={!hasActiveProfile}>
                                 <Image src={iconPantry} className="menu-icon" />
                             </Nav.Link>
                             </Nav.Item>
                         </OverlayTrigger>
-                        <OverlayTrigger placement="bottom" delay={{ show: 250, hide: 400 }} overlay={<Tooltip className="custom-tooltip">Products</Tooltip>}>
+                        <OverlayTrigger placement="bottom" delay={{ show: 250, hide: 400 }} overlay={<Tooltip className="custom-tooltip">{t("tooltip-products")}</Tooltip>}>
                             <Nav.Item><Nav.Link href="/product" eventKey="link-products" className="menuItem" disabled={!hasActiveProfile}>
                                 <Image src={iconProduct} className="menu-icon" />
+                            </Nav.Link>
+                            </Nav.Item>
+                        </OverlayTrigger>
+                        <OverlayTrigger placement="bottom" delay={{ show: 250, hide: 400 }} overlay={<Tooltip className="custom-tooltip">{t("tooltip-supermarkets")}</Tooltip>}>
+                            <Nav.Item><Nav.Link href="/supermarkets" eventKey="link-supermarkets" className="menuItem" disabled={!hasActiveProfile}>
+                                <Image src={iconSupermarket} className="menu-icon" />
                             </Nav.Link>
                             </Nav.Item>
                         </OverlayTrigger>
                     </div>
                 </Navbar.Collapse>
 
-                <Container bsPrefix='fix-login-btn-after'>
-                    <ProfileIcon />
+                <Container bsPrefix='fix-login-btn-after' >
+                    <div className='d-flex align-items-center gap-2'>
+                        <Navbar>
+                            <LanguageSelect language={i18n.language} onChange={setLanguage} />
+                        </Navbar>
+                        <AccountMenu />
+                    </div>
                 </Container>
             </Navbar>
-            <div className="d-flex justify-content-center align-items-center p-0">
-
-            </div>
         </div>
     )
 }

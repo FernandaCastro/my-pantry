@@ -9,8 +9,11 @@ import Collapse from 'react-bootstrap/Collapse';
 import PantrySelect from '../components/PantrySelect.js'
 import PurchaseOrderList from '../components/PurchaseOrderList.js'
 import PurchaseItemList from '../components/PurchaseItemList.js'
+import { useTranslation } from 'react-i18next';
 
 export default function Purchase() {
+
+    const { t } = useTranslation(['purchase', 'common']);
 
     const [selectedPantries, setSelectedPantries] = useState([]);
 
@@ -35,7 +38,7 @@ export default function Purchase() {
             setPurchase();
             setHasOpenOrder(false);
             setRefreshOrders(true);
-            showAlert(VariantType.SUCCESS, "Shopping List closed successfully!");
+            showAlert(VariantType.SUCCESS, t("close-purchase-order-success"));
         } catch (error) {
             showAlert(VariantType.DANGER, error.message);
 
@@ -52,7 +55,7 @@ export default function Purchase() {
             setPurchase(res);
             setHasOpenOrder(true);
             setRefreshOrders(true);
-            showAlert(VariantType.SUCCESS, "Shopping List created successfully!");
+            showAlert(VariantType.SUCCESS, t("create-purchase-order-success"));
         } catch (error) {
             showAlert(VariantType.DANGER, error.message);
         } finally {
@@ -98,7 +101,7 @@ export default function Purchase() {
             <div />
             <div>
                 <div className='d-flex justify-content-start align-items-center gap-2' onClick={() => setShowPantries(!showPantries)}>
-                    <h6 className="text-start fs-6 lh-lg title">Pantries </h6>
+                    <h6 className="text-start fs-6 lh-lg title">{t("pantry-title")}</h6>
                     <BsChevronDown className='icon' />
                 </div>
 
@@ -109,10 +112,10 @@ export default function Purchase() {
             
             <div className="item d-flex justify-content-between align-items-start" >
                 <div className='d-flex justify-content-start align-items-center gap-2' onClick={() => setShowOrder(!showOrder)}>
-                    <h6 className='title'>Shopping Lists</h6>
+                    <h6 className='title'>{t("purchase-order-title")}</h6>
                     <BsChevronDown className='icon' />
                 </div>
-                <Button bsPrefix="btn-custom" size="sm" onClick={handleNewOrder} disabled={hasOpenOrder}>New Order</Button>
+                <Button bsPrefix="btn-custom" size="sm" onClick={handleNewOrder} disabled={hasOpenOrder}>{t("btn-new-order")}</Button>
             </div>
 
             <div>
@@ -125,7 +128,7 @@ export default function Purchase() {
 
             <div>
                 <div className='d-flex justify-content-start align-items-center gap-2' onClick={() => setShowOrderDetails(!showOrderDetails)} aria-controls="purchaseItems" >
-                    <h6 className='title'>{purchase ? purchase.processedAt ? 'Closed Shopping List' : 'Open Shopping List' : 'Pending Items'}</h6>
+                    <h6 className='title'>{purchase ? purchase.processedAt ? t("purchase-order-closed") : t("purchase-order-open") : t("purchase-order-pending")}</h6>
                     <BsChevronDown className='icon' />
                 </div>
                 <Collapse in={showOrderDetails} >
@@ -138,7 +141,7 @@ export default function Purchase() {
 
             <div className='d-flex justify-content-end gap-2'>
                 {/* <Button bsPrefix="btn-custom" size="sm" onClick={handleClear} disabled={!hasOpenOrder}>Clear</Button> */}
-                <Button bsPrefix="btn-custom" size="sm" onClick={handleSave} disabled={!hasOpenOrder}>Checkout</Button>
+                <Button bsPrefix="btn-custom" size="sm" onClick={handleSave} disabled={!hasOpenOrder}>{t("btn-checkout")}</Button>
             </div>
 
         </Stack >

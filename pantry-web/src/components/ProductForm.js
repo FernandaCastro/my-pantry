@@ -6,10 +6,13 @@ import Form from 'react-bootstrap/Form';
 import Select from './Select';
 import { useState, useEffect } from 'react';
 import { getProperty } from '../services/apis/mypantry/requests/PurchaseRequests.js';
+import { useTranslation } from 'react-i18next';
 
 export default function ProductForm({ product, accountGroupId, categories, accountGroupOptions, handleSave }) {
 
-    const [categoryOption, setCategoryOption] = useState({ value: product.category, label: product.category });
+    const { t } = useTranslation(['product', 'common', 'categories']);
+
+    const [categoryOption, setCategoryOption] = useState({ value: product.category, label: t(product.category, {ns: 'categories'}) });
     const [categoryList, setCategoryList] = useState([{}]);
     const [accountGroupOption, setAccountGroupOption] = useState({ value: 0, label: "" });
 
@@ -40,13 +43,13 @@ export default function ProductForm({ product, accountGroupId, categories, accou
                 list = [...list,
                 {
                     value: category,
-                    label: category
+                    label: t(category, {ns: 'categories'})
                 }]
             });
 
             setCategoryList(list);
         } catch (error) {
-            console.error("Unable to load categories: " + error.message);
+            console.error(t('fetch-categories-error') + error.message);
         }
     }
 
@@ -74,7 +77,7 @@ export default function ProductForm({ product, accountGroupId, categories, accou
         <Form onSubmit={handleSubmit}>
             <Row>
                 <Form.Group as={Col} className="mb-2" controlId="formAccountGroups" size="sm">
-                    <Form.Label size="sm" className="title mb-1">Account Group</Form.Label>
+                    <Form.Label size="sm" className="title mb-1">{t('account-group', { ns: 'common' })}</Form.Label>
                     <Select key={accountGroupOption.value} name="accountGroup"
                         defaultValue={accountGroupOption}
                         options={accountGroupOptions}
@@ -83,35 +86,35 @@ export default function ProductForm({ product, accountGroupId, categories, accou
             </Row>
             <Row>
                 <Form.Group className="w-25" controlId="formId">
-                    <Form.Label size="sm" className="title mb-1">Id</Form.Label>
+                    <Form.Label size="sm" className="title mb-1">{t('id', { ns: 'common' })}</Form.Label>
                     <Form.Control size="sm" className="mb-1 input-custom" type="text" name="id" defaultValue={product.id} disabled />
                 </Form.Group>
                 <Form.Group as={Col} controlId="formCode">
-                    <Form.Label size="sm" className="title mb-1">Code</Form.Label>
-                    <Form.Control size="sm" className="mb-1 input-custom" type="text" name="code" defaultValue={product.code} />
+                    <Form.Label size="sm" className="title mb-1">{t('code')}</Form.Label>
+                    <Form.Control size="sm" className="mb-1 input-custom" type="text" name="code" placeholder={t('placeholder-code')} defaultValue={product.code} />
                 </Form.Group>
             </Row>
             <Row>
                 <Form.Group key={categoryOption.value} className="w-25" controlId="formSize">
-                    <Form.Label size="sm" className="title mb-1">Size</Form.Label>
-                    <Form.Control size="sm" className="mb-1 input-custom" type="text" name="size" defaultValue={product.size} />
+                    <Form.Label size="sm" className="title mb-1">{t('size')}</Form.Label>
+                    <Form.Control size="sm" className="mb-1 input-custom" type="text" name="size" placeholder={t('placeholder-size')}  defaultValue={product.size} />
                 </Form.Group>
                 <Form.Group as={Col} className="mb-2" controlId="formCategory" size="sm">
-                    <Form.Label size="sm">Category</Form.Label>
+                    <Form.Label size="sm" className="title mb-1">{t('category')}</Form.Label>
                     <Select key={categoryList.length} name="category" defaultValue={categoryOption} options={categoryList}
                         onChange={setCategoryOption} />
                 </Form.Group>
             </Row>
             <Row>
                 <Form.Group as={Col} className="mb-2" controlId="formDescription" size="sm">
-                    <Form.Label size="sm" className="title mb-1">Description</Form.Label>
-                    <Form.Control size="sm" className="mb-1 input-custom" type="text" name="description" defaultValue={product.description} />
+                    <Form.Label size="sm" className="title mb-1">{t('description')}</Form.Label>
+                    <Form.Control size="sm" className="mb-1 input-custom" type="text" name="description" placeholder={t('placeholder-description')}  defaultValue={product.description} />
                 </Form.Group>
             </Row>
             <Row>
                 <Stack direction="horizontal" gap={2} className="mb-3 d-flex justify-content-end">
-                    <div><Button bsPrefix='btn-custom' type="reset" size="sm">Clear</Button></div>
-                    <div><Button bsPrefix='btn-custom' type="submit" size="sm">Save</Button></div>
+                    <div><Button bsPrefix='btn-custom' type="reset" size="sm">{t('btn-clear', { ns: 'common' })}</Button></div>
+                    <div><Button bsPrefix='btn-custom' type="submit" size="sm">{t('btn-save', { ns: 'common' })}</Button></div>
                 </Stack>
             </Row>
         </Form>

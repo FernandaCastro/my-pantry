@@ -9,6 +9,7 @@ import com.fcastro.pantryservice.exception.PantryNotActiveException;
 import com.fcastro.pantryservice.exception.QuantityNotAvailableException;
 import com.fcastro.pantryservice.pantry.Pantry;
 import com.fcastro.pantryservice.pantry.PantryDto;
+import com.fcastro.pantryservice.pantry.PantryType;
 import com.fcastro.pantryservice.product.Product;
 import com.fcastro.pantryservice.product.ProductDto;
 import org.modelmapper.ModelMapper;
@@ -118,7 +119,9 @@ public class PantryItemService {
 
         itemEntity.setCurrentQty(itemEntity.getCurrentQty() - consumedDto.getQty());
 
-        itemEntity = processPurchaseNeed(itemEntity);
+        if (PantryType.RECURRING.value.equals(itemEntity.getPantry().getType())) {
+            itemEntity = processPurchaseNeed(itemEntity);
+        }
 
         repository.save(itemEntity);
         return convertToDTO(itemEntity);

@@ -11,8 +11,11 @@ import food from '../assets/images/healthy-food.png'
 import Stack from 'react-bootstrap/Stack';
 import { camelCase } from '../services/Utils.js';
 import useAlert from '../hooks/useAlert.js';
+import { useTranslation } from 'react-i18next';
 
-function PantryItemList({ pantryId, setIsEmpty}) {
+function PantryItemList({ pantryId, setIsEmpty }) {
+
+    const { t } = useTranslation(['pantry', 'common']);
 
     const [isLoading, setIsLoading] = useState(true);
     const [refresh, setRefresh] = useState(true);
@@ -30,7 +33,7 @@ function PantryItemList({ pantryId, setIsEmpty}) {
 
     useEffect(() => {
         filter(searchText);
-        setIsEmpty(!pantryItems ||  pantryItems.length === 0);
+        setIsEmpty(!pantryItems || pantryItems.length === 0);
     }, [pantryItems])
 
     async function fetchPantryItems() {
@@ -65,13 +68,13 @@ function PantryItemList({ pantryId, setIsEmpty}) {
 
     function handleRemove(item) {
         fetchDeletePantryItem(item.pantry.id, item.product.id)
-        showAlert(VariantType.SUCCESS, "Item removed successfully!");
+        showAlert(VariantType.SUCCESS, t('delete-item-success'));
         return
     }
 
     function handleSave(item) {
         fetchUpdatePantryItem(item);
-        //showAlert(VariantType.SUCCESS, "Item updated successfully!");
+        //showAlert(VariantType.SUCCESS, t('update-item-success'));
     }
 
     function renderItems() {
@@ -111,15 +114,15 @@ function PantryItemList({ pantryId, setIsEmpty}) {
 
     return (
         <div>
-            <Form.Control size="sm" type="text" id="search" className="form-control mb-1" value={searchText} placeholder="Seacrh for items here" onChange={(e) => filter(e.target.value)} />
+            <Form.Control size="sm" type="text" id="search" className="form-control mb-1" value={searchText} placeholder={t('placeholder-search-item', {ns: 'common'})} onChange={(e) => filter(e.target.value)} />
             <div className='scroll-pantryItems'>
                 <Table>
                     <thead>
                         <tr key="0:0" className="align-middle">
-                            <th><span className='title'>Code/Desc.</span></th>
-                            <th><span className='title'>Ideal</span></th>
-                            <th ><span className='title'>Current</span></th>
-                            <th className='ms-0 ps-0'><span className="title">Prov.</span></th>
+                            <th><span className='title'>{t('code-description', { ns: 'common' })}</span></th>
+                            <th><span className='title'>{t('ideal', { ns: 'common' })}</span></th>
+                            <th ><span className='title'>{t('current', { ns: 'common' })}</span></th>
+                            <th className='ms-0 ps-0'><span className="title">{t('provisioned', { ns: 'common' })}</span></th>
                             <th className='ms-0 ps-0 me-2 pe-2'><span /></th>
                         </tr>
                     </thead>

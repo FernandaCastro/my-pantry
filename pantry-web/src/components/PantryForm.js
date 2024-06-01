@@ -5,18 +5,20 @@ import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
 import { useState, useEffect } from 'react';
 import Select from './Select';
-//import Select from 'react-select';
+import { useTranslation } from 'react-i18next';
 
 export default function PantryForm({ pantry, handleSave, accountGroupOptions }) {
 
-    const [isActiveLabel, setIsActiveLabel] = useState(pantry.isActive ? "Active" : "Inactive");
+    const { t } = useTranslation(['pantry', 'common']);
+
+    const [isActiveLabel, setIsActiveLabel] = useState(pantry.isActive ? t('active') : t('inactive'));
     const [accountGroupOption, setAccountGroupOption] = useState({ value: 0, label: "" });
-    const [isLoading, setIsLoading] = useState(false);
+    const [isLoading] = useState(false);
     const [isProcessing, setIsProcessing] = useState(false);
-    const [id, setId] = useState(pantry.id);
-    const [typeOptions, setTypeOptions] = useState([
-        { value: "R", label: "Recurring" },
-        { value: "N", label: "No Recurring" },
+    const [id] = useState(pantry.id);
+    const [typeOptions] = useState([
+        { value: "R", label: t('type-recurring') },
+        { value: "N", label: t('type-no-recurring') },
     ]);
     const [typeOption, setTypeOption] = useState({ value: "", label: "" });
 
@@ -88,11 +90,11 @@ export default function PantryForm({ pantry, handleSave, accountGroupOptions }) 
             </Row>
             <Row>
                 <Form.Group className="mb-2 w-25" controlId="formId">
-                    <Form.Label size="sm" className="mb-1 title">Id</Form.Label>
+                    <Form.Label size="sm" className="mb-1 title">{t('id', { ns: 'common' })}</Form.Label>
                     <Form.Control size="sm" className="mb-1 input-custom" type="text" name="id" defaultValue={id} disabled />
                 </Form.Group>
                 <Form.Group as={Col} className="mb-2" controlId="formName">
-                    <Form.Label size="sm" className="mb-1 title">Name</Form.Label>
+                    <Form.Label size="sm" className="mb-1 title">{t('name', { ns: 'common' })}</Form.Label>
                     <Form.Control size="sm" className="mb-1 input-custom" type="text" name="name" defaultValue={pantry.name} />
                 </Form.Group>
             </Row>
@@ -102,11 +104,11 @@ export default function PantryForm({ pantry, handleSave, accountGroupOptions }) 
                     <Form.Check size="sm" className="mb-1 title"
                         name="isActive"
                         defaultChecked={pantry.isActive}
-                        onClick={e => setIsActiveLabel(e.target.checked ? "Active" : "Inactive")}
+                        onClick={e => setIsActiveLabel(e.target.checked ? t("active") : t("inactive"))}
                         label={isActiveLabel} />
                 </Form.Group>
                 <Form.Group as={Col} className="mb-2" controlId="formType">
-                    <Form.Label size="sm" className="mb-1 title">Type</Form.Label>
+                    <Form.Label size="sm" className="mb-1 title">{t('type')}</Form.Label>
                     <Select name="type" key={typeOption.value}
                         defaultValue={typeOption}
                         options={typeOptions}
@@ -115,8 +117,8 @@ export default function PantryForm({ pantry, handleSave, accountGroupOptions }) 
             </Row>
             <Row>
                 <Stack direction="horizontal" gap={2} className="mb-3 d-flex justify-content-end">
-                    <Button bsPrefix='btn-custom' type="reset" size="sm" disabled={isProcessing}>Clear</Button>
-                    <Button bsPrefix='btn-custom' type="submit" size="sm" disabled={isProcessing}>Save</Button>
+                    <Button bsPrefix='btn-custom' type="reset" size="sm" disabled={isProcessing}>{t('btn-clear', { ns: 'common' })}</Button>
+                    <Button bsPrefix='btn-custom' type="submit" size="sm" disabled={isProcessing}>{t('btn-save', { ns: 'common' })}</Button>
                 </Stack>
             </Row>
         </Form>

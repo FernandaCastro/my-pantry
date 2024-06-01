@@ -14,13 +14,13 @@ export async function getOpenPurchaseOrder(pantryIds) {
 export async function getPendingPurchaseItems(pantryIds, supermarket) {
     return !supermarket || supermarket === '' || supermarket === '-' ?
         FetchPurchase(`purchases/items?pantryIds=${pantryIds}`, "GET") :
-        FetchPurchase(`purchases/items?pantryIds=${pantryIds}&supermarket=${supermarket}`, "GET");
+        FetchPurchase(`purchases/items?pantryIds=${pantryIds}&supermarketId=${supermarket}`, "GET");
 }
 
 export async function getPurchaseItems(id, pantryIds, supermarket) {
     return !supermarket || supermarket === '' || supermarket === '-' ?
         FetchPurchase(`purchases/${id}/items?pantryIds=${pantryIds}`, "GET") :
-        FetchPurchase(`purchases/${id}/items?pantryIds=${pantryIds}&supermarket=${supermarket}`, "GET");
+        FetchPurchase(`purchases/${id}/items?pantryIds=${pantryIds}&supermarketId=${supermarket}`, "GET");
 }
 
 export async function postNewPurchaseOrder(pantryIds) {
@@ -37,4 +37,22 @@ export async function getProperty(key) {
 
 export async function getAllProperty(key) {
     return FetchPurchase(`properties?key=${key}`, "GET");
+}
+
+export async function getAllSupermarkets() {
+    return FetchPurchase(`supermarkets/all`, "GET");
+}
+
+export async function getSupermarketsByGroup(groupId) {
+    return FetchPurchase(`supermarkets?groupId=${groupId}`, "GET");
+}
+
+export async function updateSupermarket(supermaketId, body) {
+    return FetchPurchase(`supermarkets/${supermaketId}`, "PUT", body);
+}
+export async function createSupermarket(body) {
+    return FetchPurchase(`supermarkets`, "POST", body);
+}
+export async function deleteSupermarket(supermaketId) {
+    return FetchPurchase(`supermarkets/${supermaketId}`, "DELETE");
 }

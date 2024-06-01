@@ -7,9 +7,11 @@ import VariantType from '../components/VariantType.js';
 import useAlert from '../hooks/useAlert.js';
 import { BsPencil, BsTrash } from "react-icons/bs";
 import Modal from 'react-bootstrap/Modal';
+import { useTranslation } from 'react-i18next';
 
 export default function Pantries() {
 
+    const { t } = useTranslation(['pantry', 'common']);
     const [pantries, setPantries] = useState([]);
     const [refresh, setRefresh] = useState(true);
 
@@ -40,7 +42,7 @@ export default function Pantries() {
         try {
             await deletePantry(id);
             setRefresh(true);
-            showAlert(VariantType.SUCCESS, "Pantry removed successfully!");
+            showAlert(VariantType.SUCCESS, t('delete-success'));
         } catch (error) {
             showAlert(VariantType.DANGER, error.message);
         }
@@ -95,8 +97,8 @@ export default function Pantries() {
             <Stack gap={3}>
                 <div></div>
                 <div className="d-flex justify-content-between align-items-center">
-                    <h6 className='title'>Pantry List</h6>
-                    <Button bsPrefix='btn-custom' size="sm" href={"/pantries/new"} className="pe-2 ps-2">New Pantry</Button>
+                    <h6 className='title'>{t('pantry-list-title')}</h6>
+                    <Button bsPrefix='btn-custom' size="sm" href={"/pantries/new"} className="pe-2 ps-2">{t('btn-new-pantry')}</Button>
                 </div>
                 <div>
                     {renderItems()}
@@ -105,12 +107,12 @@ export default function Pantries() {
             <Modal className='custom-alert' size='sm' show={showModal} onHide={() => setShowModal(false)} >
                 <Modal.Body className='custom-alert-body pb-0'>
                     <span className='title text-center'>
-                        Do you really want to delete this pantry and all its items?
+                        {t('delete-pantry-alert')}
                     </span>
                 </Modal.Body>
                 <Modal.Footer className='custom-alert-footer p-2'>
-                    <Button bsPrefix='btn-custom' size='sm' onClick={handleRemove}>Yes</Button>
-                    <Button bsPrefix='btn-custom' size='sm' onClick={() => setShowModal(false)}>No</Button>
+                    <Button bsPrefix='btn-custom' size='sm' onClick={() => setShowModal(false)}>{t('btn-no', {ns: 'common}'})}</Button>
+                    <Button bsPrefix='btn-custom' size='sm' onClick={handleRemove}>{t('btn-yes', {ns: 'common}'})}</Button>
                 </Modal.Footer>
             </Modal >
 
