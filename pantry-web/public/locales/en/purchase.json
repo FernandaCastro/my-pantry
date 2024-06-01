@@ -1,0 +1,22 @@
+{
+  "pantry-title": "Pantries",
+  "purchase-order-title": "Shopping Lits",
+  "purchase-order-pending": "Pending Items",
+  "purchase-order-open": "Open Shopping List",
+  "purchase-order-closed": "Closed Shopping List",
+  "btn-refresh": "Refresh",
+  "btn-new-order": "New Order",
+  "btn-checkout": "Checkout",
+  "placeholder-select-supermarket": "Sort by Supermarket?",
+  "no-item-to-purchase": "No item to purchase at the moment.",
+  "purchase-order-empty": "This Shopping List is empty.",
+  "create-purchase-order-success": "Shopping List created successfully!",
+  "close-purchase-order-success": "Shopping List closed successfully!",
+  "id-status": "Id - Status",
+  "createdAt": "Created at",
+  "checkoutAt": "Checkout at",
+  "other": "Other",
+  "supermarket-alphabetically": "Alphabetically",
+  "closed": "Closed",
+  "open": "Open"
+}

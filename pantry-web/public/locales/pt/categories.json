@@ -1,0 +1,15 @@
+{
+  "bakery": "Padaria",
+  "beverages": "Bebidas",
+  "cleaning": "Limpeza",
+  "cookies": "Biscoitos",
+  "dairy": "Laticíneos",
+  "frozen": "Congelados",
+  "fruit-and-vegetables": "Frutas e Verduras",
+  "grocery": "Mercearia",
+  "meat": "Carnes",
+  "other": "Outros",
+  "personal-hygiene": "Higiene Pessoal",
+  "refrigerated": "Refrigerado",
+  "wine": "Vinhos"
+}

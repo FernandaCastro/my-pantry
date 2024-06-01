@@ -1,0 +1,5 @@
+{
+  "consume-title": "Consume from Pantry",
+  "fetch-pantry-empty-alert": "Pantry is empty. There is no item to consume.",
+  "consume-item-success": "Item consumed successfully!"
+}

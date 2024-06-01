@@ -1,0 +1,12 @@
+{
+  "settings": "Settings:",
+  "edit-account-link": "Edit Account",
+  "group-members-link": "Groups & Members",
+  "btn-logout": "Logout",
+  "tooltip-login": "Login",
+  "tooltip-consume": "Consume Items",
+  "tooltip-purchase": "Shopping List",
+  "tooltip-pantries": "Pantries",
+  "tooltip-products": "Products",
+  "tooltip-supermarkets": "Supermarkets"
+}

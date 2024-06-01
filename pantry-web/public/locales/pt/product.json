@@ -1,0 +1,22 @@
+{
+  "search-product-title": "Adicionar Produto à Despensa",
+  "product-list-title": "Produtos",
+  "placeholder-search-product": "Busque produtos aqui",
+  "placeholder-code": "Leite",
+  "placeholder-size": "1L",
+  "placeholder-description": "Integral",
+  "tooltip-btn-search-clear": "Limpar texto",
+  "tooltip-btn-new": "Criar Novo produto",
+  "tooltip-add-to-pantry": "Adicionar à Despensa",
+  "tooltip-switch-product-detail": "Mostrar Detalhes do Produto",
+  "tooltip-switch-account-group": "Mostre Grupo da Conta",
+  "create-add-product-to-pantry-success'": "Produto adicionado à Despensa com sucesso!",
+  "save-product-success": "Produto salvo com sucesso!",
+  "delete-product-success": "Produto removido com sucesso!",
+  "fetch-categories-error": "Não foi possível carregar as categorias: ",
+  "btn-new-product": "Criar Produto",
+  "code": "Código/Nome",
+  "size": "Tamanho",
+  "category": "Categoria",
+  "description": "Descrição"
+}

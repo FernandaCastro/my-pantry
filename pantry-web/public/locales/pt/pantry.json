@@ -1,0 +1,20 @@
+{
+  "pantry-list-title": "Lista de Despensas",
+  "create-pantry-success": "Despensa criada com sucesso!",
+  "delete-pantry-success": "Despensa removida com sucesso!",
+  "delete-pantry-alert": "Você realmente deseja remover esta despensa e todos os seus items?",
+  "update-pantry-success": "Despensa alterada com sucesso!",
+  "balance-success": "Despensa analisada com sucesso!",
+  "add-item-success": "Item adicionado com sucesso!",
+  "delete-item-success": "Item removido com sucesso!",
+  "update-item-success": "Item alterado com sucesso!",
+  "pantry-title": "Detalhes da Despensa",
+  "active": "Ativa",
+  "inactive": "Inativa",
+  "type": "Tipo",
+  "type-recurring": "Recorrente",
+  "type-no-recurring": "Não Recorrente",
+  "btn-new-pantry": "Criar Pantry",
+  "btn-balance-inventtory": "Analisar o estoque",
+  "tooltip-balance-inventory": "Analisar e provisionar itens"
+}
