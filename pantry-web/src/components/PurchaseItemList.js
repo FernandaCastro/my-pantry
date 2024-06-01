@@ -186,7 +186,7 @@ export default function PurchaseItemList({ purchase, selectedPantries, setOuterP
 
         purchaseItems.forEach((i) => {
             if (category !== i.product.category) {
-                
+
                 category = i.product.category;
                 var found = categories.find(c => c.id == category);
 
@@ -254,7 +254,7 @@ export default function PurchaseItemList({ purchase, selectedPantries, setOuterP
                         <td className="highlight" colSpan={4}>
                             <div className="category">
                                 <Button variant="link" aria-controls={category} onClick={() => handleExpansion(category)}><BsArrow90DegRight className='icon' /></Button>
-                                <h6 className='title' style={{ color: !isSupermarketCategory(category) ? "red" : "" }}>{!category || category === "" ? t("other") : t(category, { ns: 'categories' })}</h6>
+                                <h6 className='title' style={{ color: !isSupermarketCategory(category) ? "red" : "" }} data-title={!isSupermarketCategory(category) ? t('tooltip-category-not-associated-to-supermarket', { ns: "common" }) : null}>{!category || category === "" ? t("other") : t(category, { ns: 'categories' })}</h6>
                             </div>
                         </td>
                     </tr>

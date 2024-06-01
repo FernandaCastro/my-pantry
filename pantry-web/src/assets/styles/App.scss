@@ -1,6 +1,5 @@
 $background: lavender;
-$border-color: #909df4;
-
+// $border-color: #909df4;
 $border-color: #c5cbfb;
 
 $btn-background-color: #6c66d8;
@@ -675,8 +674,37 @@ div.scroll-supermarkets {
     }
 }
 
-div[disabled]
-{
-  pointer-events: none; 
-  opacity: 0.7;
+div[disabled] {
+    pointer-events: none;
+    opacity: 0.7;
+}
+
+[data-title]:hover:after {
+    opacity: 1;
+    transition: all 0.1s ease 0.5s;
+    visibility: visible;
+}
+
+[data-title]:after {
+    content: attr(data-title);
+
+    position: absolute;
+    padding: 1px 5px 2px 5px;
+    bottom: -1.6em;
+    left: 100%;
+    white-space: nowrap;
+    opacity: 0;
+    border: 1px solid $border-color;
+    z-index: 99999;
+    visibility: hidden;
+
+    background-color: $btn-background-color;
+    color: #fff;
+    border-radius: 5px;
+    font-size: medium;
+    font-weight: 400;
+}
+
+[data-title] {
+    position: relative;
 }
