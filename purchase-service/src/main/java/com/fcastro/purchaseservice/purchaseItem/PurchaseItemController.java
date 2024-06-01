@@ -21,14 +21,14 @@ public class PurchaseItemController {
 
     @GetMapping("/items")
     @PreAuthorize("hasPermissionInObjectList('Pantry', #pantryIds, 'purchase_pantry')")
-    public ResponseEntity<List<PurchaseItemDto>> listPendingPurchase(@P("pantryIds") @RequestParam Set<Long> pantryIds, @RequestParam(required = false) String supermarket) {
-        return ResponseEntity.ok(service.listPendingPurchaseByCategory(SecurityContextHolder.getContext().getAuthentication().getName(), pantryIds, supermarket));
+    public ResponseEntity<List<PurchaseItemDto>> listPendingPurchase(@P("pantryIds") @RequestParam Set<Long> pantryIds, @RequestParam(required = false) Long supermarketId) {
+        return ResponseEntity.ok(service.listPendingPurchaseByCategory(SecurityContextHolder.getContext().getAuthentication().getName(), pantryIds, supermarketId));
     }
 
     @GetMapping("/{id}/items")
     @PreAuthorize("hasPermissionInObjectList('Pantry', #pantryIds, 'purchase_pantry')")
-    public ResponseEntity<List<PurchaseItemDto>> listPurchase(@PathVariable Long id, @P("pantryIds") @RequestParam Set<Long> pantryIds, @RequestParam(required = false) String supermarket) {
-        return ResponseEntity.ok(service.listPurchaseByCategory(id, supermarket));
+    public ResponseEntity<List<PurchaseItemDto>> listPurchase(@PathVariable Long id, @P("pantryIds") @RequestParam Set<Long> pantryIds, @RequestParam(required = false) Long supermarketId) {
+        return ResponseEntity.ok(service.listPurchaseByCategory(id, supermarketId));
     }
 
 }

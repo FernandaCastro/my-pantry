@@ -12,9 +12,6 @@ import { useTranslation } from 'react-i18next';
 export default function Login() {
 
     const { t } = useTranslation(['login', 'common']);
-    // <h2>{t('Welcome.text')}</h2>
-    // <p>{t('interpolation_pluralization.text', { count: 5 })}</p>
-    // <p>{t('date', { date: new Date() })}</p>
 
     const navigate = useNavigate();
     const { profileCtx, setProfileCtx } = useContext(ProfileContext);

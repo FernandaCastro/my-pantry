@@ -45,7 +45,7 @@ export function LoginWithGoogle({ handlePostLogin }) {
     return <div ref={GoogleSignInButton}></div>;
 }
 
-export function LogoutFromGoogle({ handleLogout }) {
+export function LogoutFromGoogle({ handleLogout , text}) {
 
     useEffect(() => {
         window.google = undefined;
@@ -56,5 +56,5 @@ export function LogoutFromGoogle({ handleLogout }) {
         window.google.accounts.id.disableAutoSelect();
     });
 
-    return <Button bsPrefix='btn-custom' onClick={handleLogout}>Logout</Button>
+    return <Button bsPrefix='btn-custom' onClick={handleLogout}>{text}</Button>
 }

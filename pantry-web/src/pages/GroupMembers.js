@@ -5,7 +5,7 @@ import VariantType from '../components/VariantType.js';
 import {
     getAccountGroupList, createAccountGroup, editAccountGroup,
     deleteAccountGroup, getAccountGroupMemberList, addAccountMember,
-    deleteAccountMember, getRoles
+    deleteAccountMember
 } from '../services/apis/mypantry/requests/AccountRequests.js';
 import Table from 'react-bootstrap/Table';
 import { BsPencil, BsTrash, BsCheck2All, BsXLg } from "react-icons/bs";
@@ -15,9 +15,11 @@ import Modal from 'react-bootstrap/Modal';
 import { getAssociatedPantries } from '../services/apis/mypantry/requests/PantryRequests.js'
 import useAlert from '../hooks/useAlert.js';
 import PermissionsView from '../components/PermissionsView.js'
-import { camelCase } from '../services/Utils.js'
+import { useTranslation } from 'react-i18next';
 
 function GroupMembers() {
+
+    const { t } = useTranslation(['group-members', 'common']);
 
     const [refresh, setRefresh] = useState(true);
     const [refreshMembers, setRefreshMembers] = useState(false);
@@ -91,7 +93,7 @@ function GroupMembers() {
         try {
             setIsLoading(true);
             await createAccountGroup(group);
-            showAlert(VariantType.SUCCESS, "Group updated successfully!");
+            showAlert(VariantType.SUCCESS, t("create-group-success"));
         } catch (error) {
             showAlert(VariantType.DANGER, error.message);
         } finally {
@@ -104,7 +106,7 @@ function GroupMembers() {
         try {
             setIsLoading(true);
             await editAccountGroup(group);
-            showAlert(VariantType.SUCCESS, "Group updated successfully!");
+            showAlert(VariantType.SUCCESS, t("update-group-success"));
         } catch (error) {
             showAlert(VariantType.DANGER, error.message);
         } finally {
@@ -117,7 +119,7 @@ function GroupMembers() {
         try {
             setIsLoading(true);
             await deleteAccountGroup(groupId);
-            showAlert(VariantType.SUCCESS, "Group removed successfully!");
+            showAlert(VariantType.SUCCESS,  t("delete-group-success"));
         } catch (error) {
             showAlert(VariantType.DANGER, error.message);
         } finally {
@@ -131,7 +133,7 @@ function GroupMembers() {
             setIsLoading(true);
             setRefreshMembers(false);
             await addAccountMember(accountMember);
-            showAlert(VariantType.SUCCESS, "Member added successfully!");
+            showAlert(VariantType.SUCCESS, t("add-member-success"));
         } catch (error) {
             showAlert(VariantType.DANGER, error.message);
         } finally {
@@ -145,7 +147,7 @@ function GroupMembers() {
             setIsLoading(true);
             setRefreshMembers(false);
             await deleteAccountMember(groupId, accountId);
-            showAlert(VariantType.SUCCESS, "Member removed successfully!");
+            showAlert(VariantType.SUCCESS, t("delete-member-success"));
         } catch (error) {
             showAlert(VariantType.DANGER, error.message);
         } finally {
@@ -223,7 +225,7 @@ function GroupMembers() {
                             onChange={() => setSelectedGroup(item)} style={{ color: "hsl(219, 11%, 25%)" }}
                             label={item.name} />
                         </td>
-                        <td><span>{!item.parentAccountGroup ? "parent" : "child"}</span></td>
+                        <td><span>{!item.parentAccountGroup ? t('parent') : t('child')}</span></td>
                         <td>
                             <Stack direction="horizontal" gap={1} className="d-flex justify-content-end">
                                 <div><Button onClick={() => setEditGroup(item.id)} variant="link"><BsPencil className='icon' /></Button></div>
@@ -271,7 +273,7 @@ function GroupMembers() {
                 <td >
                     <span>{item.account.name}</span></td>
                 <td >
-                    <span>{camelCase(item.role.name)}</span></td>
+                    <span>{t(item.role.name.toLowerCase())}</span></td>
                 <td>
                     <Stack direction="horizontal" gap={1} className="d-flex justify-content-end">
                         <div><Button onClick={() => handleRemoveMember(item.accountGroupId, item.accountId)} variant="link" disabled={members.length === 1}><BsTrash className='icon'/></Button></div>
@@ -287,9 +289,9 @@ function GroupMembers() {
             <Stack gap={4}>
                 <div></div>
                 <div className="d-flex align-items-center gap-2">
-                    <h6 className='title flex-grow-1'>Groups</h6>
-                    <Button bsPrefix="btn-custom" size="sm" onClick={() => setShowPermissionsView(!showPermissionsView)} className="pe-2 ps-2">View Permissions</Button>
-                    <Button bsPrefix="btn-custom" size="sm" onClick={() => setShowNewGroup(true)} className="pe-2 ps-2">New Group</Button>
+                    <h6 className='title flex-grow-1'>{t("groups-title")}</h6>
+                    <Button bsPrefix="btn-custom" size="sm" onClick={() => setShowPermissionsView(!showPermissionsView)} className="pe-2 ps-2">{t("btn-view-permissions")}</Button>
+                    <Button bsPrefix="btn-custom" size="sm" onClick={() => setShowNewGroup(true)} className="pe-2 ps-2">{t("btn-create-group")}</Button>
                 </div>
                 <div>
                     {renderGroups()}
@@ -298,20 +300,20 @@ function GroupMembers() {
                     <AccountSearchBar key={selectedGroup.id} handleSelectAction={handleAddMember} disabled={selectedGroup.id === 0} />
                 </div>
                 <div>
-                    <h6 className='title'>Members</h6>
+                    <h6 className='title'>{t("members-title")}</h6>
                     {renderMembers()}
                 </div>
                 <div hidden={!showPermissionsView}>
-                    <h6 className='title pb-3'>Permissions</h6>
+                    <h6 className='title pb-3'>{t("permissions-title")}</h6>
                     <PermissionsView />
                 </div>
             </Stack>
             <Modal className='custom-alert' size='sm' show={showModal} onHide={() => setShowModal(false)} >
                 <Modal.Body className='custom-alert-body pb-0'>
                     <span className='title text-small'>
-                        <b>Group cannot be deleted.</b>
+                        <b>{t("delete-group-alert-header")}</b>
                         <br />
-                        There is at least one pantry associated to this group.
+                        {t("delete-group-alert-body")}
                         <br />
                     </span>
                     <ul className='pt-2'>
@@ -320,7 +322,7 @@ function GroupMembers() {
                 </Modal.Body>
                 <Modal.Footer className='custom-alert-footer p-2'>
                     <Button bsPrefix='btn-custom' size='sm' onClick={() => setShowModal(false)}>
-                        Close
+                        {t("close")}
                     </Button>
                 </Modal.Footer>
             </Modal >

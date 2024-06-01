@@ -7,8 +7,11 @@ import VariantType from '../components/VariantType.js';
 import useAlert from '../hooks/useAlert.js';
 import { ProfileContext } from '../services/context/AppContext';
 import { getAccount, updateAccount } from '../services/apis/mypantry/requests/AccountRequests';
+import { useTranslation } from 'react-i18next';
 
 export default function Register({ mode }) {
+
+    const { t } = useTranslation(['login', 'common']);
 
     const navigate = useNavigate();
     const { showAlert } = useAlert();
@@ -82,24 +85,24 @@ export default function Register({ mode }) {
 
         if (name === 'name') {
             if (!value || value.length === 0) {
-                error = 'Please enter a valid name.';
+                error = t("name-invalid");
                 isValid = false;
             }
         }
 
         else if (name === 'email') {
             if (!value || !/\S+@\S+\.\S+/.test(value)) {
-                error = 'Please enter a valid email address.';
+                error = t("email-invalid");
                 isValid = false;
             }
         }
 
         else if (name === 'password') {
             if (!value) {
-                error = 'Password is required';
+                error = t("password-invalid-required");
                 isValid = false;
             } else if (value.length < 6) {
-                error = 'Password must be at least 6 characters long.';
+                error = t("password-invalid-length")
                 isValid = false;
             }
         }
@@ -107,24 +110,24 @@ export default function Register({ mode }) {
 
         else if (name === 'confirmPassword') {
             if (!value) {
-                error = 'Repeat the password';
+                error = t("confirm-password-invalid-required");
                 isValid = false;
             } else if (value !== account.password) {
-                error = 'Passwords do not match.';
+                error = t("confirm-password-invalid-not-match");
                 isValid = false;
             }
         }
 
         else if (name === 'passwordQuestion') {
             if (!value || value.length === 0) {
-                error = 'Please enter a question to be used when resetting your password.';
+                error = t("password-question-invalid");
                 isValid = false;
             }
         }
 
         else if (name === 'passwordAnswer') {
             if (!value || value.length === 0) {
-                error = ' Please enter the answer to be used when resetting your password.';
+                error = t("password-answer-invalid");
                 isValid = false;
             }
         }
@@ -195,7 +198,7 @@ export default function Register({ mode }) {
 
             try {
                 await register(account);
-                showAlert(VariantType.SUCCESS, "Your Account has been successfully created. Redirecting to Login page...");
+                showAlert(VariantType.SUCCESS, t("create-account-success"));
                 await wait(3000);
                 navigate('/login');
             } catch (error) {
@@ -212,7 +215,7 @@ export default function Register({ mode }) {
             setIsProcessing(true);
             try {
                 await updateAccount(account);
-                showAlert(VariantType.SUCCESS, "Your Account has been successfully updated.");
+                showAlert(VariantType.SUCCESS, t("update-account-success"));
 
             } catch (error) {
                 showAlert(VariantType.DANGER, error.message);
@@ -250,13 +253,13 @@ export default function Register({ mode }) {
     return (
         <div>
             <div className='centralized-header-box'>
-                <h6 className='bigger-title'>{mode === 'new' ? 'New Account' : 'Edit Account'}</h6>
+                <h6 className='bigger-title'>{mode === 'new' ? t("new-account-title") : t("edit-account-title")}</h6>
             </div>
             <div className='centralized-box'>
                 <Form key={refresh} onSubmit={handleSubmit} className='w-100' noValidate>
 
                     <Form.Group className="mb-2" controlId="formId">
-                        <Form.Label size="sm" className="mb-0 title">Your Name</Form.Label>
+                        <Form.Label size="sm" className="mb-0 title">{t("name")}</Form.Label>
                         <Form.Control type="text" name="name" defaultValue={account.name}
                             required
                             isInvalid={!account.name || account.name.length === 0}
@@ -269,7 +272,7 @@ export default function Register({ mode }) {
                     </Form.Group>
 
                     <Form.Group className="mb-2" controlId="formId">
-                        <Form.Label size="sm" className="mb-0 title">Email</Form.Label>
+                        <Form.Label size="sm" className="mb-0 title">{t("email")}</Form.Label>
                         <Form.Control type="text" name="email" defaultValue={account.email}
                             required
                             isInvalid={!account.email || !/\S+@\S+\.\S+/.test(account.email)}
@@ -282,7 +285,7 @@ export default function Register({ mode }) {
                     </Form.Group>
 
                     <Form.Group className="mb-2" controlId="formId">
-                        <Form.Label size="sm" className="mb-0 title">Password*</Form.Label>
+                        <Form.Label size="sm" className="mb-0 title">{t("password")}</Form.Label>
                         <Form.Control type="password" name="password" defaultValue={account.password}
                             required
                             minLength={6}
@@ -295,7 +298,7 @@ export default function Register({ mode }) {
                         </Form.Control.Feedback>
                     </Form.Group>
                     <Form.Group className="mb-2" controlId="formId">
-                        <Form.Label size="sm" className="mb-0 title">Confirm Password*</Form.Label>
+                        <Form.Label size="sm" className="mb-0 title">{t("confirm-password")}</Form.Label>
                         <Form.Control type="password" name="confirmPassword" defaultValue={account.confirmPassword}
                             required
                             minLength={6}
@@ -309,7 +312,7 @@ export default function Register({ mode }) {
                         </Form.Control.Feedback>
                     </Form.Group>
                     <Form.Group className="mb-2" controlId="formId">
-                        <Form.Label size="sm" className="mb-0 title">Reset Question*</Form.Label>
+                        <Form.Label size="sm" className="mb-0 title">{t("reset-question")}</Form.Label>
                         <Form.Control type="text" name="passwordQuestion" defaultValue={account.passwordQuestion}
                             required
                             isInvalid={!account.passwordQuestion || account.passwordQuestion.length === 0}
@@ -321,7 +324,7 @@ export default function Register({ mode }) {
                         </Form.Control.Feedback>
                     </Form.Group>
                     <Form.Group className="mb-2" controlId="formId">
-                        <Form.Label size="sm" className="mb-0 title">Reset Answer*</Form.Label>
+                        <Form.Label size="sm" className="mb-0 title">{t("reset-answer")}</Form.Label>
                         <Form.Control type="text" name="passwordAnswer" defaultValue={account.passwordAnswer}
                             required
                             isInvalid={!account.passwordAnswer || account.passwordAnswer.length === 0}
@@ -335,8 +338,8 @@ export default function Register({ mode }) {
                     </Form.Group>
 
                     <div className="d-flex justify-content-end gap-1 pt-2 pb-2">
-                        <Button bsPrefix='btn-custom' onClick={clearAccount} size="sm" >Clear</Button>
-                        <Button bsPrefix='btn-custom' type="submit" size="sm" disabled={!isFormValid}>{mode === 'new' ? 'Create Account' : 'Save'} </Button>
+                        <Button bsPrefix='btn-custom' onClick={clearAccount} size="sm" >{ t("btn-clear", { ns: "common"})}</Button>
+                        <Button bsPrefix='btn-custom' type="submit" size="sm" disabled={!isFormValid}>{mode === 'new' ? t("btn-create-account") : t("btn-save", {ns: "common"})} </Button>
                     </div>
                 </Form>
             </div>

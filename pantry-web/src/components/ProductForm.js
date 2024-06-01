@@ -10,9 +10,9 @@ import { useTranslation } from 'react-i18next';
 
 export default function ProductForm({ product, accountGroupId, categories, accountGroupOptions, handleSave }) {
 
-    const { t } = useTranslation(['product', 'common']);
+    const { t } = useTranslation(['product', 'common', 'categories']);
 
-    const [categoryOption, setCategoryOption] = useState({ value: product.category, label: product.category });
+    const [categoryOption, setCategoryOption] = useState({ value: product.category, label: t(product.category, {ns: 'categories'}) });
     const [categoryList, setCategoryList] = useState([{}]);
     const [accountGroupOption, setAccountGroupOption] = useState({ value: 0, label: "" });
 
@@ -43,7 +43,7 @@ export default function ProductForm({ product, accountGroupId, categories, accou
                 list = [...list,
                 {
                     value: category,
-                    label: category
+                    label: t(category, {ns: 'categories'})
                 }]
             });
 

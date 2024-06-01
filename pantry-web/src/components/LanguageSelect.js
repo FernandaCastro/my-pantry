@@ -1,4 +1,3 @@
-import { Navbar } from 'react-bootstrap';
 import brFlag from '../assets/images/flags/br.svg'
 import ukFlag from '../assets/images/flags/uk.svg'
 import { useState, useEffect } from 'react';

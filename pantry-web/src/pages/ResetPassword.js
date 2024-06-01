@@ -1,13 +1,16 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router';
 import { Button } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import Form from 'react-bootstrap/Form';
 import VariantType from '../components/VariantType.js';
 import useAlert from '../hooks/useAlert.js';
-import { postResetPassword, getResetPassword, updateAccount } from '../services/apis/mypantry/requests/AccountRequests';
+import { postResetPassword, getResetPassword } from '../services/apis/mypantry/requests/AccountRequests';
+import { useTranslation } from 'react-i18next';
 
 export default function ResetPassword() {
+
+    const { t } = useTranslation(['login', 'common']);
 
     const navigate = useNavigate();
     const { showAlert } = useAlert();
@@ -38,34 +41,34 @@ export default function ResetPassword() {
 
         if (name === 'email') {
             if (!value || !/\S+@\S+\.\S+/.test(value)) {
-                error = 'Please enter a valid email address.';
+                error = t("email-invalid");
                 validated = false;
             }
         }
 
         else if (name === 'passwordAnswer') {
             if (!value || value.length === 0) {
-                error = ' Please enter the answer for the question above.';
+                error = t("password-answer-invalid");
                 validated = false;
             }
         }
 
         else if (name === 'password') {
             if (!value) {
-                error = 'Password is required';
+                error = t("password-invalid-required");
                 validated = false;
             } else if (value.length < 6) {
-                error = 'Password must be at least 6 characters long.';
+                error = t("password-invalid-length");
                 validated = false;
             }
         }
 
         else if (name === 'confirmPassword') {
             if (!value) {
-                error = 'Repeat the password';
+                error = t("confirm-password-invalid-required");
                 validated = false;
             } else if (value != account.password) {
-                error = 'Passwords do not match.';
+                error = t("confirm-password-invalid-not-match");
                 validated = false;
             }
         }
@@ -160,7 +163,7 @@ export default function ResetPassword() {
         try {
             setIsProcessing(true);
             await postResetPassword(account);
-            showAlert(VariantType.SUCCESS, "Password successfully updated. Please log in.")
+            showAlert(VariantType.SUCCESS, t("update-password-success"))
             navigate('/login');
         } catch (error) {
             showAlert(VariantType.DANGER, error.message);
@@ -192,12 +195,12 @@ export default function ResetPassword() {
     return (
         <>
             <div className='centralized-header-box'>
-                <h6 className='bigger-title'>Reset Password</h6>
+                <h6 className='bigger-title'>{t("reset-password-title")}</h6>
             </div>
             <div className='centralized-box'>
                 <Form key={refresh} onSubmit={handleSubmit} className='w-100'>
                     <Form.Group className="mb-2" controlId="formId">
-                        <Form.Label size="sm" className="mb-0 title">Email</Form.Label>
+                        <Form.Label size="sm" className="mb-0 title">{t("email")}</Form.Label>
                         <Form.Control type="text" name="email" defaultValue={account.email}
                             required
                             isInvalid={!account.email || !/\S+@\S+\.\S+/.test(account.email)}
@@ -211,13 +214,13 @@ export default function ResetPassword() {
                     </Form.Group>
 
                     <Form.Group className="mb-2" controlId="formId">
-                        <Form.Label size="sm" className="mb-0 title">Question</Form.Label>
+                        <Form.Label size="sm" className="mb-0 title">{t("reset-question")}</Form.Label>
                         <Form.Control type="text" name="passwordQuestion" defaultValue={account.passwordQuestion} disabled={true}
                             className="reset-question-field" />
                     </Form.Group>
 
                     <Form.Group className="mb-2" controlId="formId">
-                        <Form.Label size="sm" className="mb-0 title">Answer</Form.Label>
+                        <Form.Label size="sm" className="mb-0 title">{t("reset-answer")}</Form.Label>
                         <Form.Control type="password" name="passwordAnswer" defaultValue={account.passwordAnswer}
                             required
                             isInvalid={!account.passwordAnswer}
@@ -230,7 +233,7 @@ export default function ResetPassword() {
                     </Form.Group>
 
                     <Form.Group className="mb-2" controlId="formId">
-                        <Form.Label size="sm" className="mb-0 title">New Password</Form.Label>
+                        <Form.Label size="sm" className="mb-0 title">{t("new-password")}</Form.Label>
                         <Form.Control type="password" name="password" defaultValue={account.password}
                             required
                             minLength={6}
@@ -244,7 +247,7 @@ export default function ResetPassword() {
                     </Form.Group>
 
                     <Form.Group className="mb-2" controlId="formId">
-                        <Form.Label size="sm" className="mb-0 title">Repeat Password</Form.Label>
+                        <Form.Label size="sm" className="mb-0 title">{t("confirm-password")}</Form.Label>
                         <Form.Control type="password" name="confirmPassword" defaultValue={account.confirmPassword}
                             required
                             minLength={6}
@@ -259,8 +262,8 @@ export default function ResetPassword() {
                     </Form.Group>
 
                     <div className="d-flex justify-content-end gap-1 pt-2 pb-2">
-                        <Button bsPrefix='btn-custom' size="sm" onClick={clearAccount} disabled={!Object.keys(valid).length > 0}>Clear</Button>
-                        <Button bsPrefix="btn-custom" size="sm" type="submit" variant="link" disabled={!validForm}>Reset Password</Button>
+                        <Button bsPrefix='btn-custom' size="sm" onClick={clearAccount} disabled={!Object.keys(valid).length > 0}>{ t("btn-clear", { ns: "common"})}</Button>
+                        <Button bsPrefix="btn-custom" size="sm" type="submit" variant="link" disabled={!validForm}>{t("btn-reset-password")}</Button>
                     </div>
                 </Form>
             </div>
