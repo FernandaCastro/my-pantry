@@ -1,0 +1,21 @@
+{
+  "search-product-title": "Add Product to Pantry",
+  "product-list-title": "Products",
+  "placeholder-search-product": "Search for products here",
+  "placeholder-code": "Milk",
+  "placeholder-size": "1L",
+  "placeholder-description": "Whole",
+  "tooltip-btn-search-clear": "Clear search text",
+  "tooltip-btn-new": "Create new product",
+  "tooltip-add-to-pantry": "Add to Pantry",
+  "tooltip-switch-account-group": "Show Account Group",
+  "create-add-product-to-pantry-success'": "Product saved and added to Pantry successfully.",
+  "save-product-success": "Product saved successfully!",
+  "delete-product-success": "Product removed successfully!",
+  "fetch-categories-error": "Unable to load categories: ",
+  "btn-new-product": "New Product",
+  "code": "Code",
+  "size": "Size",
+  "category": "Category",
+  "description": "Description"
+}

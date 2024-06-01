@@ -1,0 +1,6 @@
+{
+  "consume-title": "Consumir da Despensa",
+  "fetch-pantry-empty-alert": "A Despensa está vazia. Não há item para consumir.",
+  "consume-item-success": "Item consumido com sucesso!",
+  "provisioned-date": "{{date, DATETIME_SHORT}}"
+}

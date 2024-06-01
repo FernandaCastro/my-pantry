@@ -1,0 +1,12 @@
+{
+  "settings": "Configuraçõess:",
+  "edit-account-link": "Editar Conta",
+  "group-members-link": "Grupos & Membros",
+  "btn-logout": "Sair",
+  "tooltip-login": "Fazer Login",
+  "tooltip-consume": "Consumir Itens da Despensa",
+  "tooltip-purchase": "Lista de Compra",
+  "tooltip-pantries": "Despensas",
+  "tooltip-products": "Produtos",
+  "tooltip-supermarkets": "Supermercados"
+}

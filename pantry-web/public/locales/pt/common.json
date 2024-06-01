@@ -1,0 +1,22 @@
+{
+  "app-name": "My Pantry",
+  "placeholder-search-items": "Busque itens aqui",
+  "btn-yes": "Sim",
+  "btn-no": "Não",
+  "btn-clear": "Limpar",
+  "btn-save": "Salvar",
+  "id": "Id",
+  "name": "Nome",
+  "code-description": "Código/Desc.",
+  "ideal": "Ideal",
+  "current": "Atual",
+  "provisioned": "Prov.",
+  "provisioned-on": "Prov. on",
+  "account-group": "Grupo",
+  "pantry": "Despensa",
+  "quantity": "Qty",
+  "tooltip-switch-product-detail": "Mostre detalhe do Produto",
+  "tooltip-switch-pantry": "Mostre Pantry",
+  "datetime": "{{date, DATETIME_SHORT}}",
+  "tooltip-category-not-associated-to-supermarket": "Seção não associada ao supermercado."
+}

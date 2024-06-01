@@ -1,0 +1,20 @@
+{
+  "pantry-list-title": "Pantry List",
+  "create-pantry-success": "Pantry successfully created!",
+  "delete-pantry-success": "Pantry removed successfully!",
+  "delete-pantry-alert": "Do you really want to delete this pantry and all its items?",
+  "update-pantry-success": "Pantry successfully updated!",
+  "balance-success": "Pantry rebalanced successfully!",
+  "add-item-success": "Item added successfully.",
+  "delete-item-success": "Item removed successfully!",
+  "update-item-success": "Item updated successfully!",
+  "pantry-title": "Pantry Details",
+  "active": "Active",
+  "inactive": "Inactive",
+  "type": "Type",
+  "type-recurring": "Recurring",
+  "type-no-recurring": "No Recurring",
+  "btn-new-pantry": "New Pantry",
+  "btn-balance-inventtory": "Balance Inventory",
+  "tooltip-btn-balance-inventory": "Analyse and provision items"
+}
