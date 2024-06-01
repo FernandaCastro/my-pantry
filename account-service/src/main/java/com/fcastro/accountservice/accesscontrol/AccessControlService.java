@@ -35,6 +35,22 @@ public class AccessControlService {
     }
 
     //Authorization method
+    //no Account Group hierarchy
+    public List<AccessControlDto> getAllByEmailAndAccessControlStrict(String email, String clazz, Long accountGroupId) {
+        if (email.isEmpty()) return List.of();
+
+        List<AccessControl> list = null;
+
+        //Email + Clazz + AccountGroup
+        if (clazz != null && !clazz.isEmpty() && accountGroupId != null) {
+            list = accessControlRepository.findAllByEmailAndClazzAndAccountGroupIdStrict(email, clazz, accountGroupId);
+        }
+
+        return list.stream().map(this::convertToDto).collect(Collectors.toList());
+    }
+
+
+    //Authorization method
     public List<AccessControlDto> getAllByEmailAndAccessControl(String email, String clazz, Long clazzId, Long accountGroupId, String permission) {
         if (email.isEmpty()) return List.of();
 

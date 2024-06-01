@@ -617,13 +617,66 @@ div.scroll-product {
 
 
 .items {
-    margin-top: 50px;
+    margin-top: 10px;
     padding-top: 10px;
     padding-bottom: 10px;
-    min-height: 150px;
+    min-height: 500px;
     min-width: 180px;
-    border: 0.5px solid gray;  
+    border: 0.5px solid gray;
     display: flex;
     flex-direction: column;
-    align-items: center; 
+    align-items: center;
+    flex-grow: 1;
+}
+
+div.scroll-categories {
+    overflow-y: auto;
+    border: 1px solid;
+    border-radius: 5px;
+    border-color: $border-color;
+
+    @media (max-height: 575px) {
+        max-height: 300px;
+    }
+
+    @media (min-height: 576px) {
+        max-height: 400px;
+    }
+
+    @media (min-height: 768px) {
+        max-height: 500px;
+    }
+
+    @media (min-height: 992px) {
+        max-height: 700px;
+    }
+}
+
+div.scroll-supermarkets {
+    overflow-y: auto;
+    border: 1px solid;
+    border-radius: 5px;
+    border-color: $border-color;
+
+    @media (min-height: 575px) {
+        max-height: 100px;
+    }
+
+    @media (min-height: 576px) {
+        max-height: 100px;
+    }
+
+    @media (min-height: 768px) {
+        max-height: 130px;
+    }
+
+    @media (min-height: 992px) {
+        max-height: 300px;
+    }
+}
+
+div[disabled]
+{
+  pointer-events: none; 
+  opacity: 0.7;
 }

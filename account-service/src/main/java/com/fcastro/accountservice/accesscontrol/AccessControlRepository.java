@@ -72,6 +72,19 @@ public interface AccessControlRepository extends JpaRepository<AccessControl, Ac
     @Query("select distinct acc " +
             "from accountGroupMember gm," +
             "account ac, " +
+            "accountGroup ag, " +
+            "accessControl acc " +
+            "where ac.id = gm.account.id " +
+            "and ag.id = gm.accountGroup.id " +
+            "and ac.email = :email " +
+            "and acc.clazz = :clazz " +
+            "and acc.accountGroup.id = :accountGroupId " +
+            "and acc.accountGroup.id = ag.id ")
+    List<AccessControl> findAllByEmailAndClazzAndAccountGroupIdStrict(String email, String clazz, Long accountGroupId);
+
+    @Query("select distinct acc " +
+            "from accountGroupMember gm," +
+            "account ac, " +
             "accessControl acc, " +
             "role role " +
             "JOIN role.permissions per " +

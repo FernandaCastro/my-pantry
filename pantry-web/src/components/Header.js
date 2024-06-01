@@ -9,6 +9,8 @@ import iconPurchase from '../assets/images/shoppingcart-gradient.png';
 import iconProduct from '../assets/images/food-gradient.png';
 import iconPantry from '../assets/images/cupboard-gradient.png';
 import iconMenu from '../assets/images/menu-gradient.png';
+import iconSupermarket from '../assets/images/supermarket-gradient.png';
+
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Tooltip from 'react-bootstrap/Tooltip';
 import AccountMenu from './AccountMenu.js';
@@ -74,9 +76,9 @@ export default function Header() {
                             </Nav.Link>
                             </Nav.Item>
                         </OverlayTrigger>
-                        <OverlayTrigger placement="bottom" delay={{ show: 250, hide: 400 }} overlay={<Tooltip className="custom-tooltip">{t("tooltip-products")}</Tooltip>}>
+                        <OverlayTrigger placement="bottom" delay={{ show: 250, hide: 400 }} overlay={<Tooltip className="custom-tooltip">{t("tooltip-supermarkets")}</Tooltip>}>
                             <Nav.Item><Nav.Link href="/supermarkets" eventKey="link-supermarkets" className="menuItem" disabled={!hasActiveProfile}>
-                                <Image src={iconProduct} className="menu-icon" />
+                                <Image src={iconSupermarket} className="menu-icon" />
                             </Nav.Link>
                             </Nav.Item>
                         </OverlayTrigger>

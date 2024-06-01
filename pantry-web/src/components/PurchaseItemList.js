@@ -1,7 +1,7 @@
 import Form from 'react-bootstrap/Form';
 import Table from 'react-bootstrap/Table';
 import React, { useState, useEffect } from 'react';
-import { getPendingPurchaseItems, getPurchaseItems, getAllProperty } from '../services/apis/mypantry/requests/PurchaseRequests';
+import { getPendingPurchaseItems, getPurchaseItems, getAllSupermarkets } from '../services/apis/mypantry/requests/PurchaseRequests';
 import Button from 'react-bootstrap/Button';
 import Stack from 'react-bootstrap/Stack';
 import Image from 'react-bootstrap/Image';
@@ -20,13 +20,13 @@ import { useTranslation } from 'react-i18next';
 
 export default function PurchaseItemList({ purchase, selectedPantries, setOuterPurchaseItems }) {
 
-    const { t } = useTranslation(['purchase', 'common']);
+    const { t } = useTranslation(['purchase', 'common', 'categories']);
 
     const [purchaseItems, setPurchaseItems] = useState([]);
     const [filteredItems, setFilteredItems] = useState([]);
     const [categories, setCategories] = useState([]);
 
-    const [supermarketOption, setSupermarketOption] = useState({ value: "", label: "" });
+    const [supermarketOption, setSupermarketOption] = useState({ value: "", label: "", categories: [] });
     const [supermarkets, setSupermarkets] = useState([]);
 
     const [searchText, setSearchText] = useState("");
@@ -71,27 +71,25 @@ export default function PurchaseItemList({ purchase, selectedPantries, setOuterP
 
     useEffect(() => {
         const hasPurchaseItems = purchaseItems && purchaseItems.length > 0;
-        const shouldSort = supermarketOption.value.length > 0;
 
-        if (hasPurchaseItems && shouldSort) {
+        if (hasPurchaseItems) {
             purchase && purchase.id > 0 ?
                 fetchPurchaseItems() :
                 fetchPendingItems();
         }
-    }, [supermarketOption])
+    }, [supermarketOption.value])
 
     async function fetchSupermarketOptions() {
         try {
-            const res = await getAllProperty("%25.supermarket.categories");
+            const res = await getAllSupermarkets();
 
-            var list = [{ value: " ", label: t("supermarket-alphabetically") }];
+            var list = [];
             res.forEach(s => {
-                var name = s.propertyKey.substring(0, s.propertyKey.indexOf("."));
-
                 list = [...list,
                 {
-                    value: name,
-                    label: camelCase(name)
+                    value: s.id,
+                    label: camelCase(s.name),
+                    categories: s.categories
                 }]
             });
 
@@ -188,11 +186,15 @@ export default function PurchaseItemList({ purchase, selectedPantries, setOuterP
 
         purchaseItems.forEach((i) => {
             if (category !== i.product.category) {
+                
                 category = i.product.category;
+                var found = categories.find(c => c.id == category);
+
                 list = [...list,
                 {
                     id: i.product.category,
-                    isOpen: true
+                    isOpen: found != null ? found.isOpen : true,
+                    isSupermarketCategory: supermarketOption.categories.some(c => c === i.product.category)
                 }
                 ]
             }
@@ -233,6 +235,17 @@ export default function PurchaseItemList({ purchase, selectedPantries, setOuterP
         }))
     }
 
+    function isSupermarketCategory(category) {
+        if (supermarketOption.value > 0) {
+            var found = categories.find(c => c.id == category);
+            if (found) {
+                return found.isSupermarketCategory;
+            }
+            return false;
+        }
+        return true;
+    }
+
     function renderCategory(category, item) {
         return (
             <>
@@ -241,7 +254,7 @@ export default function PurchaseItemList({ purchase, selectedPantries, setOuterP
                         <td className="highlight" colSpan={4}>
                             <div className="category">
                                 <Button variant="link" aria-controls={category} onClick={() => handleExpansion(category)}><BsArrow90DegRight className='icon' /></Button>
-                                <h6 className='title'>{!category || category === "" ? t("other") : category}</h6>
+                                <h6 className='title' style={{ color: !isSupermarketCategory(category) ? "red" : "" }}>{!category || category === "" ? t("other") : t(category, { ns: 'categories' })}</h6>
                             </div>
                         </td>
                     </tr>
@@ -301,7 +314,7 @@ export default function PurchaseItemList({ purchase, selectedPantries, setOuterP
                         onChange={setSupermarketOption}
                     />
                 </div>
-                <Button bsPrefix="btn-custom" size="sm" onClick={handleRefresh} disabled={purchase}>{ t("btn-refresh") }</Button>
+                <Button bsPrefix="btn-custom" size="sm" onClick={handleRefresh} disabled={purchase}>{t("btn-refresh")}</Button>
             </div>
             <div className="pt-2">
                 <Form.Control size="sm" type="text" id="search" className="form-control mb-1" placeholder={t("placeholder-search-items", { ns: "common" })} value={searchText} onChange={(e) => filter(e.target.value)} />

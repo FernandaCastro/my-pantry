@@ -8,9 +8,9 @@ import { getProperty } from '../services/apis/mypantry/requests/PurchaseRequests
 import i18n from 'i18next';
 import { useTranslation } from 'react-i18next';
 
-export function CategoryDragDrop({ innitialList }) {
+export function CategoryDragDrop({ innitialList, handleListChange, disabled }) {
 
-    const { t } = useTranslation(['categories']);
+    const { t } = useTranslation(['supermarket', 'categories']);
 
     const { showAlert } = useAlert();
 
@@ -135,6 +135,7 @@ export function CategoryDragDrop({ innitialList }) {
 
     const onDragEnd = (param) => {
         const { source, destination } = param;
+        let updatedFilterCategory = [];
 
         // dropped outside the list
         if (!destination) {
@@ -152,7 +153,8 @@ export function CategoryDragDrop({ innitialList }) {
                 destination.index
             );
 
-            this.setFilteredCategories(items);
+            updatedFilterCategory = items;
+            setFilteredCategories(items);
 
         } else {
             const result = move(
@@ -167,18 +169,28 @@ export function CategoryDragDrop({ innitialList }) {
                 sourceList = sourceList.sort((a, b) => a.name.localeCompare(b.name));
             }
 
+            updatedFilterCategory = result.droppableFiltered;
+
             setFilteredCategories(result.droppableFiltered)
             setCategories(sourceList)
         }
+
+        //return only the ids for update
+        let categoryIdList = [];
+        updatedFilterCategory.forEach(item => {
+            categoryIdList = [...categoryIdList, item.id]
+        })
+
+        handleListChange(categoryIdList);
     };
 
     return (
         <>
-            <div className="d-flex flex-row justify-content-evenly">
-                <h6>Filtered</h6>
-                <h6>Source</h6>
+            <div className="d-flex flex-row justify-content-center align-items-center gap-2">
+                <h6 className="title flex-grow-1 text-center" style={{ minWidth: '180px' }}>{t('ordered-sections-title')}</h6>
+                <span className="title flex-grow-1 text-center" style={{ minWidth: '180px' }}>{t('available-sections-title')}</span>
             </div>
-            <div className="d-flex flex-row justify-content-evenly gap-2">
+            <div className="d-flex flex-row justify-content-evenly gap-2 mt-0 pt-0" disabled={disabled}>
                 <DragDropContext onDragEnd={onDragEnd}>
                     <DroppableContainer droppableId="droppableFiltered">
                         {filteredCategories.map((item, index) => (
@@ -203,7 +215,7 @@ export function DroppableContainer({ droppableId, children }) {
                 <div
                     {...provided.droppableProps}
                     ref={provided.innerRef}
-                    className='items'
+                    className='items scroll-categories'
                 >
                     {children}
                     {provided.placeholder}
@@ -225,6 +237,11 @@ export function DraggableItem({ item, index }) {
                     minWidth: "165px",
                     border: "1px solid #909df4",
                     backgroundColor: "#c5cbfb",
+                    display: "flex",
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    textWrap: "pretty",
                     ..._provided.draggableProps.style,
                 };
                 return (
@@ -234,8 +251,9 @@ export function DraggableItem({ item, index }) {
                         {..._provided.dragHandleProps}
                         ref={_provided.innerRef}
                         style={_style}>
+
+                        <small className='text-wrap'>{item.name}</small>
                         <GrDrag />
-                        <span className='text-small text-wrap'>{item.name}</span>
                     </div>
                 )
             }}
