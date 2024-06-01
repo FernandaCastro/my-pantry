@@ -136,7 +136,7 @@ public class PantryItemServiceUnitTest {
         var entity = PantryItem.builder()
                 .currentQty(6)
                 .idealQty(10)
-                .pantry(Pantry.builder().id(1L).name("PANTRY1").isActive(true).build())
+                .pantry(Pantry.builder().id(1L).name("PANTRY1").isActive(true).type("R").build())
                 .product(Product.builder().id(1L).description("MILK").size("1L").build())
                 .build();
 
