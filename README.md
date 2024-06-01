@@ -2,18 +2,18 @@
 
 # My Pantry
 
-version: 0.0.6
+version: 0.1.0
 
-v0.0.7-SNAPSHOT <br />
-
-- List Roles and Permissions (Profile Icon -> Groups & Members -> View permissions)
+- Internationalization (EN-PT)
+- CRUD for Supermarkets and its particular order of categories
+- New Permissions: list_supermarket, create_supermarket, edit_supermarket and delete_supermarket
+- Add permissions to ROLE ADMIN: It has all ROLE OWNER permissions, except the delete permissions.
+- All Roles and its associated Permissions are listed on the Group & Members page.
 
 Plans for next versions:
 
 - Delete provisioned products from the shopping cart
 - Wizard to create pantries based on a suggested list of basic items, instead of manually enter them.
-- Internationalization
-- CRUD for Supermarkets and its particular order of categories
 - CRUD for Role and Permissions
 
 ### Description:
@@ -61,6 +61,7 @@ Screenshots: <br />
 <img height="400" width="200" src="./readme_images/consume.png"/>
 <img height="400" width="200" src="./readme_images/purchase.png"/>
 <img height="400" width="200" src="./readme_images/products.png"/>
+<img height="400" width="200" src="./readme_images/supermarkets.png"/>
 <img height="400" width="200" src="./readme_images/groups-members.png"/>
 <img height="400" width="200" src="./readme_images/logout.png"/>
 

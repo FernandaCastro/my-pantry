@@ -8,3 +8,8 @@ INSERT INTO account.ROLE_PERMISSION ("role_id", "permission_id") VALUES
 (2, 16), (2, 17),(2, 18),(2, 19),
 (3, 16)
 on conflict do nothing;
+
+-- ADD TO ROLE-ADMIN:  2-'CREATE_PANTRY', 3-'EDIT_PANTRY', 8-'DELETE_PANTRY_ITEM', 11-'CREATE_PRODUCT', 12-'EDIT_PRODUCT'
+INSERT INTO account.ROLE_PERMISSION ("role_id", "permission_id") VALUES
+ (2, 2), (2, 3), (2, 8),(2, 11),(2, 12) on conflict do nothing;
+
