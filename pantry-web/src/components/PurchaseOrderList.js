@@ -6,7 +6,7 @@ import Table from 'react-bootstrap/Table';
 import { useTranslation } from 'react-i18next';
 
 export default function PurchaseOrderList({ selectedPantries, handleSelectedPurchase }) {
-    
+
     const { t } = useTranslation(['purchase', 'common']);
 
     const [purchases, setPurchases] = useState([]);
@@ -38,7 +38,7 @@ export default function PurchaseOrderList({ selectedPantries, handleSelectedPurc
             <tr key={p.id} onClick={(e) => selectPurchase(e, p)} >
                 <td className={highlight}><span>{p.id} - {p.processedAt ? t("closed") : t("open")}</span></td>
                 <td className={highlight}><span className='text-small'>{t('datetime', { ns: "common", date: new Date(p.createdAt) })}</span></td>
-                <td className={highlight}><span className='text-small'>{t('datetime', { ns: "common", date: new Date(p.processedAt) })}</span></td>
+                <td className={highlight}><span className='text-small'>{p.processedAt ? t('datetime', { ns: "common", date: new Date(p.processedAt) }) : ""}</span></td>
             </tr>
         )
     }

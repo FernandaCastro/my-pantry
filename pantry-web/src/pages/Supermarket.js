@@ -8,7 +8,6 @@ import VariantType from '../components/VariantType.js';
 import Select from '../components/Select';
 import { getAccountGroupList } from '../services/apis/mypantry/requests/AccountRequests.js';
 import { getAllSupermarkets, createSupermarket, updateSupermarket, deleteSupermarket } from '../services/apis/mypantry/requests/PurchaseRequests.js'
-import { shallowEqual } from 'react-redux';
 
 export function Supermarket() {
 

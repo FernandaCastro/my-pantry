@@ -10,7 +10,7 @@ import History from '../routes/History.js';
 import NavigateSetter from "../routes/NavigateSetter.js";
 import { Suspense } from 'react';
 
-import { PantryContext, AlertContext, ProfileContext } from '../services/context/AppContext.js';
+import {AlertContext, ProfileContext } from '../services/context/AppContext.js';
 
 export default function App() {
 
@@ -19,17 +19,6 @@ export default function App() {
   const [profileCtx, setProfileCtx] = useState(() => {
     const data = localStorage.getItem("profile-context");
     return !data || data === 'undefined' || Object.keys(data).length === 0 ? {} : JSON.parse(data);
-  });
-
-  const [pantryCtx, setPantryCtx] = useState(() => {
-    const data = localStorage.getItem("pantry-context");
-    return JSON.parse(data) ||
-    {
-      id: 0,
-      name: "",
-      type: "",
-      isActive: false
-    }
   });
 
   const [alert, setAlert] = useState({
@@ -49,17 +38,12 @@ export default function App() {
   }, [alert.show])
 
   useEffect(() => {
-    localStorage.setItem("pantry-context", JSON.stringify(pantryCtx));
-  }, [pantryCtx]);
-
-  useEffect(() => {
     localStorage.setItem("profile-context", JSON.stringify(profileCtx));
   }, [profileCtx]);
 
   return (
     <Suspense fallback="...is loading">
       <ProfileContext.Provider value={{ profileCtx, setProfileCtx }}>
-        <PantryContext.Provider value={{ pantryCtx, setPantryCtx }}>
           <AlertContext.Provider value={{ alert, setAlert }}>
             <Header />
             <Alert variant={alert.type} show={alert.show} onClose={() => setAlert((a) => a = { ...a, show: !alert.show })} dismissible transition={Fade}>{alert.message}</Alert>
@@ -68,7 +52,6 @@ export default function App() {
               <CustomRoutes />
             </Container>
           </AlertContext.Provider>
-        </PantryContext.Provider >
       </ProfileContext.Provider>
     </Suspense>
   )

@@ -123,7 +123,7 @@ export default function Consume() {
         <td hidden={!showPantryCol}><span className='text-left text-wrap'>{item.pantry.name}</span></td>
         <td><span className='text-left'>{item.currentQty}</span></td>
         <td><span className='d-none d-md-block text-left ps-5'>{item.provisionedQty}</span></td>
-        <td><span className='d-none d-md-block'>{t('datetime', { ns: "common", date: new Date(item.lastProvisioning) })}</span></td>
+        <td><span className='d-none d-md-block'>{item.lastProvisioning ? t('datetime', { ns: "common", date: new Date(item.lastProvisioning) }) : ""}</span></td>
         <td >
           <div className='d-flex justify-content-end me-2'>
             <NumericField key={reload} object={consumedItem} attribute="qty" onValueChange={updateConsumedItem} disabled={isPantryEmpty} />
