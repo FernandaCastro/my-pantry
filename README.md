@@ -4,7 +4,7 @@
 
 version: 0.1.0
 
-- Internationalization (EN-PT)
+- Internationalization (EN-PT) - (Frontend)
 - CRUD for Supermarkets and its particular order of categories
 - New Permissions: list_supermarket, create_supermarket, edit_supermarket and delete_supermarket
 - Add permissions to ROLE ADMIN: It has all ROLE OWNER permissions, except the delete permissions.
@@ -12,9 +12,13 @@ version: 0.1.0
 
 Plans for next versions:
 
+- Internationalization (Backend messages)
 - Delete provisioned products from the shopping cart
+- Enter Ideal and Current quantity when adding new product direct to the pantry items list
 - Wizard to create pantries based on a suggested list of basic items, instead of manually enter them.
+- Dashboard
 - CRUD for Role and Permissions
+- Integrate with Google Home (ie: "Consume <qty> of <product> from <pantry-name>)
 
 ### Description:
 

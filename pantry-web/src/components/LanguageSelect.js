@@ -5,8 +5,8 @@ import Dropdown from 'react-bootstrap/Dropdown';
 
 export default function LanguageSelect({ language, onChange }) {
     const [languages] = useState([
-        { code: "en", flag: (<img src={ukFlag} width="21" alt="" />) },
-        { code: "pt", flag: (<img src={brFlag} width="21" alt="" />) }
+        { code: "en-GB", flag: (<img src={ukFlag} width="21" alt="" />) },
+        { code: "pt-BR", flag: (<img src={brFlag} width="21" alt="" />) }
     ]);
 
     const [selectedLanguage, setSelectedLanguage] = useState();
