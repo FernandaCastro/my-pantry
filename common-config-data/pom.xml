@@ -7,11 +7,11 @@
     <parent>
         <groupId>com.fcastro</groupId>
         <artifactId>my-pantry</artifactId>
-        <version>0.0.7</version>
+        <version>0.0.8</version>
     </parent>
 
     <artifactId>common-config-data</artifactId>
-    <version>0.0.5</version>
+    <version>${common-config-data-version}</version>
 
     <properties>
         <spring-boot-starter-version>3.2.0</spring-boot-starter-version>
