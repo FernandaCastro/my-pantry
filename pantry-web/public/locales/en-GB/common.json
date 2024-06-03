@@ -18,5 +18,7 @@
   "tooltip-switch-product-detail": "Show Product Detail",
   "tooltip-switch-pantry": "Show Pantry",
   "datetime": "{{date, DATETIME_SHORT}}",
-  "tooltip-category-not-associated-to-supermarket": "Section is not associated to the supermarket."
+  "tooltip-category-not-associated-to-supermarket": "Section is not associated to the supermarket.",
+  "status-401": "Status 401: User is not authorized.",
+  "status-403": "Status 403: User is not authorized."
 }

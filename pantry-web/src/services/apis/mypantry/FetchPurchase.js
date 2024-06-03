@@ -1,10 +1,13 @@
 import getResponseContent from '../getResponseContent';
 import RequestError from '../RequestError';
 import History from '../../../routes/History.js';
+import { useTranslation } from 'react-i18next';
 
 const FetchPurchase = async function (endpoint, method, data) {
+    const { t } = useTranslation(['common']);
 
     var redirecting = false;
+    const language = localStorage.getItem('i18nextLng');
 
     try {
         const res = await fetch(process.env.REACT_APP_API_URL_PURCHASE + '/' + endpoint, {
@@ -12,6 +15,7 @@ const FetchPurchase = async function (endpoint, method, data) {
             "headers": {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json',
+                'language': language,
             },
             credentials: 'include',
             body: JSON.stringify(data)
@@ -29,12 +33,12 @@ const FetchPurchase = async function (endpoint, method, data) {
 
         if (res.status === 401) {
             redirecting = true;
-            const error = 'Status 401: User is not authorized.'
+            const error = t('status-401')
             throw new RequestError(error, res.status);
         }
 
         if (res.status === 403) {
-            const error = 'Status 403: User is not authorized.'
+            const error = t('status-403')
             throw new RequestError(error, res.status);
         }
 
