@@ -4,6 +4,7 @@ import com.fcastro.accountservice.accountgroup.AccountGroupService;
 import com.fcastro.accountservice.accountgroupmember.AccountGroupMemberService;
 import com.fcastro.accountservice.exception.AccountAlreadyExistsException;
 import com.fcastro.accountservice.exception.PasswordAnswerNotMatchException;
+import com.fcastro.app.config.MessageTranslator;
 import com.fcastro.app.exception.RequestParamExpectedException;
 import com.fcastro.app.exception.ResourceNotFoundException;
 import com.fcastro.security.core.exception.TokenVerifierException;
@@ -74,7 +75,7 @@ public class AccountService {
 
         var accountDto = accountRepository.findByEmail(email)
                 .map(this::convertToDto)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+                .orElseThrow(() -> new ResourceNotFoundException(MessageTranslator.getMessage("error.email.not.found")));
 
         var jwtToken = createJwtToken(accountDto);
 
@@ -88,7 +89,7 @@ public class AccountService {
         try {
             GoogleIdToken tokenObj = googleVerifier.verify(token);
             if (tokenObj == null) {
-                throw new TokenVerifierException("Invalid Google Token");
+                throw new TokenVerifierException(MessageTranslator.getMessage("error.invalid.google.token"));
             }
             GoogleIdToken.Payload payload = tokenObj.getPayload();
             String externalProvider = "google";
@@ -124,10 +125,10 @@ public class AccountService {
 
     public AccountDto resetPassword(ResetPasswordDto account) {
         Account existingAccount = accountRepository.findByEmail(account.getEmail())
-                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+                .orElseThrow(() -> new ResourceNotFoundException(MessageTranslator.getMessage("error.email.not.found")));
 
         if (!account.getPasswordAnswer().equalsIgnoreCase(existingAccount.getPasswordAnswer()))
-            throw new PasswordAnswerNotMatchException("Password reset failed. Answer does not match.");
+            throw new PasswordAnswerNotMatchException(MessageTranslator.getMessage("error.reset.answer.not.match"));
 
         existingAccount.setPassword(passwordEncoder.encode(account.getPassword()));
         accountRepository.save(existingAccount);
@@ -184,7 +185,7 @@ public class AccountService {
             return convertToDto(existingAccount);
         }
 
-        throw new AccountAlreadyExistsException("This email is already in use. Please login using your password.");
+        throw new AccountAlreadyExistsException(MessageTranslator.getMessage("error.email.already.in.use"));
     }
 
     /**
@@ -193,7 +194,7 @@ public class AccountService {
     public AccountDto updateAccount(NewAccountDto newAccount) {
 
         Account existingAccount = accountRepository.findById(newAccount.getId())
-                .orElseThrow(() -> new ResourceNotFoundException("Account not found"));
+                .orElseThrow(() -> new ResourceNotFoundException(MessageTranslator.getMessage("error.account.not.found")));
 
         //Base-case assumes password has not changed
         String password = existingAccount.getPassword();
@@ -220,7 +221,7 @@ public class AccountService {
     public AccountDto preCreateAccount(AccountDto newAccount) {
         if (newAccount.getEmail() == null || newAccount.getEmail().isBlank() ||
                 newAccount.getName() == null || newAccount.getName().isBlank())
-            throw new RequestParamExpectedException("Name and Email are required.");
+            throw new RequestParamExpectedException(MessageTranslator.getMessage("error.email.and.name.required"));
 
         Account existingAccount = accountRepository.findByEmail(newAccount.getEmail()).orElse(null);
         if (existingAccount == null) {
@@ -232,14 +233,14 @@ public class AccountService {
             account = accountRepository.save(account);
             return convertToDto(account);
         }
-        throw new AccountAlreadyExistsException("There is an account using this email.");
+        throw new AccountAlreadyExistsException(MessageTranslator.getMessage("error.pre.create.email.already.in.use"));
     }
 
 
     public List<AccountDto> getAll(String searchParam) {
 
         if (searchParam == null)
-            throw new RequestParamExpectedException("Expecting to receive SearchParam: name or email value");
+            throw new RequestParamExpectedException(MessageTranslator.getMessage("error.search.param.required"));
 
         var accountList = accountRepository.findAllByNameOrEmail(searchParam.toLowerCase());
         return accountList.stream().map(this::convertToDto).collect(Collectors.toList());
@@ -249,7 +250,7 @@ public class AccountService {
     public ResponseCookie updateCookie() {
         var email = SecurityContextHolder.getContext().getAuthentication().getName();
         var accountDto = accountRepository.findByEmail(email)
-                .orElseThrow(() -> new ResourceNotFoundException("Email not found"));
+                .orElseThrow(() -> new ResourceNotFoundException(MessageTranslator.getMessage("error.email.not.found")));
 
         var jwtToken = createJwtToken(convertToDto(accountDto));
         return createCookie(jwtToken);

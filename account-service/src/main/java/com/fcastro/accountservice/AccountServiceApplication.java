@@ -4,7 +4,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication(
-		scanBasePackages = {"com.fcastro.security.core", "com.fcastro.accountservice"}
+		scanBasePackages = {"com.fcastro.app.config", "com.fcastro.security.core", "com.fcastro.accountservice"}
 )
 public class AccountServiceApplication {
 

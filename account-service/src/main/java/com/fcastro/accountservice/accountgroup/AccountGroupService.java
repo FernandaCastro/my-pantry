@@ -5,6 +5,7 @@ import com.fcastro.accountservice.account.Account;
 import com.fcastro.accountservice.accountgroupmember.AccountGroupMemberRole;
 import com.fcastro.accountservice.accountgroupmember.AccountGroupMemberService;
 import com.fcastro.accountservice.exception.NotAllowedException;
+import com.fcastro.app.config.MessageTranslator;
 import com.fcastro.app.exception.ResourceNotFoundException;
 import com.fcastro.security.core.model.AccountGroupDto;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -63,7 +64,7 @@ public class AccountGroupService {
 
             var member = groupMemberService.getByGroupIdAndEmail(dto.getId(), SecurityContextHolder.getContext().getAuthentication().getName()).get();
             if (member == null || !AccountGroupMemberRole.OWNER.value.equals(member.getRole().getName())) {
-                throw new NotAllowedException("You are not allowed to update the group.");
+                throw new NotAllowedException(MessageTranslator.getMessage("error.update.group.not.allowed"));
             }
 
             var accountGroup = repository.save(convertToEntity(dto));
@@ -72,7 +73,7 @@ public class AccountGroupService {
 
         //new child group, so find  and associate the parent
         var parentGroup = repository.findParentAccountGroup(SecurityContextHolder.getContext().getAuthentication().getName())
-                .orElseThrow(() -> new ResourceNotFoundException("Parent Account Group not found"));
+                .orElseThrow(() -> new ResourceNotFoundException(MessageTranslator.getMessage("error.parent.group.not.found")));
 
         var accountGroup = convertToEntity(dto);
         accountGroup.setParentAccountGroup(parentGroup);
@@ -85,20 +86,20 @@ public class AccountGroupService {
 
     public void delete(long accountGroupId) {
         var accountGroup = repository.findById(accountGroupId)
-                .orElseThrow(() -> new ResourceNotFoundException("AccountGroup not found"));
+                .orElseThrow(() -> new ResourceNotFoundException(MessageTranslator.getMessage("error.group.not.found")));
 
         var member = groupMemberService.getByGroupIdAndEmail(accountGroupId, SecurityContextHolder.getContext().getAuthentication().getName()).get();
         if (member == null || !AccountGroupMemberRole.OWNER.value.equals(member.getRole().getName())) {
-            throw new NotAllowedException("You are not allowed to delete the group.");
+            throw new NotAllowedException(MessageTranslator.getMessage("error.delete.group.not.allowed"));
         }
 
 
         if (accountGroup.getParentAccountGroup() == null)
-            throw new NotAllowedException("This is your main Account Group. It cannot be deleted.");
+            throw new NotAllowedException(MessageTranslator.getMessage("error.delete.main.group.not.allowed"));
 
         var inUse = accessControlService.getAll(accountGroupId);
         if (inUse.size() > 0)
-            throw new NotAllowedException("This Account Group is in use and cannot be deleted. It may contain Pantries, Purchase Orders and/or Products.");
+            throw new NotAllowedException(MessageTranslator.getMessage("error.delete.not.empty.group.not.allowed"));
 
         repository.deleteById(accountGroupId);
     }
