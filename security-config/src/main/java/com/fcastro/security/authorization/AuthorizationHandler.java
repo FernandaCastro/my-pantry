@@ -167,7 +167,7 @@ public class AuthorizationHandler {
                 .body(body)
                 .retrieve()
                 .onStatus(status ->
-                        status.value() != HttpStatus.OK.value(), (request, response) -> {
+                        status.value() != HttpStatus.NO_CONTENT.value(), (request, response) -> {
                     throw new AccessDeniedException("Request to save AccessControl from AuthorizationServer failed: [" + response.getStatusCode() + " : " + response.getStatusText() + "]");
                 })
                 .toBodilessEntity();
@@ -183,7 +183,7 @@ public class AuthorizationHandler {
                 .uri(uri.toString())
                 .retrieve()
                 .onStatus(status ->
-                        status.value() != HttpStatus.OK.value(), (request, response) -> {
+                        status.value() != HttpStatus.NO_CONTENT.value(), (request, response) -> {
                     throw new AccessDeniedException("Request to delete AccessControl from AuthorizationServer failed: [" + response.getStatusCode() + " : " + response.getStatusText() + "]");
                 })
                 .toBodilessEntity();
