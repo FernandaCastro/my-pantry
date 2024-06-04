@@ -19,6 +19,6 @@
   "tooltip-switch-pantry": "Show Pantry",
   "datetime": "{{date, DATETIME_SHORT}}",
   "tooltip-category-not-associated-to-supermarket": "Section is not associated to the supermarket.",
-  "status-401": "Status 401: You are not authenticated, or it has faild.",
-  "status-403": "Status 403: You have no permission to execute this action."
+  "status-401": "Status 401: You are not authenticated. Please log in.",
+  "status-403": "Status 403: You do not have permission to execute this action."
 }
