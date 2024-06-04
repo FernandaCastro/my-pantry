@@ -1,4 +1,4 @@
-<img height="700" width="700" title="Diagram" src="./readme_images/my-pantry_v0.0.4.png"/>
+<img height="700" width="700" title="Diagram" src="./readme_images/my-pantry_v0.2.0.png"/>
 
 # My Pantry
 
