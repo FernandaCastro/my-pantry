@@ -2,6 +2,7 @@ package com.fcastro.accountservice.security;
 
 import com.fcastro.accountservice.account.Account;
 import com.fcastro.accountservice.account.AccountRepository;
+import com.fcastro.app.config.MessageTranslator;
 import com.fcastro.security.core.handler.UserDetailsImpl;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -24,7 +25,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     @Transactional
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         Account account = accountRepository.findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException("No user found for email: " + email));
+                .orElseThrow(() -> new UsernameNotFoundException(MessageTranslator.getMessage("error.email.not.found")));
 
         var roles = new ArrayList<String>();
 

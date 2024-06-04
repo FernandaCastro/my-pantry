@@ -100,7 +100,7 @@ public class AccountService {
             return new Account(externalProvider, name, email, pictureUrl);
         } catch (GeneralSecurityException | IOException e) {
             LOGGER.error(e.getMessage());
-            throw new TokenVerifierException(e.getMessage());
+            throw new TokenVerifierException(MessageTranslator.getMessage("error.google.token.verifier"));
         }
     }
 
