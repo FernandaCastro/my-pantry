@@ -1,14 +1,12 @@
 import getResponseContent from '../getResponseContent.js';
 import RequestError from '../RequestError.js';
 import History from '../../../routes/History.js';
-import { useTranslation } from 'react-i18next';
+import Translator from '../../Translator.js';
 
 export const FetchAccountHeader = async function (endpoint) {
-    const { t } = useTranslation(['common']);
 
     const service = process.env.REACT_APP_API_URL_ACCOUNT;
     const language = localStorage.getItem('i18nextLng');
-
 
     try {
         const response = await fetch(service + '/' + endpoint, {
@@ -31,10 +29,10 @@ export const FetchAccountHeader = async function (endpoint) {
 }
 
 export const FetchAccount = async function (endpoint, method, data) {
-    const { t } = useTranslation(['common']);
 
     var redirecting = false;
     const language = localStorage.getItem('i18nextLng');
+    const { t } = Translator.translate;
 
     var headers = {
         'Content-Type': 'application/json',
@@ -62,12 +60,12 @@ export const FetchAccount = async function (endpoint, method, data) {
 
         if (res.status === 401) {
             redirecting = true;
-            const error = t('status-401')
+            const error = Translator.translate('status-401')
             throw new RequestError(error, res.status);
         }
 
         if (res.status === 403) {
-            const error = t('status-403')
+            const error = Translator.translate('status-403')
             throw new RequestError(error, res.status);
         }
 

@@ -1,10 +1,9 @@
 import getResponseContent from '../getResponseContent.js';
 import RequestError from '../RequestError.js';
 import History from '../../../routes/History.js';
-import { useTranslation } from 'react-i18next';
+import Translator from '../../Translator.js';
 
 export default async function FetchPantry(endpoint, method, data) {
-    const { t } = useTranslation(['common']);
 
     var redirecting = false;
     const language = localStorage.getItem('i18nextLng');
@@ -34,12 +33,12 @@ export default async function FetchPantry(endpoint, method, data) {
 
         if (res.status === 401) {
             redirecting = true;
-            const error = t('status-401')
+            const error = Translator.translate('status-401')
             throw new RequestError(error, res.status);
         }
 
         if (res.status === 403) {
-            const error = t('status-403')
+            const error = Translator.translate('status-403');
             throw new RequestError(error, res.status);
         }
 
