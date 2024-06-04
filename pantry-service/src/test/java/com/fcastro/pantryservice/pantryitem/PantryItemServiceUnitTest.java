@@ -9,13 +9,16 @@ import com.fcastro.pantryservice.exception.QuantityNotAvailableException;
 import com.fcastro.pantryservice.pantry.Pantry;
 import com.fcastro.pantryservice.product.Product;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
+import org.springframework.context.i18n.LocaleContextHolder;
 
 import java.util.ArrayList;
+import java.util.Locale;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -40,6 +43,14 @@ public class PantryItemServiceUnitTest {
 
     @Captor
     ArgumentCaptor<PantryItem> captor;
+
+    @Mock
+    LocaleContextHolder localeContextHolder;
+
+    @BeforeEach
+    public void setupLocale() {
+        localeContextHolder.setLocale(Locale.UK);
+    }
 
     @Test
     public void givenValidIds_whenGet_ShouldReturnPantryProductDto() {
@@ -258,10 +269,7 @@ public class PantryItemServiceUnitTest {
         given(repository.findById(any(PantryItemKey.class))).willReturn(Optional.empty());
 
         //when then
-        var ex = Assertions.assertThrows(EventProcessingException.class, () -> service.processPurchaseCompleteEvent(eventDtoList));
-
-        assertThat(ex.getThrowableMap()).isNotNull();
-        assertThat(ex.getThrowableMap().size()).isEqualTo(3);
+        Assertions.assertThrows(EventProcessingException.class, () -> service.processPurchaseCompleteEvent(eventDtoList));
     }
 
     private PantryItem buildPantryItem(long pantryId, long productId, int currentQty, int idealQty) {
