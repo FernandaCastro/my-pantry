@@ -1,5 +1,6 @@
 package com.fcastro.purchaseservice.properties;
 
+import com.fcastro.app.config.MessageTranslator;
 import com.fcastro.app.exception.ResourceNotFoundException;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Sort;
@@ -43,7 +44,7 @@ public class PropertiesService {
 
     public void delete(String key) {
         repository.findById(key)
-                .orElseThrow(() -> new ResourceNotFoundException("Property not found"));
+                .orElseThrow(() -> new ResourceNotFoundException(MessageTranslator.getMessage("error.property.not.found")));
 
         repository.deleteById(key);
     }

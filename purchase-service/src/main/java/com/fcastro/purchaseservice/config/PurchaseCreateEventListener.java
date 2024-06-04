@@ -2,6 +2,7 @@ package com.fcastro.purchaseservice.config;
 
 import com.fcastro.kafka.config.KafkaConfigData;
 import com.fcastro.kafka.event.PurchaseCreateEvent;
+import com.fcastro.kafka.exception.EventProcessingException;
 import com.fcastro.purchaseservice.purchaseItem.PurchaseItemService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,7 +29,7 @@ public class PurchaseCreateEventListener {
 
         if (event.getItem() == null) {
             LOGGER.error("PurchaseCreateEvent received, but attribute data is null.");
-            return;
+            throw new EventProcessingException("PurchaseCreateEvent received, but attribute data is null.");
         }
 
         LOGGER.info("Event Received: Topic[{}], Data[{}]",

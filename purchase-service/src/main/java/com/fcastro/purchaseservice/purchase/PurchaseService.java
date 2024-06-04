@@ -1,5 +1,6 @@
 package com.fcastro.purchaseservice.purchase;
 
+import com.fcastro.app.config.MessageTranslator;
 import com.fcastro.app.exception.ResourceNotFoundException;
 import com.fcastro.purchaseservice.config.PurchaseCompleteEventProducer;
 import com.fcastro.purchaseservice.exception.NoItemToPurchaseException;
@@ -64,7 +65,7 @@ public class PurchaseService {
         //check existence of items to purchase
         var pendingPurchase = purchaseItemService.listPendingPurchase(email);
         if (pendingPurchase == null || pendingPurchase.size() == 0) {
-            throw new NoItemToPurchaseException("No items to Purchase at the moment.");
+            throw new NoItemToPurchaseException(MessageTranslator.getMessage("error.no.item.to.purchase"));
         }
 
         //create Purchase Order and associate all pending items
@@ -82,7 +83,7 @@ public class PurchaseService {
     public PurchaseDto closePurchaseOrder(String email, PurchaseDto dto) {
 
         var entity = repository.findById(dto.getId())
-                .orElseThrow(() -> new ResourceNotFoundException("Purchase Order was not found."));
+                .orElseThrow(() -> new ResourceNotFoundException(MessageTranslator.getMessage("error.purchase.not.found")));
 
         //compare all items' pantries to the access allowed to the user
         var accessList = getAllPantriesAllowedToUser(email);
@@ -91,15 +92,15 @@ public class PurchaseService {
                 .allMatch(new HashSet<>(accessList)::contains);
 
         if (!allMatch) {
-            throw new AccessDeniedException("User is not allowed to close this Purchase Order.");
+            throw new AccessDeniedException(MessageTranslator.getMessage("error.purchase.close.not.allowed"));
         }
 
         if (dto.getItems() == null || dto.getItems().size() == 0) {
-            throw new PurchaseItemsMissingException("Purchase items list is required to close a Purchase Order.");
+            throw new PurchaseItemsMissingException(MessageTranslator.getMessage("error.purchase.list.required"));
         }
 
         if (entity.getProcessedAt() != null) {
-            throw new PurchaseAlreadyProcessedException("Purchase Order had already been closed");
+            throw new PurchaseAlreadyProcessedException(MessageTranslator.getMessage("error.purchase.already.closed"));
         }
 
         var itemList = purchaseItemService.processPurchasedItems(entity.getId(), dto.getItems());
