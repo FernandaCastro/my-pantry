@@ -1,5 +1,6 @@
 package com.fcastro.pantryservice.pantry;
 
+import com.fcastro.app.config.MessageTranslator;
 import com.fcastro.app.exception.ResourceNotFoundException;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -26,7 +27,7 @@ public class PantryController {
     public ResponseEntity<PantryDto> get(@P("pantryId") @PathVariable Long id) {
         return service.getEmbeddingAccountGroup(SecurityContextHolder.getContext().getAuthentication().getName(), id)
                 .map(ResponseEntity::ok)
-                .orElseThrow(() -> new ResourceNotFoundException("Pantry not found."));
+                .orElseThrow(() -> new ResourceNotFoundException(MessageTranslator.getMessage("error.pantry.not.found")));
     }
 
     @GetMapping("/all")
@@ -64,7 +65,7 @@ public class PantryController {
                     resource.setAccountGroup(newDto.getAccountGroup());
                     return service.save(resource);
                 })
-                .orElseThrow(() -> new ResourceNotFoundException("Pantry not found"));
+                .orElseThrow(() -> new ResourceNotFoundException(MessageTranslator.getMessage("error.pantry.not.found")));
 
         return ResponseEntity
                 .status(HttpStatus.OK)

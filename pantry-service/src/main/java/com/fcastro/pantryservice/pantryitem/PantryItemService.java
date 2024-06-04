@@ -1,5 +1,6 @@
 package com.fcastro.pantryservice.pantryitem;
 
+import com.fcastro.app.config.MessageTranslator;
 import com.fcastro.app.exception.ResourceNotFoundException;
 import com.fcastro.kafka.event.PurchaseEventDto;
 import com.fcastro.kafka.exception.EventProcessingException;
@@ -13,6 +14,8 @@ import com.fcastro.pantryservice.pantry.PantryType;
 import com.fcastro.pantryservice.product.Product;
 import com.fcastro.pantryservice.product.ProductDto;
 import org.modelmapper.ModelMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,6 +28,8 @@ import java.util.stream.Collectors;
 
 @Service
 public class PantryItemService {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(PantryItemService.class);
 
     private final PantryItemRepository repository;
     private final ModelMapper modelMapper;
@@ -71,7 +76,7 @@ public class PantryItemService {
             return convertToDTO(entity);
         }
 
-        throw new PantryAndProductAccountGroupInconsistentException("Product " + dto.getProduct().getCode() + " is not allowed in this Pantry.");
+        throw new PantryAndProductAccountGroupInconsistentException(MessageTranslator.getMessage("error.product.not.allowed", dto.getProduct().getCode()));
     }
 
     public PantryItemDto update(PantryItemDto dto) {
@@ -82,7 +87,7 @@ public class PantryItemService {
     public void delete(long pantryId, long productId) {
         var pk = new PantryItemKey(pantryId, productId);
         repository.findById(pk)
-                .orElseThrow(() -> new ResourceNotFoundException("Pantry Item not found"));
+                .orElseThrow(() -> new ResourceNotFoundException(MessageTranslator.getMessage("error.pantry.item.not.found")));
 
         repository.deleteById(pk);
     }
@@ -107,14 +112,14 @@ public class PantryItemService {
 
     public PantryItemDto consumePantryItem(PantryItemConsumedDto consumedDto) {
         var itemEntity = repository.findEagerByPantryIdAndProductId(consumedDto.getPantryId(), consumedDto.getProductId())
-                .orElseThrow(() -> new ResourceNotFoundException("Pantry Item not found"));
+                .orElseThrow(() -> new ResourceNotFoundException(MessageTranslator.getMessage("error.pantry.item.not.found")));
 
         if (!itemEntity.getPantry().getIsActive()) {
-            throw new PantryNotActiveException("Pantry is not active.");
+            throw new PantryNotActiveException(MessageTranslator.getMessage("error.pantry.not.active"));
         }
 
         if (itemEntity.getCurrentQty() < consumedDto.getQty()) {
-            throw new QuantityNotAvailableException(itemEntity.getProduct().getCode() + ": Only " + itemEntity.getCurrentQty() + " available in Pantry.");
+            throw new QuantityNotAvailableException(MessageTranslator.getMessage("error.insufficient.quantity", itemEntity.getProduct().getCode(), String.valueOf(itemEntity.getCurrentQty())));
         }
 
         itemEntity.setCurrentQty(itemEntity.getCurrentQty() - consumedDto.getQty());
@@ -182,8 +187,10 @@ public class PantryItemService {
                 }
         );
 
-        if (exceptions.size() > 0)
-            throw new EventProcessingException("Error occurred while processing a PurchaseCompleteEvent", exceptions);
+        if (exceptions.size() > 0) {
+            LOGGER.error("Error occurred while processing a PurchaseCompleteEvent", exceptions);
+            throw new EventProcessingException(MessageTranslator.getMessage("error.processing.purchase.complete.event"));
+        }
     }
 
     private void updatePantryItem(PurchaseEventDto purchasedItem) {
@@ -194,7 +201,7 @@ public class PantryItemService {
                                 .pantryId(purchasedItem.getPantryId())
                                 .productId(purchasedItem.getProductId())
                                 .build())
-                .orElseThrow(() -> new ResourceNotFoundException("Pantry Item not found"));
+                .orElseThrow(() -> new ResourceNotFoundException(MessageTranslator.getMessage("error.pantry.item.not.found")));
 
         entity.setCurrentQty(entity.getCurrentQty() + purchasedItem.getQtyPurchased());
 

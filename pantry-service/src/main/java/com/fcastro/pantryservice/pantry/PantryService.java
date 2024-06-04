@@ -1,5 +1,6 @@
 package com.fcastro.pantryservice.pantry;
 
+import com.fcastro.app.config.MessageTranslator;
 import com.fcastro.app.exception.ResourceNotFoundException;
 import com.fcastro.pantryservice.pantryitem.PantryItemService;
 import com.fcastro.security.authorization.AuthorizationHandler;
@@ -31,7 +32,7 @@ public class PantryService {
     public Optional<PantryDto> getEmbeddingAccountGroup(String email, long id) {
         var accessControlList = authorizationHandler.listAccessControl(email, Pantry.class.getSimpleName(), id, null, null);
         var pantry = repository.findById(id).map(this::convertToDTO)
-                .orElseThrow(() -> new ResourceNotFoundException("Pantry not found"));
+                .orElseThrow(() -> new ResourceNotFoundException(MessageTranslator.getMessage("error.pantry.not.found")));
         ;
         return Optional.of(embedAccountGroup(pantry, accessControlList));
     }
@@ -84,7 +85,7 @@ public class PantryService {
                 .ifPresentOrElse(
                         accessControl -> pantry.setAccountGroup(accessControl.getAccountGroup()),
                         () -> {
-                            throw new AccessControlNotDefinedException("Unable to embed AccountGroup to Pantry [" + pantry.getId() + ": " + pantry.getName());
+                            throw new AccessControlNotDefinedException(MessageTranslator.getMessage("error.embedding.group.to.pantry"));
                         }
                 );
         return pantry;
@@ -92,7 +93,7 @@ public class PantryService {
 
     public PantryDto save(PantryDto dto) {
         if (dto.getAccountGroup() == null || dto.getAccountGroup().getId() == 0)
-            throw new AccessControlNotDefinedException("Pantry must be associated to an Account Group");
+            throw new AccessControlNotDefinedException(MessageTranslator.getMessage("error.pantry.and.group.association.required"));
 
         var entity = repository.save(convertToEntity(dto));
         authorizationHandler.saveAccessControl(Pantry.class.getSimpleName(), entity.getId(), dto.getAccountGroup().getId());
@@ -106,7 +107,7 @@ public class PantryService {
     @Transactional
     public void delete(long id) {
         repository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Pantry not found"));
+                .orElseThrow(() -> new ResourceNotFoundException(MessageTranslator.getMessage("error.pantry.not.found")));
 
         pantryItemService.deleteAllItems(id);
         repository.deleteById(id);

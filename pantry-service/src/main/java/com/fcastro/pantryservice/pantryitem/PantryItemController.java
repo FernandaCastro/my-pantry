@@ -1,5 +1,6 @@
 package com.fcastro.pantryservice.pantryitem;
 
+import com.fcastro.app.config.MessageTranslator;
 import com.fcastro.app.exception.ResourceNotFoundException;
 import com.fcastro.pantryservice.exception.DatabaseConstraintException;
 import org.springframework.http.HttpStatus;
@@ -38,7 +39,7 @@ public class PantryItemController {
     @PreAuthorize("hasPermissionInObject('Pantry', #pantryId, 'add_pantry_item')")
     public ResponseEntity<PantryItemDto> create(@P("pantryId") @PathVariable long pantryId, @RequestBody PantryItemDto newDto) {
         if (service.get(newDto.getPantry().getId(), newDto.getProduct().getId()).isPresent())
-            throw new DatabaseConstraintException("This item is already in the pantry. It shouldn't be added again.");
+            throw new DatabaseConstraintException(MessageTranslator.getMessage("error.item.already.in.pantry"));
 
         return ResponseEntity.status(HttpStatus.CREATED).body(service.create(newDto));
     }
@@ -52,7 +53,7 @@ public class PantryItemController {
                     resource.setCurrentQty(newDto.getCurrentQty());
                     return service.update(resource);
                 })
-                .orElseThrow(() -> new ResourceNotFoundException("Pantry Item not found"));
+                .orElseThrow(() -> new ResourceNotFoundException(MessageTranslator.getMessage("error.pantry.item.not.found")));
 
         return ResponseEntity
                 .status(HttpStatus.OK)
