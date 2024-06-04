@@ -111,8 +111,8 @@ export default function Pantries() {
                     </span>
                 </Modal.Body>
                 <Modal.Footer className='custom-alert-footer p-2'>
-                    <Button bsPrefix='btn-custom' size='sm' onClick={() => setShowModal(false)}>{t('btn-no', {ns: 'common}'})}</Button>
-                    <Button bsPrefix='btn-custom' size='sm' onClick={handleRemove}>{t('btn-yes', {ns: 'common}'})}</Button>
+                    <Button bsPrefix='btn-custom' size='sm' onClick={() => setShowModal(false)}>{t("btn-no", {ns: "common"})}</Button>
+                    <Button bsPrefix='btn-custom' size='sm' onClick={handleRemove}>{t("btn-yes", {ns: "common"})}</Button>
                 </Modal.Footer>
             </Modal >
 
