@@ -54,6 +54,7 @@ public class CustomMethodSecurityExpressionRoot {
 
         var accessControl = authorizationHandler.hasPermissionInObject(email, permission, clazz, clazzId);
         return accessControl != null;
+
     }
 
     //Check if connected user has the <permission> in all informed objects
