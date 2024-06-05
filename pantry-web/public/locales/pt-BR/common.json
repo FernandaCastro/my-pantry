@@ -18,5 +18,7 @@
   "tooltip-switch-product-detail": "Mostre detalhe do Produto",
   "tooltip-switch-pantry": "Mostre Pantry",
   "datetime": "{{date, DATETIME_SHORT}}",
-  "tooltip-category-not-associated-to-supermarket": "Seção não associada ao supermercado."
+  "tooltip-category-not-associated-to-supermarket": "Seção não associada ao supermercado.",
+  "status-401": "Status 401: Você não está autenticado. Por favor, faça login.",
+  "status-403": "Status 403: Você não tem permissão para executar essa ação."
 }

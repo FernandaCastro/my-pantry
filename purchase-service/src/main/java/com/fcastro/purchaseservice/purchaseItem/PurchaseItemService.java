@@ -1,6 +1,7 @@
 package com.fcastro.purchaseservice.purchaseItem;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fcastro.app.config.MessageTranslator;
 import com.fcastro.app.exception.ResourceNotFoundException;
 import com.fcastro.kafka.event.PurchaseEventDto;
 import com.fcastro.purchaseservice.product.Product;
@@ -80,7 +81,7 @@ public class PurchaseItemService {
                 ));
 
         var supermarket = supermarketService.get(supermarketId)
-                .orElseThrow(() -> new ResourceNotFoundException("Supermarket not found."));
+                .orElseThrow(() -> new ResourceNotFoundException(MessageTranslator.getMessage("error.supermarket.not.found")));
 
         var categorized = new ArrayList<PurchaseItemDto>();
         supermarket.getCategories().forEach((c) -> {
@@ -117,7 +118,7 @@ public class PurchaseItemService {
         for (PurchaseItemDto purchasedItem : purchasedItems) {
 
             var entity = repository.findByIdAndPurchaseId(purchasedItem.getId(), purchaseId)
-                    .orElseThrow(() -> new ResourceNotFoundException("Item id: " + purchasedItem.getId() + " is not in the Purchase list"));
+                    .orElseThrow(() -> new ResourceNotFoundException(MessageTranslator.getMessage("error.item.not.in.purchase", purchasedItem.getProduct() != null ? purchasedItem.getProduct().getCode() : String.valueOf(purchasedItem.getId()))));
 
             entity.setQtyPurchased(purchasedItem.getQtyPurchased());
             repository.save(entity);

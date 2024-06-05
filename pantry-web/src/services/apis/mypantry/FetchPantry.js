@@ -1,10 +1,12 @@
 import getResponseContent from '../getResponseContent.js';
 import RequestError from '../RequestError.js';
 import History from '../../../routes/History.js';
+import Translator from '../../Translator.js';
 
 export default async function FetchPantry(endpoint, method, data) {
 
     var redirecting = false;
+    const language = localStorage.getItem('i18nextLng');
 
     try {
 
@@ -13,7 +15,7 @@ export default async function FetchPantry(endpoint, method, data) {
             "headers": {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json',
-
+                'language': language,
             },
             credentials: 'include',
             body: JSON.stringify(data)
@@ -31,12 +33,12 @@ export default async function FetchPantry(endpoint, method, data) {
 
         if (res.status === 401) {
             redirecting = true;
-            const error = 'Status 401: User is not authorized.'
+            const error = Translator.translate('status-401')
             throw new RequestError(error, res.status);
         }
 
         if (res.status === 403) {
-            const error = 'Status 403: User is forbidden.'
+            const error = Translator.translate('status-403');
             throw new RequestError(error, res.status);
         }
 

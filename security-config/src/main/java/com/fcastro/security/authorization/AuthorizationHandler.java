@@ -6,6 +6,7 @@ import com.fcastro.security.core.model.AccountGroupMemberDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Component;
@@ -36,7 +37,7 @@ public class AuthorizationHandler {
                 .accept(MediaType.APPLICATION_JSON)
                 .retrieve()
                 .onStatus(status ->
-                        status.value() >= 400, (request, response) -> {
+                        status.value() != HttpStatus.OK.value(), (request, response) -> {
                     throw new AccessDeniedException("Request to AuthorizationServer(permission-in-any-group) failed: [" + response.getStatusCode() + " : " + response.getStatusText() + "]");
                 })
                 .body(new ParameterizedTypeReference<List<AccountGroupMemberDto>>() {
@@ -55,7 +56,7 @@ public class AuthorizationHandler {
                 .accept(MediaType.APPLICATION_JSON)
                 .retrieve()
                 .onStatus(status ->
-                        status.value() >= 400, (request, response) -> {
+                        status.value() != HttpStatus.OK.value(), (request, response) -> {
                     throw new AccessDeniedException("Request to AuthorizationServer(permission-in-group) failed: [" + response.getStatusCode() + " : " + response.getStatusText() + "]");
                 })
                 .body(new ParameterizedTypeReference<List<AccountGroupMemberDto>>() {
@@ -75,7 +76,7 @@ public class AuthorizationHandler {
                 .accept(MediaType.APPLICATION_JSON)
                 .retrieve()
                 .onStatus(status ->
-                        status.value() >= 400, (request, response) -> {
+                        status.value() != HttpStatus.OK.value(), (request, response) -> {
                     throw new AccessDeniedException("Request to AuthorizationServer(permission-in-object) failed: [" + response.getStatusCode() + " : " + response.getStatusText() + "]");
                 })
                 .body(new ParameterizedTypeReference<AccessControlDto>() {
@@ -94,7 +95,7 @@ public class AuthorizationHandler {
                 .accept(MediaType.APPLICATION_JSON)
                 .retrieve()
                 .onStatus(status ->
-                        status.value() >= 400, (request, response) -> {
+                        status.value() != HttpStatus.OK.value(), (request, response) -> {
                     throw new AccessDeniedException("Request to AuthorizationServer(permission-in-object-list) failed: [" + response.getStatusCode() + " : " + response.getStatusText() + "]");
                 })
                 .body(new ParameterizedTypeReference<List<AccessControlDto>>() {
@@ -107,7 +108,7 @@ public class AuthorizationHandler {
                 .accept(MediaType.APPLICATION_JSON)
                 .retrieve()
                 .onStatus(status ->
-                        status.value() >= 400, (request, response) -> {
+                        status.value() != HttpStatus.OK.value(), (request, response) -> {
                     throw new AccessDeniedException("Request to AuthorizationServer(accessControl) failed: [" + response.getStatusCode() + " : " + response.getStatusText() + "]");
                 })
                 .body(AccessControlDto.class);
@@ -127,7 +128,7 @@ public class AuthorizationHandler {
                 .accept(MediaType.APPLICATION_JSON)
                 .retrieve()
                 .onStatus(status ->
-                        status.value() >= 400, (request, response) -> {
+                        status.value() != HttpStatus.OK.value(), (request, response) -> {
                     throw new AccessDeniedException("Request AuthorizationServer(access-control) failed: [" + response.getStatusCode() + " : " + response.getStatusText() + "]");
                 })
                 .body(new ParameterizedTypeReference<List<AccessControlDto>>() {
@@ -145,7 +146,7 @@ public class AuthorizationHandler {
                 .accept(MediaType.APPLICATION_JSON)
                 .retrieve()
                 .onStatus(status ->
-                        status.value() >= 400, (request, response) -> {
+                        status.value() != HttpStatus.OK.value(), (request, response) -> {
                     throw new AccessDeniedException("Request AuthorizationServer(access-control-strict) failed: [" + response.getStatusCode() + " : " + response.getStatusText() + "]");
                 })
                 .body(new ParameterizedTypeReference<List<AccessControlDto>>() {
@@ -166,7 +167,7 @@ public class AuthorizationHandler {
                 .body(body)
                 .retrieve()
                 .onStatus(status ->
-                        status.value() >= 400, (request, response) -> {
+                        status.value() != HttpStatus.NO_CONTENT.value(), (request, response) -> {
                     throw new AccessDeniedException("Request to save AccessControl from AuthorizationServer failed: [" + response.getStatusCode() + " : " + response.getStatusText() + "]");
                 })
                 .toBodilessEntity();
@@ -182,7 +183,7 @@ public class AuthorizationHandler {
                 .uri(uri.toString())
                 .retrieve()
                 .onStatus(status ->
-                        status.value() >= 400, (request, response) -> {
+                        status.value() != HttpStatus.NO_CONTENT.value(), (request, response) -> {
                     throw new AccessDeniedException("Request to delete AccessControl from AuthorizationServer failed: [" + response.getStatusCode() + " : " + response.getStatusText() + "]");
                 })
                 .toBodilessEntity();

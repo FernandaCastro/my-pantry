@@ -1,5 +1,6 @@
 package com.fcastro.pantryservice.pantry;
 
+import com.fcastro.app.config.LocaleConfig;
 import com.fcastro.pantryservice.JsonUtil;
 import com.fcastro.security.core.config.SecurityPropertiesConfig;
 import com.fcastro.security.core.jwt.JWTRequestFilter;
@@ -8,11 +9,11 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureDataJpa;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
@@ -33,8 +34,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(controllers = PantryController.class,
         excludeAutoConfiguration = SecurityAutoConfiguration.class,
         excludeFilters = {@ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = {JWTRequestFilter.class})})
-@EnableConfigurationProperties(value = SecurityPropertiesConfig.class)
-@AutoConfigureDataJpa
+@Import(LocaleConfig.class)
+@EnableConfigurationProperties(value = {SecurityPropertiesConfig.class})
+//@AutoConfigureDataJpa
 //@AutoConfigureMockMvc(addFilters = false)
 public class PantryControllerUnitTest {
 
@@ -81,10 +83,11 @@ public class PantryControllerUnitTest {
     @WithMockUser
     public void givenInvalidPantryId_whenGet_shouldReturnNotFound() throws Exception {
         //given
-        given(pantryService.get(anyLong())).willReturn(Optional.empty());
+        given(pantryService.getEmbeddingAccountGroup(anyString(), anyLong())).willReturn(Optional.empty());
 
         //when //then
-        mockMvc.perform(MockMvcRequestBuilders.get("/pantries/1"))
+        mockMvc.perform(MockMvcRequestBuilders.get("/pantries/1")
+                        .header("language", "en-UK"))
                 .andExpect(status().isNotFound());
     }
 
@@ -134,6 +137,7 @@ public class PantryControllerUnitTest {
 
         //when //then
         mockMvc.perform(MockMvcRequestBuilders.put("/pantries/10")
+                        .header("language", "en-UK")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(JsonUtil.toJson(pantry)))
                 .andExpect(status().isNotFound());

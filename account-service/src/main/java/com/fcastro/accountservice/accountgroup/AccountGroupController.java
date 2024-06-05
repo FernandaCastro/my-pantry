@@ -1,6 +1,7 @@
 package com.fcastro.accountservice.accountgroup;
 
 import com.fcastro.accountservice.account.AccountService;
+import com.fcastro.app.config.MessageTranslator;
 import com.fcastro.app.exception.ResourceNotFoundException;
 import com.fcastro.security.core.model.AccountGroupDto;
 import jakarta.servlet.http.HttpServletResponse;
@@ -28,7 +29,7 @@ public class AccountGroupController {
     public ResponseEntity<AccountGroupDto> get(@PathVariable long id) {
         return service.get(id)
                 .map(ResponseEntity::ok)
-                .orElseThrow(() -> new ResourceNotFoundException("AccountGroup not found"));
+                .orElseThrow(() -> new ResourceNotFoundException(MessageTranslator.getMessage("error.group.not.found")));
     }
 
     @GetMapping
@@ -54,7 +55,7 @@ public class AccountGroupController {
                     resource.setName(newDto.getName());
                     return service.save(resource);
                 })
-                .orElseThrow(() -> new ResourceNotFoundException("AccountGroup not found"));
+                .orElseThrow(() -> new ResourceNotFoundException(MessageTranslator.getMessage("error.group.not.found")));
 
         return ResponseEntity
                 .status(HttpStatus.OK)

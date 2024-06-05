@@ -1,5 +1,6 @@
 package com.fcastro.accountservice.account;
 
+import com.fcastro.app.config.MessageTranslator;
 import com.fcastro.app.exception.ResourceNotFoundException;
 import com.fcastro.security.core.model.AccountDto;
 import jakarta.validation.Valid;
@@ -28,7 +29,7 @@ public class AccountController {
     public ResponseEntity<NewAccountDto> get(@PathVariable Long id) {
         return service.get(id)
                 .map(ResponseEntity::ok)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+                .orElseThrow(() -> new ResourceNotFoundException(MessageTranslator.getMessage("error.email.not.found")));
     }
 
     @PostMapping

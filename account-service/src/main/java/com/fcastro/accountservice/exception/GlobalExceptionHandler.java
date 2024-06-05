@@ -79,7 +79,7 @@ public class GlobalExceptionHandler {
                 .timestamp(Clock.systemUTC().millis())
                 .status(HttpStatus.BAD_REQUEST.value())
                 .errorType(exceptionTypes.get(ex.getClass()))
-                .errorMessage(ex.getMessage())
+                .errorMessage(ex.getLocalizedMessage())
                 .path(request.getRequestURI())
                 .build();
 
@@ -92,7 +92,7 @@ public class GlobalExceptionHandler {
                 .timestamp(Clock.systemUTC().millis())
                 .status(HttpStatus.NOT_ACCEPTABLE.value())
                 .errorType(exceptionTypes.get(ex.getClass()))
-                .errorMessage(ex.getMessage())
+                .errorMessage(ex.getLocalizedMessage())
                 .path(request.getRequestURI())
                 .build();
 
@@ -105,7 +105,7 @@ public class GlobalExceptionHandler {
                 .timestamp(Clock.systemUTC().millis())
                 .status(HttpStatus.METHOD_NOT_ALLOWED.value())
                 .errorType(exceptionTypes.get(ex.getClass()))
-                .errorMessage(ex.getMessage())
+                .errorMessage(ex.getLocalizedMessage())
                 .path(request.getRequestURI())
                 .build();
 
@@ -118,7 +118,7 @@ public class GlobalExceptionHandler {
                 .timestamp(Clock.systemUTC().millis())
                 .status(HttpStatus.UNSUPPORTED_MEDIA_TYPE.value())
                 .errorType(exceptionTypes.get(ex.getClass()))
-                .errorMessage(ex.getMessage())
+                .errorMessage(ex.getLocalizedMessage())
                 .path(request.getRequestURI())
                 .build();
         return ResponseEntity.status(HttpStatus.UNSUPPORTED_MEDIA_TYPE).body(error);
@@ -157,7 +157,7 @@ public class GlobalExceptionHandler {
                 .timestamp(Clock.systemUTC().millis())
                 .status(HttpStatus.NOT_FOUND.value())
                 .errorType(exceptionTypes.get(ex.getClass()))
-                .errorMessage(ex.getMessage())
+                .errorMessage(ex.getLocalizedMessage())
                 .path(request.getRequestURI())
                 .build();
 
@@ -174,7 +174,7 @@ public class GlobalExceptionHandler {
                 .timestamp(Clock.systemUTC().millis())
                 .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
                 .errorType(exceptionTypes.get(ex.getClass()))
-                .errorMessage(ex.getMessage())
+                .errorMessage(ex.getLocalizedMessage())
                 .path(request.getRequestURI())
                 .build();
 
@@ -191,7 +191,7 @@ public class GlobalExceptionHandler {
                 .timestamp(Clock.systemUTC().millis())
                 .status(HttpStatus.FORBIDDEN.value())
                 .errorType(exceptionTypes.get(ex.getClass()))
-                .errorMessage(ex.getMessage())
+                .errorMessage(ex.getLocalizedMessage())
                 .path(requestUri)
                 .build();
 
@@ -206,7 +206,7 @@ public class GlobalExceptionHandler {
                 .timestamp(Clock.systemUTC().millis())
                 .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
                 .errorType(ex.getClass().getSimpleName())
-                .errorMessage("Please contact the support. " + ex.getMessage())
+                .errorMessage("Please contact the support. " + ex.getLocalizedMessage())
                 .path(request.getRequestURI())
                 .build();
 

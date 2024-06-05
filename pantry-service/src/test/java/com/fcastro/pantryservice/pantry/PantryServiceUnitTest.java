@@ -12,7 +12,9 @@ import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
+import org.springframework.context.i18n.LocaleContextHolder;
 
+import java.util.Locale;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -39,7 +41,8 @@ public class PantryServiceUnitTest {
     @Mock
     private PantryItemService pantryItemService;
 
-    private static final String MOCK_USER = "MOCK_USER";
+    @Mock
+    LocaleContextHolder localeContextHolder;
 
     @Test
     public void givenValidPantryId_whenGet_ShouldReturnPantryDto() {
@@ -99,6 +102,7 @@ public class PantryServiceUnitTest {
     public void givenInvalidPantryId_whenDelete_ShouldThrowException() {
         //given
         given(repository.findById(anyLong())).willReturn(Optional.empty());
+        localeContextHolder.setLocale(Locale.UK);
 
         //when //then
         Assertions.assertThrows(ResourceNotFoundException.class,

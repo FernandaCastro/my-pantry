@@ -1,6 +1,7 @@
 package com.fcastro.accountservice.role;
 
 import com.fcastro.accountservice.permission.Permission;
+import com.fcastro.app.config.MessageTranslator;
 import com.fcastro.app.exception.ResourceNotFoundException;
 import com.fcastro.security.core.model.PermissionDto;
 import com.fcastro.security.core.model.RoleDto;
@@ -29,13 +30,13 @@ public class RoleService {
     public RoleDto getRole(Long id) {
         return roleRepository.findById(id)
                 .map(this::convertToDto)
-                .orElseThrow(() -> new ResourceNotFoundException("Role not found."));
+                .orElseThrow(() -> new ResourceNotFoundException(MessageTranslator.getMessage("error.role.not.found")));
     }
 
     public RoleDto getRole(String name) {
         return roleRepository.findByName(name)
                 .map(this::convertToDto)
-                .orElseThrow(() -> new ResourceNotFoundException("Role not found."));
+                .orElseThrow(() -> new ResourceNotFoundException(MessageTranslator.getMessage("error.role.not.found")));
     }
 
     private RoleDto convertToDto(Role entity) {

@@ -4,6 +4,7 @@ import com.fcastro.accountservice.account.AccountService;
 import com.fcastro.accountservice.account.LogintDto;
 import com.fcastro.accountservice.account.NewAccountDto;
 import com.fcastro.accountservice.account.ResetPasswordDto;
+import com.fcastro.app.config.MessageTranslator;
 import com.fcastro.app.exception.ResourceNotFoundException;
 import com.fcastro.security.core.handler.UserDetailsImpl;
 import com.fcastro.security.core.model.AccountDto;
@@ -87,7 +88,7 @@ public class AuthenticationController {
     @GetMapping("/reset-password")
     public ResponseEntity<ResetPasswordDto> getResetPasswordQuestion(@RequestParam String email) {
         var account = service.getUser(email)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+                .orElseThrow(() -> new ResourceNotFoundException(MessageTranslator.getMessage("error.email.not.found")));
 
         var response = ResetPasswordDto.builder()
                 .email(account.getEmail())

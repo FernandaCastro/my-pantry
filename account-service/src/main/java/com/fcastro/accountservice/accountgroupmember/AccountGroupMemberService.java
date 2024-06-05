@@ -6,6 +6,7 @@ import com.fcastro.accountservice.exception.NotAllowedException;
 import com.fcastro.accountservice.exception.OneOwnerMemberMustExistException;
 import com.fcastro.accountservice.role.Role;
 import com.fcastro.accountservice.role.RoleService;
+import com.fcastro.app.config.MessageTranslator;
 import com.fcastro.app.exception.ResourceNotFoundException;
 import com.fcastro.security.core.model.AccountDto;
 import com.fcastro.security.core.model.AccountGroupMemberDto;
@@ -74,7 +75,7 @@ public class AccountGroupMemberService {
     public AccountGroupMemberDto createChildGroupMember(String email, long accountGroupId) {
 
         var account = accountRepository.findByEmail(email)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found."));
+                .orElseThrow(() -> new ResourceNotFoundException(MessageTranslator.getMessage("error.email.not.found")));
 
         var ownerRole = roleService.getRole(AccountGroupMemberRole.OWNER.value);
 
@@ -91,11 +92,11 @@ public class AccountGroupMemberService {
         //User should be OWNER in the group
         var member = repository.findByGroupIdAndEmail(dto.getAccountGroupId(), SecurityContextHolder.getContext().getAuthentication().getName()).get();
         if (!AccountGroupMemberRole.OWNER.value.equals(member.getRole().getName())) {
-            throw new NotAllowedException("You are not allowed to change the group.");
+            throw new NotAllowedException(MessageTranslator.getMessage("error.update.group.not.allowed"));
         }
 
         if (AccountGroupMemberRole.OWNER.value.equals(dto.getRole().getName())) {
-            throw new OneOwnerMemberMustExistException("Only one Owner Member is allowed in the group");
+            throw new OneOwnerMemberMustExistException(MessageTranslator.getMessage("error.only.one.owner.allowed"));
         }
 
         var entity = repository.save(convertToEntity(dto));
@@ -106,25 +107,17 @@ public class AccountGroupMemberService {
         //User should be OWNER in the Group, or User is deleting his own access to the group
         var member = repository.findByGroupIdAndEmail(accountGroupId, SecurityContextHolder.getContext().getAuthentication().getName()).get();
         if (member.getAccountId() != accountId && !AccountGroupMemberRole.OWNER.value.equals(member.getRole().getName())) {
-            throw new NotAllowedException("You are not allowed to change the group.");
+            throw new NotAllowedException(MessageTranslator.getMessage("error.update.group.not.allowed"));
         }
 
         var key = AccountGroupMemberKey.builder().accountGroupId(accountGroupId).accountId(accountId).build();
         member = repository.findById(key)
-                .orElseThrow(() -> new ResourceNotFoundException("AccountGroupMember not found"));
+                .orElseThrow(() -> new ResourceNotFoundException(MessageTranslator.getMessage("error.member.not.found")));
 
         //deleting an OWNER: there should be at least one Owner in the group
         if (AccountGroupMemberRole.OWNER.value.equals(member.getRole().getName())) {
-            throw new OneOwnerMemberMustExistException("Owner cannot be deleted.");
+            throw new OneOwnerMemberMustExistException(MessageTranslator.getMessage("error.delete.owner"));
         }
-
-//        var owners = repository.findAllByAccountGroupId(accountGroupId).stream()
-//                .filter((m)-> AccountGroupMemberRole.OWNER.value.equals(m.getRole().getName()))
-//                .count();
-//
-//        if (owners == 1)
-//            throw new AtLeastOneMemberMustExistException("Member cannot be deleted. There should be at least one owner in the group.");
-//        }
 
         repository.deleteById(key);
     }

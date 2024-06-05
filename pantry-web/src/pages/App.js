@@ -7,9 +7,9 @@ import Alert from 'react-bootstrap/Alert';
 import Fade from 'react-bootstrap/Fade';
 import '../assets/styles/App.scss';
 import History from '../routes/History.js';
+import TranslationSetter from '../services/TranslationSetter.js'
 import NavigateSetter from "../routes/NavigateSetter.js";
 import { Suspense } from 'react';
-
 import {AlertContext, ProfileContext } from '../services/context/AppContext.js';
 
 export default function App() {
@@ -49,6 +49,7 @@ export default function App() {
             <Alert variant={alert.type} show={alert.show} onClose={() => setAlert((a) => a = { ...a, show: !alert.show })} dismissible transition={Fade}>{alert.message}</Alert>
             <Container>
               <NavigateSetter />
+              <TranslationSetter />
               <CustomRoutes />
             </Container>
           </AlertContext.Provider>

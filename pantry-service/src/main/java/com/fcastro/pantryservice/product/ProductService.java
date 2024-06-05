@@ -1,5 +1,6 @@
 package com.fcastro.pantryservice.product;
 
+import com.fcastro.app.config.MessageTranslator;
 import com.fcastro.app.exception.ResourceNotFoundException;
 import com.fcastro.app.model.Action;
 import com.fcastro.kafka.event.ProductEventDto;
@@ -41,7 +42,7 @@ public class ProductService {
     public Optional<ProductDto> getEmbeddingAccountGroup(String email, long id) {
         var accessControlList = authorizationHandler.listAccessControl(email, Product.class.getSimpleName(), id, null, null);
         var product = repository.findById(id).map(this::convertToDTO)
-                .orElseThrow(() -> new ResourceNotFoundException("Product not found"));
+                .orElseThrow(() -> new ResourceNotFoundException(MessageTranslator.getMessage("error.product.not.found")));
         return Optional.of(embedAccountGroup(product, accessControlList));
     }
 
@@ -59,10 +60,10 @@ public class ProductService {
     //TODO: Pageable
     public List<ProductDto> getAllBySearchParam(String email, Long groupId, String searchParam) {
         if (groupId == null)
-            throw new RequestParamExpectedException("Expecting to receive parameter groupId");
+            throw new RequestParamExpectedException(MessageTranslator.getMessage("error.param.groupId.required"));
 
         if (searchParam == null)
-            throw new RequestParamExpectedException("Expecting to receive SearchParam: code or description value");
+            throw new RequestParamExpectedException(MessageTranslator.getMessage("error.param.code.or.description.required"));
 
         var accessControlList = authorizationHandler.listAccessControl(email, Product.class.getSimpleName(), null, groupId, null);
         var productIds = accessControlList.stream().map(AccessControlDto::getClazzId).collect(toSet());
@@ -97,7 +98,7 @@ public class ProductService {
                 .ifPresentOrElse(
                         accessControl -> product.setAccountGroup(accessControl.getAccountGroup()),
                         () -> {
-                            throw new AccessControlNotDefinedException("Unable to embed AccountGroup to Product [" + product.getId() + ": " + product.getCode());
+                            throw new AccessControlNotDefinedException(MessageTranslator.getMessage("error.embedding.group.to.product"));
                         }
                 );
         return product;
@@ -105,7 +106,7 @@ public class ProductService {
 
     public ProductDto create(ProductDto dto) {
         if (dto.getAccountGroup() == null || dto.getAccountGroup().getId() == 0)
-            throw new AccessControlNotDefinedException("Product must be associated to an Account Group");
+            throw new AccessControlNotDefinedException(MessageTranslator.getMessage("error.product.and.group.association.required"));
 
         existsInAccountGroup(dto);
 
@@ -139,12 +140,12 @@ public class ProductService {
                         .collect(toSet())::contains);
 
         if (found)
-            throw new DatabaseConstraintException("Product already exits in the account group!");
+            throw new DatabaseConstraintException(MessageTranslator.getMessage("error.product.already.exists.in.group"));
     }
 
     public ProductDto update(ProductDto dto) {
         if (dto.getAccountGroup() == null || dto.getAccountGroup().getId() == 0)
-            throw new AccessControlNotDefinedException("Product must be associated to an Account Group");
+            throw new AccessControlNotDefinedException(MessageTranslator.getMessage("error.product.and.group.association.required"));
 
         var entity = repository.save(convertToEntity(dto));
         authorizationHandler.saveAccessControl(Product.class.getSimpleName(), entity.getId(), dto.getAccountGroup().getId());
@@ -166,10 +167,10 @@ public class ProductService {
 
     public void delete(long id) {
         repository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Product not found"));
+                .orElseThrow(() -> new ResourceNotFoundException(MessageTranslator.getMessage("error.product.not.found")));
 
         if (pantryItemRepository.countPantryItem(id) > 0)
-            throw new DatabaseConstraintException("Product can not be removed. It is referred in one or more pantry items.");
+            throw new DatabaseConstraintException(MessageTranslator.getMessage("error.delete.product.in.use"));
 
         repository.deleteById(id);
         authorizationHandler.deleteAccessControl(Product.class.getSimpleName(), id);

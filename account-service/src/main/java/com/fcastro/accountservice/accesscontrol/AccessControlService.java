@@ -2,6 +2,7 @@ package com.fcastro.accountservice.accesscontrol;
 
 import com.fcastro.accountservice.accountgroup.AccountGroup;
 import com.fcastro.accountservice.exception.AccessControlNotDefinedException;
+import com.fcastro.app.config.MessageTranslator;
 import com.fcastro.security.core.model.AccessControlDto;
 import com.fcastro.security.core.model.AccountGroupDto;
 import org.springframework.stereotype.Service;
@@ -26,7 +27,7 @@ public class AccessControlService {
     public AccessControlDto get(String clazz, Long clazzId) {
         return accessControlRepository.findByClazzAndClazzId(clazz, clazzId)
                 .map(this::convertToDto)
-                .orElseThrow(() -> new AccessControlNotDefinedException("No access control defined for " + clazz + "[" + clazzId + "]"));
+                .orElseThrow(() -> new AccessControlNotDefinedException(MessageTranslator.getMessage("error.access.control.not.defined", clazz, String.valueOf(clazzId))));
     }
 
     public List<AccessControlDto> getAll(Long accountGroupId) {
@@ -73,7 +74,7 @@ public class AccessControlService {
             list = accessControlRepository.findAllByEmailAndClazz(email, clazz);
 
         } else {
-            throw new AccessControlNotDefinedException("Unable to retrieve Access Control. The criteria informed is invalid.");
+            throw new AccessControlNotDefinedException("error.access.control.invalid.criteria");
         }
 
         return list.stream().map(this::convertToDto).collect(Collectors.toList());

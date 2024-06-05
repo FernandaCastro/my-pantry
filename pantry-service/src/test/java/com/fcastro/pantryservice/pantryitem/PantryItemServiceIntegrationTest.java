@@ -75,7 +75,7 @@ public class PantryItemServiceIntegrationTest {
     ProductDto product1, product2;
     Set<PantryItemDto> itemList = new HashSet<>();
 
-    // @BeforeAll
+    //@BeforeAll
     public void setupEnv() {
 
         pantry = pantryService.get("PANTRY1")
@@ -110,7 +110,7 @@ public class PantryItemServiceIntegrationTest {
         itemList.add(item2);
     }
 
-    // @AfterAll
+    //@AfterAll
     public void cleanup() {
         //cleanup
         itemList.forEach(item -> pantryItemService.delete(item.getPantry().getId(), item.getProduct().getId()));
@@ -146,7 +146,7 @@ public class PantryItemServiceIntegrationTest {
         assertThat(item.getLastProvisioning()).isNull();
     }
 
-    // @Test
+    //@Test
     public void givenValidIds_whenConsumeProduct_shouldCalculateQtyAndPurchaseMore() {
 
         //given

@@ -1,5 +1,6 @@
 package com.fcastro.pantryservice.pantryitem;
 
+import com.fcastro.app.config.LocaleConfig;
 import com.fcastro.app.exception.ResourceNotFoundException;
 import com.fcastro.pantryservice.JsonUtil;
 import com.fcastro.pantryservice.exception.PantryNotActiveException;
@@ -18,6 +19,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
@@ -39,6 +41,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(controllers = PantryItemController.class,
         excludeAutoConfiguration = SecurityAutoConfiguration.class,
         excludeFilters = {@ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = {JWTRequestFilter.class})})
+@Import(LocaleConfig.class)
 @EnableConfigurationProperties(value = SecurityPropertiesConfig.class)
 @AutoConfigureDataJpa
 public class PantryItemControllerUnitTest {
@@ -161,6 +164,7 @@ public class PantryItemControllerUnitTest {
 
         //when //then
         mockMvc.perform(MockMvcRequestBuilders.put("/pantries/1/items/1")
+                        .header("language", "en-UK")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(JsonUtil.toJson(dto)))
                 .andExpect(status().isNotFound());

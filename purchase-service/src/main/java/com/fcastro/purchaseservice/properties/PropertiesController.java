@@ -1,5 +1,6 @@
 package com.fcastro.purchaseservice.properties;
 
+import com.fcastro.app.config.MessageTranslator;
 import com.fcastro.app.exception.ResourceNotFoundException;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -44,7 +45,7 @@ public class PropertiesController {
                     resource.setPropertyValue(newDto.getPropertyValue());
                     return service.save(resource);
                 })
-                .orElseThrow(() -> new ResourceNotFoundException("Property not found"));
+                .orElseThrow(() -> new ResourceNotFoundException(MessageTranslator.getMessage("error.property.not.found")));
 
         return ResponseEntity
                 .status(HttpStatus.OK)

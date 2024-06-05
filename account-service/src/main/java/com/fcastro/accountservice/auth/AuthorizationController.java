@@ -33,7 +33,9 @@ public class AuthorizationController {
 
     @GetMapping("/permission-in-object")
     ResponseEntity<AccessControlDto> hasPermissionInObject(@RequestParam String email, @RequestParam String permission, @RequestParam String clazz, @RequestParam Long clazzId) {
-        return ResponseEntity.ok(accessControlService.hasPermissionInObject(email, permission, clazz, clazzId));
+        var access = accessControlService.hasPermissionInObject(email, permission, clazz, clazzId);
+        if (access == null) return ResponseEntity.notFound().build();
+        return ResponseEntity.ok(access);
     }
 
     @GetMapping("/permission-in-object-list")
