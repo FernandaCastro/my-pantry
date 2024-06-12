@@ -140,7 +140,7 @@ export default function Pantry({ mode }) {
     function renderPantryList() {
         return (
             <Stack gap={2}>
-                <div className="d-flex justify-content-end"><Button bsPrefix='btn-custom' size="sm" onClick={handleRebalance} title={t('tooltip-btn-balance-inventory')} disabled={isEmpty}>{t('btn-balance-inventtory')}</Button></div>
+                <div className="d-flex justify-content-end"><Button bsPrefix='btn-custom' size="sm" onClick={handleRebalance} title={t('tooltip-btn-balance-inventory')} disabled={isEmpty}><span className="gradient-text">{t('btn-balance-inventtory')}</span></Button></div>
                 <div><PantryItemList key={refresh} pantryId={pantry.id} setIsEmpty={setIsEmpty} /></div>
             </Stack>
         )

@@ -290,8 +290,8 @@ function GroupMembers() {
                 <div></div>
                 <div className="d-flex align-items-center gap-2">
                     <h6 className='title flex-grow-1'>{t("groups-title")}</h6>
-                    <Button bsPrefix="btn-custom" size="sm" onClick={() => setShowPermissionsView(!showPermissionsView)} className="pe-2 ps-2">{t("btn-view-permissions")}</Button>
-                    <Button bsPrefix="btn-custom" size="sm" onClick={() => setShowNewGroup(true)} className="pe-2 ps-2">{t("btn-create-group")}</Button>
+                    <Button bsPrefix="btn-custom" size="sm" onClick={() => setShowPermissionsView(!showPermissionsView)} className="pe-2 ps-2"><span className="gradient-text">{t("btn-view-permissions")}</span></Button>
+                    <Button bsPrefix="btn-custom" size="sm" onClick={() => setShowNewGroup(true)} className="pe-2 ps-2"><span className="gradient-text">{t("btn-create-group")}</span></Button>
                 </div>
                 <div>
                     {renderGroups()}

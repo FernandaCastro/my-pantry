@@ -87,7 +87,7 @@ function PantryItemList({ pantryId, setIsEmpty }) {
                 <td>
                     <Stack direction="horizontal" gap={2}>
                         <div><Image src={food} width={20} height={20} rounded /></div>
-                        <div><span>{camelCase(item.product.code)}</span></div>
+                        <div><span className='text-wrap'>{camelCase(item.product.code)}</span></div>
                     </Stack>
                     <p className='d-none d-md-block ms-4 mb-0' hidden={item.product.description === ''}>
                         {item.product.description}  {item.product.size}
@@ -95,8 +95,8 @@ function PantryItemList({ pantryId, setIsEmpty }) {
                 </td>
                 <td><NumericField key={item.idealQty} object={item} attribute="idealQty" onValueChange={handleSave} /></td>
                 <td><NumericField key={item.currentQty} object={item} attribute="currentQty" onValueChange={handleSave} /></td>
-                <td className='ms-0 pe-0'><span>{item.provisionedQty}</span></td>
-                <td className='ms-0 ps-0 me-2 pe-2'>
+                <td className='ms-0 pe-0 text-center'><span>{item.provisionedQty}</span></td>
+                <td className='ms-0 ps-0 me-1 pe-2'>
                     <Button onClick={() => handleRemove(item)} variant="link" className='pt-0 pb-0 pe-0'><BsTrash className='icon' /></Button>
                 </td>
             </tr >
@@ -123,7 +123,7 @@ function PantryItemList({ pantryId, setIsEmpty }) {
                             <th><span className='title'>{t('ideal', { ns: 'common' })}</span></th>
                             <th ><span className='title'>{t('current', { ns: 'common' })}</span></th>
                             <th className='ms-0 ps-0'><span className="title">{t('provisioned', { ns: 'common' })}</span></th>
-                            <th className='ms-0 ps-0 me-2 pe-2'><span /></th>
+                            <th className='ms-0 ps-0 me-2 pe-2'></th>
                         </tr>
                     </thead>
                     <tbody >

@@ -56,5 +56,5 @@ export function LogoutFromGoogle({ handleLogout , text}) {
         window.google.accounts.id.disableAutoSelect();
     });
 
-    return <Button bsPrefix='btn-custom' onClick={handleLogout}>{text}</Button>
+    return <Button bsPrefix='btn-custom' onClick={handleLogout}><span className="gradient-text">{text}</span></Button>
 }

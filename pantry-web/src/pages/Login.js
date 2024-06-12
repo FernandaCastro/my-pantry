@@ -29,6 +29,7 @@ export default function Login() {
 
 
     const handlePostLogin = (profile) => {
+        profile = { ...profile, initials: getInitialsAttribute(profile.name) }
         setProfileCtx(profile);
         navigate('/');
     }
@@ -70,6 +71,12 @@ export default function Login() {
         }
     }
 
+    function getInitialsAttribute(name) {
+        const _name = name.split(" ");
+        const initials = _name.length > 1 ? _name[0][0] + _name[_name.length - 1][0] : _name[0][0];
+        return initials;
+    }
+
     return (
         <>
             <div className='login-header-box'>
@@ -92,8 +99,8 @@ export default function Login() {
                     </Form.Group>
 
                     <div className="d-flex justify-content-end gap-1 pt-2 pb-2">
-                        <Button bsPrefix='btn-custom' onClick={clearAccount} size="sm" disabled={account.email.length === 0 && account.password.length === 0}>{t('btn-clear', { ns: 'common' })}</Button>
-                        <Button bsPrefix='btn-custom' type="submit" size="sm" disabled={account.email.length === 0 || account.password.length === 0}>{t('btn-login')}</Button>
+                        <Button bsPrefix='btn-custom' onClick={clearAccount} size="sm" disabled={account.email.length === 0 && account.password.length === 0}><span className={account.email.length === 0 && account.password.length === 0 ? "": "gradient-text"}>{t('btn-clear', { ns: 'common' })}</span></Button>
+                        <Button bsPrefix='btn-custom' type="submit" size="sm" disabled={account.email.length === 0 || account.password.length === 0}><span className={account.email.length === 0 && account.password.length === 0 ? "": "gradient-text"}>{t('btn-login')}</span></Button>
                     </div>
                 </Form>
             </div>

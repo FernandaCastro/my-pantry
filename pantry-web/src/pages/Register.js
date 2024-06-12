@@ -338,8 +338,8 @@ export default function Register({ mode }) {
                     </Form.Group>
 
                     <div className="d-flex justify-content-end gap-1 pt-2 pb-2">
-                        <Button bsPrefix='btn-custom' onClick={clearAccount} size="sm" >{ t("btn-clear", { ns: "common"})}</Button>
-                        <Button bsPrefix='btn-custom' type="submit" size="sm" disabled={!isFormValid}>{mode === 'new' ? t("btn-create-account") : t("btn-save", {ns: "common"})} </Button>
+                        <Button bsPrefix='btn-custom' onClick={clearAccount} size="sm" ><span className="gradient-text">{ t("btn-clear", { ns: "common"})}</span></Button>
+                        <Button bsPrefix='btn-custom' type="submit" size="sm" disabled={!isFormValid}><span className={isFormValid ? "gradient-text" : ""}>{mode === 'new' ? t("btn-create-account") : t("btn-save", {ns: "common"})} </span></Button>
                     </div>
                 </Form>
             </div>

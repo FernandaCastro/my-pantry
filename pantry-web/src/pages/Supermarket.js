@@ -235,7 +235,7 @@ export function Supermarket() {
             </div>
             <div className="d-flex align-items-center gap-2">
                 <h6 className='title flex-grow-1'>{t("supermarket-title")}</h6>
-                <Button bsPrefix="btn-custom" size="sm" onClick={handleClickNew} className="pe-2 ps-2" disabled={editSupermarketId > 0 || showNew}>{t("btn-create")}</Button>
+                <Button bsPrefix="btn-custom" size="sm" onClick={handleClickNew} className="pe-2 ps-2" disabled={editSupermarketId > 0 || showNew}><span className="gradient-text">{t("btn-create")}</span></Button>
             </div>
             <div className="scroll-supermarkets">
                 {renderSupermarkets()}

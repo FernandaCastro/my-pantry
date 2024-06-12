@@ -136,7 +136,7 @@ export default function Product() {
             <div hidden={showForm} className="mt-4">
                 <Stack direction="horizontal" gap={2} className='mb-3 d-flex justify-content-between'>
                     <h6 className="text-start fs-6 lh-lg title">{productLabel} </h6>
-                    <Button bsPrefix="btn-custom" size="sm" onClick={handleNew} className='me-2' disabled={(mode === "edit") || (product && Object.keys(product) > 0)}>{t('btn-new-product')}</Button>
+                    <Button bsPrefix="btn-custom" size="sm" onClick={handleNew} className='me-2' disabled={(mode === "edit") || (product && Object.keys(product) > 0)}><span className="gradient-text">{t('btn-new-product')}</span></Button>
                 </Stack>
 
                 <ProductList key={refresh} disabled={showForm} onEdit={handleOnListSelection} onRemove={handleRemove} />

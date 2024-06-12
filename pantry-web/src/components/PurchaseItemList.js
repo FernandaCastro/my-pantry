@@ -314,7 +314,7 @@ export default function PurchaseItemList({ purchase, selectedPantries, setOuterP
                         onChange={setSupermarketOption}
                     />
                 </div>
-                <Button bsPrefix="btn-custom" size="sm" onClick={handleRefresh} disabled={purchase}>{t("btn-refresh")}</Button>
+                <Button bsPrefix="btn-custom" size="sm" onClick={handleRefresh} disabled={purchase}><span className={purchase ? "": "gradient-text"}>{t("btn-refresh")}</span></Button>
             </div>
             <div className="pt-2">
                 <Form.Control size="sm" type="text" id="search" className="form-control mb-1" placeholder={t("placeholder-search-items", { ns: "common" })} value={searchText} onChange={(e) => filter(e.target.value)} />
