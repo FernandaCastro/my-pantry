@@ -8,6 +8,7 @@ import useAlert from '../hooks/useAlert.js';
 import { BsPencil, BsTrash } from "react-icons/bs";
 import Modal from 'react-bootstrap/Modal';
 import { useTranslation } from 'react-i18next';
+import { Card, CardBody, CardGroup, Col, Row } from 'react-bootstrap';
 
 export default function Pantries() {
 
@@ -60,48 +61,76 @@ export default function Pantries() {
         setShowModal(false);
     }
 
-    function renderItem(item) {
+    // function renderItem(item) {
+    //     return (
+    //         <tr key={item.id} className="align-middle">
+    //             <td>
+    //                 <span disabled={!item.isActive}>{item.name}</span>
+    //             </td>
+    //             <td>
+    //                 <span className='d-none d-md-block'>{item.accountGroup.name}</span>
+    //             </td>
+    //             <td>
+    //                 <Stack direction="horizontal" gap={1} className="d-flex justify-content-end">
+    //                     <div><Button href={"/pantries/" + item.id + "/edit"} variant="link"><BsPencil className='icon' /></Button></div>
+    //                     <div><Button onClick={() => showConfirmDeletion(item)} variant="link"><BsTrash className='icon' /></Button></div>
+    //                 </Stack>
+    //             </td>
+    //         </tr>
+    //     )
+    // }
+
+    function renderCards() {
         return (
-            <tr key={item.id} className="align-middle">
-                <td>
-                    <span disabled={!item.isActive}>{item.name}</span>
-                </td>
-                <td>
-                    <span className='d-none d-md-block'>{item.accountGroup.name}</span>
-                </td>
-                <td>
-                    <Stack direction="horizontal" gap={1} className="d-flex justify-content-end">
-                        <div><Button href={"/pantries/" + item.id + "/edit"} variant="link"><BsPencil className='icon' /></Button></div>
-                        <div><Button onClick={() => showConfirmDeletion(item)} variant="link"><BsTrash className='icon' /></Button></div>
-                    </Stack>
-                </td>
-            </tr>
+            <Row xs={1} md={2} className="card-group">
+                {pantries.map((item) => {
+
+                    return (
+                        <Col key={item.id} className="g-3">
+                            <Card className="card1">
+                                <Card.Body className='d-flex flex-row justify-content-between'>
+                                    <div>
+                                        <Card.Title as="h6"><span disabled={!item.isActive}>{item.name}</span></Card.Title>
+                                        <span >{item.accountGroup.name}</span>
+                                    </div>
+                                    <div>
+                                        <Stack direction="horizontal" className="d-flex justify-content-end">
+                                            <Button href={"/pantries/" + item.id + "/edit"} variant="link"><BsPencil className='icon' /></Button>
+                                            <Button onClick={() => showConfirmDeletion(item)} variant="link"><BsTrash className='icon' /></Button>
+                                        </Stack>
+                                    </div>
+
+                                </Card.Body>
+                            </Card>
+                        </Col>
+                    )
+                })}
+            </Row>
         )
     }
 
-    function renderItems() {
-        if (isLoading)
-            return (<span>Loading...</span>)
+    // function renderItems() {
+    //     if (isLoading)
+    //         return (<span>Loading...</span>)
 
-        return (
-            <Table className='bordered' size='sm'>
-                <tbody>
-                    {pantries.map((item) => (renderItem(item)))}
-                </tbody>
-            </Table>
-        )
-    }
+    //     return (
+    //         <Table className='bordered' size='sm'>
+    //             <tbody>
+    //                 {pantries.map((item) => (renderItem(item)))}
+    //             </tbody>
+    //         </Table>
+    //     )
+    // }
 
     return (
         <>
             <Stack gap={3}>
-                <div></div>
                 <div className="d-flex justify-content-between align-items-center">
                     <h6 className='title'>{t('pantry-list-title')}</h6>
-                    <Button bsPrefix='btn-custom' size="sm" href={"/pantries/new"} className="pe-2 ps-2">{t('btn-new-pantry')}</Button>
+                    <Button bsPrefix="btn-custom" href={"/pantries/new"} className="pe-2 ps-2"><span className="gradient-text">{t('btn-new-pantry')}</span></Button>
                 </div>
                 <div>
-                    {renderItems()}
+                    {renderCards()}
                 </div>
             </Stack>
             <Modal className='custom-alert' size='sm' show={showModal} onHide={() => setShowModal(false)} >
@@ -111,8 +140,8 @@ export default function Pantries() {
                     </span>
                 </Modal.Body>
                 <Modal.Footer className='custom-alert-footer p-2'>
-                    <Button bsPrefix='btn-custom' size='sm' onClick={() => setShowModal(false)}>{t("btn-no", {ns: "common"})}</Button>
-                    <Button bsPrefix='btn-custom' size='sm' onClick={handleRemove}>{t("btn-yes", {ns: "common"})}</Button>
+                    <Button bsPrefix='btn-custom' size='sm' onClick={() => setShowModal(false)}><span className="gradient-text">{t("btn-no", { ns: "common" })}</span></Button>
+                    <Button bsPrefix='btn-custom' size='sm' onClick={handleRemove}><span className="gradient-text">{t("btn-yes", { ns: "common" })}</span></Button>
                 </Modal.Footer>
             </Modal >
 
