@@ -262,8 +262,8 @@ export default function ResetPassword() {
                     </Form.Group>
 
                     <div className="d-flex justify-content-end gap-1 pt-2 pb-2">
-                        <Button bsPrefix='btn-custom' size="sm" onClick={clearAccount} disabled={!Object.keys(valid).length > 0}><span className={!Object.keys(valid).length > 0 ? "" : "gradient-text"}>{t("btn-clear", { ns: "common" })}</span></Button>
-                        <Button bsPrefix="btn-custom" size="sm" type="submit" variant="link" disabled={!validForm}><span className={validForm ? "gradient-text" : ""}>{t("btn-reset-password")}</span></Button>
+                        <Button bsPrefix='btn-custom' size="sm" onClick={clearAccount} disabled={!Object.keys(valid).length > 0}><span>{t("btn-clear", { ns: "common" })}</span></Button>
+                        <Button bsPrefix="btn-custom" size="sm" type="submit" variant="link" disabled={!validForm}><span>{t("btn-reset-password")}</span></Button>
                     </div>
                 </Form>
             </div>

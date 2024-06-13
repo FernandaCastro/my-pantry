@@ -273,9 +273,9 @@ export function Supermarket() {
                     label={item.name}
                     disabled={editSupermarketId > 0} />
 
-                <div className="d-flex justify-content-end">
-                    <Button onClick={() => handleClickEdit(item)} variant="link" disabled={editSupermarketId > 0}><BsPencil className='icon' /></Button>
-                    <Button onClick={() => fetchDelete(item.id)} variant="link" disabled={setEditSupermarketId > 0}><BsTrash className='icon' /></Button>
+                <div className="d-flex justify-content-end gap-4">
+                    <Button className="m-0 p-0 pe-2" onClick={() => handleClickEdit(item)} variant="link" disabled={editSupermarketId > 0}><BsPencil className='icon' /></Button>
+                    <Button className="m-0 p-0"onClick={() => fetchDelete(item.id)} variant="link" disabled={setEditSupermarketId > 0}><BsTrash className='icon' /></Button>
                 </div>
             </div>
         )
@@ -284,7 +284,7 @@ export function Supermarket() {
         return (
             <Col key={item.id} className="d-flex flex-column g-2">
                 <Card className="card1 flex-fill">
-                    <Card.Body className="d-flex  flex-column h-100">
+                    <Card.Body className="d-flex flex-column h-100">
 
                         {editSupermarketId === item.id ? renderEditCard() : renderViewCard(item)}
 
