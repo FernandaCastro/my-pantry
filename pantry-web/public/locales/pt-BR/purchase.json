@@ -1,12 +1,12 @@
 {
   "pantry-title": "Despensas",
   "purchase-order-title": "Listas de Compra",
-  "purchase-order-pending": "Itens Pendentes",
+  "purchase-order-pending": "Sem Lista de Compra",
   "purchase-order-open": "Lista de Compra Aberta",
-  "purchase-order-closed": "Lisa de Compra Fechada",
-  "btn-refresh": "Atualizar",
-  "btn-new-order": "Criar Lista de Compra",
-  "btn-checkout": "Finalizar Lista de Compra",
+  "purchase-order-closed": "Lista de Compra Fechada",
+  "btn-refresh": "Atualizar Lista",
+  "btn-new-order": "Iniciar Compra",
+  "btn-checkout": "Finalizar Compra",
   "placeholder-select-supermarket": "Ordenar por supermercado?",
   "no-item-to-purchase": "Nenhum item para comprar no momento.",
   "purchase-order-empty": "Esta Lista de Compra está vazia",
@@ -18,5 +18,6 @@
   "other": "Outros",
   "supermarket-alphabetically": "Alfabeticamente",
   "closed": "Fechada",
-  "open": "Aberta"
+  "open": "Aberta",
+  "provisioned": "Provisionado"
 }

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { postClosePurchaseOrder, postNewPurchaseOrder } from '../services/apis/mypantry/requests/PurchaseRequests.js';
 import Button from 'react-bootstrap/Button';
 import Stack from 'react-bootstrap/Stack';
@@ -14,6 +14,7 @@ import { useTranslation } from 'react-i18next';
 export default function Purchase() {
 
     const { t } = useTranslation(['purchase', 'common']);
+    const purchaseItemListRef = useRef();
 
     const [selectedPantries, setSelectedPantries] = useState([]);
 
@@ -21,7 +22,7 @@ export default function Purchase() {
     const [purchaseItems, setPurchaseItems] = useState([]);
 
     const [isLoading, setIsLoading] = useState(true);
-    const [hasOpenOrder, setHasOpenOrder] = useState(false);
+    const [isOpenOrder, setIsOpenOrder] = useState(false);
     const [showPantries, setShowPantries] = useState(true);
     const [showOrder, setShowOrder] = useState(true);
     const [showOrderDetails, setShowOrderDetails] = useState(true);
@@ -36,7 +37,7 @@ export default function Purchase() {
             setRefreshOrders(false);
             await postClosePurchaseOrder(body);
             setPurchase();
-            setHasOpenOrder(false);
+            setIsOpenOrder(false);
             setRefreshOrders(true);
             showAlert(VariantType.SUCCESS, t("close-purchase-order-success"));
         } catch (error) {
@@ -53,7 +54,7 @@ export default function Purchase() {
             setRefreshOrders(false);
             const res = await postNewPurchaseOrder(selectedPantries);
             setPurchase(res);
-            setHasOpenOrder(true);
+            setIsOpenOrder(true);
             setRefreshOrders(true);
             showAlert(VariantType.SUCCESS, t("create-purchase-order-success"));
         } catch (error) {
@@ -93,7 +94,12 @@ export default function Purchase() {
 
     function selectPurchase(p) {
         setPurchase(p);
-        (!isNull(p) && !p.processedAt) ? setHasOpenOrder(true) : setHasOpenOrder(false);
+        const open = p && !p.processedAt ? true : false;
+        setIsOpenOrder(open);
+    }
+
+    function handleRefresh() {
+        purchaseItemListRef.current?.refreshPendingItens();
     }
 
     return (
@@ -109,12 +115,10 @@ export default function Purchase() {
                 </Collapse>
             </div>
 
-            <div className="item d-flex justify-content-between align-items-start" >
-                <div className='d-flex justify-content-start align-items-center gap-2' onClick={() => setShowOrder(!showOrder)}>
-                    <h6 className='title'>{t("purchase-order-title")}</h6>
-                    <BsChevronDown className='small-icon' />
-                </div>
-                <Button bsPrefix="btn-custom" size="sm" onClick={handleNewOrder} disabled={hasOpenOrder}><span className={hasOpenOrder ? "": "gradient-text"}>{t("btn-new-order")}</span></Button>
+            <div className='d-flex justify-content-start align-items-center gap-2' onClick={() => setShowOrder(!showOrder)}>
+                {/* <h6 className='title'>{t("purchase-order-title")}</h6> */}
+                <h6 className='title'>{purchase ? isOpenOrder ? t("purchase-order-open") : t("purchase-order-closed") : t("purchase-order-pending")}</h6>
+                <BsChevronDown className='small-icon' />
             </div>
 
             <div>
@@ -125,7 +129,13 @@ export default function Purchase() {
                 </Collapse>
             </div>
 
-            <div>
+            <div className="d-flex justify-content-evenly align-items-start" >
+                <Button bsPrefix="btn-custom" size="sm" onClick={handleNewOrder} disabled={((!purchase && purchaseItems.length === 0) || (purchase && purchase.processedAt !== null) || isOpenOrder)}><span className={((!purchase && purchaseItems.length === 0) || (purchase && purchase.processedAt !== null) || isOpenOrder) ? "" : "gradient-text"}>{t("btn-new-order")}</span></Button>
+                <Button bsPrefix="btn-custom" size="sm" onClick={handleRefresh} disabled={purchase}><span className={purchase ? "" : "gradient-text"}>{t("btn-refresh")}</span></Button>
+                <Button bsPrefix="btn-custom" size="sm" onClick={handleSave} disabled={!isOpenOrder}><span className={isOpenOrder ? "gradient-text" : ""}>{t("btn-checkout")}</span></Button>
+            </div>
+
+            {/* <div>
                 <div className='d-flex justify-content-start align-items-center gap-2' onClick={() => setShowOrderDetails(!showOrderDetails)} aria-controls="purchaseItems" >
                     <h6 className='title'>{purchase ? purchase.processedAt ? t("purchase-order-closed") : t("purchase-order-open") : t("purchase-order-pending")}</h6>
                     <BsChevronDown className='small-icon' />
@@ -135,13 +145,16 @@ export default function Purchase() {
                         <PurchaseItemList purchase={purchase} selectedPantries={selectedPantries} setOuterPurchaseItems={setPurchaseItems} />
                     </div>
                 </Collapse>
+            </div> */}
+
+            <div id="purchaseItems" className='purchaseList'>
+                <PurchaseItemList ref={purchaseItemListRef} purchase={purchase} selectedPantries={selectedPantries} setOuterPurchaseItems={setPurchaseItems} />
             </div>
 
-
-            <div className='d-flex justify-content-end gap-2'>
+            {/* <div className='d-flex justify-content-end gap-2'>
                 {/* <Button bsPrefix="btn-custom" size="sm" onClick={handleClear} disabled={!hasOpenOrder}>Clear</Button> */}
-                <Button bsPrefix="btn-custom" size="sm" onClick={handleSave} disabled={!hasOpenOrder}><span className={hasOpenOrder ? "gradient-text" : ""}>{t("btn-checkout")}</span></Button>
-            </div>
+            {/* <Button bsPrefix="btn-custom" size="sm" onClick={handleSave} disabled={!isOpenOrder}><span className={isOpenOrder ? "gradient-text" : ""}>{t("btn-checkout")}</span></Button>
+            </div> */}
 
         </Stack >
 
