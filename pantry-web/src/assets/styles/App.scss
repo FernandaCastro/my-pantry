@@ -33,6 +33,15 @@ $gradient-color: linear-gradient(90deg, rgba(228, 132, 252, 1) 0%, rgba(132, 212
     background-clip: padding-box, border-box;
     background-origin: border-box;
     border: 3px solid transparent;
+
+    span {
+        background-image: linear-gradient(90deg,
+                hsl(289, 52%, 55%),
+                hsl(207, 67%, 49%));
+        background-clip: text;
+        -webkit-background-clip: text;
+        color: transparent;
+    }
 }
 
 .btn-custom:enabled:hover {
@@ -44,7 +53,14 @@ $gradient-color: linear-gradient(90deg, rgba(228, 132, 252, 1) 0%, rgba(132, 212
     //background-color: $btn-disabled-color !important;
 
     background-image: linear-gradient(90deg, lavender, lavender),
-        linear-gradient(45deg, darkgray, gray);
+        linear-gradient(45deg, gray 5%, rgb(199, 198, 198) 70%);
+
+    span {
+        background-image: linear-gradient(45deg, gray, lightgray);
+        background-clip: text;
+        -webkit-background-clip: text;
+        color: transparent;
+    }
 
 }
 
@@ -57,6 +73,13 @@ a.btn-custom:hover {
     background-image: linear-gradient(90deg,
             hsl(289, 52%, 55%),
             hsl(207, 67%, 49%));
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+}
+
+.gradient-disabled-text {
+    background-image: linear-gradient(45deg, darkgray, gray);
     background-clip: text;
     -webkit-background-clip: text;
     color: transparent;
@@ -213,6 +236,12 @@ table.bordered {
     margin: initial;
 }
 
+.simple-title {
+    margin: initial;
+    font-weight: 300;
+    color: $title-text-color;
+}
+
 .bigger-title {
     color: $title-text-color;
     margin: initial;
@@ -230,6 +259,10 @@ span {
 
 .text-small {
     font-size: smaller;
+}
+
+.highlight-text {
+    color: mediumorchid;
 }
 
 span.disabled {
@@ -777,18 +810,4 @@ div[disabled] {
 /* Fade in the pseudo-element with the bigger shadow */
 .card1:hover::after {
     opacity: 1;
-}
-
-.alert {
-    --bs-alert-padding-y: 0.5rem !important;
-}
-
-.custom-alert {
-    overflow-y: auto;
-    height: 40px;
-    padding: 0.7rem 1.5rem;
-
-    .btn-close {
-        padding: 0.7rem 1.5rem !important;
-    }
 }

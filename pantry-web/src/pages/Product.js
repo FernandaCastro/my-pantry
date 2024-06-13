@@ -10,6 +10,8 @@ import Button from 'react-bootstrap/Button';
 import CloseButton from 'react-bootstrap/CloseButton';
 import { getAccountGroupList } from '../services/apis/mypantry/requests/AccountRequests.js';
 import { useTranslation } from 'react-i18next';
+import iconProduct from '../assets/images/food-gradient.png';
+import Image from 'react-bootstrap/Image';
 
 export default function Product() {
 
@@ -126,17 +128,20 @@ export default function Product() {
     return (
         <>
             <div hidden={!showForm} className="mt-4">
-                <div className='border-custom'>
-                    <div className="me-3 d-flex justify-content-end align-items-center">
-                        <CloseButton aria-label="Hide" onClick={handleClearAction} />
+                <div>
+                    <div className="me-3 mb-3 d-flex justify-content-start align-items-end">
+                        <Image src={iconProduct} width={40} height={40} className='ms-3 me-3 ' />
+                        <h6 className='title'>{t('product-title')}: {product.code}</h6>
+                        <CloseButton className="ms-auto" aria-label="Hide" onClick={handleClearAction} />
                     </div>
                     <ProductForm key={productLabel} product={product} categories={categories} accountGroupOptions={accountGroupOptions} handleSave={handleSave} />
                 </div>
             </div>
             <div hidden={showForm} className="mt-4">
-                <Stack direction="horizontal" gap={2} className='mb-3 d-flex justify-content-between'>
-                    <h6 className="text-start fs-6 lh-lg title">{productLabel} </h6>
-                    <Button bsPrefix="btn-custom" size="sm" onClick={handleNew} className='me-2' disabled={(mode === "edit") || (product && Object.keys(product) > 0)}><span className="gradient-text">{t('btn-new-product')}</span></Button>
+                <Stack direction="horizontal" gap={2} className='mb-3 d-flex justify-content-start align-items-end'>
+                    <Image src={iconProduct} width={40} height={40} className='ms-3 me-2' />
+                    <h6 className='title'>{t('product-list-title')}</h6>
+                    <Button bsPrefix="btn-custom" size="sm" onClick={handleNew} className='me-2 ms-auto' disabled={(mode === "edit") || (product && Object.keys(product) > 0)}><span>{t('btn-new-product')}</span></Button>
                 </Stack>
 
                 <ProductList key={refresh} disabled={showForm} onEdit={handleOnListSelection} onRemove={handleRemove} />

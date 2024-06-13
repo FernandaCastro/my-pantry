@@ -44,13 +44,17 @@ export default function App() {
     localStorage.setItem("profile-context", JSON.stringify(profileCtx));
   }, [profileCtx]);
 
+  // style={{ height: '40px', verticalAlign: 'middle' }}
+
   return (
     <Suspense fallback="...is loading">
       <ProfileContext.Provider value={{ profileCtx, setProfileCtx }}>
         <AlertContext.Provider value={{ alert, setAlert }}>
           <Header />
-          <div style={{ height: '40px', verticalAlign: 'middle' }}>
-            <Alert className="custom-alert" variant={alert.type} show={alert.show} onClose={() => setAlert((a) => a = { ...a, show: !alert.show })} dismissible transition={Fade}>{alert.message}</Alert>
+          <div ref={target}>
+            <Overlay target={target.current} show={alert.show} placement="bottom" transition={Fade}>
+              <Alert variant={alert.type} show={alert.show} onClose={() => setAlert((a) => a = { ...a, show: !alert.show })} dismissible transition={Fade}>{alert.message}</Alert>
+            </Overlay>
           </div>
           <Container >
             <NavigateSetter />

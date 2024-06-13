@@ -13,6 +13,7 @@ import { BsChevronDown } from "react-icons/bs";
 import Collapse from 'react-bootstrap/Collapse';
 import { useTranslation } from 'react-i18next';
 import CurrentQuantityField from '../components/CurrentQuantityField.js'
+import iconConsume from '../assets/images/cook-gradient.png';
 
 export default function Consume() {
 
@@ -133,14 +134,15 @@ export default function Consume() {
 
   return (
     <Stack gap={3}>
-      <div>
-        <div className='d-flex justify-content-start align-items-center gap-2' onClick={() => setShowPantries(!showPantries)}>
-          <h6 className="text-start fs-6 lh-lg title">{t('consume-title')}</h6>
-          <BsChevronDown className='small-icon' />
+      <div className='mt-4'>
+        <div className='d-flex justify-content-start align-items-end' onClick={() => setShowPantries(!showPantries)}>
+          <h6 className="title">{t('consume-title')}</h6>
+          <BsChevronDown className='small-icon  ms-3' />
+          <Image src={iconConsume} width={40} height={40} className='ms-auto ms-3 me-3' />
         </div>
 
         <Collapse in={showPantries} >
-          <div><PantrySelect handleSelectedPantryList={handleSelectedPantries} permission='consume_pantry' /></div>
+          <div className='mt-3'><PantrySelect handleSelectedPantryList={handleSelectedPantries} permission='consume_pantry' /></div>
         </Collapse>
       </div>
 

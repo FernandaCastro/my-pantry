@@ -1,7 +1,7 @@
 {
-  "pantry-title": "Pantries",
+  "purchase-title": "Go Shopping for Pantries",
   "purchase-order-title": "Shopping List",
-  "purchase-order-pending": "Pending Items",
+  "purchase-order-pending": "No Shopping List selected",
   "purchase-order-open": "Open Shopping List",
   "purchase-order-closed": "Closed Shopping List",
   "btn-refresh": "Refresh",

@@ -1,7 +1,7 @@
 {
-  "pantry-title": "Despensas",
+  "purchase-title": "Fazer Compras para Despensas",
   "purchase-order-title": "Listas de Compra",
-  "purchase-order-pending": "Sem Lista de Compra",
+  "purchase-order-pending": "Nenhuma Lista de Compra selecionada",
   "purchase-order-open": "Lista de Compra Aberta",
   "purchase-order-closed": "Lista de Compra Fechada",
   "btn-refresh": "Atualizar Lista",

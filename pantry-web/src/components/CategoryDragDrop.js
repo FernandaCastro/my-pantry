@@ -252,7 +252,7 @@ export function DraggableItem({ item, index }) {
                         ref={_provided.innerRef}
                         style={_style}>
 
-                        <small className='text-wrap'>{item.name}</small>
+                        <span className='text-wrap'>{item.name}</span>
                         <GrDrag />
                     </div>
                 )
