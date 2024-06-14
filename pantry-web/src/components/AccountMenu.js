@@ -33,7 +33,8 @@ function AccountMenu() {
                 <Popover.Body className='card-login-profile'>
                     {profileCtx.pictureUrl && profileCtx.pictureUrl.length > 0 ?
                         <Image className='profile-icon' width={50} height={50} roundedCircle referrerPolicy="no-referrer" src={profileCtx.pictureUrl} /> :
-                        <Image width={50} height={50} roundedCircle referrerPolicy="no-referrer" src={iAccount} />
+                        <div className='gradient-box'><span className="gradient-label">{profileCtx.initials}</span></div>
+                        // <Image width={50} height={50} roundedCircle referrerPolicy="no-referrer" src={iAccount} />
                     }
                     <span className='title'>{profileCtx.name}</span>
                     <span className='small'>{profileCtx.email}</span>
@@ -43,7 +44,7 @@ function AccountMenu() {
                         <Button bsPrefix="btn-profile-menu" href={"/account/edit"}>{t("edit-account-link")}</Button>
                         <Button bsPrefix="btn-profile-menu" href="/group-members">{t("group-members-link")}</Button>
                     </div >
-                    <LogoutFromGoogle handleLogout={handleLogout} text={t("btn-logout")}/>
+                    <LogoutFromGoogle handleLogout={handleLogout} text={t("btn-logout")} />
                 </Popover.Body >
             </Popover >
         );
@@ -54,7 +55,8 @@ function AccountMenu() {
                     <Button variant='link'>
                         {profileCtx.pictureUrl && profileCtx.pictureUrl.length > 0 ?
                             <Image className='profile-icon hover-effect' width={40} height={40} roundedCircle referrerPolicy="no-referrer" src={profileCtx.pictureUrl} /> :
-                            <Image className='hover-effect' width={30} height={30} roundedCircle referrerPolicy="no-referrer" src={iAccount} />
+                            <div className="gradient-box hover-effect"><span className="gradient-label">{profileCtx.initials}</span></div>
+                            // <Image className='hover-effect' width={30} height={30} roundedCircle referrerPolicy="no-referrer" src={iAccount} />
                         }
                     </Button>
                 </OverlayTrigger>

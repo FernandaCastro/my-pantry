@@ -117,8 +117,8 @@ export default function PantryForm({ pantry, handleSave, accountGroupOptions }) 
             </Row>
             <Row>
                 <Stack direction="horizontal" gap={2} className="mb-3 d-flex justify-content-end">
-                    <Button bsPrefix='btn-custom' type="reset" size="sm" disabled={isProcessing}>{t('btn-clear', { ns: 'common' })}</Button>
-                    <Button bsPrefix='btn-custom' type="submit" size="sm" disabled={isProcessing}>{t('btn-save', { ns: 'common' })}</Button>
+                    <Button bsPrefix='btn-custom' type="reset" size="sm" disabled={isProcessing}><span className="gradient-text">{t('btn-clear', { ns: 'common' })}</span></Button>
+                    <Button bsPrefix='btn-custom' type="submit" size="sm" disabled={isProcessing}><span className="gradient-text">{t('btn-save', { ns: 'common' })}</span></Button>
                 </Stack>
             </Row>
         </Form>

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { FormCheck, Stack, Button, Table, Form } from "react-bootstrap";
+import { FormCheck, Stack, Button, Table, Form, Image, Card, Col, Row } from "react-bootstrap";
 import { BsPencil, BsTrash, BsCheck2All, BsXLg } from "react-icons/bs";
 import { useTranslation } from 'react-i18next';
 import { CategoryDragDrop } from '../components/CategoryDragDrop';
@@ -8,6 +8,7 @@ import VariantType from '../components/VariantType.js';
 import Select from '../components/Select';
 import { getAccountGroupList } from '../services/apis/mypantry/requests/AccountRequests.js';
 import { getAllSupermarkets, createSupermarket, updateSupermarket, deleteSupermarket } from '../services/apis/mypantry/requests/PurchaseRequests.js'
+import iconSupermarket from '../assets/images/supermarket-gradient.png';
 
 export function Supermarket() {
 
@@ -61,12 +62,7 @@ export function Supermarket() {
         setIsLoading(true);
         try {
             const res = await getAllSupermarkets(accountGroupOption.value);
-            // const res = [
-            //     { id: 1, name: 'Aldi', categories: JSON.parse('["cookies", "fruit-and-vegetables", "refrigerated", "meat", "dairy", "beverages", "grocery", "frozen", "cleaning", "personal-hygiene", "other"]') },
-            //     { id: 2, name: 'Rewe', categories: JSON.parse('["bakery", "cookies", "fruit-and-vegetables", "dairy", "beverages", "grocery", "frozen", "cleaning", "personal-hygiene", "other"]') },
-            //     { id: 3, name: 'Edeka', categories: JSON.parse('["bakery", "cookies", "fruit-and-vegetables", "refrigerated", "meat", "dairy", "beverages", "grocery", "frozen", "cleaning", "personal-hygiene", "other"]') },
-            //     { id: 4, name: 'Lidl', categories: JSON.parse('["fruit-and-vegetables", "bakery", "cookies", "dairy", "beverages", "grocery", "frozen", "cleaning", "personal-hygiene", "other"]') }
-            // ]
+
             setSupermarkets(res);
 
             if (selectedSupermarket.id === 0 && res && res.length > 0) {
@@ -92,7 +88,7 @@ export function Supermarket() {
                 accountGroup: { id: accountGroupOption.value }
             };
             const res = await createSupermarket(stringified);
-            if (res && res.length > 0) {
+            if (res) {
                 setSelectedSupermarket(res);
             }
             setEditSupermarketId(0);
@@ -128,6 +124,8 @@ export function Supermarket() {
             setRefresh(false);
             setIsLoading(true);
             await deleteSupermarket(id);
+            setSelectedSupermarket({ id: 0, name: "", categories: [] });
+
             showAlert(VariantType.SUCCESS, t("delete-supermarket-success"));
         } catch (error) {
             showAlert(VariantType.DANGER, error.message);
@@ -143,13 +141,13 @@ export function Supermarket() {
     }
 
     function handleClickNew() {
-        setSelectedSupermarket({ id: 0, name: "", categories: [] });
+        const newSupermarket = { id: 0, name: "", categories: [] };
+        setSelectedSupermarket(newSupermarket);
         setShowNew(true);
     }
 
     function handleCategoriesChange(list) {
         setSelectedSupermarket(prev => ({ ...prev, categories: list }));
-        //save here or wait main save?
     }
 
     function renderSupermarkets() {
@@ -219,10 +217,92 @@ export function Supermarket() {
     }
 
 
+    function renderCards() {
+
+        if (isLoading) {
+            return (<span>Loading...</span>)
+        }
+
+        const elements = [];
+
+        if (showNew) { elements.push(renderNewCard()) }
+
+        supermarkets.map((item) => (elements.push(renderCard(item))))
+
+        return elements;
+    }
+
+    function renderNewCard() {
+
+        return (
+            <Col key={0} className="d-flex flex-column g-2">
+                <Card className="card1 flex-fill">
+                    <Card.Body className="d-flex  flex-column h-100">
+                        <div className="d-flex justify-content-start aling-items-center">
+                            <FormCheck type="radio" checked={false} disabled={true} />
+                            <Form.Control className="ms-1" size="sm" type="text" placeholder='Supermarket Name' defaultValue={selectedSupermarket.name} onChange={(e) => setSelectedSupermarket({ ...selectedSupermarket, name: e.target.value })} />
+                            <Button onClick={fetchCreate} variant="link" className='pe-0' disabled={selectedSupermarket.name.length === 0}><BsCheck2All className='icon' /></Button>
+                            <Button onClick={() => setShowNew(false)} variant='link' title='Clear text'><BsXLg className='icon' /></Button>
+                        </div>
+                    </Card.Body>
+                </Card>
+            </Col >
+        )
+    }
+
+    function renderEditCard() {
+        return (
+            <Stack direction="horizontal" gap={1} className="d-flex justify-content-start m-0 p-0">
+                <div><FormCheck key={selectedSupermarket.id} type="radio" checked={true} disabled={true} /></div>
+                <div className='flex-grow-1'>
+                    <Form.Control size="sm" type="text" defaultValue={selectedSupermarket.name}
+                        onChange={(e) => setSelectedSupermarket({ ...selectedSupermarket, name: e.target.value })} /></div>
+
+                <div><Button onClick={fetchEdit} variant="link" className='pe-0'><BsCheck2All className='icon' /></Button></div>
+                <div><Button onClick={() => setEditSupermarketId(0)} variant='link' title='Clear text'><BsXLg className='icon' /></Button></div>
+            </Stack >
+        )
+    }
+
+    function renderViewCard(item) {
+        return (
+            <div className='d-flex justify-content-between'>
+                <FormCheck key={selectedSupermarket.id} type="radio" defaultValue={selectedSupermarket && selectedSupermarket.id === item.id}
+                    defaultChecked={selectedSupermarket && selectedSupermarket.id === item.id}
+                    onChange={() => setSelectedSupermarket(item)} style={{ color: "hsl(219, 11%, 25%)" }}
+                    label={item.name}
+                    disabled={editSupermarketId > 0} />
+
+                <div className="d-flex justify-content-end gap-4">
+                    <Button className="m-0 p-0 pe-2" onClick={() => handleClickEdit(item)} variant="link" disabled={editSupermarketId > 0}><BsPencil className='icon' /></Button>
+                    <Button className="m-0 p-0"onClick={() => fetchDelete(item.id)} variant="link" disabled={setEditSupermarketId > 0}><BsTrash className='icon' /></Button>
+                </div>
+            </div>
+        )
+    }
+    function renderCard(item) {
+        return (
+            <Col key={item.id} className="d-flex flex-column g-2">
+                <Card className="card1 flex-fill">
+                    <Card.Body className="d-flex flex-column h-100">
+
+                        {editSupermarketId === item.id ? renderEditCard() : renderViewCard(item)}
+
+                    </Card.Body>
+                </Card>
+            </Col>
+        )
+    }
+
+
     return (
-        <Stack gap={4}>
-            <div></div>
-            <div className='d-flex flex-row align-text-center gap-2'>
+        <>
+            <div className="d-flex align-items-end mt-4">
+                <Image src={iconSupermarket} width={40} height={40} className="ms-2 me-3" />
+                <h6 className='title flex-grow-1'>{t("supermarket-title")}</h6>
+                <Button bsPrefix="btn-custom" size="sm" onClick={handleClickNew} className="pe-2 ps-2" disabled={editSupermarketId > 0 || showNew}><span>{t("btn-create")}</span></Button>
+            </div>
+            <div className='d-flex flex-row align-text-center gap-2 mt-5'>
                 <span className="title">{t('group-title')}</span>
                 <Form.Group className="mb-2 flex-grow-1" controlId="formAccountGroups" size="sm">
                     {isLoading ? <span>Loading...</span> :
@@ -233,17 +313,16 @@ export function Supermarket() {
                     }
                 </Form.Group>
             </div>
-            <div className="d-flex align-items-center gap-2">
-                <h6 className='title flex-grow-1'>{t("supermarket-title")}</h6>
-                <Button bsPrefix="btn-custom" size="sm" onClick={handleClickNew} className="pe-2 ps-2" disabled={editSupermarketId > 0 || showNew}>{t("btn-create")}</Button>
-            </div>
-            <div className="scroll-supermarkets">
-                {renderSupermarkets()}
-            </div>
-            <div>
+            {/* <div className="scroll-supermarkets mt-3"> */}
+            <Row xs={1} md={2} lg={3} className='m-0'>
+                {renderCards()}
+            </Row>
+            {/* {renderSupermarkets()} */}
+            {/* </div> */}
+            <div className="mt-4">
                 <CategoryDragDrop key={selectedSupermarket.id} innitialList={selectedSupermarket.categories} handleListChange={handleCategoriesChange} disabled={editSupermarketId === 0 && !showNew} />
             </div>
-        </Stack>
+        </>
     )
 
 }

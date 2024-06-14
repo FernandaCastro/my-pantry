@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { postClosePurchaseOrder, postNewPurchaseOrder } from '../services/apis/mypantry/requests/PurchaseRequests.js';
 import Button from 'react-bootstrap/Button';
 import Stack from 'react-bootstrap/Stack';
@@ -10,18 +10,20 @@ import PantrySelect from '../components/PantrySelect.js'
 import PurchaseOrderList from '../components/PurchaseOrderList.js'
 import PurchaseItemList from '../components/PurchaseItemList.js'
 import { useTranslation } from 'react-i18next';
+import iconPurchase from '../assets/images/shoppingcart-gradient.png';
+import Image from 'react-bootstrap/Image';
 
 export default function Purchase() {
 
     const { t } = useTranslation(['purchase', 'common']);
+    const purchaseItemListRef = useRef();
 
     const [selectedPantries, setSelectedPantries] = useState([]);
 
     const [purchase, setPurchase] = useState();
     const [purchaseItems, setPurchaseItems] = useState([]);
 
-    const [isLoading, setIsLoading] = useState(true);
-    const [hasOpenOrder, setHasOpenOrder] = useState(false);
+    const [isOpenOrder, setIsOpenOrder] = useState(false);
     const [showPantries, setShowPantries] = useState(true);
     const [showOrder, setShowOrder] = useState(true);
     const [showOrderDetails, setShowOrderDetails] = useState(true);
@@ -32,41 +34,30 @@ export default function Purchase() {
 
     async function fetchClosePurchaseOrder(body) {
         try {
-            setIsLoading(true);
             setRefreshOrders(false);
             await postClosePurchaseOrder(body);
             setPurchase();
-            setHasOpenOrder(false);
+            setIsOpenOrder(false);
             setRefreshOrders(true);
             showAlert(VariantType.SUCCESS, t("close-purchase-order-success"));
         } catch (error) {
             showAlert(VariantType.DANGER, error.message);
-
-        } finally {
-            setIsLoading(false);
         }
     }
 
     async function fetchNewPurchaseOrder() {
         try {
-            setIsLoading(true);
             setRefreshOrders(false);
             const res = await postNewPurchaseOrder(selectedPantries);
             setPurchase(res);
-            setHasOpenOrder(true);
+            setIsOpenOrder(true);
             setRefreshOrders(true);
             showAlert(VariantType.SUCCESS, t("create-purchase-order-success"));
         } catch (error) {
             showAlert(VariantType.DANGER, error.message);
         } finally {
             setShowOrder(true);
-            setIsLoading(false);
         }
-    }
-
-    function isNull(object) {
-        if (!object || (Object.keys(object).length === 0 && object.constructor === Object)) return true;
-        return false;
     }
 
     function handleSave() {
@@ -83,68 +74,58 @@ export default function Purchase() {
         fetchNewPurchaseOrder();
     }
 
-    function handleClear() {
-        // return fetchPurchaseItems(true);
-    }
-
     function handleSelectedPantries(list) {
         setSelectedPantries(list);
     }
 
     function selectPurchase(p) {
         setPurchase(p);
-        (!isNull(p) && !p.processedAt) ? setHasOpenOrder(true) : setHasOpenOrder(false);
+        const open = p && !p.processedAt ? true : false;
+        setIsOpenOrder(open);
+    }
+
+    function handleRefresh() {
+        purchaseItemListRef.current?.refreshPendingItens();
     }
 
     return (
-        <Stack gap={3}>
-            <div />
-            <div>
+        <>
+            <div className='mt-4'>
                 <div className='d-flex justify-content-start align-items-center gap-2' onClick={() => setShowPantries(!showPantries)}>
-                    <h6 className="text-start fs-6 lh-lg title">{t("pantry-title")}</h6>
-                    <BsChevronDown className='icon' />
+                    <h6 className="text-start fs-6 lh-lg title">{t("purchase-title")}</h6>
+                    <BsChevronDown className='small-icon' />
+                    <Image src={iconPurchase} width={40} height={40} className='ms-auto me-4 mb-2' style={{transform: 'rotateY(180deg)'}}/>
                 </div>
 
                 <Collapse in={showPantries} >
                     <div><PantrySelect handleSelectedPantryList={handleSelectedPantries} permission='purchase_pantry' /></div>
                 </Collapse>
             </div>
-            
-            <div className="item d-flex justify-content-between align-items-start" >
-                <div className='d-flex justify-content-start align-items-center gap-2' onClick={() => setShowOrder(!showOrder)}>
-                    <h6 className='title'>{t("purchase-order-title")}</h6>
-                    <BsChevronDown className='icon' />
-                </div>
-                <Button bsPrefix="btn-custom" size="sm" onClick={handleNewOrder} disabled={hasOpenOrder}>{t("btn-new-order")}</Button>
+
+            <div className='d-flex justify-content-start align-items-center gap-2 mt-4' onClick={() => setShowOrder(!showOrder)}>
+                <h6 className='simple-title'>{purchase ? isOpenOrder ? t("purchase-order-open") : t("purchase-order-closed") : t("purchase-order-pending")}</h6>
+                <BsChevronDown className='small-icon' />
             </div>
 
             <div>
                 <Collapse in={showOrder} >
-                    <div>
+                    <div className='mt-3'>
                         <PurchaseOrderList key={refreshOrders} selectedPantries={selectedPantries} handleSelectedPurchase={selectPurchase} />
                     </div>
                 </Collapse>
             </div>
 
-            <div>
-                <div className='d-flex justify-content-start align-items-center gap-2' onClick={() => setShowOrderDetails(!showOrderDetails)} aria-controls="purchaseItems" >
-                    <h6 className='title'>{purchase ? purchase.processedAt ? t("purchase-order-closed") : t("purchase-order-open") : t("purchase-order-pending")}</h6>
-                    <BsChevronDown className='icon' />
-                </div>
-                <Collapse in={showOrderDetails} >
-                    <div id="purchaseItems" className='purchaseList'>
-                        <PurchaseItemList purchase={purchase} selectedPantries={selectedPantries} setOuterPurchaseItems={setPurchaseItems} />
-                    </div>
-                </Collapse>
+            <div className="d-flex justify-content-evenly align-items-start mt-4" >
+                <Button bsPrefix="btn-custom" size="sm" onClick={handleNewOrder} disabled={((!purchase && purchaseItems.length === 0) || (purchase && purchase.processedAt !== null) || isOpenOrder)}><span>{t("btn-new-order")}</span></Button>
+                <Button bsPrefix="btn-custom" size="sm" onClick={handleRefresh} disabled={purchase}><span>{t("btn-refresh")}</span></Button>
+                <Button bsPrefix="btn-custom" size="sm" onClick={handleSave} disabled={!isOpenOrder}><span>{t("btn-checkout")}</span></Button>
             </div>
 
-
-            <div className='d-flex justify-content-end gap-2'>
-                {/* <Button bsPrefix="btn-custom" size="sm" onClick={handleClear} disabled={!hasOpenOrder}>Clear</Button> */}
-                <Button bsPrefix="btn-custom" size="sm" onClick={handleSave} disabled={!hasOpenOrder}>{t("btn-checkout")}</Button>
+            <div id="purchaseItems" className='purchaseList mt-3'>
+                <PurchaseItemList ref={purchaseItemListRef} purchase={purchase} selectedPantries={selectedPantries} setOuterPurchaseItems={setPurchaseItems} />
             </div>
 
-        </Stack >
+        </>
 
     )
 }

@@ -36,8 +36,8 @@ export default function PurchaseOrderList({ selectedPantries, handleSelectedPurc
         const highlight = (purchase && purchase.id === p.id) ? "highlight" : '';
         return (
             <tr key={p.id} onClick={(e) => selectPurchase(e, p)} >
-                <td className={highlight}><span>{p.id} - {p.processedAt ? t("closed") : t("open")}</span></td>
-                <td className={highlight}><span className='text-small'>{t('datetime', { ns: "common", date: new Date(p.createdAt) })}</span></td>
+                <td className={highlight}><span className={!p.processedAt ? 'highlight-text' : ''}>{p.id} - {p.processedAt ? t("closed") : t("open")}</span></td>
+                <td className={highlight}><span className={!p.processedAt ? 'highlight-text text-small' : 'text-small'}>{t('datetime', { ns: "common", date: new Date(p.createdAt) })}</span></td>
                 <td className={highlight}><span className='text-small'>{p.processedAt ? t('datetime', { ns: "common", date: new Date(p.processedAt) }) : ""}</span></td>
             </tr>
         )
@@ -58,9 +58,9 @@ export default function PurchaseOrderList({ selectedPantries, handleSelectedPurc
             <Table size='sm'>
                 < thead >
                     <tr key="order:0" className="align-middle">
-                        <th><h6 className='title'>{t("id-status")}</h6></th>
-                        <th><h6 className='title'>{t("createdAt")}</h6></th>
-                        <th><h6 className='title'>{t("checkoutAt")}</h6></th>
+                        <th><h6 className='simple-title'>{t("id-status")}</h6></th>
+                        <th><h6 className='simple-title'>{t("createdAt")}</h6></th>
+                        <th><h6 className='simple-title'>{t("checkoutAt")}</h6></th>
                     </tr>
                 </thead >
                 <tbody>

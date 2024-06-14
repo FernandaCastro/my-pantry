@@ -1,24 +1,20 @@
 import Form from 'react-bootstrap/Form';
-import Table from 'react-bootstrap/Table';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, forwardRef, useImperativeHandle } from 'react';
 import { getPendingPurchaseItems, getPurchaseItems, getAllSupermarkets } from '../services/apis/mypantry/requests/PurchaseRequests';
 import Button from 'react-bootstrap/Button';
-import Stack from 'react-bootstrap/Stack';
 import Image from 'react-bootstrap/Image';
 import food from '../assets/images/healthy-food.png'
 import VariantType from '../components/VariantType.js';
 import useAlert from '../hooks/useAlert.js';
-import NumericField from '../components/NumericField.js'
 import Select from '../components/Select.js';
 import Collapse from 'react-bootstrap/Collapse';
 import { camelCase } from '../services/Utils.js';
 import { BsArrow90DegRight } from "react-icons/bs";
-import { FormCheck } from "react-bootstrap";
-import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
-import Tooltip from 'react-bootstrap/Tooltip';
+import { Card, Col, FormCheck, Row } from "react-bootstrap";
 import { useTranslation } from 'react-i18next';
+import CurrentQuantityField from './CurrentQuantityField';
 
-export default function PurchaseItemList({ purchase, selectedPantries, setOuterPurchaseItems }) {
+function PurchaseItemList({ purchase, selectedPantries, setOuterPurchaseItems }, ref) {
 
     const { t } = useTranslation(['purchase', 'common', 'categories']);
 
@@ -35,6 +31,7 @@ export default function PurchaseItemList({ purchase, selectedPantries, setOuterP
     const [isOpenOrder, setIsOpenOrder] = useState(false);
 
     const [expandProdDetail, setExpandProdDetail] = useState(false);
+    const [showPantryCol, setShowPantryCol] = useState(false);
 
 
     useEffect(() => {
@@ -69,6 +66,7 @@ export default function PurchaseItemList({ purchase, selectedPantries, setOuterP
         setOuterPurchaseItems(purchaseItems);
     }, [purchaseItems])
 
+    //Sort items based on Supermarket categories order
     useEffect(() => {
         const hasPurchaseItems = purchaseItems && purchaseItems.length > 0;
 
@@ -78,6 +76,31 @@ export default function PurchaseItemList({ purchase, selectedPantries, setOuterP
                 fetchPendingItems();
         }
     }, [supermarketOption.value])
+
+    //This method can be called from parent component (refresh button)
+    useImperativeHandle(ref, () => ({
+        refreshPendingItens() {
+            fetchPendingItems();
+        },
+    }));
+
+    async function fetchPendingItems() {
+        try {
+            setIsLoading(true);
+            const res = await getPendingPurchaseItems(selectedPantries, supermarketOption.value);
+
+            if (isNull(res) || res.length === 0) {
+                return showAlert(VariantType.INFO, t("no-item-to-purchase"));
+            }
+
+            setPurchaseItems(res);
+            setIsLoading(false);
+        } catch (error) {
+            showAlert(VariantType.DANGER, error.message);
+        } finally {
+            setIsLoading(false);
+        }
+    }
 
     async function fetchSupermarketOptions() {
         try {
@@ -119,24 +142,6 @@ export default function PurchaseItemList({ purchase, selectedPantries, setOuterP
                     keepPurchasedQty(res) : setPurchaseItems(res);
             }
 
-            setIsLoading(false);
-        } catch (error) {
-            showAlert(VariantType.DANGER, error.message);
-        } finally {
-            setIsLoading(false);
-        }
-    }
-
-    async function fetchPendingItems() {
-        try {
-            setIsLoading(true);
-            const res = await getPendingPurchaseItems(selectedPantries, supermarketOption.value);
-
-            if (isNull(res) || res.length === 0) {
-                return showAlert(VariantType.INFO, t("no-item-to-purchase"));
-            }
-
-            setPurchaseItems(res);
             setIsLoading(false);
         } catch (error) {
             showAlert(VariantType.DANGER, error.message);
@@ -217,24 +222,6 @@ export default function PurchaseItemList({ purchase, selectedPantries, setOuterP
         return false;
     }
 
-    function handleRefresh() {
-        fetchPendingItems();
-    }
-
-    function renderPurchaseItems() {
-        let category = "";
-
-        return (filteredItems.map((item) => {
-            if (category === item.product.category) {
-                return renderCategoryItem(category, item);
-            }
-            else {
-                category = item.product.category;
-                return renderCategory(category, item);
-            }
-        }))
-    }
-
     function isSupermarketCategory(category) {
         if (supermarketOption.value > 0) {
             var found = categories.find(c => c.id == category);
@@ -246,107 +233,103 @@ export default function PurchaseItemList({ purchase, selectedPantries, setOuterP
         return true;
     }
 
-    function renderCategory(category, item) {
-        return (
-            <>
-                <tbody>
-                    <tr key={category} className="highlight" >
-                        <td className="highlight" colSpan={4}>
-                            <div className="category">
-                                <Button variant="link" aria-controls={category} onClick={() => handleExpansion(category)}><BsArrow90DegRight className='icon' /></Button>
-                                <h6 className='title' style={{ color: !isSupermarketCategory(category) ? "red" : "" }} data-title={!isSupermarketCategory(category) ? t('tooltip-category-not-associated-to-supermarket', { ns: "common" }) : null}>{!category || category === "" ? t("other") : t(category, { ns: 'categories' })}</h6>
-                            </div>
-                        </td>
-                    </tr>
-                </tbody>
+    function renderCards() {
+        var elements = [];
+        var index = 0;
+        var found = filteredItems.at(index);
+        var category = found ? found.product.category : "";
 
+        while (category !== "" && index < filteredItems.length) {
+            var filteredCategory = filteredItems.filter(i => i.product.category === category);
+
+            elements.push(renderCategoryCard(category, filteredCategory))
+
+            index = index + filteredCategory.length;
+            found = filteredItems.at(index);
+            category = found ? found.product.category : "";
+        }
+        return elements;
+    }
+
+    function renderCategoryCard(category, filteredCategory) {
+        return (
+            <div className="flex-column pt-2 pb-2">
+                <div className="category" onClick={() => handleExpansion(category)}>
+                    <Button variant="link" aria-controls={category} onClick={() => handleExpansion(category)}><BsArrow90DegRight className='small-icon' /></Button>
+                    <h6 className='title' style={{ color: !isSupermarketCategory(category) ? "red" : "" }} data-title={!isSupermarketCategory(category) ? t('tooltip-category-not-associated-to-supermarket', { ns: "common" }) : null}>{!category || category === "" ? t("other") : t(category, { ns: 'categories' })}</h6>
+                </div>
                 <Collapse in={getOpen(category)}>
-                    {renderItem(item)}
+                    <Row xs={1} md={2} lg={3} xl={4} className='m-0'>
+                        {filteredCategory.map(item => renderItemCard(item))}
+                    </Row>
                 </Collapse>
-            </>
+            </div>
         )
     }
 
-    function renderCategoryItem(category, item) {
+    function renderItemCard(item) {
         return (
-            <Collapse in={getOpen(category)}>
-                {renderItem(item)}
-            </Collapse>
-        )
-    }
 
-    function renderItem(item) {
-        return (
-            <tbody>
-                <tr key={item.id} >
-                    <td>
-                        <Stack direction="horizontal" gap={2}>
-                            <div><Image src={food} width={20} height={20} rounded /></div>
-                            <div><span>{camelCase(item.product.code)}</span></div>
-                        </Stack>
+            <Col key={item.id} className="d-flex flex-column g-2">
+                <Card className="card1 flex-fill">
+                    <Card.Body className="d-flex  flex-column h-100">
 
-                        <div id="productDetail" style={{ display: expandProdDetail ? 'block' : 'none' }}>
-                            <span hidden={item.productDescription === ''}>
-                                {item.product.description}  {item.product.size}
-                            </span>
+                        <div className="d-flex justify-content-between" >
+                            <div className='d-flex gap-2'>
+                                <Image src={food} width={20} height={20} rounded />
+                                <Card.Title as="h6" className='mb-0'><span className='text-wrap'>{camelCase(item.product.code)}</span></Card.Title>
+                            </div>
+                            <CurrentQuantityField object={item} attribute="qtyPurchased" onValueChange={updatePurchasedItem} disabled={!isOpenOrder} />
                         </div>
 
-                    </td>
-                    <td><span className='d-none d-md-block'>{item.pantryName}</span></td>
-                    <td className='text-center'><span className='text-center'>{item.qtyProvisioned}</span></td>
-                    <td>
-                        <div className='d-flex justify-content-end me-2'>
-                            <NumericField object={item} attribute="qtyPurchased" onValueChange={updatePurchasedItem} disabled={!isOpenOrder} />
+                        <div className="d-flex justify-content-between " >
+                            <div className='d-flex flex-column'>
+                                <span className="mt-0 small" hidden={item.product.description === '' || !expandProdDetail}>
+                                    {item.product.description} - {item.product.size}
+                                </span>
+                                <span className='text-wrap small' hidden={!showPantryCol}>{item.pantryName}</span>
+                            </div>
                         </div>
-                    </td>
-                </tr>
-            </tbody>
+
+                        <div className="d-flex gap-3 mt-auto">
+                            <span className="small">{t('provisioned')}: {item.qtyProvisioned}</span>
+                        </div>
+
+                    </Card.Body>
+                </Card>
+            </Col>
+
         )
     }
 
     return (
-        <>
-            <div className="d-flex justify-content-between align-items-center gap-2 pt-2">
-                <div style={{ width: '82%' }}>
+        <>{isLoading ? "Loading..." :
+            <div className="pt-2">
+                <div className='d-flex justify-content-evenly pb-2'>
+                    <FormCheck label={t('tooltip-switch-product-detail', { ns: 'common' })}
+                        className='form-switch'
+                        defaultChecked={expandProdDetail}
+                        onChange={() => setExpandProdDetail(!expandProdDetail)} />
+
+                    <FormCheck label={t('tooltip-switch-pantry', { ns: 'common' })}
+                        className='d-block form-switch'
+                        defaultChecked={showPantryCol}
+                        onChange={() => setShowPantryCol(!showPantryCol)}
+                    />
+                </div>
+                <div style={{ width: '100%' }} className="pb-2">
                     <Select name="supermarket"
                         placeholder={t("placeholder-select-supermarket")}
                         options={supermarkets}
                         onChange={setSupermarketOption}
                     />
                 </div>
-                <Button bsPrefix="btn-custom" size="sm" onClick={handleRefresh} disabled={purchase}>{t("btn-refresh")}</Button>
-            </div>
-            <div className="pt-2">
                 <Form.Control size="sm" type="text" id="search" className="form-control mb-1" placeholder={t("placeholder-search-items", { ns: "common" })} value={searchText} onChange={(e) => filter(e.target.value)} />
-                <div className='scroll-purchaseItems'>
-                    <Table size='sm'>
-                        <thead >
-                            <tr className="align-middle">
-                                <th className='d-flex flex-row align-items-center gap-2'>
-                                    <OverlayTrigger
-                                        placement="top"
-                                        delay={{ show: 250, hide: 250 }}
-                                        overlay={
-                                            <Tooltip className="custom-tooltip">
-                                                {t("tooltip-switch-product-detail", { ns: "common" })}
-                                            </Tooltip>
-                                        }
-                                    >
-                                        <FormCheck className='form-switch'
-                                            defaultChecked={expandProdDetail}
-                                            onChange={() => setExpandProdDetail(!expandProdDetail)} />
-                                    </OverlayTrigger>
-                                    <h6 className="title">{t("code-description", { ns: "common" })}</h6>
-                                </th>
-                                <th><h6 className="title d-none d-md-block ">{t("pantry", { ns: "common" })}</h6></th>
-                                <th className='text-center'><h6 className="title">{t("provisioned", { ns: "common" })}</h6></th>
-                                <th className='text-center'><h6 className="title">{t("quantity", { ns: "common" })}</h6></th>
-                            </tr>
-                        </thead>
-                        {renderPurchaseItems()}
-                    </Table>
-                </div>
+                {renderCards()}
             </div>
+        }
         </>
     )
 }
+
+export default forwardRef(PurchaseItemList);

@@ -2,14 +2,15 @@
 
 # My Pantry
 
-version: 0.2.0
+version: 0.3.0
 
 - Internationalization (Backend messages)
+- New Layout using Cards
+- Enter Ideal and Current quantity when adding new product direct to the pantry items list
 
 Plans for next versions:
 
 - Delete provisioned products from the shopping cart
-- Enter Ideal and Current quantity when adding new product direct to the pantry items list
 - Wizard to create pantries based on a suggested list of basic items, instead of manually enter them.
 - Dashboard
 - CRUD for Role and Permissions
@@ -57,6 +58,7 @@ Screenshots: <br />
 <img height="400" width="200" title="Login" src="./readme_images/reset-password.png"/>
 <img height="400" width="200" src="./readme_images/pantries.png"/>
 <img height="400" width="200" src="./readme_images/pantry.png"/>
+<img height="400" width="200" src="./readme_images/pantry-items.png"/>
 <img height="400" width="200" src="./readme_images/consume.png"/>
 <img height="400" width="200" src="./readme_images/purchase.png"/>
 <img height="400" width="200" src="./readme_images/products.png"/>
