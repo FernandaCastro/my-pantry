@@ -131,7 +131,7 @@ export default function Product() {
                 <div>
                     <div className="me-3 mb-3 d-flex justify-content-start align-items-end">
                         <Image src={iconProduct} width={40} height={40} className='ms-3 me-3 ' />
-                        <h6 className='title'>{t('product-title')}: {product.code}</h6>
+                        <h6 className='title'>{t('product-title', { product: product.code })}</h6>
                         <CloseButton className="ms-auto" aria-label="Hide" onClick={handleClearAction} />
                     </div>
                     <ProductForm key={productLabel} product={product} categories={categories} accountGroupOptions={accountGroupOptions} handleSave={handleSave} />

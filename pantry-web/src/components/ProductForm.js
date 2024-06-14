@@ -74,7 +74,7 @@ export default function ProductForm({ product, accountGroupId, categories, accou
     }
 
     return (
-        <Form onSubmit={handleSubmit}>
+        <Form onSubmit={handleSubmit} className="ms-2">
             <Row>
                 <Form.Group as={Col} className="mb-2" controlId="formAccountGroups" size="sm">
                     <Form.Label size="sm" className="title mb-1">{t('account-group', { ns: 'common' })}</Form.Label>

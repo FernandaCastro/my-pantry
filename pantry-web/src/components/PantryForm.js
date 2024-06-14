@@ -77,15 +77,14 @@ export default function PantryForm({ pantry, handleSave, accountGroupOptions }) 
 
 
     return (
-        <Form onSubmit={handleSubmit}>
+        <Form onSubmit={handleSubmit} className="ms-2">
             <Row>
                 <Form.Group className="mb-2" controlId="formAccountGroups" size="sm">
-                    {isLoading ? <span>Loading...</span> :
-                        <Select name="accountGroup" key={accountGroupOption.value}
-                            defaultValue={accountGroupOption}
-                            options={accountGroupOptions}
-                            onChange={setAccountGroupOption} />
-                    }
+                    <Form.Label size="sm" className="title mb-1">{t('account-group', { ns: 'common' })}</Form.Label>
+                    <Select name="accountGroup" key={accountGroupOption.value}
+                        defaultValue={accountGroupOption}
+                        options={accountGroupOptions}
+                        onChange={setAccountGroupOption} />
                 </Form.Group>
             </Row>
             <Row>

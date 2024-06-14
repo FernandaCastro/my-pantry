@@ -1,6 +1,7 @@
 {
   "search-product-title": "Add Product to Pantry",
   "product-list-title": "Products",
+  "product-title": "Product {{product}}",
   "placeholder-search-product": "Search for products here",
   "placeholder-code": "ie: Milk",
   "placeholder-size": "ie: 1L",

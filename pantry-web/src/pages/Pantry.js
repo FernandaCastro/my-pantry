@@ -1,17 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router';
-import { getPantry, updatePantry, createPantry, createPantryItem, getPantryRebalance } from '../services/apis/mypantry/requests/PantryRequests.js';
-import Stack from 'react-bootstrap/Stack';
+import { getPantry, updatePantry, createPantry} from '../services/apis/mypantry/requests/PantryRequests.js';
 import VariantType from '../components/VariantType.js';
 import useAlert from '../hooks/useAlert.js';
 import PantryForm from '../components/PantryForm.js';
-import PantryItemList from '../components/PantryItemList.js';
 import Button from 'react-bootstrap/Button';
 import { getAccountGroupList } from '../services/apis/mypantry/requests/AccountRequests.js';
 import { useTranslation } from 'react-i18next';
 import { Image } from 'react-bootstrap';
 import iconPantry from '../assets/images/cupboard-gradient.png';
-import { BsCardChecklist } from 'react-icons/bs';
 
 export default function Pantry({ mode }) {
 
@@ -19,8 +16,6 @@ export default function Pantry({ mode }) {
 
     let { id } = useParams();
     const [accountGroupOptions, setAccountGroupOptions] = useState([]);
-    const [showPantry, setShowPantry] = useState(true);
-    const [isEmpty, setIsEmpty] = useState(true);
 
     const [pantry, setPantry] = useState(
         {
@@ -32,7 +27,6 @@ export default function Pantry({ mode }) {
         });
 
     const [isLoading, setIsLoading] = useState(false);
-    const [refresh, setRefresh] = useState(false);
     const { showAlert } = useAlert();
 
     useEffect(() => {
@@ -80,21 +74,6 @@ export default function Pantry({ mode }) {
         }
     }
 
-    async function fetchPantryRebalance() {
-        setIsLoading(true);
-        setRefresh(true);
-        try {
-            await getPantryRebalance(id);
-
-            showAlert(VariantType.SUCCESS, t('balance-success'));
-        } catch (error) {
-            showAlert(VariantType.DANGER, error.message);
-        } finally {
-            setRefresh(false);
-            setIsLoading(false);
-        }
-    }
-
     async function fetchSavePantry(body) {
         setIsLoading(true);
         try {
@@ -109,41 +88,6 @@ export default function Pantry({ mode }) {
         } finally {
             setIsLoading(false);
         }
-    }
-
-    async function fetchSavePantryItem(body) {
-        setIsLoading(true);
-        setRefresh(true);
-        try {
-            await createPantryItem(pantry.id, body);
-            showAlert(VariantType.SUCCESS, t('add-item-success'));
-        } catch (error) {
-            showAlert(VariantType.DANGER, error.message);
-        } finally {
-            setRefresh(false);
-            setIsLoading(false);
-        }
-    }
-
-    function handleAddItem(product) {
-        const body = {
-            pantry: pantry,
-            product: product
-        }
-        fetchSavePantryItem(body);
-    }
-
-    function handleRebalance() {
-        fetchPantryRebalance();
-    }
-
-    function renderPantryList() {
-        return (
-            <Stack gap={2}>
-                <div className="d-flex justify-content-end"><Button bsPrefix='btn-custom' size="sm" onClick={handleRebalance} title={t('tooltip-btn-balance-inventory')} disabled={isEmpty}><span className="gradient-text">{t('btn-balance-inventtory')}</span></Button></div>
-                <div><PantryItemList key={refresh} pantryId={pantry.id} setIsEmpty={setIsEmpty} /></div>
-            </Stack>
-        )
     }
 
     return (
