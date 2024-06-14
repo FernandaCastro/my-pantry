@@ -44,7 +44,7 @@ export default function Pantries() {
         try {
             await deletePantry(id);
             setRefresh(true);
-            showAlert(VariantType.SUCCESS, t('delete-success'));
+            showAlert(VariantType.SUCCESS, t('delete-pantry-success'));
         } catch (error) {
             showAlert(VariantType.DANGER, error.message);
         }
@@ -96,7 +96,7 @@ export default function Pantries() {
         <>
             <Stack gap={3}>
                 <div className="d-flex justify-content-start align-items-end mt-4">
-                    <Image src={iconPantry} width={40} height={40} className="ms-2 me-3"/>
+                    <Image src={iconPantry} width={40} height={40} className="ms-2 me-3" />
                     <h6 className='title'>{t('pantry-list-title')}</h6>
                     <Button bsPrefix="btn-custom" href={"/pantries/new"} className="pe-2 ps-2 ms-auto"><span>{t('btn-new-pantry')}</span></Button>
                 </div>
