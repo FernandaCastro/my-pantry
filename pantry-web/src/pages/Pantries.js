@@ -4,7 +4,7 @@ import Stack from 'react-bootstrap/Stack';
 import Button from 'react-bootstrap/Button';
 import VariantType from '../components/VariantType.js';
 import useAlert from '../hooks/useAlert.js';
-import { BsPencil, BsTrash } from "react-icons/bs";
+import { BsPencil, BsTrash, BsCardChecklist } from "react-icons/bs";
 import Modal from 'react-bootstrap/Modal';
 import { useTranslation } from 'react-i18next';
 import { Card, Col, Row } from 'react-bootstrap';
@@ -68,8 +68,8 @@ export default function Pantries() {
                 {pantries.map((item) => {
 
                     return (
-                        <Col key={item.id} className="g-3">
-                            <Card className="card1">
+                        <Col key={item.id} className="d-flex flex-column g-3">
+                            <Card className="card1 flex-fill">
                                 <Card.Body className='d-flex flex-row justify-content-between'>
                                     <div>
                                         <Card.Title as="h6"><span disabled={!item.isActive}>{item.name}</span></Card.Title>
@@ -78,6 +78,7 @@ export default function Pantries() {
                                     <div>
                                         <Stack direction="horizontal" className="d-flex justify-content-end">
                                             <Button href={"/pantries/" + item.id + "/edit"} variant="link"><BsPencil className='icon' /></Button>
+                                            <Button href={"/pantries/" + item.id + "/items"} variant="link"><BsCardChecklist className='icon' /></Button>
                                             <Button onClick={() => showConfirmDeletion(item)} variant="link"><BsTrash className='icon' /></Button>
                                         </Stack>
                                     </div>

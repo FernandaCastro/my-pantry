@@ -9,7 +9,6 @@ $title-text-color: indigo;
 $hover-background: darken($background, 5%);
 $link-color: rgb(63, 6, 250);
 $gradient-color: linear-gradient(90deg, rgba(228, 132, 252, 1) 0%, rgba(132, 212, 255, 1) 100%);
-
 // div {
 //     border: 1px solid blue;
 // }
@@ -323,6 +322,11 @@ p {
         background-color: $background;
         border-bottom-left-radius: 5px;
         border-bottom-right-radius: 5px;
+    }
+
+    .card-footer {
+        background-color: darken($background, 5%);
+        padding-bottom: 0;
     }
 
 }

@@ -12,6 +12,7 @@ import ProductForm from './ProductForm.js';
 import { camelCase } from '../services/Utils.js';
 import Collapse from 'react-bootstrap/Collapse';
 import { useTranslation } from 'react-i18next';
+import CurrentQuantityField from './CurrentQuantityField.js';
 
 function ProductSearchBar({ accountGroupId, accountGroupOptions, handleSelectAction, handleClearAction, addButtonVisible }) {
 
@@ -25,6 +26,7 @@ function ProductSearchBar({ accountGroupId, accountGroupOptions, handleSelectAct
     const [show, setShow] = useState(true);
     const { showAlert } = useAlert();
     const [product, setProduct] = useState({});
+    const [itemQuantity, setItemQuantity] = useState({ idealQty: 0, currentQty: 0 });
 
     function handleSearch(e) {
         setSearchText(e.target.value);
@@ -42,7 +44,7 @@ function ProductSearchBar({ accountGroupId, accountGroupOptions, handleSelectAct
         if (handleClearAction) handleClearAction();
     }
     function handleSelect(item) {
-        handleSelectAction(item);
+        handleSelectAction(item, itemQuantity);
         clearSearch();
     }
 
@@ -110,7 +112,7 @@ function ProductSearchBar({ accountGroupId, accountGroupOptions, handleSelectAct
     async function handleSaveAndAddNewProduct(jsonProduct) {
         const res = await fetchSaveProduct(jsonProduct);
         if (res) {
-            handleSelect(res);
+            handleSelect(res, itemQuantity);
             showAlert(VariantType.SUCCESS, t('create-add-product-to-pantry-success'));
         }
         setShowProductForm(false);
@@ -129,11 +131,32 @@ function ProductSearchBar({ accountGroupId, accountGroupOptions, handleSelectAct
         }
     }
 
+    function handleItem(newItem) {
+        setItemQuantity(newItem);
+    }
+
+    function renderFooter() {
+        if ((results && results.length > 0) || showProductForm) {
+            return (
+                <div className="d-flex justify-content-start gap-5">
+                    <div className="d-flex flex-column align-items-center">
+                        <h6 className='simple-title'>{t('ideal', { ns: 'common' })}</h6>
+                        <CurrentQuantityField object={itemQuantity} attribute="idealQty" onValueChange={handleItem} />
+                    </div>
+                    <div className="d-flex flex-column align-items-center ">
+                        <h6 className='simple-title'>{t('current', { ns: 'common' })}</h6>
+                        <CurrentQuantityField object={itemQuantity} attribute="currentQty" onValueChange={handleItem} />
+                    </div>
+                </div>
+            )
+        }
+    }
+
     return (
         <>
-            <div onClick={() => setShow(!show)} className="d-flex justify-content-start gap-3 align-items-center">
-                <h6 className='title'>{t('search-product-title')}</h6>
-                <BsChevronDown className='icon' />
+            <div onClick={() => setShow(!show)} className="d-flex justify-content-start gap-3 align-items-center mt-4 ">
+                <h6 className='simple-title'>{t('search-product-title')}</h6>
+                <BsChevronDown className='small-icon' />
             </div>
             <div className='custom-card'>
                 <Collapse in={show} >
@@ -144,7 +167,7 @@ function ProductSearchBar({ accountGroupId, accountGroupOptions, handleSelectAct
                         <Card.Body className="m-0 p-2">
                             <span style={{ color: 'red', fontSize: '11px' }}>{notFoundMessage}</span>
                             {renderProductForm()}
-                            {results ? (
+                            {results && results.length > 0 ? (
                                 <table>
                                     <tbody>
                                         {renderResults()}
@@ -153,6 +176,9 @@ function ProductSearchBar({ accountGroupId, accountGroupOptions, handleSelectAct
                                 : <span />
                             }
                         </Card.Body>
+                        <Card.Footer >
+                            {renderFooter()}
+                        </Card.Footer>
                     </Card>
 
                 </Collapse>

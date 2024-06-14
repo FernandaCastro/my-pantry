@@ -16,6 +16,7 @@ import GroupMembers from '../pages/GroupMembers';
 import Pantries from '../pages/Pantries';
 import Welcome from '../pages/Welcome';
 import {Supermarket} from '../pages/Supermarket';
+import PantryItems from '../pages/PantryItems';
 
 function CustomRoutes() {
     let routes = useRoutes([
@@ -66,6 +67,10 @@ function CustomRoutes() {
         {
             path: "/pantries/:id/edit",
             element: <Pantry mode="edit" />
+        },
+        {
+            path: "/pantries/:id/items",
+            element: <PantryItems />
         },
         {
             path: "/pantries/new",
