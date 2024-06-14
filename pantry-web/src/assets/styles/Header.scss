@@ -6,8 +6,9 @@ $gradient-color: linear-gradient(90deg, rgba(228, 132, 252, 1) 0%, rgba(132, 212
 
 .header {
     background-image: linear-gradient(to bottom right, dodgerblue, purple);
-    padding: 8px;
-    //padding-left: 15px;
+    padding-left: 8px;
+    padding-right: 8px;
+    padding-bottom: 10px;
 
     nav a {
         color: lavender;
@@ -48,8 +49,7 @@ $gradient-color: linear-gradient(90deg, rgba(228, 132, 252, 1) 0%, rgba(132, 212
 .fix-pantry-name {
     justify-content: center !important;
     width: auto !important;
-    padding-left: 0px !important;
-    padding-right: 0px !important;
+    padding: 0px !important;
 
     @media (max-width: 575px) {
         min-width: fit-content !important;
@@ -116,7 +116,6 @@ $gradient-color: linear-gradient(90deg, rgba(228, 132, 252, 1) 0%, rgba(132, 212
     font-size: 27px;
     font-weight: bold;
     padding-left: 10px;
-    //background: linear-gradient(90deg, #99F0F7, #C2B6F3, #EA7BEE);
     background: $gradient-color;
     background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -133,9 +132,9 @@ $gradient-color: linear-gradient(90deg, rgba(228, 132, 252, 1) 0%, rgba(132, 212
     direction: row;
     align-items: center;
     justify-content: space-around;
-    gap: 30px;
+    gap: 50px;
     //margin-right: 30px;
-    padding-top: 0px;
+    //padding-top: 0px;
 }
 
 .menuItem {

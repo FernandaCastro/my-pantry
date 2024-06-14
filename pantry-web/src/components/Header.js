@@ -33,7 +33,7 @@ export default function Header() {
 
     function renderMainMenu() {
         return (
-            <Navbar>
+            <Navbar className="p-0">
                 <div className="menu">
                     <OverlayTrigger placement="bottom" delay={{ show: 250, hide: 400 }} overlay={<Tooltip className="custom-tooltip">{t("tooltip-consume")}</Tooltip>}>
                         <Nav.Item><Nav.Link href={"/pantries/consume"} eventKey="link-consume" className="menuItem" disabled={!hasActiveProfile} >
@@ -72,7 +72,7 @@ export default function Header() {
 
     function renderProfileMenu() {
         return (
-            <div className='d-flex align-items-center fix-login-btn-after ms-5 gap-2'>
+            <div className='d-flex align-items-center fix-login-btn-after ms-5 me-2 gap-2'>
                 <Navbar>
                     <LanguageSelect className="menuItem" language={i18n.language} onChange={setLanguage} />
                 </Navbar>
@@ -84,8 +84,8 @@ export default function Header() {
     return (
         <Stack className="header" direction='vertical'>
             <div>
-                <Navbar >
-                    <Navbar.Brand className="homeLink" href="/home" ><span className="homeText">{t("app-name", { ns: "common" })}</span></Navbar.Brand>
+                <Navbar className="pt-2 pb-1">
+                    <Navbar.Brand className="homeLink pb-2" href="/home" ><span className="homeText">{t("app-name", { ns: "common" })}</span></Navbar.Brand>
                     <Container className='container fix-pantry-name'></Container>
 
                     {/*hidden on smaller than md*/}
@@ -99,7 +99,6 @@ export default function Header() {
 
             {/*hidden on bigger than md*/}
             <div className='d-flex justify-content-around d-block d-md-none'>
-
                 {renderMainMenu()}
             </div>
         </Stack>
