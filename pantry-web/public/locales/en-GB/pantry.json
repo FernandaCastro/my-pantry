@@ -1,5 +1,6 @@
 {
   "pantry-list-title": "Pantry List",
+  "pantry-items-title": "{{pantry}} Items",
   "create-pantry-success": "Pantry successfully created!",
   "delete-pantry-success": "Pantry removed successfully!",
   "delete-pantry-alert": "Do you really want to delete this pantry and all its items?",
@@ -15,6 +16,7 @@
   "type-recurring": "Recurring",
   "type-no-recurring": "No Recurring",
   "btn-new-pantry": "New Pantry",
+  "btn-add-pantry-items": "Manage Items",
   "btn-balance-inventtory": "Balance Inventory",
   "tooltip-btn-balance-inventory": "Analyse and provision items"
 }

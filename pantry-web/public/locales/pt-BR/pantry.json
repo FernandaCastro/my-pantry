@@ -1,5 +1,6 @@
 {
   "pantry-list-title": "Lista de Despensas",
+  "pantry-items-title": "Itens na Despensa: {{pantry}}",
   "create-pantry-success": "Despensa criada com sucesso!",
   "delete-pantry-success": "Despensa removida com sucesso!",
   "delete-pantry-alert": "Você realmente deseja remover esta despensa e todos os seus items?",
@@ -15,6 +16,7 @@
   "type-recurring": "Recorrente",
   "type-no-recurring": "Não Recorrente",
   "btn-new-pantry": "Criar Pantry",
+  "btn-add-pantry-items": "Gerenciar Itens",
   "btn-balance-inventtory": "Analisar o estoque",
   "tooltip-balance-inventory": "Analisar e provisionar itens"
 }
