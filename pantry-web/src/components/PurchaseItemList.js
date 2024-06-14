@@ -284,8 +284,8 @@ function PurchaseItemList({ purchase, selectedPantries, setOuterPurchaseItems },
 
                         <div className="d-flex justify-content-between " >
                             <div className='d-flex flex-column'>
-                                <span className="mt-0 small" hidden={item.product.description === '' || !expandProdDetail}>
-                                    {item.product.description} - {item.product.size}
+                                <span className="mt-0 small" hidden={!expandProdDetail}>
+                                    {item.product.description} {item.product.size}
                                 </span>
                                 <span className='text-wrap small' hidden={!showPantryCol}>{item.pantryName}</span>
                             </div>

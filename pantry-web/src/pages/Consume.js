@@ -100,8 +100,8 @@ export default function Consume() {
 
             <div className="d-flex justify-content-between " >
               <div className='d-flex flex-column'>
-                <span className="mt-0 small" hidden={item.product.description === '' || !expand}>
-                  {item.product.description} - {item.product.size}
+                <span className="mt-0 small" hidden={!expand}>
+                  {item.product.description} {item.product.size}
                 </span>
                 <span className='text-wrap small' hidden={!showPantryCol}>{item.pantry.name}</span>
               </div>
@@ -109,7 +109,7 @@ export default function Consume() {
             </div>
 
             <div className="d-flex gap-3 mt-auto">
-              <span className="small">{t('provisioned', { ns: 'common' })}: {item.provisionedQty}</span>
+              <span className="small" hidden={item.lastProvisioning === null}>{t('provisioned', { ns: 'common' })}: {item.provisionedQty}</span>
               <span className="small" hidden={item.lastProvisioning === null}>{t('provisioned-on', { ns: 'common' })}: {item.lastProvisioning ? t('datetime', { ns: "common", date: new Date(item.lastProvisioning) }) : ""}</span>
             </div>
 

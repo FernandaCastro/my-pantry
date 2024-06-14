@@ -1,7 +1,7 @@
 {
   "search-product-title": "Adicionar Produto à Despensa",
   "product-list-title": "Produtos",
-  "product-title": "Produto",
+  "product-title": "Produto {{product}}",
   "placeholder-search-product": "Busque produtos aqui",
   "placeholder-code": "ex: Leite",
   "placeholder-size": "ex: 1L",

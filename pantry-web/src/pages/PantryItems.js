@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router';
 import { getPantry, createPantryItem, getPantryRebalance } from '../services/apis/mypantry/requests/PantryRequests.js';
-import Stack from 'react-bootstrap/Stack';
 import VariantType from '../components/VariantType.js';
 import useAlert from '../hooks/useAlert.js';
 import ProductSearchBar from '../components/ProductSearchBar.js'
