@@ -18,7 +18,7 @@ export default function Purchase() {
     const { t } = useTranslation(['purchase', 'common']);
     const purchaseItemListRef = useRef();
 
-    const [selectedPantries, setSelectedPantries] = useState([]);
+    const [pantries, setPantries] = useState([]);
 
     const [purchase, setPurchase] = useState();
     const [purchaseItems, setPurchaseItems] = useState([]);
@@ -48,7 +48,7 @@ export default function Purchase() {
     async function fetchNewPurchaseOrder() {
         try {
             setRefreshOrders(false);
-            const res = await postNewPurchaseOrder(selectedPantries);
+            const res = await postNewPurchaseOrder(pantries);
             setPurchase(res);
             setIsOpenOrder(true);
             setRefreshOrders(true);
@@ -74,10 +74,6 @@ export default function Purchase() {
         fetchNewPurchaseOrder();
     }
 
-    function handleSelectedPantries(list) {
-        setSelectedPantries(list);
-    }
-
     function selectPurchase(p) {
         setPurchase(p);
         const open = p && !p.processedAt ? true : false;
@@ -94,11 +90,11 @@ export default function Purchase() {
                 <div className='d-flex justify-content-start align-items-center gap-2' onClick={() => setShowPantries(!showPantries)}>
                     <h6 className="text-start fs-6 lh-lg title">{t("purchase-title")}</h6>
                     <BsChevronDown className='small-icon' />
-                    <Image src={iconPurchase} width={40} height={40} className='ms-auto me-4 mb-2' style={{transform: 'rotateY(180deg)'}}/>
+                    <Image src={iconPurchase} width={40} height={40} className='ms-auto me-4 mb-2' style={{ transform: 'rotateY(180deg)' }} />
                 </div>
 
                 <Collapse in={showPantries} >
-                    <div><PantrySelect handleSelectedPantryList={handleSelectedPantries} permission='purchase_pantry' /></div>
+                    <div><PantrySelect handleSelectedPantryList={setPantries} permission='purchase_pantry' /></div>
                 </Collapse>
             </div>
 
@@ -110,7 +106,7 @@ export default function Purchase() {
             <div>
                 <Collapse in={showOrder} >
                     <div className='mt-3'>
-                        <PurchaseOrderList key={refreshOrders} selectedPantries={selectedPantries} handleSelectedPurchase={selectPurchase} />
+                        <PurchaseOrderList key={refreshOrders} selectedPantries={pantries} handleSelectedPurchase={selectPurchase} />
                     </div>
                 </Collapse>
             </div>
@@ -121,8 +117,8 @@ export default function Purchase() {
                 <Button bsPrefix="btn-custom" size="sm" onClick={handleSave} disabled={!isOpenOrder}><span>{t("btn-checkout")}</span></Button>
             </div>
 
-            <div id="purchaseItems" className='purchaseList mt-3'>
-                <PurchaseItemList ref={purchaseItemListRef} purchase={purchase} selectedPantries={selectedPantries} setOuterPurchaseItems={setPurchaseItems} />
+            <div className='mt-3'>
+                <PurchaseItemList ref={purchaseItemListRef} selectedPurchase={purchase} selectedPantries={pantries} setOuterPurchaseItems={setPurchaseItems} />
             </div>
 
         </>
