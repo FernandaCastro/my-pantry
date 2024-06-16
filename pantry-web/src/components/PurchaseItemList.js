@@ -13,8 +13,9 @@ import { BsArrow90DegRight } from "react-icons/bs";
 import { Card, Col, FormCheck, Row } from "react-bootstrap";
 import { useTranslation } from 'react-i18next';
 import CurrentQuantityField from './CurrentQuantityField';
+import NumericField from './NumericField';
 
-function PurchaseItemList({ purchase, selectedPantries, setOuterPurchaseItems }, ref) {
+function PurchaseItemList({ selectedPurchase, selectedPantries, setOuterPurchaseItems }, ref) {
 
     const { t } = useTranslation(['purchase', 'common', 'categories']);
 
@@ -43,20 +44,20 @@ function PurchaseItemList({ purchase, selectedPantries, setOuterPurchaseItems },
             setPurchaseItems([]);
         }
         else {
-            if (!purchase) {
+            if (!selectedPurchase) {
                 fetchPendingItems();
             }
         }
     }, [selectedPantries])
 
     useEffect(() => {
-        if (purchase && Object.keys(purchase).length > 0) {
-            (!purchase.processedAt) ? setIsOpenOrder(true) : setIsOpenOrder(false);
+        if (selectedPurchase && Object.keys(selectedPurchase).length > 0) {
+            (!selectedPurchase.processedAt) ? setIsOpenOrder(true) : setIsOpenOrder(false);
             fetchPurchaseItems();
         } else {
             setPurchaseItems([]);
         }
-    }, [purchase])
+    }, [selectedPurchase])
 
     useEffect(() => {
         if (purchaseItems) {
@@ -71,7 +72,7 @@ function PurchaseItemList({ purchase, selectedPantries, setOuterPurchaseItems },
         const hasPurchaseItems = purchaseItems && purchaseItems.length > 0;
 
         if (hasPurchaseItems) {
-            purchase && purchase.id > 0 ?
+            selectedPurchase && selectedPurchase.id > 0 ?
                 fetchPurchaseItems() :
                 fetchPendingItems();
         }
@@ -90,6 +91,7 @@ function PurchaseItemList({ purchase, selectedPantries, setOuterPurchaseItems },
             const res = await getPendingPurchaseItems(selectedPantries, supermarketOption.value);
 
             if (isNull(res) || res.length === 0) {
+                setPurchaseItems([]);
                 return showAlert(VariantType.INFO, t("no-item-to-purchase"));
             }
 
@@ -125,7 +127,7 @@ function PurchaseItemList({ purchase, selectedPantries, setOuterPurchaseItems },
     async function fetchPurchaseItems(clear) {
         try {
             setIsLoading(true);
-            const res = await getPurchaseItems(purchase.id, selectedPantries, supermarketOption.value);
+            const res = await getPurchaseItems(selectedPurchase.id, selectedPantries, supermarketOption.value);
 
             if (isNull(res) || res.length === 0) {
                 setPurchaseItems([]);
@@ -279,7 +281,7 @@ function PurchaseItemList({ purchase, selectedPantries, setOuterPurchaseItems },
                                 <Image src={food} width={20} height={20} rounded />
                                 <Card.Title as="h6" className='mb-0'><span className='text-wrap'>{camelCase(item.product.code)}</span></Card.Title>
                             </div>
-                            <CurrentQuantityField object={item} attribute="qtyPurchased" onValueChange={updatePurchasedItem} disabled={!isOpenOrder} />
+                            <NumericField object={item} attribute="qtyPurchased" onValueChange={updatePurchasedItem} disabled={!isOpenOrder} />
                         </div>
 
                         <div className="d-flex justify-content-between " >
@@ -303,32 +305,33 @@ function PurchaseItemList({ purchase, selectedPantries, setOuterPurchaseItems },
     }
 
     return (
-        <>{isLoading ? "Loading..." :
-            <div className="pt-2">
-                <div className='d-flex justify-content-evenly pb-2'>
-                    <FormCheck label={t('tooltip-switch-product-detail', { ns: 'common' })}
-                        className='form-switch'
-                        defaultChecked={expandProdDetail}
-                        onChange={() => setExpandProdDetail(!expandProdDetail)} />
+        <div>
+            {isLoading ? "Loading..." :
+                <div className="pt-2">
+                    <div className='d-flex justify-content-evenly pb-2'>
+                        <FormCheck label={t('tooltip-switch-product-detail', { ns: 'common' })}
+                            className='form-switch'
+                            defaultChecked={expandProdDetail}
+                            onChange={() => setExpandProdDetail(!expandProdDetail)} />
 
-                    <FormCheck label={t('tooltip-switch-pantry', { ns: 'common' })}
-                        className='d-block form-switch'
-                        defaultChecked={showPantryCol}
-                        onChange={() => setShowPantryCol(!showPantryCol)}
-                    />
+                        <FormCheck label={t('tooltip-switch-pantry', { ns: 'common' })}
+                            className='d-block form-switch'
+                            defaultChecked={showPantryCol}
+                            onChange={() => setShowPantryCol(!showPantryCol)}
+                        />
+                    </div>
+                    <div style={{ width: '100%' }} className="pb-2">
+                        <Select name="supermarket"
+                            placeholder={t("placeholder-select-supermarket")}
+                            options={supermarkets}
+                            onChange={setSupermarketOption}
+                        />
+                    </div>
+                    <Form.Control size="sm" type="text" id="search" className="form-control mb-1" placeholder={t("placeholder-search-items", { ns: "common" })} value={searchText} onChange={(e) => filter(e.target.value)} />
+                    {renderCards()}
                 </div>
-                <div style={{ width: '100%' }} className="pb-2">
-                    <Select name="supermarket"
-                        placeholder={t("placeholder-select-supermarket")}
-                        options={supermarkets}
-                        onChange={setSupermarketOption}
-                    />
-                </div>
-                <Form.Control size="sm" type="text" id="search" className="form-control mb-1" placeholder={t("placeholder-search-items", { ns: "common" })} value={searchText} onChange={(e) => filter(e.target.value)} />
-                {renderCards()}
-            </div>
-        }
-        </>
+            }
+        </div>
     )
 }
 

@@ -101,8 +101,8 @@ function ProductList({ disabled, onEdit, onRemove }) {
                         </div>
 
                         <div className="d-flex justify-content-between " >
-                            <span className="mt-0 small" hidden={item.description === '' || !expandProdDetail}>
-                                {item.description} - {item.size}
+                            <span className="mt-0 small" hidden={!expandProdDetail}>
+                                {item.description} {item.size}
                             </span>
                         </div>
 

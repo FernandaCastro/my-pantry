@@ -86,7 +86,7 @@ export default function Consume() {
 
   function renderCard(item) {
     return (
-      <Col key={item.id} className="d-flex flex-column g-2">
+      <Col key={item.pantry.id + "-" + item.product.id} className="d-flex flex-column g-2">
         <Card className="card1 flex-fill">
           <Card.Body className="d-flex  flex-column h-100">
 
@@ -95,7 +95,7 @@ export default function Consume() {
                 <Image src={food} width={20} height={20} rounded />
                 <Card.Title as="h6" className='mb-0'><span className='text-wrap'>{camelCase(item.product.code)}</span></Card.Title>
               </div>
-              <CurrentQuantityField key={reload} object={item} attribute="currentQty" onValueChange={updateConsumedItem} disabled={isPantryEmpty} decrementOnly={true} />
+              <CurrentQuantityField key={reload} object={item} attribute="currentQty" onValueChange={updateConsumedItem} disabled={isPantryEmpty} />
             </div>
 
             <div className="d-flex justify-content-between " >
