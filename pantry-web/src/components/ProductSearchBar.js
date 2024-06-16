@@ -13,6 +13,7 @@ import { camelCase } from '../services/Utils.js';
 import Collapse from 'react-bootstrap/Collapse';
 import { useTranslation } from 'react-i18next';
 import CurrentQuantityField from './CurrentQuantityField.js';
+import NumericField from './NumericField.js';
 
 function ProductSearchBar({ accountGroupId, accountGroupOptions, handleSelectAction, handleClearAction, addButtonVisible }) {
 
@@ -141,11 +142,11 @@ function ProductSearchBar({ accountGroupId, accountGroupOptions, handleSelectAct
                 <div className="d-flex justify-content-start gap-5">
                     <div className="d-flex flex-column align-items-center">
                         <h6 className='simple-title'>{t('ideal', { ns: 'common' })}</h6>
-                        <CurrentQuantityField object={itemQuantity} attribute="idealQty" onValueChange={handleItem} />
+                        <NumericField object={itemQuantity} attribute="idealQty" onValueChange={handleItem} />
                     </div>
                     <div className="d-flex flex-column align-items-center ">
                         <h6 className='simple-title'>{t('current', { ns: 'common' })}</h6>
-                        <CurrentQuantityField object={itemQuantity} attribute="currentQty" onValueChange={handleItem} />
+                        <NumericField object={itemQuantity} attribute="currentQty" onValueChange={handleItem} />
                     </div>
                 </div>
             )
