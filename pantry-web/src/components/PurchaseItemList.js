@@ -40,22 +40,20 @@ function PurchaseItemList({ selectedPurchase, selectedPantries, setOuterPurchase
     }, []);
 
     useEffect(() => {
-        if (!selectedPantries || selectedPantries.length === 0) {
-            setPurchaseItems([]);
-        }
-        else {
-            if (!selectedPurchase) {
-                fetchPendingItems();
-            }
+        setPurchaseItems([]);
+
+        if (!selectedPurchase && (selectedPantries && selectedPantries.length > 0)) {
+            fetchPendingItems();
         }
     }, [selectedPantries])
 
     useEffect(() => {
+        setPurchaseItems([]);
         if (selectedPurchase && Object.keys(selectedPurchase).length > 0) {
             (!selectedPurchase.processedAt) ? setIsOpenOrder(true) : setIsOpenOrder(false);
             fetchPurchaseItems();
         } else {
-            setPurchaseItems([]);
+            if (selectedPantries && selectedPantries.length > 0) { fetchPendingItems() };
         }
     }, [selectedPurchase])
 
@@ -92,7 +90,7 @@ function PurchaseItemList({ selectedPurchase, selectedPantries, setOuterPurchase
 
             if (isNull(res) || res.length === 0) {
                 setPurchaseItems([]);
-                return showAlert(VariantType.INFO, t("no-item-to-purchase"));
+                //return showAlert(VariantType.INFO, t("no-item-to-purchase"));
             }
 
             setPurchaseItems(res);

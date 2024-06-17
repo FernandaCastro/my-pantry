@@ -1,7 +1,7 @@
 {
   "purchase-title": "Fazer Compras para Despensas",
   "purchase-order-title": "Listas de Compra",
-  "purchase-order-pending": "Nenhuma Lista de Compra selecionada",
+  "purchase-order-pending": "Sem seleção - Listando itens pendentes",
   "purchase-order-open": "Lista de Compra Aberta",
   "purchase-order-closed": "Lista de Compra Fechada",
   "btn-refresh": "Atualizar Lista",
