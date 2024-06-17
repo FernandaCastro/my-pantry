@@ -63,7 +63,7 @@ public class PurchaseService {
         if (entity != null) return convertToDto(entity);
 
         //check existence of items to purchase
-        var pendingPurchase = purchaseItemService.listPendingPurchase(email);
+        var pendingPurchase = purchaseItemService.listPendingPurchase(pantryIds);
         if (pendingPurchase == null || pendingPurchase.size() == 0) {
             throw new NoItemToPurchaseException(MessageTranslator.getMessage("error.no.item.to.purchase"));
         }
@@ -72,7 +72,7 @@ public class PurchaseService {
         entity = Purchase.builder().createdAt(LocalDateTime.now()).build();
         entity = repository.save(entity);
 
-        purchaseItemService.updatePendingPurchaseItems(entity.getId());
+        purchaseItemService.updatePendingPurchaseItems(entity.getId(), pantryIds);
 
         var dto = convertToDto(entity);
         dto.setItems(purchaseItemService.findAllByPurchaseId(entity.getId()));

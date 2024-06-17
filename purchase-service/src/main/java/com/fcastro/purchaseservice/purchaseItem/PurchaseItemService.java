@@ -53,6 +53,10 @@ public class PurchaseItemService {
         return convertToDto(repository.listPendingPurchase(pantryIds));
     }
 
+    public List<PurchaseItemDto> listPendingPurchase(Set<Long> pantryIds) {
+        return convertToDto(repository.listPendingPurchase(pantryIds));
+    }
+
     public List<PurchaseItemDto> listPendingPurchaseByCategory(String email, Set<Long> pantryIds, Long supermarketId) {
         //var pantryIds = getPantryIdList(email);
         var list = convertToDto(repository.listPendingPurchase(pantryIds));
@@ -96,8 +100,8 @@ public class PurchaseItemService {
     }
 
     @Transactional
-    public void updatePendingPurchaseItems(Long purchaseId) {
-        repository.updatePendingPurchaseItems(purchaseId);
+    public void updatePendingPurchaseItems(Long purchaseId, Set<Long> pantryIds) {
+        repository.updatePendingPurchaseItems(purchaseId, pantryIds);
     }
 
     public List<PurchaseItemDto> findAllByPurchaseId(Long purchaseId) {

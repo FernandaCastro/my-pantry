@@ -18,8 +18,8 @@ public interface PurchaseItemRepository extends JpaRepository<PurchaseItem, Long
     List<PurchaseItem> listPendingPurchase(Set<Long> pantryIds);
 
     @Modifying
-    @Query("update purchaseItem set purchase.id = :purchaseId where purchase.id is null")
-    void updatePendingPurchaseItems(@Param("purchaseId") Long purchaseId);
+    @Query("update purchaseItem set purchase.id = :purchaseId where purchase.id is null and pantryId in :pantryIds")
+    void updatePendingPurchaseItems(@Param("purchaseId") Long purchaseId, @Param("pantryIds") Set<Long> pantryIds);
 
     @Query("select i, p from purchaseItem i, product p where i.purchase.id = :purchaseId and i.product.id = p.id order by p.category, p.code")
     List<PurchaseItem> findAllByPurchaseId(@Param("purchaseId") Long purchaseId);
