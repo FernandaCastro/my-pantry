@@ -5,6 +5,12 @@ $gradient-color: linear-gradient(90deg, rgba(228, 132, 252, 1) 0%, rgba(132, 212
 // }
 
 .header {
+    margin: 0;
+    top: 0;
+    position: fixed;
+    width: 100%;
+    z-index: 1000;
+    
     background-image: linear-gradient(to bottom right, dodgerblue, purple);
     padding-left: 8px;
     padding-right: 8px;
@@ -208,7 +214,7 @@ $gradient-color: linear-gradient(90deg, rgba(228, 132, 252, 1) 0%, rgba(132, 212
     height: 45px;
     width: 45px;
     background-image: linear-gradient(90deg, rgb(53, 53, 146), rgb(131, 14, 131)),
-    linear-gradient(90deg, hsl(289, 65%, 64%), hsl(226, 78%, 67%));
+        linear-gradient(90deg, hsl(289, 65%, 64%), hsl(226, 78%, 67%));
     background-clip: padding-box, border-box;
     background-origin: border-box;
     border: 3px solid transparent;

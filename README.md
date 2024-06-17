@@ -2,15 +2,13 @@
 
 # My Pantry
 
-version: 0.3.0
+version: 0.4.0
 
-- Internationalization (Backend messages)
-- New Layout using Cards
-- Enter Ideal and Current quantity when adding new product direct to the pantry items list
+- Delete provisioned products from the shopping cart
+- 'Analyse Pantry' button should not only create item provisioning, but also delete unecessary provisionings.
 
 Plans for next versions:
 
-- Delete provisioned products from the shopping cart
 - Wizard to create pantries based on a suggested list of basic items, instead of manually enter them.
 - Dashboard
 - CRUD for Role and Permissions
@@ -18,15 +16,18 @@ Plans for next versions:
 
 ### Description:
 
-My Pantry manages pantries and automatically creates shopping lists as products are consumed from the
-inventory. <br/> <br/>
-You can also share your Pantries, Shopping Lists and Products with other users, by adding users to your Account Group.
+My Pantry manages your pantries and automatically creates shopping lists. It's core logic mechanism is the product
+consumption. <br/>
 
-The Authentication is possible by either Google Sign-in (Google IDToken - having localhost as callback) or by the
-traditional user/password.
+##### Simply tell My Pantry that you opened a new package of pasta. The app will analyse the ideal and current quantities in your pantry, and in case the current quantity is below 50%, it will add Pasta to the Shopping List. <br/>
+
+You can also share your Pantries, Shopping Lists and Products with other users, by adding them to your Account Group.
+
+The Authentication is possible by either using Google Sign-in (Google IDToken - having localhost as callback) or by the
+traditional user/password. For now it traffics through http, but I plan to move to https soon.
 
 The frontend is developed in Reactjs and Javascript, while backend is written in Java 17, Spring Boot and Spring
-Security.
+Security, Postgres and Kafka (prov/sub for asynch communication only).
 
 ### How to run it locally:
 
@@ -34,7 +35,7 @@ Security.
 
 1. Install **Docker** and **Maven**
 2. Generate **SECURITY_SECRET** by running command: ```openssl rand -hex 64```
-3. If you want to use **Google Sign-in**, then get new Google Credentials for MyPantry app:
+3. If you want to use **Google Sign-in**, then get a new Google Credentials for your MyPantry app:
     1. Log in at https://console.developers.google.com/apis
     2. Create a new project (MyPantry)
     3. Follow the instructions to configure
@@ -68,12 +69,13 @@ Screenshots: <br />
 
 ### pantry-web (localhost:3000) :
 
-| Path | Description|
-|:-------------|:-------------------------|
-|/pantries<br/> <img height="30" width="30" src="./pantry-web/src/assets/images/cupboard-gradient.png" />| List Pantries and its related actions: new, edit and delete |
-|/consume<br/> <img height="30" width="30" src="./pantry-web/src/assets/images/cook-gradient.png" /> | <b><u>After selecting a pantry</u></b>, you can consume items from it. <br /> Once the consumption of an item reaches 50%, an event to purchase more of that item is fired.
-|/purchase<br/> <img height="30" width="30" src="./pantry-web/src/assets/images/shoppingcart-gradient.png" />| Lists items to be purchased. <br/> Items can be sorted by your favorite Supermarket category order. <br/> A shopping list is created <b>once you open a new Order</b>. <br/> When you're done with shopping and <b>close the Order</b>, then it updates your Pantry Inventory with the purchased items.
-|/product<br/> <img height="30" width="30" src="./pantry-web/src/assets/images/food-gradient.png" />| List Products and its related actions: new, edit and delete
+| Path                                                                                                                         | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
+|:-----------------------------------------------------------------------------------------------------------------------------|:----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Consume from Pantry <br/><br/> <img height="30" width="30" src="./pantry-web/src/assets/images/cook-gradient.png"/>          | <b><u>Select the pantries</u></b>, you want to list and consume items. <br /><br/> Find the item using the search mechanism, and comsume the amount. <br/> <br/>Once <b>the consumption of an item is above 50%</b>, an event to purchase more of that item is fired. You should be able to see the in tem in the Shopping List page.                                                                                                                           
+| Shopping List <br/><br/> <img height="30" width="30" src="./pantry-web/src/assets/images/shoppingcart-gradient.png" />       | <b><u>Select the pantries</u></b>, you want to list your Shopping Lists.Lists items to be purchased. <br/><br/> Open a <b>New Order</b> and choose the <b>Supermarket</b> you plan to go shopping. The items in your Shopping List will be sorted by the section categories order of the supermarket chosen. Making it easier to go shopping. <br/><br/> When you're done, click on <b>Checkout</b>, and it will update your Pantries with the purchased items. 
+| Pantry Register <br/><br/> <img height="30" width="30" src="./pantry-web/src/assets/images/cupboard-gradient.png" />         | This is the Pantry register. It lists your pantries and its basic actions for pantries and pantry items: new, edit and delete. <br/> <br/> Here you can add or remove items to your pantry, change the ideal quantity or fix the current quantity of an item. <br/> <br/> Don't forget to click <b>Analyse Pantry</b>, so My Pantry can fix the current Shopping Lists, adding or removing items from it.                                                       |
+| Product Register <br/><br/> <img height="30" width="30" src="./pantry-web/src/assets/images/food-gradient.png" />            | This is the Product register. It lists your products and its basic actions: new, edit and delete. <br/><br/> If you plan to share products among different Account Groups (child groups), so keep the product in the highst Account Group (the parent group)                                                                                                                                                                                                    |
+| Supermarket Register <br/><br/> <img height="30" width="30" src="./pantry-web/src/assets/images/supermarket-gradient.png" /> | This is the Supermarket register. It lists your supermarkets and its basic actions: new, edit and delete.  <br/><br/> Here you can inform the sections order of the Supermarket, and use it when going shopping.                                                                                                                                                                                                                                                |
 
 ### account-service (localhost:8082) :
 
@@ -83,7 +85,7 @@ Screenshots: <br />
   - validating the _Google IDToken_ or the user/password informed
   - issuing an _JWT Token_ embedded in a _Http Only Cookie_
 - Acts as **_Authorization server_**:
-  - retrieving the permissions associated to the user in a group
+    - verify and retrieves permissions e/or objects associated to the user in a group
 
 ### pantry-service (localhost:8080) :
 
@@ -101,6 +103,24 @@ Screenshots: <br />
 - Listens to Kafka Topic (PurchaseCreateTopic) to manage a list of items to be purchased
 - Once the purchase is closed, an event is sent back to pantry-service through a Kafka Topic (PurchaseCompleteTopic)
 - Stores data in Postgres
+
+# Credits
+
+## Icons
+
+- <a href="https://www.flaticon.com/free-icons/cupboard" title="cupboard icons">Cupboard icons created by Freepik -
+  Flaticon</a>
+- <a href="https://www.flaticon.com/free-icons/supermarket" title="supermarket icons">Supermarket icons created by
+  Freepik - Flaticon</a>
+- <a href="https://www.flaticon.com/free-icons/recipe" title="recipe icons">Recipe icons created by Freepik -
+  Flaticon</a>
+- <a href="https://www.flaticon.com/free-icons/healthy-food" title="healthy food icons">Healthy food icons created by
+  Freepik - Flaticon</a>
+- <a href="https://www.flaticon.com/free-icons/question" title="question icons">Question icons created by Freepik -
+  Flaticon</a>
+- <a href="https://www.flaticon.com/free-icons/supermarket" title="supermarket icons">Supermarket icons created by
+  Freepik - Flaticon</a>
+
 
 
 

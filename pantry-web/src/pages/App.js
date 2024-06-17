@@ -12,6 +12,7 @@ import NavigateSetter from "../routes/NavigateSetter.js";
 import { Suspense } from 'react';
 import { AlertContext, ProfileContext } from '../services/context/AppContext.js';
 import { Overlay } from "react-bootstrap";
+import Footer from "../components/Footer.js";
 
 export default function App() {
 
@@ -51,16 +52,17 @@ export default function App() {
       <ProfileContext.Provider value={{ profileCtx, setProfileCtx }}>
         <AlertContext.Provider value={{ alert, setAlert }}>
           <Header />
-          <div ref={target}>
+          <div ref={target} className="alert-box">
             <Overlay target={target.current} show={alert.show} placement="bottom" transition={Fade}>
               <Alert variant={alert.type} show={alert.show} onClose={() => setAlert((a) => a = { ...a, show: !alert.show })} dismissible transition={Fade}>{alert.message}</Alert>
             </Overlay>
           </div>
-          <Container >
+          <Container>
             <NavigateSetter />
             <TranslationSetter />
             <CustomRoutes />
           </Container>
+          <Footer />
         </AlertContext.Provider>
       </ProfileContext.Provider>
     </Suspense>

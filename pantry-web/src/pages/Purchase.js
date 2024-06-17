@@ -1,7 +1,6 @@
 import React, { useRef, useState } from 'react';
 import { postClosePurchaseOrder, postNewPurchaseOrder } from '../services/apis/mypantry/requests/PurchaseRequests.js';
 import Button from 'react-bootstrap/Button';
-import Stack from 'react-bootstrap/Stack';
 import VariantType from '../components/VariantType.js';
 import useAlert from '../hooks/useAlert.js';
 import { BsChevronDown } from "react-icons/bs";
@@ -24,9 +23,8 @@ export default function Purchase() {
     const [purchaseItems, setPurchaseItems] = useState([]);
 
     const [isOpenOrder, setIsOpenOrder] = useState(false);
-    const [showPantries, setShowPantries] = useState(true);
-    const [showOrder, setShowOrder] = useState(true);
-    const [showOrderDetails, setShowOrderDetails] = useState(true);
+    const [showPantries, setShowPantries] = useState(false);
+    const [showOrder, setShowOrder] = useState(false);
 
     const [refreshOrders, setRefreshOrders] = useState(false);
 

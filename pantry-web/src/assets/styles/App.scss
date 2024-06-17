@@ -9,9 +9,35 @@ $title-text-color: indigo;
 $hover-background: darken($background, 5%);
 $link-color: rgb(63, 6, 250);
 $gradient-color: linear-gradient(90deg, rgba(228, 132, 252, 1) 0%, rgba(132, 212, 255, 1) 100%);
+
 // div {
 //     border: 1px solid blue;
 // }
+
+.alert-box {
+    @media ((min-width:0px) and (max-width: 767px)) {
+        margin-top: 115px;
+    }
+
+    @media (min-width: 768px) {
+        margin-top: 70px;
+    }
+    padding-bottom: 5px;
+}  
+
+.footer {
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    position: fixed;
+    background-color: $background;
+    text-align: center;
+    font-size: small;
+    padding-top: 5px;
+    .span {
+        padding-top: 2px;
+    }
+}
 
 .btn-custom {
     min-width: 15%;

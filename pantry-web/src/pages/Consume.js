@@ -29,7 +29,7 @@ export default function Consume() {
   const [reload, setReload] = useState(false);
   const { showAlert } = useAlert();
   const [expand, setExpand] = useState(false);
-  const [showPantries, setShowPantries] = useState(true);
+  const [showPantries, setShowPantries] = useState(false);
   const [showPantryCol, setShowPantryCol] = useState(false);
 
   useEffect(() => {
