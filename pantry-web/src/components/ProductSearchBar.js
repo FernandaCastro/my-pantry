@@ -124,7 +124,7 @@ function ProductSearchBar({ accountGroupId, accountGroupOptions, handleSelectAct
             return (
                 <div>
                     <div className="me-3 d-flex justify-content-end align-items-center">
-                        <CloseButton aria-label="Hide" onClick={() => setShowProductForm(false)} />
+                        <CloseButton className="btn-close" aria-label="Hide" onClick={() => setShowProductForm(false)} />
                     </div>
                     <ProductForm product={product} accountGroupId={accountGroupId} accountGroupOptions={accountGroupOptions} handleSave={handleSaveAndAddNewProduct} />
                 </div>

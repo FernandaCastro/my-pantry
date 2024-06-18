@@ -33,7 +33,7 @@ function AccountMenu() {
                 <Popover.Body className='card-login-profile'>
                     {profileCtx.pictureUrl && profileCtx.pictureUrl.length > 0 ?
                         <Image className='profile-icon' width={50} height={50} roundedCircle referrerPolicy="no-referrer" src={profileCtx.pictureUrl} /> :
-                        <div className='gradient-box'><span className="gradient-label">{profileCtx.initials}</span></div>
+                        <div className='gradient-round-box'><span className="gradient-icon-label">{profileCtx.initials}</span></div>
                         // <Image width={50} height={50} roundedCircle referrerPolicy="no-referrer" src={iAccount} />
                     }
                     <span className='title'>{profileCtx.name}</span>
@@ -55,7 +55,7 @@ function AccountMenu() {
                     <Button variant='link'>
                         {profileCtx.pictureUrl && profileCtx.pictureUrl.length > 0 ?
                             <Image className='profile-icon hover-effect' width={40} height={40} roundedCircle referrerPolicy="no-referrer" src={profileCtx.pictureUrl} /> :
-                            <div className="gradient-box hover-effect"><span className="gradient-label">{profileCtx.initials}</span></div>
+                            <div className="gradient-round-box hover-effect"><span className="gradient-icon-label">{profileCtx.initials}</span></div>
                             // <Image className='hover-effect' width={30} height={30} roundedCircle referrerPolicy="no-referrer" src={iAccount} />
                         }
                     </Button>
