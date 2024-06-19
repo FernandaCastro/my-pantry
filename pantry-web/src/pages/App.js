@@ -48,7 +48,7 @@ export default function App() {
   // style={{ height: '40px', verticalAlign: 'middle' }}
 
   return (
-    <Suspense fallback="...is loading">
+    <Suspense fallback="...loading">
       <ProfileContext.Provider value={{ profileCtx, setProfileCtx }}>
         <AlertContext.Provider value={{ alert, setAlert }}>
           <Header />
