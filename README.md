@@ -4,11 +4,14 @@
 
 version: 0.4.0
 
-- Delete provisioned products from the shopping cart
-- 'Analyse Pantry' button should not only create item provisioning, but also delete unecessary provisionings.
+- pantry-web:
+    - New Themes
+    - Replace Perofile menu by a Slide Menu
 
 Plans for next versions:
 
+- Delete provisioned products from the shopping cart
+- 'Analyse Pantry' button should not only create item provisioning, but also delete unecessary provisionings.
 - Wizard to create pantries based on a suggested list of basic items, instead of manually enter them.
 - Dashboard
 - CRUD for Role and Permissions
@@ -55,8 +58,6 @@ Security, Postgres and Kafka (prov/sub for asynch communication only).
 
 Screenshots: <br />
 <img height="400" width="200" title="Login" src="./readme_images/login.png"/>
-<img height="400" width="200" title="Login" src="./readme_images/new-account.png"/>
-<img height="400" width="200" title="Login" src="./readme_images/reset-password.png"/>
 <img height="400" width="200" src="./readme_images/pantries.png"/>
 <img height="400" width="200" src="./readme_images/pantry.png"/>
 <img height="400" width="200" src="./readme_images/pantry-items.png"/>
@@ -65,7 +66,15 @@ Screenshots: <br />
 <img height="400" width="200" src="./readme_images/products.png"/>
 <img height="400" width="200" src="./readme_images/supermarkets.png"/>
 <img height="400" width="200" src="./readme_images/groups-members.png"/>
-<img height="400" width="200" src="./readme_images/logout.png"/>
+<img height="400" width="200" title="Login" src="./readme_images/new-account.png"/>
+<img height="400" width="200" title="Login" src="./readme_images/reset-password.png"/>
+<img height="400" width="200" src="./readme_images/slide-menu.png"/>
+
+Themes:
+
+| Default Light                                                           | Default Dark                                                           | Mono Light                                                           | Mono Dark                                                           |
+|:------------------------------------------------------------------------|:-----------------------------------------------------------------------|:---------------------------------------------------------------------|:--------------------------------------------------------------------|
+| <img height="400" width="200" src="./readme_images/default-light.png"/> | <img height="400" width="200" src="./readme_images/default-dark.png"/> | <img height="400" width="200" src="./readme_images/mono-light.png"/> | <img height="400" width="200" src="./readme_images/mono-dark.png"/> |
 
 ### pantry-web (localhost:3000) :
 
