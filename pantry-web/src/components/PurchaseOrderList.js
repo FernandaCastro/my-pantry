@@ -14,11 +14,11 @@ export default function PurchaseOrderList({ selectedPantries, handleSelectedPurc
     const { showAlert } = useAlert();
 
     useEffect(() => {
+        setPurchase();
+        handleSelectedPurchase();
+        setPurchases([]);
         if (selectedPantries && selectedPantries.length > 0) {
             fetchAllPurchaseOrders();
-        } else {
-            setPurchase();
-            setPurchases([]);
         }
     }, [selectedPantries]);
 
