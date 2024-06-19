@@ -12,6 +12,7 @@ import { useNavigate } from 'react-router-dom';
 import Tooltip from 'react-bootstrap/Tooltip';
 import { useTranslation } from 'react-i18next';
 import Select from './Select';
+import { BsPalette, BsPeople, BsPersonGear } from 'react-icons/bs';
 
 function AccountMenu() {
 
@@ -24,7 +25,9 @@ function AccountMenu() {
     const themes = [
         { label: 'Default Light', value: '' },
         { label: 'Default Dark', value: 'theme-dark' },
-        { label: 'Mono Dark', value: 'theme-mono' }
+        { label: 'Mono Light', value: 'theme-mono-light' },
+        { label: 'Mono Dark', value: 'theme-mono-dark' }
+
     ]
     const [themeOption, setThemeOption] = useState(findThemeOption());
 
@@ -38,18 +41,19 @@ function AccountMenu() {
     useEffect(() => {
         if (themeOption) {
             document.body.className = themeOption.value;
-            handleClose();
             setProfileCtx(
                 {
                     ...profileCtx,
                     theme: themeOption.value
                 })
+            handleClose();
+
         }
     }, [themeOption.value]);
 
     function handleClose() {
-        //document.getElementsByClassName("btn-close")[0]?.click();
-        document.getElementById("btn-close")?.click();
+        document.getElementsByClassName("btn-close")[0]?.click();
+        //document.getElementById("btn-close")?.click();
     }
 
 
@@ -138,13 +142,22 @@ function AccountMenu() {
                     </Offcanvas.Header>
                     <Offcanvas.Body className="d-flex flex-column gap-3">
                         <div className='section' />
-                        <div className="settings gap-2">
-                            <Select name="type" key={themeOption.value}
-                                defaultValue={themeOption}
-                                options={themes}
-                                onChange={setThemeOption} />
-                                <Button bsPrefix="btn-profile-menu" href={"/account/edit"} onClick={handleClose}>{t("edit-account-link")}</Button>
-                                <Button bsPrefix="btn-profile-menu" href="/group-members" onClick={handleClose}>{t("group-members-link")}</Button>
+                        <div className="settings">
+                            <div className='d-flex flex-row'>
+                                <BsPalette className="simple-icon p-0 me-2 align-bottom" />
+                                <Select name="type" key={themeOption.value}
+                                    defaultValue={themeOption}
+                                    options={themes}
+                                    onChange={setThemeOption} />
+                            </div>
+                            <Button bsPrefix="btn-profile-menu" href={"/account/edit"} onClick={handleClose}>
+                                <BsPersonGear className="simple-icon me-2" />
+                                {t("edit-account-link")}
+                            </Button>
+                            <Button bsPrefix="btn-profile-menu" href="/group-members" onClick={handleClose}>
+                                <BsPeople className="simple-icon me-2" />
+                                {t("group-members-link")}
+                            </Button>
                         </div >
                         <div className='mt-auto align-self-center'>
                             <LogoutFromGoogle handleLogout={handleLogout} text={t("btn-logout")} />

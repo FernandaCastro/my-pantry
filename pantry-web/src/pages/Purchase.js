@@ -11,6 +11,7 @@ import PurchaseItemList from '../components/PurchaseItemList.js'
 import { useTranslation } from 'react-i18next';
 import iconPurchase from '../assets/images/shoppingcart-gradient.png';
 import Image from 'react-bootstrap/Image';
+import { Stack } from 'react-bootstrap';
 
 export default function Purchase() {
 
@@ -83,7 +84,7 @@ export default function Purchase() {
     }
 
     return (
-        <>
+        <Stack gap={3}>
             <div className='mt-4'>
                 <div className='d-flex justify-content-start align-items-center gap-2' onClick={() => setShowPantries(!showPantries)}>
                     <h6 className="text-start fs-6 lh-lg title">{t("purchase-title")}</h6>
@@ -119,7 +120,7 @@ export default function Purchase() {
                 <PurchaseItemList ref={purchaseItemListRef} selectedPurchase={purchase} selectedPantries={pantries} setOuterPurchaseItems={setPurchaseItems} />
             </div>
 
-        </>
+        </Stack>
 
     )
 }
