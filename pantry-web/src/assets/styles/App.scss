@@ -4,33 +4,6 @@
 //     border: 1px solid blue;
 // }
 
-.alert-box {
-    @media ((min-width:0px) and (max-width: 767px)) {
-        margin-top: 115px;
-    }
-
-    @media (min-width: 768px) {
-        margin-top: 70px;
-    }
-
-    padding-bottom: 5px;
-}
-
-.footer {
-    left: 0;
-    bottom: 0;
-    width: 100%;
-    position: fixed;
-    background-color: var(--background);
-    text-align: center;
-    font-size: small;
-    padding-top: 5px;
-
-    .span {
-        padding-top: 2px;
-    }
-}
-
 //Header
 .header {
     background-image: var(--gradient-image-header);
@@ -72,21 +45,69 @@
         box-shadow: none !important;
         border: 0 !important;
     }
+
+    position: fixed;
+    top:0;
+    left:0;
+    width: 100%;
+    z-index: 1000;
 }
 
-.fix-pantry-name {
-    justify-content: center !important;
-    width: auto !important;
-    padding: 0px !important;
+.header::after {
+    content: '';
+    position: absolute;
+    bottom: -9px;
+    left: 0;
+    width: 100%;
+    height: 15px;
+    /* Blur effect height */
+    background: inherit;
+    /* Inherit background */
+    //background: red;
+    filter: blur(8px);
+    /* Apply blur effect*/
+}
 
-    @media (max-width: 575px) {
-        min-width: fit-content !important;
-        max-width: 300px !important;
+.alert-box {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 5000;
+
+    @media ((min-width:0px) and (max-width: 767px)) {
+        margin-top: 125px;
     }
 
-    @media (min-width: 576px) and (max-width: 768px) {
-        min-width: 300px !important;
-        max-width: 400px !important;
+    @media (min-width: 768px) {
+        margin-top: 75px;
+    }
+}
+
+.content {
+    @media ((min-width:0px) and (max-width: 767px)) {
+        margin-top: 125px;
+    }
+
+    @media (min-width: 768px) {
+        margin-top: 77px;
+    }
+
+    margin-top: 10px;
+}
+
+.footer {
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    position: fixed;
+    background-color: var(--background);
+    text-align: center;
+    font-size: small;
+    padding-top: 5px;
+
+    .span {
+        padding-top: 2px;
     }
 }
 
@@ -470,7 +491,7 @@ span {
 }
 
 span.disabled {
-    color: var(--lighten-text-color-5);
+    color: var(--text-color-2);
 }
 
 p {
@@ -494,7 +515,7 @@ p {
 }
 
 .icon {
-    color: var(--btn-background-color);
+    color: var(--icon-color);
     width: 25px;
     height: 25px;
 }
@@ -582,6 +603,7 @@ div.settings {
 
 //End of Borders
 
+
 div[disabled] {
     pointer-events: none;
     opacity: 0.7;
@@ -589,7 +611,32 @@ div[disabled] {
 
 .hover-box:hover {
     border-color: var(--link-color) !important;
+
+    box-shadow: 0 1px 2px var(--box-shadow-0);
+    -webkit-transition: all 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
+    transition: all 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
 }
+
+.hover-box::after {
+    box-shadow: 0 5px 15px var(--box-shadow-1);
+    opacity: 0;
+    -webkit-transition: all 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
+    transition: all 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+
+/* Scale up the box */
+.hover-box:hover {
+    -webkit-transform: scale(1.02, 1.02);
+    transform: scale(1.02, 1.02);
+    box-shadow: 0 5px 15px var(--box-shadow-1);
+}
+
+/* Fade in the pseudo-element with the bigger shadow */
+.hover-box:hover::after {
+    opacity: 1;
+}
+
+//End of hover-box
 
 
 //Custom boxes
@@ -791,6 +838,14 @@ div.scroll-supermarkets {
     transition: background-color 5000s ease-in-out 0s;
 }
 
+.form-control:disabled {
+    color: var(--text-color-2) !important;
+}
+
+.form-control::placeholder {
+    color: var(--text-color-2) !important;
+}
+
 /* Define a cor de fundo quando autofill é ativado */
 .form-control:-webkit-autofill {
     -webkit-text-fill-color: var(--text-color) !important;
@@ -835,7 +890,7 @@ div.scroll-supermarkets {
 }
 
 .form-check-label:disabled {
-    color: var(--lighten-text-color-5);
+    color: var(--text-color-2) !important;
 }
 
 .form-check-input {
@@ -845,8 +900,9 @@ div.scroll-supermarkets {
 }
 
 .form-check-input:checked {
-   --bs-form-switch-bg: var(--switch-enabled) !important;
-   background-color: var(--btn-background-color) !important;;
+    --bs-form-switch-bg: var(--switch-enabled) !important;
+    background-color: var(--btn-background-color) !important;
+    ;
 }
 
 .form-radio-label {
@@ -854,7 +910,7 @@ div.scroll-supermarkets {
 }
 
 .form-radio-label:disabled {
-    color: var(--lighten-text-color-5);
+    color: var(--text-color-2);
 }
 
 .form-radio-input {
@@ -867,9 +923,6 @@ div.scroll-supermarkets {
     border-color: var(--border-color) !important;
 }
 
-.form-control::placeholder {
-    color: var(--text-color) !important;
-}
 
 
 //End of Form Fields
@@ -979,6 +1032,7 @@ div.scroll-supermarkets {
     border: 2px solid var(--border-color) !important;
     background-color: var(--background-1) !important;
     border-radius: 8px !important;
+    z-index: 0 !important;
 
     box-shadow: 0 1px 2px var(--box-shadow-0);
     -webkit-transition: all 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
