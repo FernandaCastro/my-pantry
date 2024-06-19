@@ -85,7 +85,7 @@ export default function Header() {
             <div>
                 <Navbar className="pt-2 pb-1">
                     <Navbar.Brand className="homeLink pb-2" href="/home" ><span className="homeText">{t("app-name", { ns: "common" })}</span></Navbar.Brand>
-                    <Container className='container fix-pantry-name'></Container>
+                    <Container/>
 
                     {/*hidden on smaller than md*/}
                     <div className='d-none d-md-block'>

@@ -4,11 +4,12 @@
     --background-1: #{darken($background-color, 3%)};
     --background-2: #{darken($background-color, 5%)};
     --btn-background-color: #6c66d8;
+    --icon-color:#6c66d8;
     --border-color: #b7bffb;
     --link-color: rgb(63, 6, 250);
     --text-color: hsl(219, 11%, 25%);
-    --lighten-text-color-3: lighten(var(--text-color), 3%);
-    --lighten-text-color-5: lighten(var(--text-color), 5%);
+    --text-color-1: lighten(var(--text-color), 3%);
+    --text-color-2: lighten(var(--text-color), 5%);
     --title-text-color: indigo;
     --highlight-text: mediumorchid;
     --gradient-color: linear-gradient(90deg, rgba(228, 132, 252, 1) 0%, rgba(132, 212, 255, 1) 100%);
@@ -27,51 +28,52 @@
 }
 
 .theme-dark {
-    $background-color: rgb(47, 42, 52);
+    $background-color: rgb(34, 33, 33);
     --background: #{$background-color};
     --background-1: #{$background-color};
     --background-2: #{lighten($background-color, 5%)};
-    --btn-background-color: #6c66d8;
+    --btn-background-color:black;
+    --icon-color: darkgray; 
     --border-color: #c5cbfb;
-    --link-color: mediumorchid;
-    --text-color: lightgray;
-    --lighten-text-color-3: lighten(var(--text-color), 3%);
-    --lighten-text-color-5: lighten(var(--text-color), 5%);
-    --title-text-color: rgb(195, 115, 248);
-    --highlight-text: mediumorchid;
+    --link-color: white;
+    --text-color: white;
+    --text-color-1: darkgray;
+    --text-color-2: gray;
+    --title-text-color: var(--text-color);
+    --highlight-text: gray;
     --gradient-image-button: linear-gradient(90deg, var(--background), var(--background)), linear-gradient(90deg, hsl(289, 65%, 64%), hsl(226, 78%, 67%));
     --gradient-image-text: var(--gradient-color);
     --disabled-gradient-image-button: linear-gradient(90deg, var(--background), var(--background)), linear-gradient(45deg, gray 5%, rgb(199, 198, 198) 70%);
     --box-shadow-0: rgb(180, 102, 180);
     --box-shadow-1: purple;
     --btn-close: url("data:image/svg+xml,%3csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 16 16%27 fill=%27rgb%28108, 102, 216%29%27%3e%3cpath d=%27M.293.293a1 1 0 0 1 1.414 0L8 6.586 14.293.293a1 1 0 1 1 1.414 1.414L9.414 8l6.293 6.293a1 1 0 0 1-1.414 1.414L8 9.414l-6.293 6.293a1 1 0 0 1-1.414-1.414L6.586 8 .293 1.707a1 1 0 0 1 0-1.414z%27/%3e%3c/svg%3e");
-    --highlight-item-list: rgb(82, 60, 88);
+    --highlight-item-list: rgb(65, 60, 76);
 }
 
 .theme-mono {
-    $background-color: white;
+    $background-color: rgb(34, 33, 33);
     --background: #{$background-color};
     --background-1: #{darken($background-color, 3%)};
     --background-2: #{darken($background-color, 5%)};
-    --btn-background-color: black;
-    --border-color: lightgray;
-    --link-color: black;
-    --text-color: hsl(219, 11%, 25%);
-    --lighten-text-color-3: lighten(var(--text-color), 3%);
-    --lighten-text-color-5: lighten(var(--text-color), 5%);
+    --btn-background-color:black;
+    --icon-color: darkgray; 
+    --border-color: darkgray;
+    --link-color: white;
+    --text-color: white;
+    --text-color-1: darkgray;
+    --text-color-2: gray;
     --title-text-color: var(--text-color);
-    --highlight-text: black;
-    // --gradient-color: linear-gradient(to bottom right, white, gray);
+    --highlight-text: gray;
     --gradient-image-header: linear-gradient(to bottom right, gray, black);
     --gradient-image-icon-background: linear-gradient(to bottom right, black, black);
-    --gradient-image-button: linear-gradient(90deg, var(--background), var(--background)), linear-gradient(to bottom right, gray, black);
-    --gradient-image-text: linear-gradient(45deg, gray, black);
+    --gradient-image-button: linear-gradient(90deg, var(--background), var(--background)), linear-gradient(to bottom right, rgba(228, 132, 252, 1) 0%, rgba(132, 212, 255, 1) 100%);
+    --gradient-image-text: linear-gradient(90deg, white, white);
     --disabled-gradient-image-button: linear-gradient(90deg, var(--background), var(--background)), linear-gradient(45deg, gray 5%, rgb(199, 198, 198) 70%);
     --disabled-gradient-image-text: linear-gradient(45deg, gray, gray);
-    --box-shadow-0: rgb(92, 90, 90);
-    --box-shadow-1: rgb(0, 0, 0.9);
+    --box-shadow-0: gray;
+    --box-shadow-1: lightgray;
     --switch-enabled: url("data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%27-4 -4 8 8%27><circle r=%273%27 fill=%27white%27/></svg>");
     --switch-disabled: url("data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%27-4 -4 8 8%27><circle r=%273%27 fill=%27gray%27/></svg>");
-    --btn-close: url("data:image/svg+xml,%3csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 16 16%27 fill=%2723000%29%27%3e%3cpath d=%27M.293.293a1 1 0 0 1 1.414 0L8 6.586 14.293.293a1 1 0 1 1 1.414 1.414L9.414 8l6.293 6.293a1 1 0 0 1-1.414 1.414L8 9.414l-6.293 6.293a1 1 0 0 1-1.414-1.414L6.586 8 .293 1.707a1 1 0 0 1 0-1.414z%27/%3e%3c/svg%3e");
-    --highlight-item-list: lightgray;
+    --btn-close: url("data:image/svg+xml,%3csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 16 16%27 fill=%27lightgray%27%3e%3cpath d=%27M.293.293a1 1 0 0 1 1.414 0L8 6.586 14.293.293a1 1 0 1 1 1.414 1.414L9.414 8l6.293 6.293a1 1 0 0 1-1.414 1.414L8 9.414l-6.293 6.293a1 1 0 0 1-1.414-1.414L6.586 8 .293 1.707a1 1 0 0 1 0-1.414z%27/%3e%3c/svg%3e");
+    --highlight-item-list: gray;
 }

@@ -236,7 +236,7 @@ export function DraggableItem({ item, index }) {
                     margin: "6px",
                     padding: "2px",
                     minWidth: "165px",
-                    border: "1px solid var(--border-color)",
+                    border: "1.5px solid var(--border-color)",
                     backgroundColor: 'var(--background)',
                     display: "flex",
                     flexDirection: "row",

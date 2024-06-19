@@ -52,12 +52,12 @@ export default function App() {
       <ProfileContext.Provider value={{ profileCtx, setProfileCtx }}>
         <AlertContext.Provider value={{ alert, setAlert }}>
           <Header />
-          <div ref={target}>
+          <div ref={target} className='alert-box'>
             <Overlay target={target.current} show={alert.show} placement="bottom" transition={Fade}>
               <Alert variant={alert.type} show={alert.show} onClose={() => setAlert((a) => a = { ...a, show: !alert.show })} dismissible transition={Fade}>{alert.message}</Alert>
             </Overlay>
           </div>
-          <Container>
+          <Container className="content"> 
             <NavigateSetter />
             <TranslationSetter />
             <CustomRoutes />
