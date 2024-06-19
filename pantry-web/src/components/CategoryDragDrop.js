@@ -215,7 +215,7 @@ export function DroppableContainer({ droppableId, children }) {
                 <div
                     {...provided.droppableProps}
                     ref={provided.innerRef}
-                    className='items scroll-categories'
+                    className='supermarket-sections-box scroll-categories'
                 >
                     {children}
                     {provided.placeholder}
@@ -224,7 +224,8 @@ export function DroppableContainer({ droppableId, children }) {
         </StrictModeDroppable>
     )
 }
-
+//"#c5cbfb"
+//#909df4
 export function DraggableItem({ item, index }) {
 
     return (
@@ -235,14 +236,15 @@ export function DraggableItem({ item, index }) {
                     margin: "6px",
                     padding: "2px",
                     minWidth: "165px",
-                    border: "1px solid #909df4",
-                    backgroundColor: "#c5cbfb",
+                    border: "1.5px solid var(--border-color)",
+                    backgroundColor: 'var(--background)',
                     display: "flex",
                     flexDirection: "row",
                     justifyContent: "space-between",
                     alignItems: "center",
                     textWrap: "pretty",
                     ..._provided.draggableProps.style,
+
                 };
                 return (
 
@@ -250,7 +252,7 @@ export function DraggableItem({ item, index }) {
                         {..._provided.draggableProps}
                         {..._provided.dragHandleProps}
                         ref={_provided.innerRef}
-                        style={_style}>
+                        style={_style} className="hover-box" >
 
                         <span className='text-wrap'>{item.name}</span>
                         <GrDrag />

@@ -1,3 +1,4 @@
+import '../assets/styles/app.scss';
 import { useNavigate } from "react-router-dom";
 import CustomRoutes from "../routes/CustomRoutes.js";
 import Header from '../components/Header.js';
@@ -5,13 +6,13 @@ import { useState, useEffect, useRef } from 'react';
 import Container from 'react-bootstrap/Container';
 import Alert from 'react-bootstrap/Alert';
 import Fade from 'react-bootstrap/Fade';
-import '../assets/styles/App.scss';
 import History from '../routes/History.js';
 import TranslationSetter from '../services/TranslationSetter.js'
 import NavigateSetter from "../routes/NavigateSetter.js";
 import { Suspense } from 'react';
 import { AlertContext, ProfileContext } from '../services/context/AppContext.js';
 import { Overlay } from "react-bootstrap";
+import Footer from "../components/Footer.js";
 
 export default function App() {
 
@@ -47,20 +48,21 @@ export default function App() {
   // style={{ height: '40px', verticalAlign: 'middle' }}
 
   return (
-    <Suspense fallback="...is loading">
+    <Suspense fallback="...loading">
       <ProfileContext.Provider value={{ profileCtx, setProfileCtx }}>
         <AlertContext.Provider value={{ alert, setAlert }}>
           <Header />
-          <div ref={target}>
+          <div ref={target} className='alert-box'>
             <Overlay target={target.current} show={alert.show} placement="bottom" transition={Fade}>
               <Alert variant={alert.type} show={alert.show} onClose={() => setAlert((a) => a = { ...a, show: !alert.show })} dismissible transition={Fade}>{alert.message}</Alert>
             </Overlay>
           </div>
-          <Container >
+          <Container className="content"> 
             <NavigateSetter />
             <TranslationSetter />
             <CustomRoutes />
           </Container>
+          <Footer />
         </AlertContext.Provider>
       </ProfileContext.Provider>
     </Suspense>

@@ -24,7 +24,7 @@ function ProductSearchBar({ accountGroupId, accountGroupOptions, handleSelectAct
     const [results, setResults] = useState([]);
     const [notFoundMessage, setNotFoundMessage] = useState("");
     const [showProductForm, setShowProductForm] = useState(false);
-    const [show, setShow] = useState(true);
+    const [show, setShow] = useState(false);
     const { showAlert } = useAlert();
     const [product, setProduct] = useState({});
     const [itemQuantity, setItemQuantity] = useState({ idealQty: 0, currentQty: 0 });
@@ -124,7 +124,7 @@ function ProductSearchBar({ accountGroupId, accountGroupOptions, handleSelectAct
             return (
                 <div>
                     <div className="me-3 d-flex justify-content-end align-items-center">
-                        <CloseButton aria-label="Hide" onClick={() => setShowProductForm(false)} />
+                        <CloseButton className="btn-close" aria-label="Hide" onClick={() => setShowProductForm(false)} />
                     </div>
                     <ProductForm product={product} accountGroupId={accountGroupId} accountGroupOptions={accountGroupOptions} handleSave={handleSaveAndAddNewProduct} />
                 </div>

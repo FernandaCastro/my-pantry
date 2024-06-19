@@ -90,11 +90,11 @@ export default function PantryForm({ pantry, handleSave, accountGroupOptions }) 
             <Row>
                 <Form.Group className="mb-2 w-25" controlId="formId">
                     <Form.Label size="sm" className="mb-1 title">{t('id', { ns: 'common' })}</Form.Label>
-                    <Form.Control size="sm" className="mb-1 input-custom" type="text" name="id" defaultValue={id} disabled />
+                    <Form.Control size="sm" className="mb-1" type="text" name="id" defaultValue={id} disabled />
                 </Form.Group>
                 <Form.Group as={Col} className="mb-2" controlId="formName">
                     <Form.Label size="sm" className="mb-1 title">{t('name', { ns: 'common' })}</Form.Label>
-                    <Form.Control size="sm" className="mb-1 input-custom" type="text" name="name" defaultValue={pantry.name} />
+                    <Form.Control size="sm" className="mb-1" type="text" name="name" defaultValue={pantry.name} />
                 </Form.Group>
             </Row>
             <Row>

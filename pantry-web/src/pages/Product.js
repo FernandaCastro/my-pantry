@@ -126,7 +126,7 @@ export default function Product() {
     }
 
     return (
-        <>
+        <Stack gap={3}>
             <div hidden={!showForm} className="mt-4">
                 <div>
                     <div className="me-3 mb-3 d-flex justify-content-start align-items-end">
@@ -146,7 +146,7 @@ export default function Product() {
 
                 <ProductList key={refresh} disabled={showForm} onEdit={handleOnListSelection} onRemove={handleRemove} />
             </div>
-        </>
+        </Stack>
     );
 
 }

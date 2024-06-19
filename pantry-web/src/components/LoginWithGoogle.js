@@ -1,6 +1,6 @@
 import { postLoginToken } from '../services/LoginService';
 import { Button } from 'react-bootstrap';
-import { useRef, useEffect} from 'react';
+import { useRef, useEffect } from 'react';
 import useScript from '../hooks/useScript';
 import VariantType from '../components/VariantType.js';
 import useAlert from '../hooks/useAlert.js';
@@ -38,14 +38,14 @@ export function LoginWithGoogle({ handlePostLogin }) {
         // https://developers.google.com/identity/gsi/web/reference/js-reference#google.accounts.id.renderButton
         window.google.accounts.id.renderButton(
             GoogleSignInButton.current,
-            { theme: 'outlined', size: 'large', text: 'signin' }, // customization attributes
+            { theme: 'outlined', size: 'large', shape: 'pill', type: 'circle', text: 'signin' }, // customization attributes
         );
     });
 
     return <div ref={GoogleSignInButton}></div>;
 }
 
-export function LogoutFromGoogle({ handleLogout , text}) {
+export function LogoutFromGoogle({ handleLogout, text }) {
 
     useEffect(() => {
         window.google = undefined;

@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router';
-import { getPantry, updatePantry, createPantry} from '../services/apis/mypantry/requests/PantryRequests.js';
+import { getPantry, updatePantry, createPantry } from '../services/apis/mypantry/requests/PantryRequests.js';
 import VariantType from '../components/VariantType.js';
 import useAlert from '../hooks/useAlert.js';
 import PantryForm from '../components/PantryForm.js';
 import Button from 'react-bootstrap/Button';
 import { getAccountGroupList } from '../services/apis/mypantry/requests/AccountRequests.js';
 import { useTranslation } from 'react-i18next';
-import { Image } from 'react-bootstrap';
+import { Image, Stack } from 'react-bootstrap';
 import iconPantry from '../assets/images/cupboard-gradient.png';
 
 export default function Pantry({ mode }) {
@@ -91,7 +91,7 @@ export default function Pantry({ mode }) {
     }
 
     return (
-        <div className="mt-4">
+        <Stack gap={4}>
             <div className='d-flex justify-content-start align-items-end mt-4 mb-4'>
                 <Image src={iconPantry} width={40} height={40} className="ms-2 me-3" />
                 <h6 className="title">{t('pantry-title')}</h6>
@@ -102,6 +102,6 @@ export default function Pantry({ mode }) {
                     <h6>Loading...</h6> :
                     <PantryForm key={pantry.id} pantry={pantry} handleSave={fetchSavePantry} accountGroupOptions={accountGroupOptions} />}
             </div>
-        </div>
+        </Stack>
     );
 }

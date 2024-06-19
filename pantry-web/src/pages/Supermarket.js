@@ -296,7 +296,7 @@ export function Supermarket() {
 
 
     return (
-        <>
+        <Stack gap={3}>
             <div className="d-flex align-items-end mt-4">
                 <Image src={iconSupermarket} width={40} height={40} className="ms-2 me-3" />
                 <h6 className='title flex-grow-1'>{t("supermarket-title")}</h6>
@@ -322,7 +322,7 @@ export function Supermarket() {
             <div className="mt-4">
                 <CategoryDragDrop key={selectedSupermarket.id} innitialList={selectedSupermarket.categories} handleListChange={handleCategoriesChange} disabled={editSupermarketId === 0 && !showNew} />
             </div>
-        </>
+        </Stack>
     )
 
 }

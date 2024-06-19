@@ -1,30 +1,42 @@
 import Select from 'react-select';
-import '../assets/styles/App.scss';
 
 const customStyles = {
+    singleValue: (provided, state) => ({
+        ...provided,
+        color: 'var(--text-color)',
+      }),
 
     control: (provided, state) => ({
         ...provided,
-        backgroundColor: '#fff',
-        borderColor: 'lightgray',
+        backgroundColor: 'var(--background)',
+        borderColor: 'var(--border-color)',
         minHeight: '31px',
         height: '31px',
         boxShadow: null,
+        fontSize: '15px',
         "&:hover": {
-            borderColor: 'rgb(63, 6, 250)'
+            borderColor: 'var(--link-color)'
         }
     }),
 
     valueContainer: (provided, state) => ({
         ...provided,
         height: '31px',
-        padding: '0 6px'
+        padding: '0 6px',
     }),
 
     input: (provided, state) => ({
         ...provided,
         margin: '0px',
-        borderColor: '#fff',
+        color: 'var(--text-color)',
+        borderColor: 'var(--border-color)',
+        fontSize: '15px',
+    }),
+
+    placeholder: (provided, state) => ({
+        ...provided,
+        fontSize: '14px',
+        color: 'var(--text-color)',
     }),
 
     indicatorSeparator: state => ({
@@ -36,12 +48,19 @@ const customStyles = {
         height: '31px',
     }),
 
+    menu: (provided, state) => ({
+        ...provided,
+        backgroundColor: 'var(--background)',
+    }),
+
     option: (provided, { data, isDisabled, isFocused, isSelected }) => ({
         ...provided,
-        backgroundColor: isFocused ? 'lavender' : '#fff',
-        color: 'hsl(219, 11%, 25%)',
+        backgroundColor: isFocused ? 'var(--highlight-item-list)' : 'var(--background)',
+        color: 'var(--text-color)',
         minHeight: '30px',
-        height: '30px'
+        height: '30px',
+        fontSize: '15px',
+
     }),
 };
 

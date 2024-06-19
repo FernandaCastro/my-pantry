@@ -2,13 +2,11 @@ import React, { useContext } from 'react';
 import { ProfileContext } from '../services/context/AppContext';
 import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
-import '../assets/styles/Header.scss';
 import Image from 'react-bootstrap/Image';
 import iconConsume from '../assets/images/cook-gradient.png';
 import iconPurchase from '../assets/images/shoppingcart-gradient.png';
 import iconProduct from '../assets/images/food-gradient.png';
 import iconPantry from '../assets/images/cupboard-gradient.png';
-import iconMenu from '../assets/images/menu-gradient.png';
 import iconSupermarket from '../assets/images/supermarket-gradient.png';
 
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
@@ -87,7 +85,7 @@ export default function Header() {
             <div>
                 <Navbar className="pt-2 pb-1">
                     <Navbar.Brand className="homeLink pb-2" href="/home" ><span className="homeText">{t("app-name", { ns: "common" })}</span></Navbar.Brand>
-                    <Container className='container fix-pantry-name'></Container>
+                    <Container/>
 
                     {/*hidden on smaller than md*/}
                     <div className='d-none d-md-block'>

@@ -1,7 +1,7 @@
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import { useState } from 'react';
-import { BsEraser, BsCheck2All, BsChevronDown, BsPlusLg, BsSearch } from "react-icons/bs";
+import { BsEraser, BsCheck2All, BsChevronDown, BsSearch, BsPersonPlus } from "react-icons/bs";
 import VariantType from './VariantType.js';
 import useAlert from '../hooks/useAlert.js';
 import Card from 'react-bootstrap/Card';
@@ -76,7 +76,7 @@ function AccountSearchBar({ handleSelectAction, handleClearAction, disabled }) {
                     <Button className="w-0 p-0" type="reset" variant="link" onClick={handleClear} title={t('tooltip-btn-clear-search')} disabled={disabled}><BsEraser className='icon' /></Button>
                 </div>
                 <div>
-                    <Button className="w-0 p-0" variant="link" onClick={() => setShowAccountForm(true)} title={t('tooltip-btn-add-account')} disabled={disabled}><BsPlusLg className='icon' /></Button>
+                    <Button className="w-0 p-0" variant="link" onClick={() => setShowAccountForm(true)} title={t('tooltip-btn-add-account')} disabled={disabled}><BsPersonPlus className='icon' /></Button>
                 </div>
             </Stack>
         );
