@@ -1,4 +1,4 @@
-import '../assets/styles/app.scss';
+import '../assets/styles/App.scss';
 import { useNavigate } from "react-router-dom";
 import CustomRoutes from "../routes/CustomRoutes.js";
 import Header from '../components/Header.js';
@@ -57,7 +57,7 @@ export default function App() {
               <Alert variant={alert.type} show={alert.show} onClose={() => setAlert((a) => a = { ...a, show: !alert.show })} dismissible transition={Fade}>{alert.message}</Alert>
             </Overlay>
           </div>
-          <Container className="content"> 
+          <Container className="content">
             <NavigateSetter />
             <TranslationSetter />
             <CustomRoutes />
