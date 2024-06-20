@@ -94,6 +94,7 @@
     }
 
     margin-top: 10px;
+    margin-bottom: 30px;
 }
 
 .footer {
@@ -104,7 +105,7 @@
     background-color: var(--background);
     text-align: center;
     font-size: small;
-    padding-top: 5px;
+    //padding-top: 5px;
 
     .span {
         padding-top: 2px;
@@ -423,7 +424,7 @@ table {
 
 table.bordered {
     overflow: hidden;
-    border: 1px solid;
+    border: 0.5px solid;
     border-radius: 5px;
     border-color: var(--border-color);
 }
@@ -1064,6 +1065,7 @@ div.scroll-supermarkets {
 .card1:hover::after {
     opacity: 1;
 }
+
 //End of Card Listing Items
 
 
