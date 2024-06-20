@@ -112,7 +112,7 @@ export default function ProductForm({ product, accountGroupId, categories, accou
                 </Form.Group>
             </Row>
             <Row>
-                <Stack direction="horizontal" gap={2} className="mb-3 d-flex justify-content-end">
+                <Stack direction="horizontal" gap={4} className="mb-3 d-flex justify-content-end">
                     <div><Button bsPrefix='btn-custom' type="reset" size="sm"><span className="gradient-text">{t('btn-clear', { ns: 'common' })}</span></Button></div>
                     <div><Button bsPrefix='btn-custom' type="submit" size="sm"><span className="gradient-text">{t('btn-save', { ns: 'common' })}</span></Button></div>
                 </Stack>
