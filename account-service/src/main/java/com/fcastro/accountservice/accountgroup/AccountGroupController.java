@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/accountGroups")
+@RequestMapping("/accountservice/accountGroups")
 public class AccountGroupController {
 
     private final AccountService accountService;

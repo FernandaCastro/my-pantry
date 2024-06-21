@@ -50,7 +50,7 @@ public class ProductControllerUnitTest {
         given(service.getEmbeddingAccountGroup(anyString(), anyLong())).willReturn(Optional.of(dto));
 
         //when //then
-        mockMvc.perform(MockMvcRequestBuilders.get("/products/1"))
+        mockMvc.perform(MockMvcRequestBuilders.get("/pantryservice/products/1"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", is(1)))
                 .andExpect(jsonPath("$.code", is("MILK")))
@@ -65,7 +65,7 @@ public class ProductControllerUnitTest {
         given(service.get(anyLong())).willReturn(Optional.empty());
 
         //when //then
-        mockMvc.perform(MockMvcRequestBuilders.get("/products/1"))
+        mockMvc.perform(MockMvcRequestBuilders.get("/pantryservice/products/1"))
                 .andExpect(status().isNotFound());
     }
 
@@ -80,7 +80,7 @@ public class ProductControllerUnitTest {
         given(service.getAllBySearchParam(anyString(), anyLong(), anyString())).willReturn(list);
 
         //when //then
-        mockMvc.perform(MockMvcRequestBuilders.get("/products")
+        mockMvc.perform(MockMvcRequestBuilders.get("/pantryservice/products")
                         .param("groupId", "1")
                         .param("searchParam", "MILK")
                 )
@@ -96,7 +96,7 @@ public class ProductControllerUnitTest {
         given(service.create(any(ProductDto.class))).willReturn(dto);
 
         //when //then
-        mockMvc.perform(MockMvcRequestBuilders.post("/products")
+        mockMvc.perform(MockMvcRequestBuilders.post("/pantryservice/products")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(JsonUtil.toJson(dto)))
                 .andExpect(status().isCreated())
@@ -115,7 +115,7 @@ public class ProductControllerUnitTest {
         given(service.update(any(ProductDto.class))).willReturn(dto);
 
         //when //then
-        mockMvc.perform(MockMvcRequestBuilders.put("/products/1")
+        mockMvc.perform(MockMvcRequestBuilders.put("/pantryservice/products/1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(JsonUtil.toJson(dto)))
                 .andExpect(status().isOk())
@@ -132,7 +132,7 @@ public class ProductControllerUnitTest {
         given(service.get(anyLong())).willReturn(Optional.empty());
 
         //when //then
-        mockMvc.perform(MockMvcRequestBuilders.put("/products/10")
+        mockMvc.perform(MockMvcRequestBuilders.put("/pantryservice/products/10")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(JsonUtil.toJson(dto)))
                 .andExpect(status().isNotFound());
@@ -144,7 +144,7 @@ public class ProductControllerUnitTest {
         doNothing().when(service).delete(anyLong());
 
         //when //then
-        mockMvc.perform(MockMvcRequestBuilders.delete("/products/1"))
+        mockMvc.perform(MockMvcRequestBuilders.delete("/pantryservice/products/1"))
                 .andExpect(status().isNoContent());
     }
 

@@ -10,7 +10,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @RestController
-@RequestMapping("/accountGroupMembers")
+@RequestMapping("/accountservice/accountGroupMembers")
 public class AccountGroupMemberController {
 
     private final AccountGroupMemberService service;

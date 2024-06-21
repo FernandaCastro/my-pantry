@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("authorization")
+@RequestMapping("/accountservice/authorization")
 public class AuthorizationController {
 
     private final AccessControlService accessControlService;

@@ -4,7 +4,8 @@
 
 version: 0.5.0
 
-- Remove Zookeeper - using Apache Kafka (KRaft)
+- Replace Zookeeper and Confluent Kafka with Apache Kafka (KRaft)
+- Define context for each service api call: /pantryservice, /purchaseservice, /accountservice
 - pantry-web: small fixes
 
 Plans for next versions:

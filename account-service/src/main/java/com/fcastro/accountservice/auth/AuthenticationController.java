@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.*;
 import java.security.Principal;
 
 @RestController
-@RequestMapping("auth")
+@RequestMapping("/accountservice/auth")
 public class AuthenticationController {
 
     private final AccountService service;
