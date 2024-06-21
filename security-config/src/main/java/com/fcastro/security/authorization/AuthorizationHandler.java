@@ -28,7 +28,7 @@ public class AuthorizationHandler {
 
     public List<AccountGroupMemberDto> hasPermissionInAnyGroup(String email, String permission) {
 
-        StringBuilder uri = new StringBuilder("/authorization/permission-in-any-group?")
+        StringBuilder uri = new StringBuilder("/accountservice/authorization/permission-in-any-group?")
                 .append("email=").append(email)
                 .append("&permission=").append(permission);
 
@@ -46,7 +46,7 @@ public class AuthorizationHandler {
 
     public List<AccountGroupMemberDto> hasPermissionInAGroup(String email, String permission, Long accountGroupId) {
 
-        StringBuilder uri = new StringBuilder("/authorization/permission-in-group?")
+        StringBuilder uri = new StringBuilder("/accountservice/authorization/permission-in-group?")
                 .append("email=").append(email)
                 .append("&permission=").append(permission)
                 .append("&accountGroupId=").append(accountGroupId);
@@ -65,7 +65,7 @@ public class AuthorizationHandler {
 
     public AccessControlDto hasPermissionInObject(String email, String permission, String clazz, Long clazzId) {
 
-        StringBuilder uri = new StringBuilder("authorization/permission-in-object?")
+        StringBuilder uri = new StringBuilder("/accountservice/authorization/permission-in-object?")
                 .append("email=").append(email)
                 .append("&permission=").append(permission)
                 .append("&clazz=").append(clazz)
@@ -84,7 +84,7 @@ public class AuthorizationHandler {
     }
 
     public List<AccessControlDto> hasPermissionInObjectList(String email, String permission, String clazz, List<Long> clazzIds) {
-        StringBuilder uri = new StringBuilder("authorization/permission-in-object-list?")
+        StringBuilder uri = new StringBuilder("/accountservice/authorization/permission-in-object-list?")
                 .append("email=").append(email)
                 .append("&permission=").append(permission)
                 .append("&clazz=").append(clazz)
@@ -115,7 +115,7 @@ public class AuthorizationHandler {
     }
 
     public List<AccessControlDto> listAccessControl(String email, String clazz, Long clazzId, Long accountGroupId, String permission) {
-        StringBuilder uri = new StringBuilder("/authorization/access-control?")
+        StringBuilder uri = new StringBuilder("/accountservice/authorization/access-control?")
                 .append("email=").append(email)
                 .append("&clazz=").append(clazz);
 
@@ -136,7 +136,7 @@ public class AuthorizationHandler {
     }
 
     public List<AccessControlDto> listAccessControlStrict(String email, String clazz, Long accountGroupId) {
-        StringBuilder uri = new StringBuilder("/authorization/access-control-strict?")
+        StringBuilder uri = new StringBuilder("/accountservice/authorization/access-control-strict?")
                 .append("email=").append(email)
                 .append("&clazz=").append(clazz)
                 .append("&accountGroupId=").append(accountGroupId);
@@ -162,7 +162,7 @@ public class AuthorizationHandler {
                 .build();
 
         authzServer.post()
-                .uri("/authorization/access-control")
+                .uri("/accountservice/authorization/access-control")
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(body)
                 .retrieve()
@@ -175,7 +175,7 @@ public class AuthorizationHandler {
 
     public void deleteAccessControl(String clazz, Long clazzId) {
 
-        StringBuilder uri = new StringBuilder("authorization/access-control?")
+        StringBuilder uri = new StringBuilder("/accountservice/authorization/access-control?")
                 .append("clazz=").append(clazz)
                 .append("&clazzId=").append(clazzId);
 
