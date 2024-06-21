@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Set;
 
 @RestController
-@RequestMapping("purchases")
+@RequestMapping("/purchaseservice/purchases")
 public class PurchaseItemController {
 
     private final PurchaseItemService service;
