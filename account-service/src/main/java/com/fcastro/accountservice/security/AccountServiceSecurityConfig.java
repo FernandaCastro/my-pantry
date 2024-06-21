@@ -95,7 +95,7 @@ public class AccountServiceSecurityConfig {
                 .authorizeHttpRequests(authorize -> authorize
                         //Dispatches FORWARD and ERROR are permitted to allow Spring MVC to render views and Spring Boot to render errors
                         .dispatcherTypeMatchers(FORWARD, ERROR).permitAll()
-                        .requestMatchers("/auth/reset-password", "/auth/google-login", "/auth/register", "/auth/login", "/auth/logout").permitAll()
+                        .requestMatchers("/accountservice/auth/reset-password", "/accountservice/auth/google-login", "/accountservice/auth/register", "/accountservice/auth/login", "/accountservice/auth/logout").permitAll()
                         .anyRequest().authenticated());
 
         return http.build();
