@@ -71,20 +71,22 @@ services:
     ports:
       - "9092:9092"
     environment:
-      BROKER_ID: 1
-      #      CLUSTER_ID: YOUR_GENERATED_CLUSTER_ID
-      PROCESS_ROLES: BROKER,CONTROLLER
-      CONTROLLER_QUORUM_VOTERS: 1@kafka-broker:9092
-      LISTENERS: LISTENER_INTERNAL://kafka-broker:29092,LISTENER_EXTERNAL://kafka-broker:9092
-      CONTROLLER_LISTENERS: CONTROLLER://kafka-broker:9092
-      LISTENER_SECURITY_PROTOCOL_MAP: LISTENER_INTERNAL:PLAINTEXT,LISTENER_EXTERNAL:PLAINTEXT
-      INTER_BROKER_LISTENER_NAME: LISTENER_INTERNAL
-      OFFSETS_TOPIC_REPLICATION_FACTOR: 1
-      LOG_DIRS: /tmp/kafka-logs
-      LOG_RETENTION_HOURS: 2
-      LOG_RETENTION_BYTES: 536870912  #536Mb
-      LOG_CLEANUP_POLICY: delete
-      CLEANER_ENABLE: "true"
+      KAFKA_BROKER_ID: 1
+      KAFKA_NODE_ID: 1
+      KAFKA_PROCESS_ROLES: broker,controller
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka-broker:9093
+      KAFKA_LISTENERS: INTERNAL://kafka-broker:9092,CONTROLLER://kafka-broker:9093
+      KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka-broker:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,CONTROLLER:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_LOG_DIRS: /tmp/kafka-logs
+      KAFKA_LOG_RETENTION_HOURS: 2
+      KAFKA_LOG_RETENTION_BYTES: 536870912  #536Mb
+      KAFKA_LOG_CLEANUP_POLICY: delete
+      KAFKA_CLEANER_ENABLE: "true"
+      KAFKA_CLUSTER_ID: "MkU3OEVBNTcwNTJENDM2Qk"
     networks:
       - spring
     restart: always
@@ -103,6 +105,7 @@ services:
       - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
       - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
       - ALLOWED_ORIGINS=http://localhost:3000
+      - LOG_LEVEL=INFO
     networks:
       - spring
       - postgres
@@ -125,6 +128,7 @@ services:
       - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
       - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
       - ALLOWED_ORIGINS=http://localhost:3000
+      - LOG_LEVEL=INFO
     networks:
       - spring
       - postgres
@@ -147,6 +151,7 @@ services:
       - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
       - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
       - ALLOWED_ORIGINS=http://localhost:3000, http://localhost:8080, http://localhost:8081
+      - LOG_LEVEL=INFO
     networks:
       - spring
       - postgres
@@ -161,9 +166,9 @@ services:
       context: pantry-web
       dockerfile: Dockerfile
       args:
-        API_URL_PANTRY: http://localhost:8080
-        API_URL_PURCHASE: http://localhost:8081
-        API_URL_ACCOUNT: http://localhost:8082
+        API_URL_PANTRY: http://localhost:8080/pantryservice
+        API_URL_PURCHASE: http://localhost:8081/purchaseservice
+        API_URL_ACCOUNT: http://localhost:8082/accountservice
         GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
     ports:
       - "3000:3000"
