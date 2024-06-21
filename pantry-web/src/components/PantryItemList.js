@@ -89,7 +89,7 @@ function PantryItemList({ pantryId, setIsEmpty }) {
     }
 
     function renderCards() {
-        return filteredItems.map(item => renderCard(item))
+        return filteredItems?.map(item => renderCard(item))
     }
 
     function renderCard(item) {

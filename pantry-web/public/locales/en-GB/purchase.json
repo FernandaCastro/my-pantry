@@ -8,7 +8,7 @@
   "btn-new-order": "New Order",
   "btn-checkout": "Checkout",
   "placeholder-select-supermarket": "Sort by Supermarket?",
-  "no-item-to-purchase": "No item to purchase at the moment.",
+  "no-item-to-purchase": "No more item to purchase at the moment. Please check possible open orders.",
   "purchase-order-empty": "This Shopping List is empty.",
   "create-purchase-order-success": "Shopping List created successfully!",
   "close-purchase-order-success": "Shopping List closed successfully!",
