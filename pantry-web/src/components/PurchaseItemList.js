@@ -260,7 +260,7 @@ function PurchaseItemList({ selectedPurchase, selectedPantries, setOuterPurchase
                 </div>
                 <Collapse in={getOpen(category)}>
                     <Row xs={1} md={2} lg={3} xl={4} className='m-0'>
-                        {filteredCategory.map(item => renderItemCard(item))}
+                        {filteredCategory?.map(item => renderItemCard(item))}
                     </Row>
                 </Collapse>
             </div>

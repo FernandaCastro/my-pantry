@@ -65,37 +65,26 @@ services:
       - postgres
     restart: unless-stopped
 
-  zookeeper:
-    image: confluentinc/cp-zookeeper:7.3.0
-    container_name: zookeeper
-    ports:
-      - "2181:2181"
-    environment:
-      ZOOKEEPER_CLIENT_PORT: 2181
-      ZOOKEEPER_TICK_TIME: 2000
-    networks:
-      - spring
-    restart: always
-
   kafka-broker:
-    image: confluentinc/cp-kafka:7.3.0
+    image: apache/kafka:3.7.0
     container_name: kafka-broker
     ports:
       - "9092:9092"
     environment:
-      KAFKA_BROKER_ID: 1
-      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      KAFKA_LISTENERS: LISTENER_INTERNAL://kafka-broker:29092,LISTENER_EXTERNAL://kafka-broker:9092
-      KAFKA_ADVERTISED_LISTENERS: LISTENER_INTERNAL://kafka-broker:29092,LISTENER_EXTERNAL://kafka-broker:9092
-      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: LISTENER_INTERNAL:PLAINTEXT,LISTENER_EXTERNAL:PLAINTEXT
-      KAFKA_INTER_BROKER_LISTENER_NAME: LISTENER_INTERNAL
-      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
-      KAFKA_LOG_RETENTION_HOURS: 2
-      KAFKA_LOG_RETENTION_BYTES: 536870912  #536Mb
-      KAFKA_LOG_CLEANUP_POLICY: delete
-      KAFKA_CLEANER_ENABLE: "true"
-    depends_on:
-      - zookeeper
+      BROKER_ID: 1
+      #   CLUSTER_ID: YOUR_GENERATED_CLUSTER_ID
+      PROCESS_ROLES: BROKER,CONTROLLER
+      CONTROLLER_QUORUM_VOTERS: 1@kafka-broker:9092
+      LISTENERS: LISTENER_INTERNAL://kafka-broker:29092,LISTENER_EXTERNAL://kafka-broker:9092
+      CONTROLLER_LISTENERS: CONTROLLER://kafka-broker:9092
+      LISTENER_SECURITY_PROTOCOL_MAP: LISTENER_INTERNAL:PLAINTEXT,LISTENER_EXTERNAL:PLAINTEXT
+      INTER_BROKER_LISTENER_NAME: LISTENER_INTERNAL
+      OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      LOG_DIRS: /tmp/kafka-logs
+      LOG_RETENTION_HOURS: 2
+      LOG_RETENTION_BYTES: 536870912  #536Mb
+      LOG_CLEANUP_POLICY: delete
+      CLEANER_ENABLE: "true"
     networks:
       - spring
     restart: always

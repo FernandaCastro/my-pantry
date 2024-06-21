@@ -8,7 +8,7 @@
   "btn-new-order": "Iniciar Compra",
   "btn-checkout": "Finalizar Compra",
   "placeholder-select-supermarket": "Ordenar por supermercado?",
-  "no-item-to-purchase": "Nenhum item para comprar no momento.",
+  "no-item-to-purchase": "Nenhum item pendente no momento. Por favor, verifique possíveis compras abertas.",
   "purchase-order-empty": "Esta Lista de Compra está vazia",
   "create-purchase-order-success": "Lista de Compra criada com sucesso!",
   "close-purchase-order-success": "Lista de Compra finalizada com sucesso!",

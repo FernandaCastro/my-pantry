@@ -259,7 +259,6 @@
 }
 
 //General
-
 .btn-custom {
     min-width: 15%;
     width: fit-content;
@@ -290,7 +289,7 @@
 
 .btn-custom:disabled {
 
-    background-image: var(--disabled-gradient-image-button);
+    background-image: var(--disabled-gradient-image-button) !important;
 
     span {
         background-image: var(--disabled-gradient-image-text);
@@ -301,8 +300,19 @@
 
 }
 
-a.btn-custom:hover {
+a.btn-custom:not([aria-disabled="false"]):hover {
     transform: scale(1.1);
+}
+
+a.btn-custom[aria-disabled="true"] {
+    background-image: var(--disabled-gradient-image-button);
+
+    span {
+        background-image: var(--disabled-gradient-image-text);
+        background-clip: text;
+        -webkit-background-clip: text;
+        color: transparent;
+    }
 }
 
 .gradient-text {
@@ -405,7 +415,7 @@ table {
     }
 
     td.highlight {
-        background: var(--background-1) !important;
+        background: var(--background-3) !important;
     }
 
     :hover {

@@ -95,13 +95,13 @@ export default function Pantry({ mode }) {
             <div className='d-flex justify-content-start align-items-end mt-4'>
                 <Image src={iconPantry} width={40} height={40} className="ms-2 me-3" />
                 <h6 className="title">{t('pantry-title')}</h6>
-                <Button bsPrefix="btn-custom" href={"/pantries/" + pantry.id + "/items"} className="pe-2 ps-2 ms-auto"><span>{t('btn-add-pantry-items')}</span></Button>
+                <Button bsPrefix="btn-custom" href={"/pantries/" + pantry.id + "/items"} className="pe-2 ps-2 ms-auto" disabled={pantry.id ===0}><span>{t('btn-add-pantry-items')}</span></Button>
             </div>
             <div>
                 {mode === "edit" && isLoading ?
                     <h6>Loading...</h6> :
                     <PantryForm key={pantry.id} pantry={pantry} handleSave={fetchSavePantry} accountGroupOptions={accountGroupOptions} />}
             </div>
-        </Stack>
+        </Stack >
     );
 }

@@ -65,7 +65,7 @@ export default function Pantries() {
     function renderCards() {
         return (
             <Row xs={1} md={2} className="card-group">
-                {pantries.map((item) => {
+                {pantries?.map((item) => {
 
                     return (
                         <Col key={item.id} className="d-flex flex-column g-3">

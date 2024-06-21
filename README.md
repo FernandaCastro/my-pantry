@@ -2,11 +2,10 @@
 
 # My Pantry
 
-version: 0.4.0
+version: 0.5.0
 
-- pantry-web:
-    - New Themes
-    - Replace Perofile menu by a Slide Menu
+- Remove Zookeeper - using Apache Kafka (KRaft)
+- pantry-web: small fixes
 
 Plans for next versions:
 

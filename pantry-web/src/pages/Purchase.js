@@ -81,6 +81,9 @@ export default function Purchase() {
 
     function handleRefresh() {
         purchaseItemListRef.current?.refreshPendingItens();
+        if (!purchaseItems || purchaseItems.length === 0) {
+            showAlert(VariantType.INFO, t("no-item-to-purchase"));
+        }
     }
 
     return (

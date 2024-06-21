@@ -64,7 +64,7 @@ export default function PurchaseOrderList({ selectedPantries, handleSelectedPurc
                     </tr>
                 </thead >
                 <tbody>
-                    {purchases.map((p) => renderPurchaseOrders(p))}
+                    {purchases?.map((p) => renderPurchaseOrders(p))}
                 </tbody>
             </Table >
         </div >
