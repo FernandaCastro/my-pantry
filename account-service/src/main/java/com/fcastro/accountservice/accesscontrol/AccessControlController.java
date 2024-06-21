@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/accessControl")
+@RequestMapping("/accountservice/accessControl")
 public class AccessControlController {
 
     private final AccessControlService accessControlService;
