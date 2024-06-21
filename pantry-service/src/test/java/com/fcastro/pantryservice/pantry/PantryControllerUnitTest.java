@@ -74,7 +74,7 @@ public class PantryControllerUnitTest {
         given(pantryService.getAll(anyString())).willReturn(list);
 
         //when //then
-        mockMvc.perform(MockMvcRequestBuilders.get("/pantries/all"))
+        mockMvc.perform(MockMvcRequestBuilders.get("/pantryservice/pantries/all"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(2)));
     }
@@ -100,7 +100,7 @@ public class PantryControllerUnitTest {
         given(pantryService.save(any(PantryDto.class))).willReturn(pantry);
 
         //when //then
-        mockMvc.perform(MockMvcRequestBuilders.post("/pantries")
+        mockMvc.perform(MockMvcRequestBuilders.post("/pantryservice/pantries")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(JsonUtil.toJson(pantry)))
                 .andExpect(status().isCreated())
@@ -136,7 +136,7 @@ public class PantryControllerUnitTest {
         given(pantryService.get(anyLong())).willReturn(Optional.empty());
 
         //when //then
-        mockMvc.perform(MockMvcRequestBuilders.put("/pantries/10")
+        mockMvc.perform(MockMvcRequestBuilders.put("/pantryservice/pantries/10")
                         .header("language", "en-UK")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(JsonUtil.toJson(pantry)))

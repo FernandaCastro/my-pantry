@@ -229,7 +229,7 @@ public class PantryItemControllerUnitTest {
         Mockito.doThrow(PantryNotActiveException.class).when(service).consumePantryItem(any(PantryItemConsumedDto.class));
 
         //when //then
-        mockMvc.perform(MockMvcRequestBuilders.post("/pantries/10/items/consume")
+        mockMvc.perform(MockMvcRequestBuilders.post("/pantryservice/pantries/10/items/consume")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(JsonUtil.toJson(dto)))
                 .andExpect(status().isBadRequest());
