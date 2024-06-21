@@ -5,7 +5,7 @@
 version: 0.5.0
 
 - Remove Zookeeper - using Apache Kafka (KRaft)
-- pantry-web: small fixes
+- pantry-web (0.4.2): small fixes
 
 Plans for next versions:
 
