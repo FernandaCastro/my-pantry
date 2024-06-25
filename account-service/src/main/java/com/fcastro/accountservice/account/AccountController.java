@@ -3,7 +3,6 @@ package com.fcastro.accountservice.account;
 import com.fcastro.app.config.MessageTranslator;
 import com.fcastro.app.exception.ResourceNotFoundException;
 import com.fcastro.security.core.model.AccountDto;
-import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -26,22 +25,21 @@ public class AccountController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<NewAccountDto> get(@PathVariable Long id) {
+    public ResponseEntity<AccountDto> get(@PathVariable Long id) {
         return service.get(id)
                 .map(ResponseEntity::ok)
                 .orElseThrow(() -> new ResourceNotFoundException(MessageTranslator.getMessage("error.email.not.found")));
     }
 
     @PostMapping
-    public ResponseEntity<AccountDto> create(@Valid @RequestBody AccountDto newDto) {
+    public ResponseEntity<AccountDto> create(@RequestBody AccountDto newDto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(service.preCreateAccount(newDto));
     }
 
     @PutMapping("/{id}")
-    ResponseEntity<AccountDto> replace(@Valid @RequestBody NewAccountDto newAccount, @PathVariable Long id) {
+    ResponseEntity<AccountDto> replace(@RequestBody AccountDto newAccount, @PathVariable Long id) {
 
         var dto = service.updateAccount(newAccount);
-
 
         return ResponseEntity
                 .status(HttpStatus.OK)

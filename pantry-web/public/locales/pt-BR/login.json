@@ -10,7 +10,7 @@
   "name-invalid": "Por favor, informe o seu nome",
   "email-invalid": "Por favor, informe um email válido",
   "password-invalid-required": "A senha é obrigatória",
-  "password-invalid-length": "A senha deve er pelo menos 6 caracteres",
+  "password-invalid-length": "A senha deve ter pelo menos 6 caracteres",
   "confirm-password-invalid-required": "Repita a senha",
   "confirm-password-invalid-not-match": "A senhas informadas não conferem",
   "password-question-invalid": "Por favor, informe uma pergunta a ser usada para definir nova senha.",
@@ -29,5 +29,11 @@
   "new-password": "Nova Senha",
   "btn-reset-password": "Redefinir Senha",
   "logout-text": "Você saiu, ou a sua sessão não é mais válida.",
-  "login-to-continue": "Por favor, faça login para continuar..."
+  "login-to-continue": "Por favor, faça login para continuar...",
+  "btn-change-password": "Alterar Senha",
+  "btn-change-password-answer": "Alterar Resposta",
+  "btn-close-password-answer": "Cancelar Edição",
+  "title-reset-password": "Redefinição de senha",
+  "placeholder-reset-question": "Pergunta",
+  "placeholder-reset-answer": "Resposta"
 }

@@ -9,6 +9,8 @@ kafka-config:
 spring:
   application:
     name: pantry-service
+  profiles:
+    active: docker
   datasource:
     platform: postgres
     url: jdbc:postgresql://pantry-db:5432/pantry-db
@@ -29,6 +31,11 @@ spring:
     baselineOnMigrate: true  #Needed when schema is not empty
     baselineVersion: 0
     encoding: ISO-8859-1
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
 security-config:
   secret: ${SECURITY_SECRET}
   allowedOrigin: ${ALLOWED_ORIGINS}

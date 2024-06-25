@@ -23,6 +23,11 @@ spring:
     baselineOnMigrate: true
     baselineVersion: 0
     encoding: ISO-8859-1
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
 security-config:
   secret: ${SECURITY_SECRET}
   allowedOrigin: ${ALLOWED_ORIGINS}

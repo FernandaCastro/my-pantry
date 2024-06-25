@@ -81,5 +81,6 @@ here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-
 * `i18next-http-backend` (Store them in dedicated JSON files, and load them asynchronously (on demand))
 * `luxon` (Datetime Translations)
 * `react-beautiful-dnd` (Beautiful and accessible drag and drop for lists with React)
+* `jsencrypt` (RSA Javascript encryption)
 
 

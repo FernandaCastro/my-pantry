@@ -76,7 +76,7 @@ services:
       KAFKA_PROCESS_ROLES: broker,controller
       KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka-broker:9093
       KAFKA_LISTENERS: INTERNAL://kafka-broker:9092,CONTROLLER://kafka-broker:9093
-      KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka-broker:9092
+      KAFKA_ADVERTISED_LISTENERS: INTERNAL://localhost:9092
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,CONTROLLER:PLAINTEXT
       KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
       KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
@@ -89,6 +89,8 @@ services:
       KAFKA_CLUSTER_ID: "MkU3OEVBNTcwNTJENDM2Qk"
     networks:
       - spring
+    volumes:
+      - kafka-data:/kafka-data
     restart: always
 
   pantry-service:
@@ -184,6 +186,7 @@ volumes:
   account-db:
   pantry-db:
   purchase-db:
+  kafka-data:
   pgadmin:
 networks:
   postgres:

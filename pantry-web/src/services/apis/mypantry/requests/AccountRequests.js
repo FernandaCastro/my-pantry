@@ -11,6 +11,10 @@ export async function postGoogleLogin(idToken) {
     return FetchAccount('auth/google-login', 'POST', idToken);
 }
 
+export async function getPublicKey() {
+    return FetchAccount(`auth/public-key`);
+}
+
 export async function postLogin(account) {
     return FetchAccount('auth/login', 'POST', account);
 }

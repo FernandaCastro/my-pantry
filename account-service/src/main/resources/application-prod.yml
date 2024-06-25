@@ -1,19 +1,13 @@
 server:
-  port: 8081
-kafka-config:
-  bootstrap-servers-config: kafka-broker:9092
-  purchase-create-topic: purchaseCreateTopic
-  purchase-complete-topic: purchaseCompleteTopic
-  product-topic: productTopic
-  pantry-group: pantryGroup
+  port: 8082
 spring:
   application:
-    name: purchase-service
+    name: account-service
   datasource:
     platform: postgres
-    url: jdbc:postgresql://purchase-db:5432/purchase-db
-    username: purchase
-    password: purchase
+    url: jdbc:postgresql://account-db:5432/account-db
+    username: account
+    password: account
   jpa:
     hibernate:
       ddl-auto: none
@@ -26,7 +20,7 @@ spring:
     init:
       mode: always
   flyway:
-    baselineOnMigrate: true  #Needed when schema is not empty
+    baselineOnMigrate: true
     baselineVersion: 0
     encoding: ISO-8859-1
 management:
@@ -39,7 +33,7 @@ security-config:
   allowedOrigin: ${ALLOWED_ORIGINS}
   googleClientId: ${GOOGLE_CLIENT_ID}
   googleClientSecret: ${GOOGLE_CLIENT_SECRET}
-  authzServer: http://account-service:8082
+  https: true
 logging:
   level:
     root: ${LOG_LEVEL}

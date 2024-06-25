@@ -82,7 +82,7 @@ public class AccountServiceSecurityConfig {
                         .authenticationEntryPoint(customAuthenticationEntryPointHandler))
 
                 .logout((logout) -> logout
-                        .logoutRequestMatcher(new AntPathRequestMatcher("/auth/logout"))
+                        .logoutRequestMatcher(new AntPathRequestMatcher("/accountservice/auth/logout"))
                         .clearAuthentication(true)
                         .invalidateHttpSession(true)
                         .deleteCookies("AUTH-TOKEN")
@@ -95,7 +95,13 @@ public class AccountServiceSecurityConfig {
                 .authorizeHttpRequests(authorize -> authorize
                         //Dispatches FORWARD and ERROR are permitted to allow Spring MVC to render views and Spring Boot to render errors
                         .dispatcherTypeMatchers(FORWARD, ERROR).permitAll()
-                        .requestMatchers("/accountservice/auth/reset-password", "/accountservice/auth/google-login", "/accountservice/auth/register", "/accountservice/auth/login", "/accountservice/auth/logout").permitAll()
+                        .requestMatchers("/accountservice/auth/**").permitAll()
+                        .requestMatchers("/actuator/health").permitAll()
+//                                "/accountservice/auth/reset-password",
+//                                "/accountservice/auth/google-login",
+//                                "/accountservice/auth/register",
+//                                "/accountservice/auth/login",
+//                                "/accountservice/auth/logout").permitAll()
                         .anyRequest().authenticated());
 
         return http.build();

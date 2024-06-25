@@ -24,7 +24,7 @@ export default function Purchase() {
     const [purchaseItems, setPurchaseItems] = useState([]);
 
     const [isOpenOrder, setIsOpenOrder] = useState(false);
-    const [showPantries, setShowPantries] = useState(false);
+    const [showPantries, setShowPantries] = useState(true);
     const [showOrder, setShowOrder] = useState(false);
 
     const [refreshOrders, setRefreshOrders] = useState(false);

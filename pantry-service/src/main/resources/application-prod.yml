@@ -1,5 +1,5 @@
 server:
-  port: 8081
+  port: 8080
 kafka-config:
   bootstrap-servers-config: kafka-broker:9092
   purchase-create-topic: purchaseCreateTopic
@@ -8,12 +8,14 @@ kafka-config:
   pantry-group: pantryGroup
 spring:
   application:
-    name: purchase-service
+    name: pantry-service
+  profiles:
+    active: prod
   datasource:
     platform: postgres
-    url: jdbc:postgresql://purchase-db:5432/purchase-db
-    username: purchase
-    password: purchase
+    url: jdbc:postgresql://pantry-db:5432/pantry-db
+    username: pantry
+    password: pantry
   jpa:
     hibernate:
       ddl-auto: none
@@ -40,6 +42,7 @@ security-config:
   googleClientId: ${GOOGLE_CLIENT_ID}
   googleClientSecret: ${GOOGLE_CLIENT_SECRET}
   authzServer: http://account-service:8082
+  https: true
 logging:
   level:
     root: ${LOG_LEVEL}

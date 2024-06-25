@@ -20,7 +20,8 @@ export default function PantrySelect({ handleSelectedPantryList, permission }) {
         try {
             const res = await getPantryListWithPermission(permission);
             setPantries(res);
-            loadSelectedPantries(res);
+            //Load Pantry List but with none selected
+            //loadSelectedPantries(res); 
         } catch (error) {
             showAlert(VariantType.DANGER, error.message);
         }
