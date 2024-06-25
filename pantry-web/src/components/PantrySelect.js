@@ -5,7 +5,7 @@ import VariantType from '../components/VariantType.js';
 import useAlert from '../hooks/useAlert.js';
 import { getPantryListWithPermission } from '../services/apis/mypantry/requests/PantryRequests.js';
 
-export default function PantrySelect({ handleSelectedPantryList, permission }) {
+export default function PantrySelect({ handleSelectedPantryList, permission, isSelected }) {
 
     const [pantries, setPantries] = useState([]);
 
@@ -21,7 +21,9 @@ export default function PantrySelect({ handleSelectedPantryList, permission }) {
             const res = await getPantryListWithPermission(permission);
             setPantries(res);
             //Load Pantry List but with none selected
-            //loadSelectedPantries(res); 
+            if (isSelected){
+                loadSelectedPantries(res); 
+            }
         } catch (error) {
             showAlert(VariantType.DANGER, error.message);
         }
