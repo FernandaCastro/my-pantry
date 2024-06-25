@@ -9,6 +9,7 @@ kafka-config:
 spring:
   application:
     name: purchase-service
+  profiles: docker
   datasource:
     platform: postgres
     url: jdbc:postgresql://purchase-db:5432/purchase-db
