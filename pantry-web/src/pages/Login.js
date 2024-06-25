@@ -1,5 +1,5 @@
 import { ProfileContext } from '../services/context/AppContext';
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { Button } from 'react-bootstrap';
 import { LoginWithGoogle } from '../components/LoginWithGoogle.js';
 import { login } from '../services/LoginService';
@@ -8,6 +8,7 @@ import Form from 'react-bootstrap/Form';
 import VariantType from '../components/VariantType.js';
 import useAlert from '../hooks/useAlert.js';
 import { useTranslation } from 'react-i18next';
+import useEncrypt from '../hooks/useRSAEncrypt';
 
 export default function Login() {
 
@@ -16,6 +17,7 @@ export default function Login() {
     const navigate = useNavigate();
     const { profileCtx, setProfileCtx } = useContext(ProfileContext);
     const { showAlert } = useAlert();
+    const { encrypt } = useEncrypt();
 
     const [account, setAccount] = useState({
         name: "",
@@ -27,13 +29,18 @@ export default function Login() {
     });
     const [isProcessing, setIsProcessing] = useState(false);
 
-
     const handlePostLogin = (profile) => {
-        profile = { ...profile, initials: getInitialsAttribute(profile.name) }
+        profile = {
+            id: profile.id,
+            name: profile.name,
+            email: profile.email,
+            pictureUrl: profile.pictureUrl,
+            initials: getInitialsAttribute(profile.name),
+            theme: profileCtx?.theme
+        }
         setProfileCtx(profile);
         navigate('/');
     }
-
 
     async function handleSubmitLogin(e) {
         if (!isProcessing) {
@@ -46,6 +53,13 @@ export default function Login() {
             const formData = new FormData(form);
 
             let formJson = Object.fromEntries(formData.entries());
+
+            const encryptedPassword = encrypt.encrypt(formJson.password);
+
+            formJson = {
+                ...formJson,
+                password: encryptedPassword
+            }
 
             await handleLogin(formJson);
             setIsProcessing(false);

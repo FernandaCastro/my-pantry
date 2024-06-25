@@ -29,5 +29,10 @@
   "new-password": "New password",
   "btn-reset-password": "Reset Password",
   "logout-text": "You have been logged out, or your session is not valid anymore.",
-  "login-to-continue": "Please, log in to continue..."
+  "login-to-continue": "Please, log in to continue...",
+  "btn-change-password": "Change Password",
+  "btn-change-password-answer": "Change Answer",
+  "title-reset-password": "Reset password",
+  "placeholder-reset-question": "Question",
+  "placeholder-reset-answer": "Answer"
 }

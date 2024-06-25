@@ -7,10 +7,12 @@ import VariantType from '../components/VariantType.js';
 import useAlert from '../hooks/useAlert.js';
 import { postResetPassword, getResetPassword } from '../services/apis/mypantry/requests/AccountRequests';
 import { useTranslation } from 'react-i18next';
+import useEncrypt from '../hooks/useRSAEncrypt';
 
 export default function ResetPassword() {
 
     const { t } = useTranslation(['login', 'common']);
+    const { encrypt } = useEncrypt();
 
     const navigate = useNavigate();
     const { showAlert } = useAlert();
@@ -88,6 +90,16 @@ export default function ResetPassword() {
 
     };
 
+    function encryptAccount(res) {
+        encryptAccount = {
+            ...account,
+            password: encrypt.encrypt(res.password),
+            confirmPassword: encrypt.encrypt(res.password),
+            passwordAnswer: encrypt.encrypt(res.passwordAnswer)
+        };
+        return encryptAccount;
+    }
+
     function isFormValid(copyValid) {
         let isValid;
         if (Object.keys(copyValid).length >= 4) {
@@ -162,7 +174,8 @@ export default function ResetPassword() {
     async function handleResetPassword() {
         try {
             setIsProcessing(true);
-            await postResetPassword(account);
+            const encryptAcc = encryptAccount(account);
+            await postResetPassword(encryptAcc);
             showAlert(VariantType.SUCCESS, t("update-password-success"))
             navigate('/login');
         } catch (error) {
