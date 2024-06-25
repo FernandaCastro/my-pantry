@@ -96,7 +96,7 @@ export default function Purchase() {
                 </div>
 
                 <Collapse in={showPantries} >
-                    <div><PantrySelect handleSelectedPantryList={setPantries} permission='purchase_pantry' /></div>
+                    <div><PantrySelect handleSelectedPantryList={setPantries} permission='purchase_pantry' isSelected={false}/></div>
                 </Collapse>
             </div>
 

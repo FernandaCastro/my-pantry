@@ -142,7 +142,9 @@ export default function Consume() {
         </div>
 
         <Collapse in={showPantries} >
-          <div className='mt-3'><PantrySelect handleSelectedPantryList={handleSelectedPantries} permission='consume_pantry' /></div>
+          <div className='mt-3'>
+            <PantrySelect handleSelectedPantryList={handleSelectedPantries} permission='consume_pantry' isSelected={true} />
+          </div>
         </Collapse>
       </div>
 
