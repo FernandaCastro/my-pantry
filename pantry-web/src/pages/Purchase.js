@@ -96,7 +96,7 @@ export default function Purchase() {
                 </div>
 
                 <Collapse in={showPantries} >
-                    <div><PantrySelect handleSelectedPantryList={setPantries} permission='purchase_pantry' isSelected={false}/></div>
+                    <div><PantrySelect handleSelectedPantryList={setPantries} permission='purchase_pantry' isSelected={false} /></div>
                 </Collapse>
             </div>
 
@@ -114,9 +114,9 @@ export default function Purchase() {
             </div>
 
             <div className="d-flex justify-content-evenly align-items-start mt-4" >
-                <Button bsPrefix="btn-custom" size="sm" onClick={handleNewOrder} disabled={((!purchase && purchaseItems.length === 0) || (purchase && purchase.processedAt !== null) || isOpenOrder)}><span>{t("btn-new-order")}</span></Button>
-                <Button bsPrefix="btn-custom" size="sm" onClick={handleRefresh} disabled={purchase}><span>{t("btn-refresh")}</span></Button>
-                <Button bsPrefix="btn-custom" size="sm" onClick={handleSave} disabled={!isOpenOrder}><span>{t("btn-checkout")}</span></Button>
+                <Button bsPrefix="btn-custom" size="sm" onClick={handleNewOrder} disabled={((!purchase && purchaseItems.length === 0) || (purchase && purchase.processedAt !== null) || isOpenOrder || pantries.length === 0)}><span>{t("btn-new-order")}</span></Button>
+                <Button bsPrefix="btn-custom" size="sm" onClick={handleRefresh} disabled={purchase || pantries.length === 0}><span>{t("btn-refresh")}</span></Button>
+                <Button bsPrefix="btn-custom" size="sm" onClick={handleSave} disabled={!isOpenOrder || pantries.length === 0}><span>{t("btn-checkout")}</span></Button>
             </div>
 
             <div className='mt-3'>

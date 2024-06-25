@@ -304,7 +304,7 @@ function PurchaseItemList({ selectedPurchase, selectedPantries, setOuterPurchase
 
     return (
         <div>
-            {isLoading ? "Loading..." :
+            {selectedPantries?.length === 0 ? "" : isLoading ? "Loading..." :
                 <div className="pt-2">
                     <div className='d-flex justify-content-evenly pb-2'>
                         <FormCheck label={t('tooltip-switch-product-detail', { ns: 'common' })}
