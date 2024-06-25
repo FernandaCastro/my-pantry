@@ -59,7 +59,7 @@ export const FetchAccount = async function (endpoint, method, data) {
         }
 
         if (res.status === 401) {
-            redirecting = true;
+            redirecting = (endpoint === "auth/login") ? false : true;
             const error = Translator.translate('status-401')
             throw new RequestError(error, res.status);
         }

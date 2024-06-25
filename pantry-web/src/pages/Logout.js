@@ -11,12 +11,12 @@ export default function Logout() {
 
 
     useEffect(() => {
-        setProfileCtx({});
+        setProfileCtx({ theme: profileCtx.theme });
     }, []);
 
     return (
         <h6 className="mt-3 title">
-            <br /> {t("logout-text")}<br /> 
+            <br /> {t("logout-text")}<br />
             <br /> <Link to={`/login`} >{t("login-to-continue")}</Link>
         </h6>
     )
