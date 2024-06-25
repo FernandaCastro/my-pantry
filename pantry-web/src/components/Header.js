@@ -23,7 +23,7 @@ export default function Header() {
     const { t } = useTranslation(['header', 'common']);
 
     const { profileCtx } = useContext(ProfileContext);
-    let hasActiveProfile = (profileCtx && Object.keys(profileCtx).length > 0) ? true : false;
+    let hasActiveProfile = (profileCtx && Object.keys(profileCtx).length > 1) ? true : false;
 
     function setLanguage(code) {
         i18n.changeLanguage(code)
