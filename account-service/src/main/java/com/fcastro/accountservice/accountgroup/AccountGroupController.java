@@ -6,7 +6,6 @@ import com.fcastro.app.exception.ResourceNotFoundException;
 import com.fcastro.security.core.model.AccountGroupDto;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -42,8 +41,8 @@ public class AccountGroupController {
         var group = service.save(newDto);
 
         //need to update cookie: add new group to the role
-        var newCookie = accountService.updateCookie();
-        response.addHeader(HttpHeaders.SET_COOKIE, newCookie.toString());
+//        var newCookie = accountService.updateCookie();
+//        response.addHeader(HttpHeaders.SET_COOKIE, newCookie.toString());
 
         return ResponseEntity.status(HttpStatus.CREATED).body(group);
     }
@@ -67,8 +66,8 @@ public class AccountGroupController {
         service.delete(id);
 
         //need to update cookie: add new group to the role
-        var newCookie = accountService.updateCookie();
-        response.addHeader(HttpHeaders.SET_COOKIE, newCookie.toString());
+//        var newCookie = accountService.updateCookie();
+//        response.addHeader(HttpHeaders.SET_COOKIE, newCookie.toString());
 
         return ResponseEntity.noContent().build();
     }

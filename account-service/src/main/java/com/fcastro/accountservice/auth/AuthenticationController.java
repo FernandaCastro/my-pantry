@@ -1,16 +1,16 @@
 package com.fcastro.accountservice.auth;
 
 import com.fcastro.accountservice.account.AccountService;
-import com.fcastro.accountservice.account.LogintDto;
-import com.fcastro.accountservice.account.NewAccountDto;
-import com.fcastro.accountservice.account.ResetPasswordDto;
+import com.fcastro.accountservice.exception.KeyPairException;
+import com.fcastro.accountservice.security.KeyPairDto;
+import com.fcastro.accountservice.security.RSAUtil;
 import com.fcastro.app.config.MessageTranslator;
+import com.fcastro.app.exception.RequestParamExpectedException;
 import com.fcastro.app.exception.ResourceNotFoundException;
 import com.fcastro.security.core.handler.UserDetailsImpl;
 import com.fcastro.security.core.model.AccountDto;
 import com.fcastro.security.core.model.IdTokenDto;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.validation.Valid;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,10 +29,17 @@ public class AuthenticationController {
 
     private final AccountService service;
     private final AuthenticationManager authenticationManager;
+    private final RSAUtil rsaUtil;
 
-    public AuthenticationController(AccountService userService, AuthenticationManager authenticationManager) {
+    public AuthenticationController(AccountService userService, AuthenticationManager authenticationManager, RSAUtil rsaUtil) {
         this.service = userService;
         this.authenticationManager = authenticationManager;
+        this.rsaUtil = rsaUtil;
+    }
+
+    @GetMapping("/public-key")
+    public ResponseEntity<KeyPairDto> getPublicKey() {
+        return ResponseEntity.ok(rsaUtil.getPublicKey());
     }
 
     @PostMapping("/google-login")
@@ -54,11 +61,20 @@ public class AuthenticationController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<AccountDto> login(@Valid @RequestBody LogintDto request, HttpServletResponse response) {
+    public ResponseEntity<AccountDto> login(@RequestBody AccountDto request, HttpServletResponse response) {
+
+        if (request.getEmail() == null || request.getEmail().isEmpty()) {
+            throw new RequestParamExpectedException(MessageTranslator.getMessage("error.validation.email"));
+        }
+        if (request.getPassword() == null || request.getPassword().isEmpty()) {
+            throw new RequestParamExpectedException(MessageTranslator.getMessage("error.validation.password"));
+        }
 
         try {
+            String decryptedPassword = rsaUtil.decrypt(request.getPassword());
+
             Authentication authentication = authenticationManager
-                    .authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
+                    .authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(), decryptedPassword));
 
             if (!authentication.isAuthenticated())
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED.value()).build();
@@ -73,24 +89,24 @@ public class AuthenticationController {
 
             return ResponseEntity.ok(appToken.getAccount());
 
-        } catch (AuthenticationException e) {
+        } catch (AuthenticationException | KeyPairException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED.value()).build();
         }
     }
 
     @PostMapping("/register")
-    public ResponseEntity<AccountDto> register(@Valid @RequestBody NewAccountDto request) {
+    public ResponseEntity<AccountDto> register(@RequestBody AccountDto request) {
 
         var account = service.register(request);
         return ResponseEntity.ok(account);
     }
 
     @GetMapping("/reset-password")
-    public ResponseEntity<ResetPasswordDto> getResetPasswordQuestion(@RequestParam String email) {
+    public ResponseEntity<AccountDto> getResetPasswordQuestion(@RequestParam String email) {
         var account = service.getUser(email)
                 .orElseThrow(() -> new ResourceNotFoundException(MessageTranslator.getMessage("error.email.not.found")));
 
-        var response = ResetPasswordDto.builder()
+        var response = AccountDto.builder()
                 .email(account.getEmail())
                 .passwordQuestion(account.getPasswordQuestion())
                 .build();
@@ -99,7 +115,7 @@ public class AuthenticationController {
     }
 
     @PostMapping("/reset-password")
-    public ResponseEntity<AccountDto> resetPassword(@Valid @RequestBody ResetPasswordDto request) {
+    public ResponseEntity<AccountDto> resetPassword(@RequestBody AccountDto request) {
 
         var account = service.resetPassword(request);
         return ResponseEntity.ok(account);

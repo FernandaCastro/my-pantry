@@ -1,6 +1,5 @@
 package com.fcastro.security.core.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -14,10 +13,7 @@ public class AccountDto {
     private String email;
     private String pictureUrl;
 
-    @JsonIgnore
     private String password;
-    @JsonIgnore
     private String passwordQuestion;
-    @JsonIgnore
     private String passwordAnswer;
 }
