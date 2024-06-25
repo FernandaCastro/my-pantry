@@ -10,7 +10,7 @@ spring:
   application:
     name: pantry-service
   profiles:
-    active: docker
+    active: prod
   datasource:
     platform: postgres
     url: jdbc:postgresql://pantry-db:5432/pantry-db
@@ -42,6 +42,7 @@ security-config:
   googleClientId: ${GOOGLE_CLIENT_ID}
   googleClientSecret: ${GOOGLE_CLIENT_SECRET}
   authzServer: http://account-service:8082
+  https: true
 logging:
   level:
     root: ${LOG_LEVEL}
