@@ -9,8 +9,7 @@ kafka-config:
 spring:
   application:
     name: pantry-service
-  profiles:
-    active: prod
+  profiles: prod
   datasource:
     platform: postgres
     url: jdbc:postgresql://pantry-db:5432/pantry-db

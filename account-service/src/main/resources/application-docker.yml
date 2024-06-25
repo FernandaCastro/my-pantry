@@ -3,6 +3,7 @@ server:
 spring:
   application:
     name: account-service
+  profiles: docker
   datasource:
     platform: postgres
     url: jdbc:postgresql://account-db:5432/account-db
