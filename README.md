@@ -2,10 +2,13 @@
 
 # My Pantry
 
-version: 0.5.0
+version: 0.5.1
 
-- Replace Zookeeper and Confluent Kafka with Apache Kafka (KRaft)
-- Define context for each service api call: /pantryservice, /purchaseservice, /accountservice
+- Replacing Zookeeper and Confluent Kafka with Apache Kafka (KRaft)
+- Defining context for each service api call: /pantryservice, /purchaseservice, /accountservice
+- Enabling actuator/health
+- Enabling https (prod) / http (dev)
+- Encrypting using public/private keys
 - pantry-web: small fixes
 
 Plans for next versions:
