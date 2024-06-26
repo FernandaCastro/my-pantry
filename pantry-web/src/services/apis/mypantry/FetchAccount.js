@@ -32,7 +32,6 @@ export const FetchAccount = async function (endpoint, method, data) {
 
     var redirecting = false;
     const language = localStorage.getItem('i18nextLng');
-    const { t } = Translator.translate;
 
     var headers = {
         'Content-Type': 'application/json',

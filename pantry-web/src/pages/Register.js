@@ -19,7 +19,7 @@ export default function Register({ mode }) {
 
     const navigate = useNavigate();
     const { showAlert } = useAlert();
-    const { profileCtx, setProfileCtx } = useContext(ProfileContext);
+    const { profileCtx, setProfileCtx} = useContext(ProfileContext);
 
 
     const [validateForm, setValidateForm] = useState(false);
@@ -378,7 +378,7 @@ export default function Register({ mode }) {
                         required
                         minLength={6}
                         pattern={account.password}
-                        isInvalid={!account.confirmPassword || account.confirmPassword != account.password}
+                        isInvalid={!account.confirmPassword || account.confirmPassword !== account.password}
                         onChange={handleOnChange}
                         onBlur={handleOnBlur}
                         className={`form-control ${!formFields?.confirmPassword ? '' : formFields.confirmPassword.isValid ? 'is-valid' : 'is-invalid'}`} />

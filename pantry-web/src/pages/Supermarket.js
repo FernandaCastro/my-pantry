@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { FormCheck, Stack, Button, Table, Form, Image, Card, Col, Row } from "react-bootstrap";
+import { FormCheck, Stack, Button, Form, Image, Card, Col, Row } from "react-bootstrap";
 import { BsPencil, BsTrash, BsCheck2All, BsXLg } from "react-icons/bs";
 import { useTranslation } from 'react-i18next';
 import { CategoryDragDrop } from '../components/CategoryDragDrop';
@@ -149,73 +149,6 @@ export function Supermarket() {
     function handleCategoriesChange(list) {
         setSelectedSupermarket(prev => ({ ...prev, categories: list }));
     }
-
-    function renderSupermarkets() {
-
-        if (isLoading)
-            return (<span>Loading...</span>)
-
-        return (
-            <Table size='sm'>
-                <tbody>
-                    {showNew ? renderNewSupermarket() : <></>}
-                    {supermarkets.map((item) => (renderSupermarket(item)))}
-                </tbody>
-            </Table>
-        )
-    }
-
-    function renderSupermarket(item) {
-        return (
-            <tr key={item.id} className="align-middle">
-                {editSupermarketId === item.id ?
-                    <td colSpan={2}>
-                        <Stack direction="horizontal" gap={1} className="d-flex justify-content-start m-0 p-0">
-                            <div><FormCheck key={selectedSupermarket.id} type="radio" checked={true} disabled={true} /></div>
-                            <div className='flex-grow-1'>
-                                <Form.Control size="sm" type="text" defaultValue={selectedSupermarket.name}
-                                    onChange={(e) => setSelectedSupermarket({ ...selectedSupermarket, name: e.target.value })} /></div>
-
-                            <div><Button onClick={fetchEdit} variant="link" className='pe-0'><BsCheck2All className='icon' /></Button></div>
-                            <div><Button onClick={() => setEditSupermarketId(0)} variant='link' title='Clear text'><BsXLg className='icon' /></Button></div>
-                        </Stack >
-                    </td >
-                    :
-                    <>
-                        <td><FormCheck key={selectedSupermarket.id} type="radio" defaultValue={selectedSupermarket && selectedSupermarket.id === item.id}
-                            defaultChecked={selectedSupermarket && selectedSupermarket.id === item.id}
-                            onChange={() => setSelectedSupermarket(item)} style={{ color: "hsl(219, 11%, 25%)" }}
-                            label={item.name}
-                            className="flex-grow-1"
-                            disabled={editSupermarketId > 0} />
-                        </td>
-                        <td>
-                            <Stack direction="horizontal" gap={0} className="d-flex justify-content-end">
-                                <div><Button onClick={() => handleClickEdit(item)} variant="link" disabled={editSupermarketId > 0}><BsPencil className='icon' /></Button></div>
-                                <div><Button onClick={() => fetchDelete(item.id)} variant="link" disabled={setEditSupermarketId > 0}><BsTrash className='icon' /></Button></div>
-                            </Stack>
-                        </td>
-                    </>
-                }
-            </tr >
-        )
-    }
-
-    function renderNewSupermarket() {
-        return (
-            <tr key={0}>
-                <td colSpan={2}>
-                    <Stack direction="horizontal" gap={1} className="d-flex justify-content-start">
-                        <div><FormCheck type="radio" checked={false} disabled={true} /></div>
-                        <div className='w-50'><Form.Control size="sm" type="text" placeholder='Supermarket Name' defaultValue={selectedSupermarket.name} onChange={(e) => setSelectedSupermarket({ ...selectedSupermarket, name: e.target.value })} /></div>
-                        <div><Button onClick={fetchCreate} variant="link" className='pe-0' disabled={selectedSupermarket.name.length === 0}><BsCheck2All className='icon' /></Button></div>
-                        <div><Button onClick={() => setShowNew(false)} variant='link' title='Clear text'><BsXLg className='icon' /></Button></div>
-                    </Stack>
-                </td>
-            </tr>
-        )
-    }
-
 
     function renderCards() {
 
