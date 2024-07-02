@@ -1,4 +1,4 @@
-name: Publish pantry-web
+name: Publish Prod pantry-web
 
 on:
   pull_request:
