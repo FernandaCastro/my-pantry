@@ -69,7 +69,7 @@ export default function ResetPassword() {
             if (!value) {
                 error = t("confirm-password-invalid-required");
                 validated = false;
-            } else if (value != account.password) {
+            } else if (value !== account.password) {
                 error = t("confirm-password-invalid-not-match");
                 validated = false;
             }
@@ -91,13 +91,13 @@ export default function ResetPassword() {
     };
 
     function encryptAccount(res) {
-        encryptAccount = {
+        var encryptAcc = {
             ...account,
             password: encrypt.encrypt(res.password),
             confirmPassword: encrypt.encrypt(res.password),
             passwordAnswer: encrypt.encrypt(res.passwordAnswer)
         };
-        return encryptAccount;
+        return encryptAcc;
     }
 
     function isFormValid(copyValid) {
@@ -161,7 +161,6 @@ export default function ResetPassword() {
         if (!isProcessing) {
             // Prevent the browser from reloading the page
             e.preventDefault();
-            const form = e.currentTarget;
             if (!isFormValid) {
                 e.stopPropagation();
             } else {
@@ -265,7 +264,7 @@ export default function ResetPassword() {
                             required
                             minLength={6}
                             pattern={account.password}
-                            isInvalid={!account.confirmPassword || account.confirmPassword != account.password}
+                            isInvalid={!account.confirmPassword || account.confirmPassword !== account.password}
                             onChange={handleOnChange}
                             onBlur={handleOnBlurCapture}
                             className={`form-control ${!valid.confirmPassword ? '' : valid.confirmPassword ? 'is-valid' : 'is-invalid'}`} />
