@@ -103,6 +103,8 @@ services:
       - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
       - ALLOWED_ORIGINS=${ALLOWED_ORIGINS}
       - LOG_LEVEL=${LOG_LEVEL}
+      - PARTITIONS=3
+      - REPLICAS=2
     networks:
       - spring
       - postgres
@@ -123,6 +125,8 @@ services:
       - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
       - ALLOWED_ORIGINS=${ALLOWED_ORIGINS}
       - LOG_LEVEL=${LOG_LEVEL}
+      - PARTITIONS=3
+      - REPLICAS=2
     networks:
       - spring
       - postgres

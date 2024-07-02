@@ -108,6 +108,8 @@ services:
       - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
       - ALLOWED_ORIGINS=http://localhost:3000
       - LOG_LEVEL=INFO
+      - PARTITIONS=3
+      - REPLICAS=2
     networks:
       - spring
       - postgres
@@ -131,6 +133,8 @@ services:
       - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
       - ALLOWED_ORIGINS=http://localhost:3000
       - LOG_LEVEL=INFO
+      - PARTITIONS=3
+      - REPLICAS=2
     networks:
       - spring
       - postgres
