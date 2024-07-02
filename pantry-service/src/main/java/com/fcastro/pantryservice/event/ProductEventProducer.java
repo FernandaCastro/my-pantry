@@ -2,13 +2,14 @@ package com.fcastro.pantryservice.event;
 
 import com.fcastro.kafka.config.KafkaConfigData;
 import com.fcastro.kafka.event.ProductEvent;
-import com.fcastro.kafka.event.ProductEventDto;
+import com.fcastro.kafka.model.ProductEventDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.SendResult;
 import org.springframework.stereotype.Component;
 
+import java.time.ZonedDateTime;
 import java.util.concurrent.CompletableFuture;
 
 @Component
@@ -26,7 +27,11 @@ public class ProductEventProducer {
     }
 
     public void send(ProductEventDto dto) {
-        var event = ProductEvent.builder().data(dto).build();
+        var event = ProductEvent.builder()
+                .key("product:" + dto.getId()) //product:123
+                .data(dto)
+                .createdAt(ZonedDateTime.now())
+                .build();
 
         CompletableFuture<SendResult<String, ProductEvent>> future = kafkaTemplate.send(kafkaConfigData.getProductTopic(), event);
 

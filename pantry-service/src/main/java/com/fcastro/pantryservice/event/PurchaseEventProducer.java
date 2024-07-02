@@ -1,34 +1,40 @@
 package com.fcastro.pantryservice.event;
 
 import com.fcastro.kafka.config.KafkaConfigData;
-import com.fcastro.kafka.event.PurchaseCreateEvent;
-import com.fcastro.kafka.event.PurchaseEventDto;
+import com.fcastro.kafka.event.PurchaseEvent;
+import com.fcastro.kafka.model.PurchaseEventDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.SendResult;
 import org.springframework.stereotype.Component;
 
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.util.concurrent.CompletableFuture;
 
 @Component
-public class PurchaseCreateEventProducer {
+public class PurchaseEventProducer {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(PurchaseCreateEventProducer.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(PurchaseEventProducer.class);
 
     private final KafkaConfigData kafkaConfigData;
 
-    private final KafkaTemplate<String, PurchaseCreateEvent> kafkaTemplate;
+    private final KafkaTemplate<String, PurchaseEvent> kafkaTemplate;
 
-    public PurchaseCreateEventProducer(KafkaConfigData kafkaConfigData, KafkaTemplate<String, PurchaseCreateEvent> kafkaTemplate) {
+    public PurchaseEventProducer(KafkaConfigData kafkaConfigData, KafkaTemplate<String, PurchaseEvent> kafkaTemplate) {
         this.kafkaConfigData = kafkaConfigData;
         this.kafkaTemplate = kafkaTemplate;
     }
 
     public void send(PurchaseEventDto dto) {
-        var event = PurchaseCreateEvent.builder().item(dto).build();
+        var event = PurchaseEvent.builder()
+                .key("pantry:" + dto.getPantryId() + "-product:" + dto.getProductId())  //pantry:123-product:123
+                .data(dto)
+                .createdAt(ZonedDateTime.now(ZoneOffset.UTC))
+                .build();
 
-        CompletableFuture<SendResult<String, PurchaseCreateEvent>> future = kafkaTemplate.send(kafkaConfigData.getPurchaseCreateTopic(), event);
+        CompletableFuture<SendResult<String, PurchaseEvent>> future = kafkaTemplate.send(kafkaConfigData.getPurchaseCreateTopic(), event);
 
         future.whenComplete((result, ex) -> {
             if (ex == null) {
@@ -37,7 +43,7 @@ public class PurchaseCreateEventProducer {
                         result.getRecordMetadata().partition(),
                         result.getRecordMetadata().offset(),
                         result.getRecordMetadata().timestamp(),
-                        event.getItem().toString()
+                        event.getData().toString()
                 );
             } else {
                 LOGGER.error("Unable to send PurchaseCreateEvent to {}: {}", kafkaConfigData.getPurchaseCreateTopic(), event.toString());

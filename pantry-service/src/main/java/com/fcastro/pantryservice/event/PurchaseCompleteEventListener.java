@@ -29,18 +29,18 @@ public class PurchaseCompleteEventListener {
     @KafkaListener(topics = "purchaseCompleteTopic", containerFactory = "kafkaListenerContainerFactory")
     protected void listener(PurchaseCompleteEvent event) {
 
-        if (event.getItems() == null) {
+        if (event.getData() == null) {
             LOG.error("purchaseCompleteTopic received, but attribute data is null.");
             return;
         }
 
         LOG.info("Event Received: Topic[{}], Data[{}]",
                 kafkaConfigData.getPurchaseCompleteTopic(),
-                event.getItems().toString()
+                event.getData().toString()
         );
 
         try {
-            pantryItemService.processPurchaseCompleteEvent(event.getItems());
+            pantryItemService.processPurchaseCompleteEvent(event.getData());
         } catch (EventProcessingException ex) {
             //TODO: What should be done? Save to reprocess later or manually?
             StringBuilder sb = new StringBuilder();

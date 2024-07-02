@@ -104,7 +104,7 @@ public class PurchaseService {
         }
 
         var itemList = purchaseItemService.processPurchasedItems(entity.getId(), dto.getItems());
-        eventProducer.sendPurchaseCompleteEvent(itemList);
+        eventProducer.sendPurchaseCompleteEvent(entity.getId(), itemList);
 
         entity.setProcessedAt(LocalDateTime.now());
         entity = repository.save(entity);

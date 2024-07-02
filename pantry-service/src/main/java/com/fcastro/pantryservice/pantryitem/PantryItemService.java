@@ -2,9 +2,9 @@ package com.fcastro.pantryservice.pantryitem;
 
 import com.fcastro.app.config.MessageTranslator;
 import com.fcastro.app.exception.ResourceNotFoundException;
-import com.fcastro.kafka.event.PurchaseEventDto;
 import com.fcastro.kafka.exception.EventProcessingException;
-import com.fcastro.pantryservice.event.PurchaseCreateEventProducer;
+import com.fcastro.kafka.model.PurchaseEventDto;
+import com.fcastro.pantryservice.event.PurchaseEventProducer;
 import com.fcastro.pantryservice.exception.PantryAndProductAccountGroupInconsistentException;
 import com.fcastro.pantryservice.exception.PantryNotActiveException;
 import com.fcastro.pantryservice.exception.QuantityNotAvailableException;
@@ -33,11 +33,11 @@ public class PantryItemService {
 
     private final PantryItemRepository repository;
     private final ModelMapper modelMapper;
-    private final PurchaseCreateEventProducer eventProducer;
+    private final PurchaseEventProducer eventProducer;
 
     private static final int SEND_PURCHASE_EVENT_THRESHOLD = 50;
 
-    public PantryItemService(PantryItemRepository pantryItemRepository, ModelMapper modelMapper, PurchaseCreateEventProducer eventProducer) {
+    public PantryItemService(PantryItemRepository pantryItemRepository, ModelMapper modelMapper, PurchaseEventProducer eventProducer) {
         this.repository = pantryItemRepository;
         this.modelMapper = modelMapper;
         this.eventProducer = eventProducer;

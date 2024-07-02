@@ -1,9 +1,9 @@
 package com.fcastro.pantryservice.pantryitem;
 
 import com.fcastro.app.exception.ResourceNotFoundException;
-import com.fcastro.kafka.event.PurchaseEventDto;
 import com.fcastro.kafka.exception.EventProcessingException;
-import com.fcastro.pantryservice.event.PurchaseCreateEventProducer;
+import com.fcastro.kafka.model.PurchaseEventDto;
+import com.fcastro.pantryservice.event.PurchaseEventProducer;
 import com.fcastro.pantryservice.exception.PantryNotActiveException;
 import com.fcastro.pantryservice.exception.QuantityNotAvailableException;
 import com.fcastro.pantryservice.pantry.Pantry;
@@ -36,7 +36,7 @@ public class PantryItemServiceUnitTest {
     PantryItemRepository repository;
 
     @Mock
-    PurchaseCreateEventProducer eventProducer;
+    PurchaseEventProducer eventProducer;
 
     @Spy
     ModelMapper modelMapper;

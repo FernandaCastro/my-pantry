@@ -1,6 +1,6 @@
 package com.fcastro.purchaseservice.purchaseItem;
 
-import com.fcastro.kafka.event.PurchaseEventDto;
+import com.fcastro.kafka.model.PurchaseEventDto;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.*;

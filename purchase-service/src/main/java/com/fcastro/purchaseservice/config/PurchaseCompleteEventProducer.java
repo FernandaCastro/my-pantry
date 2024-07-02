@@ -2,13 +2,15 @@ package com.fcastro.purchaseservice.config;
 
 import com.fcastro.kafka.config.KafkaConfigData;
 import com.fcastro.kafka.event.PurchaseCompleteEvent;
-import com.fcastro.kafka.event.PurchaseEventDto;
+import com.fcastro.kafka.model.PurchaseEventDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.SendResult;
 import org.springframework.stereotype.Component;
 
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
@@ -26,9 +28,13 @@ public class PurchaseCompleteEventProducer {
         this.kafkaConfigData = kafkaConfigData;
     }
 
-    public void sendPurchaseCompleteEvent(List<PurchaseEventDto> items) {
+    public void sendPurchaseCompleteEvent(Long purchaseId, List<PurchaseEventDto> items) {
 
-        var event = PurchaseCompleteEvent.builder().items(items).build();
+        var event = PurchaseCompleteEvent.builder()
+                .key("purchase:" + purchaseId) //purchase:123
+                .data(items)
+                .createdAt(ZonedDateTime.now(ZoneOffset.UTC))
+                .build();
 
         CompletableFuture<SendResult<String, PurchaseCompleteEvent>> future = kafkaTemplate.send(kafkaConfigData.getPurchaseCompleteTopic(), event);
 
@@ -39,7 +45,7 @@ public class PurchaseCompleteEventProducer {
                         result.getRecordMetadata().partition(),
                         result.getRecordMetadata().offset(),
                         result.getRecordMetadata().timestamp(),
-                        event.getItems().toString()
+                        event.getData().toString()
                 );
             } else {
                 LOGGER.error("Unable to send PurchaseCompleteEvent to {}: {}", kafkaConfigData.getPurchaseCompleteTopic(), event.toString());

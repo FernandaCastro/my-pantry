@@ -5,7 +5,9 @@ kafka-config:
   purchase-create-topic: purchaseCreateTopic
   purchase-complete-topic: purchaseCompleteTopic
   product-topic: productTopic
-  pantry-group: pantryGroup
+  group: purchaseGroup
+  partitions: 3
+  replicas: 2
 spring:
   application:
     name: purchase-service
