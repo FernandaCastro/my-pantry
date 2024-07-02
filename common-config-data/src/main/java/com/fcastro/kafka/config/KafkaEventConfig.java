@@ -36,7 +36,7 @@ public class KafkaEventConfig<V extends Serializable> {
         factoryProperties.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaConfigData.getBootstrapServersConfig());
         factoryProperties.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         factoryProperties.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class);
-        factoryProperties.put(ConsumerConfig.GROUP_ID_CONFIG, kafkaConfigData.getPantryGroup());
+        factoryProperties.put(ConsumerConfig.GROUP_ID_CONFIG, kafkaConfigData.getGroup());
     }
 
     @Bean
@@ -72,16 +72,25 @@ public class KafkaEventConfig<V extends Serializable> {
 
     @Bean
     public NewTopic purchaseCompleteTopic() {
-        return TopicBuilder.name(kafkaConfigData.getPurchaseCompleteTopic()).build();
+        return TopicBuilder.name(kafkaConfigData.getPurchaseCompleteTopic())
+                .partitions(kafkaConfigData.getPartitions())
+                .replicas(kafkaConfigData.getReplicas())
+                .build();
     }
 
     @Bean
     public NewTopic purchaseCreateTopic() {
-        return TopicBuilder.name(kafkaConfigData.getPurchaseCreateTopic()).build();
+        return TopicBuilder.name(kafkaConfigData.getPurchaseCreateTopic())
+                .partitions(kafkaConfigData.getPartitions())
+                .replicas(kafkaConfigData.getReplicas())
+                .build();
     }
 
     @Bean
     public NewTopic productTopic() {
-        return TopicBuilder.name(kafkaConfigData.getProductTopic()).build();
+        return TopicBuilder.name(kafkaConfigData.getProductTopic())
+                .partitions(kafkaConfigData.getPartitions())
+                .replicas(kafkaConfigData.getReplicas())
+                .build();
     }
 }

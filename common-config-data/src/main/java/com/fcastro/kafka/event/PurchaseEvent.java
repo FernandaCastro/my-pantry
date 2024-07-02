@@ -1,6 +1,6 @@
 package com.fcastro.kafka.event;
 
-import com.fcastro.kafka.model.ProductEventDto;
+import com.fcastro.kafka.model.PurchaseEventDto;
 import lombok.*;
 
 import java.io.Serializable;
@@ -11,16 +11,15 @@ import java.time.ZonedDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
-public class ProductEvent implements Serializable {
+public class PurchaseEvent implements Serializable {
 
-    private String key; //product:123
-    private ProductEventDto data;
+    private String key; //pantry:123-productI:123
+    private PurchaseEventDto data;
     private ZonedDateTime createdAt;
 
     @Override
     public String toString() {
-        final StringBuffer sb = new StringBuffer("ProductEvent{");
+        final StringBuffer sb = new StringBuffer("PurchaseEvent{");
         sb.append(" key=").append(key);
         sb.append(" data=").append(data);
         sb.append(" createdAt=").append(createdAt.toString());

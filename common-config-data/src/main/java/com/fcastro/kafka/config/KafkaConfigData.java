@@ -15,12 +15,15 @@ import org.springframework.context.annotation.Configuration;
 public class KafkaConfigData {
 
     private String bootstrapServersConfig;
+
     private String purchaseCreateTopic;
     private String purchaseCompleteTopic;
     private String productTopic;
-    private String pantryGroup;
 
-    private Integer numOfPartitions;
-    private Short replicationFactor;
+    private String group;
+
+    /* For now, it will configure all topics with same values */
+    private Integer partitions;
+    private Short replicas;
 
 }

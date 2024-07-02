@@ -1,9 +1,9 @@
 package com.fcastro.pantryservice.product;
 
 import com.fcastro.kafka.config.KafkaConfigData;
-import com.fcastro.kafka.event.ProductEventDto;
+import com.fcastro.kafka.model.ProductEventDto;
 import com.fcastro.pantryservice.event.ProductEventProducer;
-import com.fcastro.pantryservice.event.PurchaseCreateEventProducer;
+import com.fcastro.pantryservice.event.PurchaseEventProducer;
 import com.fcastro.pantryservice.exception.DatabaseConstraintException;
 import com.fcastro.pantryservice.pantry.PantryDto;
 import com.fcastro.pantryservice.pantry.PantryService;
@@ -57,7 +57,7 @@ public class ProductServiceIntegrationTest {
     ProductEventProducer productEventProducer;
 
     @MockBean
-    PurchaseCreateEventProducer purchaseCreateEventProducer;
+    PurchaseEventProducer purchaseCreateEventProducer;
 
     @Autowired
     PantryService pantryService;

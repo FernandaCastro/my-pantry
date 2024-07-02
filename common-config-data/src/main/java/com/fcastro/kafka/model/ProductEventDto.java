@@ -1,4 +1,4 @@
-package com.fcastro.kafka.event;
+package com.fcastro.kafka.model;
 
 import com.fcastro.app.model.Action;
 import lombok.*;

@@ -1,8 +1,8 @@
 package com.fcastro.pantryservice.pantryitem;
 
 import com.fcastro.kafka.config.KafkaConfigData;
-import com.fcastro.kafka.event.PurchaseEventDto;
-import com.fcastro.pantryservice.event.PurchaseCreateEventProducer;
+import com.fcastro.kafka.model.PurchaseEventDto;
+import com.fcastro.pantryservice.event.PurchaseEventProducer;
 import com.fcastro.pantryservice.exception.QuantityNotAvailableException;
 import com.fcastro.pantryservice.pantry.PantryDto;
 import com.fcastro.pantryservice.pantry.PantryService;
@@ -57,7 +57,7 @@ public class PantryItemServiceIntegrationTest {
     PantryItemRepository pantryItemRepository;
 
     @MockBean
-    PurchaseCreateEventProducer purchaseCreateEventProducer;
+    PurchaseEventProducer purchaseCreateEventProducer;
 
     @Autowired
     PantryService pantryService;

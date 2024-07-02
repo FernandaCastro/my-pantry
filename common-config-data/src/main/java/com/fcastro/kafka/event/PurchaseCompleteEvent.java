@@ -1,8 +1,10 @@
 package com.fcastro.kafka.event;
 
+import com.fcastro.kafka.model.PurchaseEventDto;
 import lombok.*;
 
 import java.io.Serializable;
+import java.time.ZonedDateTime;
 import java.util.List;
 
 @Getter
@@ -12,13 +14,17 @@ import java.util.List;
 @AllArgsConstructor
 public class PurchaseCompleteEvent implements Serializable {
 
-    private List<PurchaseEventDto> items;
+    private String key;  //purchase:123
+    private List<PurchaseEventDto> data;
+    private ZonedDateTime createdAt;
 
     @Override
     public String toString() {
         final StringBuffer sb = new StringBuffer("PurchaseCompleteEvent{");
-        sb.append("items=").append(items);
-        sb.append('}');
+        sb.append(" key=").append(key);
+        sb.append(" data=").append(data);
+        sb.append(" createdAt=").append(createdAt.toString());
+        sb.append(" }");
         return sb.toString();
     }
 }

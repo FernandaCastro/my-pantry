@@ -3,7 +3,7 @@ package com.fcastro.purchaseservice.purchaseItem;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fcastro.app.config.MessageTranslator;
 import com.fcastro.app.exception.ResourceNotFoundException;
-import com.fcastro.kafka.event.PurchaseEventDto;
+import com.fcastro.kafka.model.PurchaseEventDto;
 import com.fcastro.purchaseservice.product.Product;
 import com.fcastro.purchaseservice.supermarket.SupermarketService;
 import com.fcastro.security.authorization.AuthorizationHandler;

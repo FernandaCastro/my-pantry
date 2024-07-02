@@ -3,7 +3,7 @@ package com.fcastro.pantryservice.product;
 import com.fcastro.app.config.MessageTranslator;
 import com.fcastro.app.exception.ResourceNotFoundException;
 import com.fcastro.app.model.Action;
-import com.fcastro.kafka.event.ProductEventDto;
+import com.fcastro.kafka.model.ProductEventDto;
 import com.fcastro.pantryservice.event.ProductEventProducer;
 import com.fcastro.pantryservice.exception.DatabaseConstraintException;
 import com.fcastro.pantryservice.exception.RequestParamExpectedException;
