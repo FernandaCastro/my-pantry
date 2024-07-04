@@ -38,6 +38,7 @@ jobs:
 
       - name: Build the React app
         run: npm run build
+        working-directory: pantry-web
         env:
           REACT_API_URL_PANTRY: ${{ vars.PROD_API_URL_PANTRY }}
           REACT_API_URL_PURCHASE: ${{ vars.PROD_API_URL_PURCHASE }}
@@ -45,6 +46,7 @@ jobs:
           REACT_GOOGLE_CLIENT_ID: ${{ secrets.PROD_GOOGLE_CLIENT_ID }}
         
       - name: Deploy to S3
+        working-directory: pantry-web
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_KEY }}
