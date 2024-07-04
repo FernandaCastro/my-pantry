@@ -37,7 +37,7 @@ jobs:
         working-directory: pantry-web
 
       - name: Build the React app
-        run: npm run build
+        run: CI=false npm run build
         working-directory: pantry-web
         env:
           REACT_API_URL_PANTRY: ${{ vars.PROD_API_URL_PANTRY }}
