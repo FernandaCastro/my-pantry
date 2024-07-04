@@ -31,6 +31,7 @@ jobs:
 
       - name: Install dependencies
         run: npm install
+        working-directory: pantry-web
 
       - name: Build the React app
         run: npm run build
