@@ -26,14 +26,13 @@ jobs:
         run: npm install
 
       - name: Build the React app
-        with:
-          env:
-            REACT_API_URL_PANTRY: ${{ vars.PROD_API_URL_PANTRY }}
-            REACT_API_URL_PURCHASE: ${{ vars.PROD_API_URL_PURCHASE }}
-            REACT_API_URL_ACCOUNT: ${{ vars.PROD_API_URL_ACCOUNT }}
-            REACT_GOOGLE_CLIENT_ID: ${{ secrets.PROD_GOOGLE_CLIENT_ID }}
         run: npm run build
-
+        env:
+          REACT_API_URL_PANTRY: ${{ vars.PROD_API_URL_PANTRY }}
+          REACT_API_URL_PURCHASE: ${{ vars.PROD_API_URL_PURCHASE }}
+          REACT_API_URL_ACCOUNT: ${{ vars.PROD_API_URL_ACCOUNT }}
+          REACT_GOOGLE_CLIENT_ID: ${{ secrets.PROD_GOOGLE_CLIENT_ID }}
+        
       - name: Deploy to S3
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY }}
