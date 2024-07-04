@@ -29,6 +29,9 @@ jobs:
         with:
           node-version: '21'
 
+      - name: List directory contents
+        run: ls -la
+
       - name: Install dependencies
         run: npm install
         working-directory: pantry-web
