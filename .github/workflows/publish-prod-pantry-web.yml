@@ -1,6 +1,7 @@
 name: Deploy pantry-web to S3
 
 on:
+  workflow_dispatch:
   pull_request:
     types:
       - closed
