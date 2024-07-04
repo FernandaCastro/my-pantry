@@ -2,6 +2,11 @@ name: Deploy pantry-web to S3
 
 on:
   workflow_dispatch:
+    inputs:
+      force_run:
+        description: 'Force run the deployment'
+        required: false
+        default: 'false'
   pull_request:
     types:
       - closed
@@ -9,7 +14,9 @@ on:
       - 'pantry-web/**'
 jobs:
   if_merged:
-    if: github.event.pull_request.merged == true
+    if: |
+      github.event.pull_request.merged == true ||
+      github.event.inputs.force_run == 'true'
     runs-on: ubuntu-latest
     steps:
       - name: Check out
