@@ -44,9 +44,9 @@ jobs:
           REACT_APP_API_URL_ACCOUNT: ${{ vars.PROD_API_URL_ACCOUNT }}
           REACT_APP_GOOGLE_CLIENT_ID: ${{ secrets.PROD_GOOGLE_CLIENT_ID }}
         run: |
-          echo REACT_API_URL_PANTRY = $REACT_API_URL_PANTRY
-          echo REACT_API_URL_PURCHASE = $REACT_API_URL_PURCHASE
-          echo REACT_API_URL_ACCOUNT = $REACT_API_URL_ACCOUNT
+          echo REACT_APP_API_URL_PANTRY = $REACT_API_URL_PANTRY
+          echo REACT_APP_API_URL_PURCHASE = $REACT_API_URL_PURCHASE
+          echo REACT_APP_API_URL_ACCOUNT = $REACT_API_URL_ACCOUNT
           CI=false npm run build
         
       - name: Deploy to S3
