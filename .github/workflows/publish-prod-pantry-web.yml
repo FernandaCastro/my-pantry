@@ -33,17 +33,21 @@ jobs:
         run: ls -la
 
       - name: Install dependencies
-        run: npm install
         working-directory: pantry-web
+        run: npm install
 
       - name: Build the React app
-        run: CI=false npm run build
         working-directory: pantry-web
         env:
           REACT_API_URL_PANTRY: ${{ vars.PROD_API_URL_PANTRY }}
           REACT_API_URL_PURCHASE: ${{ vars.PROD_API_URL_PURCHASE }}
           REACT_API_URL_ACCOUNT: ${{ vars.PROD_API_URL_ACCOUNT }}
           REACT_GOOGLE_CLIENT_ID: ${{ secrets.PROD_GOOGLE_CLIENT_ID }}
+        run: |
+          echo REACT_API_URL_PANTRY = $REACT_API_URL_PANTRY
+          echo REACT_API_URL_PURCHASE = $REACT_API_URL_PURCHASE
+          echo REACT_API_URL_ACCOUNT = $REACT_API_URL_ACCOUNT
+          CI=false npm run build
         
       - name: Deploy to S3
         working-directory: pantry-web
