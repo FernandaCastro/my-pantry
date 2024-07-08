@@ -57,4 +57,4 @@ jobs:
           AWS_REGION: ${{ secrets.AWS_REGION }}
         run: |
           npm install -g aws-cli
-          aws s3 sync build/ s3://mypantry-web --delete
+          aws s3 sync build/ s3://mypantry.fecastro.com --delete
