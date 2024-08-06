@@ -1,0 +1,482 @@
+[
+  {
+    "product_en": "Rice",
+    "product_pt": "Arroz",
+    "category": "grocery",
+    "size": "500 g",
+    "qty_solo": 2,
+    "qty_couple": 4,
+    "qty_fam3": 6,
+    "qty_fam4": 8
+  },
+  {
+    "product_en": "Beans",
+    "product_pt": "Feijão",
+    "category": "grocery",
+    "size": "500 g",
+    "qty_solo": 2,
+    "qty_couple": 4,
+    "qty_fam3": 6,
+    "qty_fam4": 8
+  },
+  {
+    "product_en": "Sugar",
+    "product_pt": "Açúcar",
+    "category": "grocery",
+    "size": "500 g",
+    "qty_solo": 2,
+    "qty_couple": 4,
+    "qty_fam3": 6,
+    "qty_fam4": 8
+  },
+  {
+    "product_en": "Coffee",
+    "product_pt": "Café",
+    "category": "grocery",
+    "size": "500 g",
+    "qty_solo": 1,
+    "qty_couple": 2,
+    "qty_fam3": 3,
+    "qty_fam4": 4
+  },
+  {
+    "product_en": "Wheat flour",
+    "product_pt": "Farinha de trigo",
+    "category": "grocery",
+    "size": "1 kg",
+    "qty_solo": 1,
+    "qty_couple": 2,
+    "qty_fam3": 3,
+    "qty_fam4": 4
+  },
+  {
+    "product_en": "Soybean oil / Vegetable oil",
+    "product_pt": "Óleo de soja / Óleo Vegetal",
+    "category": "grocery",
+    "size": "900 ml",
+    "qty_solo": 1,
+    "qty_couple": 2,
+    "qty_fam3": 3,
+    "qty_fam4": 4
+  },
+  {
+    "product_en": "Salt",
+    "product_pt": "Sal",
+    "category": "grocery",
+    "size": "1 kg",
+    "qty_solo": 1,
+    "qty_couple": 2,
+    "qty_fam3": 3,
+    "qty_fam4": 4
+  },
+  {
+    "product_en": "Pasta",
+    "product_pt": "Macarrão",
+    "category": "grocery",
+    "size": "500 g",
+    "qty_solo": 2,
+    "qty_couple": 4,
+    "qty_fam3": 6,
+    "qty_fam4": 8
+  },
+  {
+    "product_en": "Tomato sauce",
+    "product_pt": "Molho de tomate",
+    "category": "grocery",
+    "size": "340 g",
+    "qty_solo": 2,
+    "qty_couple": 4,
+    "qty_fam3": 6,
+    "qty_fam4": 8
+  },
+  {
+    "product_en": "Chocolate powder",
+    "product_pt": "Achocolatado",
+    "category": "grocery",
+    "size": "400 g",
+    "qty_solo": 1,
+    "qty_couple": 2,
+    "qty_fam3": 3,
+    "qty_fam4": 4
+  },
+  {
+    "product_en": "Cassava flour/Cornmeal",
+    "product_pt": "Farinha de mandioca",
+    "category": "grocery",
+    "size": "500 g",
+    "qty_solo": 1,
+    "qty_couple": 2,
+    "qty_fam3": 3,
+    "qty_fam4": 4
+  },
+  {
+    "product_en": "Popcorn kernels",
+    "product_pt": "Milho de pipoca",
+    "category": "grocery",
+    "size": "500 g",
+    "qty_solo": 1,
+    "qty_couple": 2,
+    "qty_fam3": 3,
+    "qty_fam4": 4
+  },
+  {
+    "product_en": "Lentils",
+    "product_pt": "Lentilha",
+    "category": "grocery",
+    "size": "500 g",
+    "qty_solo": 1,
+    "qty_couple": 2,
+    "qty_fam3": 3,
+    "qty_fam4": 4
+  },
+  {
+    "product_en": "Oats",
+    "product_pt": "Aveia",
+    "category": "grocery",
+    "size": "500 g",
+    "qty_solo": 1,
+    "qty_couple": 2,
+    "qty_fam3": 3,
+    "qty_fam4": 4
+  },
+  {
+    "product_en": "Canned tuna",
+    "product_pt": "Atum em lata",
+    "category": "grocery",
+    "size": "170 g",
+    "qty_solo": 2,
+    "qty_couple": 4,
+    "qty_fam3": 6,
+    "qty_fam4": 8
+  },
+  {
+    "product_en": "Canned sardines",
+    "product_pt": "Sardinha em lata",
+    "category": "grocery",
+    "size": "125 g",
+    "qty_solo": 2,
+    "qty_couple": 4,
+    "qty_fam3": 6,
+    "qty_fam4": 8
+  },
+  {
+    "product_en": "Corn starch",
+    "product_pt": "Amido de milho",
+    "category": "grocery",
+    "size": "200 g",
+    "qty_solo": 1,
+    "qty_couple": 2,
+    "qty_fam3": 3,
+    "qty_fam4": 4
+  },
+  {
+    "product_en": "Breakfast cereal",
+    "product_pt": "Cereal matinal",
+    "category": "grocery",
+    "size": "300 g",
+    "qty_solo": 1,
+    "qty_couple": 2,
+    "qty_fam3": 3,
+    "qty_fam4": 4
+  },
+  {
+    "product_en": "Peanut butter",
+    "product_pt": "Manteiga de amendoim",
+    "category": "grocery",
+    "size": "500 g",
+    "qty_solo": 1,
+    "qty_couple": 2,
+    "qty_fam3": 3,
+    "qty_fam4": 4
+  },
+  {
+    "product_en": "Tea",
+    "product_pt": "Chá",
+    "category": "grocery",
+    "size": "50 g",
+    "qty_solo": 1,
+    "qty_couple": 2,
+    "qty_fam3": 3,
+    "qty_fam4": 4
+  },
+  {
+    "product_en": "Peas",
+    "product_pt": "Ervilha",
+    "category": "grocery",
+    "size": "1 kg",
+    "qty_solo": 1,
+    "qty_couple": 2,
+    "qty_fam3": 3,
+    "qty_fam4": 4
+  },
+  {
+    "product_en": "Seasoned cassava flour",
+    "product_pt": "Farofa",
+    "category": "grocery",
+    "size": "500 g",
+    "qty_solo": 1,
+    "qty_couple": 2,
+    "qty_fam3": 3,
+    "qty_fam4": 4
+  },
+  {
+    "product_en": "Baking powder",
+    "product_pt": "Fermento em pó",
+    "category": "bakery",
+    "size": "100 g",
+    "qty_solo": 1,
+    "qty_couple": 2,
+    "qty_fam3": 3,
+    "qty_fam4": 4
+  },
+  {
+    "product_en": "Cookies",
+    "product_pt": "Biscoito",
+    "category": "cookies",
+    "size": "200 g",
+    "qty_solo": 2,
+    "qty_couple": 4,
+    "qty_fam3": 6,
+    "qty_fam4": 8
+  },
+  {
+    "product_en": "Condensed milk",
+    "product_pt": "Leite condensado",
+    "category": "dairy",
+    "size": "395 g",
+    "qty_solo": 2,
+    "qty_couple": 4,
+    "qty_fam3": 6,
+    "qty_fam4": 8
+  },
+  {
+    "product_en": "Heavy cream",
+    "product_pt": "Creme de leite",
+    "category": "dairy",
+    "size": "200 g",
+    "qty_solo": 2,
+    "qty_couple": 4,
+    "qty_fam3": 6,
+    "qty_fam4": 8
+  },
+  {
+    "product_en": "Garlic",
+    "product_pt": "Alho",
+    "category": "fruit-and-vegetables",
+    "size": "200 g",
+    "qty_solo": 1,
+    "qty_couple": 2,
+    "qty_fam3": 3,
+    "qty_fam4": 4
+  },
+  {
+    "product_en": "Onion",
+    "product_pt": "Cebola",
+    "category": "fruit-and-vegetables",
+    "size": "1 kg",
+    "qty_solo": 1,
+    "qty_couple": 2,
+    "qty_fam3": 3,
+    "qty_fam4": 4
+  },
+  {
+    "product_en": "Apple",
+    "product_pt": "Maçã",
+    "category": "fruit-and-vegetables",
+    "size": "4 unit",
+    "qty_solo": 1,
+    "qty_couple": 2,
+    "qty_fam3": 3,
+    "qty_fam4": 4
+  },
+  {
+    "product_en": "Banana",
+    "product_pt": "Banana",
+    "category": "fruit-and-vegetables",
+    "size": "4 unit",
+    "qty_solo": 1,
+    "qty_couple": 2,
+    "qty_fam3": 3,
+    "qty_fam4": 4
+  },
+  {
+    "product_en": "Orange",
+    "product_pt": "Laranja",
+    "category": "fruit-and-vegetables",
+    "size": "4 unit",
+    "qty_solo": 1,
+    "qty_couple": 2,
+    "qty_fam3": 3,
+    "qty_fam4": 4
+  },
+  {
+    "product_en": "Strawberry",
+    "product_pt": "Morango",
+    "category": "fruit-and-vegetables",
+    "size": "250 g",
+    "qty_solo": 1,
+    "qty_couple": 2,
+    "qty_fam3": 3,
+    "qty_fam4": 4
+  },
+  {
+    "product_en": "Grapes",
+    "product_pt": "Uva",
+    "category": "fruit-and-vegetables",
+    "size": "500 g",
+    "qty_solo": 1,
+    "qty_couple": 2,
+    "qty_fam3": 3,
+    "qty_fam4": 4
+  },
+  {
+    "product_en": "Pear",
+    "product_pt": "Pera",
+    "category": "fruit-and-vegetables",
+    "size": "4 unit",
+    "qty_solo": 1,
+    "qty_couple": 2,
+    "qty_fam3": 3,
+    "qty_fam4": 4
+  },
+  {
+    "product_en": "Bar soap",
+    "product_pt": "Sabão em barra",
+    "category": "personal-hygiene",
+    "size": "90 g",
+    "qty_solo": 2,
+    "qty_couple": 4,
+    "qty_fam3": 6,
+    "qty_fam4": 8
+  },
+  {
+    "product_en": "Liquid soap",
+    "product_pt": "Sabonete líquido",
+    "category": "personal-hygiene",
+    "size": "500 ml",
+    "qty_solo": 1,
+    "qty_couple": 2,
+    "qty_fam3": 3,
+    "qty_fam4": 4
+  },
+  {
+    "product_en": "Shampoo",
+    "product_pt": "Shampoo",
+    "category": "personal-hygiene",
+    "size": "350 ml",
+    "qty_solo": 1,
+    "qty_couple": 2,
+    "qty_fam3": 3,
+    "qty_fam4": 4
+  },
+  {
+    "product_en": "Conditioner",
+    "product_pt": "Condicionador",
+    "category": "personal-hygiene",
+    "size": "350 ml",
+    "qty_solo": 1,
+    "qty_couple": 2,
+    "qty_fam3": 3,
+    "qty_fam4": 4
+  },
+  {
+    "product_en": "Toothpaste",
+    "product_pt": "Pasta de dente",
+    "category": "personal-hygiene",
+    "size": "90 g",
+    "qty_solo": 2,
+    "qty_couple": 4,
+    "qty_fam3": 6,
+    "qty_fam4": 8
+  },
+  {
+    "product_en": "Toilet paper",
+    "product_pt": "Papel higiênico",
+    "category": "personal-hygiene",
+    "size": "12 unit",
+    "qty_solo": 1,
+    "qty_couple": 2,
+    "qty_fam3": 3,
+    "qty_fam4": 4
+  },
+  {
+    "product_en": "Laundry detergent",
+    "product_pt": "Sabão Lavar Roupa",
+    "category": "cleaning",
+    "size": "1 kg",
+    "qty_solo": 1,
+    "qty_couple": 2,
+    "qty_fam3": 3,
+    "qty_fam4": 4
+  },
+  {
+    "product_en": "Fabric softener",
+    "product_pt": "Amaciante",
+    "category": "cleaning",
+    "size": "1 l",
+    "qty_solo": 1,
+    "qty_couple": 2,
+    "qty_fam3": 3,
+    "qty_fam4": 4
+  },
+  {
+    "product_en": "Bleach",
+    "product_pt": "Água sanitária",
+    "category": "cleaning",
+    "size": "1 l",
+    "qty_solo": 1,
+    "qty_couple": 2,
+    "qty_fam3": 3,
+    "qty_fam4": 4
+  },
+  {
+    "product_en": "Dishwashing detergent",
+    "product_pt": "Detergente",
+    "category": "cleaning",
+    "size": "500 ml",
+    "qty_solo": 1,
+    "qty_couple": 2,
+    "qty_fam3": 3,
+    "qty_fam4": 4
+  },
+  {
+    "product_en": "Kitchen sponge",
+    "product_pt": "Esponja de cozinha",
+    "category": "cleaning",
+    "size": "10 g",
+    "qty_solo": 2,
+    "qty_couple": 4,
+    "qty_fam3": 6,
+    "qty_fam4": 8
+  },
+  {
+    "product_en": "Disinfectant",
+    "product_pt": "Desinfetante",
+    "category": "cleaning",
+    "size": "1 l",
+    "qty_solo": 1,
+    "qty_couple": 2,
+    "qty_fam3": 3,
+    "qty_fam4": 4
+  },
+  {
+    "product_en": "Wet tissue",
+    "product_pt": "Lenços umedecidos",
+    "category": "cleaning",
+    "size": "1 pck",
+    "qty_solo": 1,
+    "qty_couple": 1,
+    "qty_fam3": 2,
+    "qty_fam4": 2
+  },
+  {
+    "product_en": "Paper towel",
+    "product_pt": "Papel toalha",
+    "category": "cleaning",
+    "size": "4 unit",
+    "qty_solo": 1,
+    "qty_couple": 1,
+    "qty_fam3": 2,
+    "qty_fam4": 2
+  }
+]

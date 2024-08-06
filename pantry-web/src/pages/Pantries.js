@@ -98,7 +98,8 @@ export default function Pantries() {
                 <div className="d-flex justify-content-start align-items-end mt-4">
                     <Image src={iconPantry} width={40} height={40} className="ms-2 me-3" />
                     <h6 className='title'>{t('pantry-list-title')}</h6>
-                    <Button bsPrefix="btn-custom" href={"/pantries/new"} className="pe-2 ps-2 ms-auto"><span>{t('btn-new-pantry')}</span></Button>
+                    <Button bsPrefix="btn-custom" href={"/pantries/new-wizard"} className="pe-2 ps-2 ms-auto"><span>{t('btn-new-pantry-wizardx')}</span></Button>
+                    <Button bsPrefix="btn-custom" href={"/pantries/new"} className="ms-3 pe-2 ps-2"><span>{t('btn-new-pantry')}</span></Button>
                 </div>
                 <div>
                     {renderCards()}
