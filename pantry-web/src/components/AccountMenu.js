@@ -19,13 +19,22 @@ function AccountMenu() {
     const [expandMenu, setExpandMenu] = useState(false);
 
     const themes = [
-        { label: 'Default Light', value: '' },
-        { label: 'Default Dark', value: 'theme-dark' },
-        { label: 'Mono Light', value: 'theme-mono-light' },
-        { label: 'Mono Dark', value: 'theme-mono-dark' }
+        { value: 'root', label: 'Default Light' },
+        { value: 'theme-dark', label: 'Default Dark' },
+        { value: 'theme-mono-light', label: 'Mono Light' },
+        { value: 'theme-mono-dark', label: 'Mono Dark' }
 
     ]
-    const [themeOption, setThemeOption] = useState(findThemeOption());
+    const [themeOption, setThemeOption] = useState(() => {
+        var theme = { value: 'root', label: 'Default Light' };
+        if (profileCtx && profileCtx.theme) {
+            const found = themes.find(t => t.value === profileCtx.theme);
+            if (found) {
+                theme = found;
+            }
+        }
+        return theme;
+    });
 
     const handleLogout = async () => {
         await logout();
@@ -35,7 +44,7 @@ function AccountMenu() {
     };
 
     useEffect(() => {
-        if (themeOption) {
+        if (themeOption.value !== profileCtx.theme) {
             document.body.className = themeOption.value;
             setProfileCtx(
                 {
@@ -45,21 +54,11 @@ function AccountMenu() {
             handleClose();
 
         }
-    }, [themeOption.value]);
+    }, [themeOption?.value]);
 
     function handleClose() {
         document.getElementsByClassName("btn-close")[0]?.click();
         //document.getElementById("btn-close")?.click();
-    }
-
-
-    function findThemeOption() {
-        const theme = { label: 'Default Light', value: '' }
-        if (profileCtx && profileCtx.theme) {
-            const found = themes.find(t => t.value === profileCtx.theme);
-            return found ? found : theme;
-        }
-        return theme;
     }
 
     function renderSingin() {
@@ -98,10 +97,10 @@ function AccountMenu() {
                         <div className="settings">
                             <div className='d-flex flex-row'>
                                 <BsPalette className="simple-icon p-0 me-2 align-bottom" />
-                                <Select name="type" key={themeOption.value}
+                                <Select name="theme" key={themeOption?.value}
                                     defaultValue={themeOption}
                                     options={themes}
-                                    onChange={setThemeOption} />
+                                    onChange={(e) => setThemeOption(e)} />
                             </div>
                             <Button bsPrefix="btn-profile-menu" href={"/account/edit"} onClick={handleClose}>
                                 <BsPersonGear className="simple-icon me-2" />
