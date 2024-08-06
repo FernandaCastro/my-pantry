@@ -32,6 +32,12 @@ export default function App() {
   });
 
   useEffect(() => {
+    if (profileCtx?.theme) {
+      document.body.className = profileCtx.theme;
+    }
+  }, []);
+
+  useEffect(() => {
     if (alert.show) {
       setTimeout(() => {
         setAlert(
