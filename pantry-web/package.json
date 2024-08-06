@@ -1,6 +1,6 @@
 {
   "name": "pantry-web",
-  "version": "0.5.2",
+  "version": "0.6.0",
   "private": true,
   "devDependencies": {
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
@@ -61,6 +61,7 @@
     "jsencrypt": "^3.3.2",
     "luxon": "^3.4.4",
     "react-beautiful-dnd": "^13.1.1",
+    "react-form-wizard-component": "^0.2.3",
     "react-i18next": "^14.1.1",
     "serve": "^14.2.1",
     "universal-cookie": "^7.0.1"
