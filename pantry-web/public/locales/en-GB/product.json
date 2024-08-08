@@ -19,5 +19,5 @@
   "size": "Size",
   "category": "Category",
   "description": "Description",
-  "delete-product-alert": "Do you really want to delete this product?"
+  "delete-product-alert": "Do you really want to delete the product {{product}}?"
 }

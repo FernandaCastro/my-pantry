@@ -4,6 +4,7 @@
   "create-pantry-success": "Pantry successfully created!",
   "delete-pantry-success": "Pantry removed successfully!",
   "delete-pantry-alert": "Do you really want to delete this pantry and all its items?",
+  "delete-item-alert": "Do you really want to delete the item {{item}}?",
   "update-pantry-success": "Pantry successfully updated!",
   "balance-success": "Pantry rebalanced successfully!",
   "add-item-success": "Item added successfully.",

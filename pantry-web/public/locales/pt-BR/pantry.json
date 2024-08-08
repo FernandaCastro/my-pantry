@@ -4,6 +4,7 @@
   "create-pantry-success": "Despensa criada com sucesso!",
   "delete-pantry-success": "Despensa removida com sucesso!",
   "delete-pantry-alert": "Você realmente deseja remover esta despensa e todos os seus items?",
+  "delete-item-alert": "Você realmente deseja remover o item {{item}}?",
   "update-pantry-success": "Despensa alterada com sucesso!",
   "balance-success": "Despensa analisada com sucesso!",
   "add-item-success": "Item adicionado com sucesso!",

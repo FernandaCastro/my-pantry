@@ -6,5 +6,6 @@
   "create-supermarket-success": "Supermercado criado com sucesso!",
   "update-supermarket-success": "Supermercado alterado com sucesso!",
   "delete-supermarket-success": "Supermercado removido com sucesso!",
-  "group-title": "Grupo:"
+  "group-title": "Grupo:",
+  "delete-supermarket-alert": "Você realmente deseja remover o supermercado {{supermarket}}?"
 }
