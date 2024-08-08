@@ -31,7 +31,7 @@ export default function PantrySelect({ handleSelectedPantryList, permission, isS
 
     function loadSelectedPantries(pantryList) {
         let list = [];
-        pantryList.forEach((p) => { list = [...list, p.id] });
+        pantryList.forEach((p) => { if (p.isActive) list = [...list, p.id] } );
 
         setSelectedPantries(list);
         handleSelectedPantryList(list);
@@ -52,11 +52,12 @@ export default function PantrySelect({ handleSelectedPantryList, permission, isS
             <tr key={item.id}>
                 <td>
                     <FormCheck
+                        disabled={!item.isActive}
                         defaultChecked={selectedPantry}
                         onChange={(e) => addRemovePantry(e.target.checked, item)}
                         label={item.name} />
                 </td>
-                <td><span className='d-none d-md-block'>{!item.accountGroup ? "" : item.accountGroup.name}</span></td>
+                <td><span className='d-none d-md-block' disabled={!item.isActive}>{!item.accountGroup ? "" : item.accountGroup.name}</span></td>
             </tr>
         )
     }

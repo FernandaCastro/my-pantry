@@ -73,7 +73,7 @@ export default function Pantries() {
                                 <Card.Body className='d-flex flex-row justify-content-between'>
                                     <div>
                                         <Card.Title as="h6"><span disabled={!item.isActive}>{item.name}</span></Card.Title>
-                                        <span >{item.accountGroup.name}</span>
+                                        <span disabled={!item.isActive}>{item.accountGroup.name}</span>
                                     </div>
                                     <div>
                                         <Stack direction="horizontal" className="d-flex justify-content-end">
