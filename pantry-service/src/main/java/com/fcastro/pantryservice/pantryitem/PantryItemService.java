@@ -13,6 +13,7 @@ import com.fcastro.pantryservice.pantry.PantryDto;
 import com.fcastro.pantryservice.pantry.PantryType;
 import com.fcastro.pantryservice.product.Product;
 import com.fcastro.pantryservice.product.ProductDto;
+import com.fcastro.pantryservice.product.ProductService;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
@@ -34,13 +36,15 @@ public class PantryItemService {
     private final PantryItemRepository repository;
     private final ModelMapper modelMapper;
     private final PurchaseEventProducer eventProducer;
+    private final ProductService productService;
 
     private static final int SEND_PURCHASE_EVENT_THRESHOLD = 50;
 
-    public PantryItemService(PantryItemRepository pantryItemRepository, ModelMapper modelMapper, PurchaseEventProducer eventProducer) {
+    public PantryItemService(PantryItemRepository pantryItemRepository, ModelMapper modelMapper, PurchaseEventProducer eventProducer, ProductService productService) {
         this.repository = pantryItemRepository;
         this.modelMapper = modelMapper;
         this.eventProducer = eventProducer;
+        this.productService = productService;
     }
 
     public Optional<PantryItemDto> get(long pantryId, long productId) {
@@ -217,6 +221,36 @@ public class PantryItemService {
         repository.save(entity);
     }
 
+    @Transactional
+    public List<PantryItemDto> createWizard(PantryDto pantry, List<PantryItemWizardDto> items) {
+        List<PantryItemDto> list = new ArrayList<>();
+
+        for (PantryItemWizardDto wizardItem : items) {
+            var productSearch = ProductDto.builder()
+                    .code(wizardItem.getCode())
+                    .size(wizardItem.getSize())
+                    .category(wizardItem.getCategory())
+                    .accountGroup(pantry.getAccountGroup())
+                    .build();
+
+            //get existing product or create new product
+            var product = productService.getOrCreate(productSearch);
+
+            var pantryItem = PantryItemDto.builder()
+                    .pantry(pantry)
+                    .product(product)
+                    .idealQty(wizardItem.getIdealQty())
+                    .currentQty(wizardItem.getCurrentQty())
+                    .build();
+
+            //create new Pantry Item
+            var newPantryItem = create(pantryItem);
+
+            list.add(newPantryItem);
+        }
+
+        return list;
+    }
 
     private void enrichPurchaseItemDto(PurchaseEventDto dto, PantryItem itemEntity) {
         dto.setPantryId(itemEntity.getPantry().getId());

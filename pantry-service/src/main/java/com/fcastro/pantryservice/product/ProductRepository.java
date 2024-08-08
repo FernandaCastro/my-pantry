@@ -28,4 +28,8 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
     @Query("select p from product p where p.id in :productIds order by p.code")
     List<Product> findAllByIds(Set<Long> productIds);
+
+    @Query("select p from product p where p.id in :productIds " +
+            "and lower(p.code) = lower(:code) order by p.code")
+    List<Product> findAllByCode(String code, Set<Long> productIds);
 }
