@@ -110,6 +110,10 @@ public class ProductService {
 
         existsInAccountGroup(dto);
 
+        return save(dto);
+    }
+
+    private ProductDto save(ProductDto dto) {
         var entity = repository.save(convertToEntity(dto));
         authorizationHandler.saveAccessControl(Product.class.getSimpleName(), entity.getId(), dto.getAccountGroup().getId());
 
@@ -128,19 +132,84 @@ public class ProductService {
         return storedDto;
     }
 
-    //TODO: does it scale?
-    private void existsInAccountGroup(ProductDto dto) {
-        var productList = repository.findAllByCode(dto.getCode()); //This can be a huge list
+    //It trys to get product from (1) the informed accountGroup or (2) its accountGroup.parent,
+    //otherwise it creates new product on accountGroup.parent (this way it keeps single behavior)
+    //TODO: does it scale? Use cache for access-control, account-group?
+    public ProductDto getOrCreate(ProductDto dto) {
+        if (dto.getAccountGroup() == null || dto.getAccountGroup().getId() == 0)
+            throw new AccessControlNotDefinedException(MessageTranslator.getMessage("error.product.and.group.association.required"));
+
+        //get all products this user has access to, based on the account group hierarchy (if child account group, then retrieve also products from parent accont group).
         var accessList = authorizationHandler.listAccessControl(SecurityContextHolder.getContext().getAuthentication().getName(), "Product", null, dto.getAccountGroup().getId(), null);
 
-        var found = accessList.stream()
+        var productIds = accessList.stream()
                 .map(AccessControlDto::getClazzId)
-                .anyMatch(productList.stream()
-                        .map(Product::getId)
-                        .collect(toSet())::contains);
+                .collect(toSet());
 
-        if (found)
+        var productList = repository.findAllByCode(dto.getCode(), productIds);
+
+        //More than one product found, then return the product from (1) the informed account group
+        if (productList.size() > 1) {
+            var accessControl = accessList.stream()
+                    .filter(ac -> ac.getAccountGroup().getId() == dto.getAccountGroup().getId())
+                    .findFirst()
+                    .orElse(null);
+
+            if (accessControl == null)
+                throw new RuntimeException("Inconsistence in Access Control found! "); //not found (not expcted to happen)
+
+            //get and build the correct product
+            var productFound = productList.stream()
+                    .filter(p -> p.getId() == accessControl.getClazzId())
+                    .findFirst();
+            var product = convertToDTO(productFound.get());
+            product.setAccountGroup(accessControl.getAccountGroup());
+            return product;
+        }
+
+        //one product found, so append its account group (it can be the informed accountGroup or its parent)
+        if (productList.size() == 1) {
+            var product = convertToDTO(productList.get(0));
+
+            //get the account group
+            var accessControl = accessList.stream()
+                    .filter(ac -> ac.getClazzId() == product.getId())
+                    .findFirst();
+
+            product.setAccountGroup(accessControl.get().getAccountGroup());
+            return product;
+        }
+
+        //no product found, create product in the accountGroup.parent
+        if (dto.getAccountGroup().getParentAccountGroup() != null) {
+            dto.setAccountGroup(dto.getAccountGroup().getParentAccountGroup());
+        }
+
+        return save(dto);
+    }
+
+    //TODO: does it scale? Use cache for access-control, account-group?
+    private void existsInAccountGroup(ProductDto dto) {
+        //var productList = repository.findAllByCode(dto.getCode()); //This can become a huge list (code: "Rice")
+        var accessList = authorizationHandler.listAccessControl(SecurityContextHolder.getContext().getAuthentication().getName(), "Product", null, dto.getAccountGroup().getId(), null);
+
+        var productIds = accessList.stream()
+                .map(AccessControlDto::getClazzId)
+                .collect(toSet());
+
+        var productList = repository.findAllByCode(dto.getCode(), productIds);
+
+        if (productList.size() > 0)
             throw new DatabaseConstraintException(MessageTranslator.getMessage("error.product.already.exists.in.group"));
+
+//        var found = accessList.stream()
+//                .map(AccessControlDto::getClazzId)
+//                .anyMatch(productList.stream()
+//                        .map(Product::getId)
+//                        .collect(toSet())::contains);
+//
+//        if (found)
+//            throw new DatabaseConstraintException(MessageTranslator.getMessage("error.product.already.exists.in.group"));
     }
 
     public ProductDto update(ProductDto dto) {

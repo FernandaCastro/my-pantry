@@ -12,7 +12,6 @@ import ProductForm from './ProductForm.js';
 import { camelCase } from '../services/Utils.js';
 import Collapse from 'react-bootstrap/Collapse';
 import { useTranslation } from 'react-i18next';
-import CurrentQuantityField from './CurrentQuantityField.js';
 import NumericField from './NumericField.js';
 
 function ProductSearchBar({ accountGroupId, accountGroupOptions, handleSelectAction, handleClearAction, addButtonVisible }) {

@@ -4,16 +4,13 @@ import VariantType from '../components/VariantType.js';
 import Button from 'react-bootstrap/Button';
 import { BsTrash } from "react-icons/bs";
 import NumericField from './NumericField.js'
-import Table from 'react-bootstrap/Table';
 import Form from 'react-bootstrap/Form';
 import Image from 'react-bootstrap/Image';
 import food from '../assets/images/healthy-food.png'
-import Stack from 'react-bootstrap/Stack';
 import { camelCase } from '../services/Utils.js';
 import useAlert from '../hooks/useAlert.js';
 import { useTranslation } from 'react-i18next';
 import { Card, Col, Row } from 'react-bootstrap';
-import CurrentQuantityField from './CurrentQuantityField.js';
 
 function PantryItemList({ pantryId, setIsEmpty }) {
 

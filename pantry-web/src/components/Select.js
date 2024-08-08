@@ -55,16 +55,18 @@ const customStyles = {
 
     option: (provided, { data, isDisabled, isFocused, isSelected }) => ({
         ...provided,
-        backgroundColor: isFocused ? 'var(--highlight-item-list)' : 'var(--background)',
+        backgroundColor: isSelected ? 'var(--highlight-item-list)' : 'var(--background)',
         color: 'var(--text-color)',
         minHeight: '30px',
         height: '30px',
         fontSize: '15px',
-
+        "&:hover": {
+            color: 'var(--highlight-text)'
+        }
     }),
 };
 
-export default ({ name, placeholder, options, onChange, defaultValue, disabled }) =>
+export default ({ name, placeholder, options, onChange, defaultValue, value, disabled }) =>
 (<Select styles={customStyles}
     name={name}
     placeholder={placeholder}
@@ -72,6 +74,7 @@ export default ({ name, placeholder, options, onChange, defaultValue, disabled }
     onChange={onChange}
     defaultValue={defaultValue}
     disabled={disabled}
+    value={value}
 />
 );
 

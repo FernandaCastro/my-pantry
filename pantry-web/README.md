@@ -82,5 +82,7 @@ here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-
 * `luxon` (Datetime Translations)
 * `react-beautiful-dnd` (Beautiful and accessible drag and drop for lists with React)
 * `jsencrypt` (RSA Javascript encryption)
+* `react-form-wizard-component` (A react form wizard component with validation and progress bar with no external
+  dependencies which simplifies tab wizard management.)
 
 

@@ -12,7 +12,6 @@ import { camelCase } from '../services/Utils.js';
 import { BsArrow90DegRight } from "react-icons/bs";
 import { Card, Col, FormCheck, Row } from "react-bootstrap";
 import { useTranslation } from 'react-i18next';
-import CurrentQuantityField from './CurrentQuantityField';
 import NumericField from './NumericField';
 
 function PurchaseItemList({ selectedPurchase, selectedPantries, setOuterPurchaseItems }, ref) {

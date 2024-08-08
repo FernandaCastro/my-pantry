@@ -2,23 +2,17 @@
 
 # My Pantry
 
-version: 0.5.1
+version: 0.6.0
 
-- Replacing Zookeeper and Confluent Kafka with Apache Kafka (KRaft)
-- Defining context for each service api call: /pantryservice, /purchaseservice, /accountservice
-- Enabling actuator/health
-- Enabling https (prod) / http (dev)
-- Encrypting using public/private keys
-- pantry-web: small fixes
+- Wizard to create pantries based on a suggested list of basic items, instead of manually enter them.
 
 Plans for next versions:
 
-- Delete provisioned products from the shopping cart
-- 'Analyse Pantry' button should not only create item provisioning, but also delete unecessary provisionings.
-- Wizard to create pantries based on a suggested list of basic items, instead of manually enter them.
-- Dashboard
+- Delete provisioned products from the shopping list
+- 'Analyse Pantry' button should not only create an item provisioning, but also delete unecessary provisionings.
+- Pantries Dashboard
 - CRUD for Role and Permissions
-- Integrate with Google Home (ie: "Consume <qty> of <product> from <pantry-name>)
+- <s>Integrate with Google Home (ie: "Consume [qty] of [product] from [pantry-name])/</s>
 
 ### Description:
 

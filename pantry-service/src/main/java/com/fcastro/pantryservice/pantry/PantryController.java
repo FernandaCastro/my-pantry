@@ -78,4 +78,11 @@ public class PantryController {
         service.delete(id);
         return ResponseEntity.noContent().build();
     }
+
+    @PostMapping("/wizard")
+    @PreAuthorize("hasPermissionInAGroup(#pantry.getAccountGroup().getId(), 'create_pantry')")
+    public ResponseEntity<PantryDto> create(@P("pantry") @Valid @RequestBody PantryWizardDto newDto) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(service.createWizard(newDto));
+    }
+
 }

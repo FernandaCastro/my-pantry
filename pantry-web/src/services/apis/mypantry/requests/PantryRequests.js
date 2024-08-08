@@ -79,4 +79,8 @@ export async function getAssociatedPantries(groupId) {
     return FetchPantry(`pantries?groupId=${groupId}`, "GET");
 }
 
+export async function createPantryWizard(pantryWizardDto) {
+    return FetchPantry('pantries/wizard', "POST", pantryWizardDto);
+}
+
 

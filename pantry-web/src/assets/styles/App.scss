@@ -501,7 +501,7 @@ span {
     color: var(--highlight-text);
 }
 
-span.disabled {
+span[disabled] {
     color: var(--text-color-2);
 }
 
@@ -1090,3 +1090,65 @@ div.scroll-supermarkets {
     background-color: var(--background) !important;
     width: 300px !important;
 }
+
+//Wizards
+.form-wizard-steps {
+    border-color: var(--progress-bar) !important;
+}
+
+.wizard-progress-bar {
+    background-color: var(--progress-bar) !important;
+}
+
+.wizard-icon-container {
+    background-color: var(--background-2) !important;
+}
+
+.wizard-icon-circle {
+    border: 2px solid var(--background-2) !important;
+    background-color: var(--background-2) !important;
+}
+
+.wizard-icon-circle.checked {
+    .wizard-icon-container {
+        background-color: var(--progress-bar) !important;
+    }
+}
+
+span.stepTitle {
+    color: var(--title-text-color) !important;
+}
+
+.wizard-tab-content {
+    text-align: start !important;
+}
+
+.wizard-footer-left,
+.wizard-footer-right {
+    background-color: var(--background) !important;
+    border-color: var(--background) !important;
+}
+
+.wizard-btn {
+    min-width: 15%;
+    width: fit-content;
+    height: fit-content;
+    padding: 2px;
+    text-decoration: none;
+    border-radius: 5px;
+    align-items: center;
+    text-align: center;
+    pointer-events: all;
+
+    background: none !important;
+    color: transparent !important;
+    border: 3px solid !important;
+    border-image-slice: 1 !important;
+    border-image-source: var(--gradient-wizard-button-border) !important;
+    background-image: var(--gradient-wizard-button-text) !important;
+    background-clip: text !important;
+    -webkit-background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+
+}
+//End Wizards

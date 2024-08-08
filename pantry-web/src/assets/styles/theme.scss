@@ -1,5 +1,5 @@
 :root {
-    $background-color: rgb(220, 220, 251);
+    $background-color: lavender;
     $text-color: hsl(219, 11%, 25%);
     --background: #{$background-color};
     --background-1: #{darken($background-color, 3%)};
@@ -20,6 +20,8 @@
     --gradient-image-icon-background: linear-gradient(15deg, purple, dodgerblue), linear-gradient(90deg, rgba(228, 132, 252, 1) 0%, rgba(132, 212, 255, 1) 100%);
     --gradient-image-button: linear-gradient(90deg, var(--background), var(--background)), linear-gradient(90deg, hsl(289, 65%, 64%), hsl(226, 78%, 67%));
     --gradient-image-text: linear-gradient(90deg, hsl(289, 52%, 55%), hsl(207, 67%, 49%));
+    --gradient-wizard-button-border: linear-gradient(90deg, hsl(289, 65%, 64%), hsl(226, 78%, 67%));
+    --gradient-wizard-button-text: var(--gradient-image-text);
     --disabled-gradient-image-button: linear-gradient(90deg, var(--background), var(--background)), linear-gradient(45deg, gray 5%, rgb(199, 198, 198) 70%);
     --disabled-gradient-image-text: linear-gradient(45deg, gray, lightgray);
     --box-shadow-0: rgb(92, 90, 90);
@@ -28,6 +30,7 @@
     --switch-disabled: url("data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%27-4 -4 8 8%27><circle r=%273%27 fill=%27gray%27/></svg>");
     --btn-close: url("data:image/svg+xml,%3csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 16 16%27 fill=%2723000%29%27%3e%3cpath d=%27M.293.293a1 1 0 0 1 1.414 0L8 6.586 14.293.293a1 1 0 1 1 1.414 1.414L9.414 8l6.293 6.293a1 1 0 0 1-1.414 1.414L8 9.414l-6.293 6.293a1 1 0 0 1-1.414-1.414L6.586 8 .293 1.707a1 1 0 0 1 0-1.414z%27/%3e%3c/svg%3e");
     --highlight-item-list: rgb(183, 183, 230);
+    --progress-bar: #6c66d8;
 }
 
 .theme-dark {
@@ -46,11 +49,14 @@
     --title-text-color: var(--text-color);
     --gradient-image-button: linear-gradient(90deg, var(--background), var(--background)), linear-gradient(90deg, hsl(289, 65%, 64%), hsl(226, 78%, 67%));
     --gradient-image-text: var(--gradient-color);
+    --gradient-wizard-button-border: var(--gradient-color);
+    --gradient-wizard-button-text: var(--gradient-color);
     --disabled-gradient-image-button: linear-gradient(90deg, var(--background), var(--background)), linear-gradient(45deg, gray 5%, rgb(199, 198, 198) 70%);
     --box-shadow-0: rgb(180, 102, 180);
     --box-shadow-1: purple;
     --btn-close: url("data:image/svg+xml,%3csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 16 16%27 fill=%27rgb%28108, 102, 216%29%27%3e%3cpath d=%27M.293.293a1 1 0 0 1 1.414 0L8 6.586 14.293.293a1 1 0 1 1 1.414 1.414L9.414 8l6.293 6.293a1 1 0 0 1-1.414 1.414L8 9.414l-6.293 6.293a1 1 0 0 1-1.414-1.414L6.586 8 .293 1.707a1 1 0 0 1 0-1.414z%27/%3e%3c/svg%3e");
     --highlight-item-list: rgb(65, 60, 76);
+    --progress-bar: #{lighten($background-color, 15%)};
 }
 
 .theme-mono-light {
@@ -71,7 +77,8 @@
     --gradient-image-profile-background: linear-gradient(180deg, gray, black), linear-gradient(90deg, rgba(228, 132, 252, 1) 0%, rgba(132, 212, 255, 1) 100%);
     --gradient-image-icon-background: linear-gradient(180deg, gray, black), linear-gradient(90deg, rgba(228, 132, 252, 1) 0%, rgba(132, 212, 255, 1) 100%);
     --gradient-image-button: linear-gradient(90deg, var(--background), var(--background)), linear-gradient(to bottom right, rgba(228, 132, 252, 1) 0%, rgba(132, 212, 255, 1) 100%);
-    --gradient-image-text: linear-gradient(90deg, rgb(34, 33, 33), rgb(34, 33, 33));
+    --gradient-image-text: linear-gradient(45deg, rgb(34, 33, 33),rgb(34, 33, 33));
+    --gradient-wizard-button-text: var(--gradient-image-text);
     --disabled-gradient-image-button: linear-gradient(90deg, var(--background), var(--background)), linear-gradient(45deg, gray 5%, rgb(199, 198, 198) 70%);
     --disabled-gradient-image-text: linear-gradient(45deg, gray, gray);
     --box-shadow-0: rgb(92, 90, 90);
@@ -80,13 +87,14 @@
     --switch-disabled: url("data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%27-4 -4 8 8%27><circle r=%273%27 fill=%27gray%27/></svg>");
     --btn-close: url("data:image/svg+xml,%3csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 16 16%27 fill=%27gray%27%3e%3cpath d=%27M.293.293a1 1 0 0 1 1.414 0L8 6.586 14.293.293a1 1 0 1 1 1.414 1.414L9.414 8l6.293 6.293a1 1 0 0 1-1.414 1.414L8 9.414l-6.293 6.293a1 1 0 0 1-1.414-1.414L6.586 8 .293 1.707a1 1 0 0 1 0-1.414z%27/%3e%3c/svg%3e");
     --highlight-item-list: lightgray;
+    --progress-bar: #{darken($background-color, 65%)};
 }
 
 .theme-mono-dark {
     $background-color: rgb(34, 33, 33);
     --background: #{$background-color};
-    --background-1: #{darken($background-color, 3%)};
-    --background-2: #{darken($background-color, 5%)};
+    --background-1: #{lighten($background-color, 2%)};
+    --background-2: #{lighten($background-color, 5%)};
     --background-3: var(--highlight-item-list);
     --btn-background-color: black;
     --icon-color: darkgray;
@@ -101,7 +109,9 @@
     --gradient-image-profile-background: linear-gradient(180deg, gray, black), linear-gradient(90deg, rgba(228, 132, 252, 1) 0%, rgba(132, 212, 255, 1) 100%);
     --gradient-image-icon-background: linear-gradient(180deg, gray, black), linear-gradient(90deg, rgba(228, 132, 252, 1) 0%, rgba(132, 212, 255, 1) 100%);
     --gradient-image-button: linear-gradient(90deg, var(--background), var(--background)), linear-gradient(to bottom right, rgba(228, 132, 252, 1) 0%, rgba(132, 212, 255, 1) 100%);
-    --gradient-image-text: linear-gradient(90deg, white, white);
+    --gradient-image-text: var(--gradient-color);
+    --gradient-wizard-button-border: var(--gradient-color);
+    --gradient-wizard-button-text: var(--gradient-color);
     --disabled-gradient-image-button: linear-gradient(90deg, var(--background), var(--background)), linear-gradient(45deg, gray 5%, rgb(199, 198, 198) 70%);
     --disabled-gradient-image-text: linear-gradient(45deg, gray, gray);
     --box-shadow-0: gray;
@@ -110,4 +120,5 @@
     --switch-disabled: url("data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%27-4 -4 8 8%27><circle r=%273%27 fill=%27gray%27/></svg>");
     --btn-close: url("data:image/svg+xml,%3csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 16 16%27 fill=%27lightgray%27%3e%3cpath d=%27M.293.293a1 1 0 0 1 1.414 0L8 6.586 14.293.293a1 1 0 1 1 1.414 1.414L9.414 8l6.293 6.293a1 1 0 0 1-1.414 1.414L8 9.414l-6.293 6.293a1 1 0 0 1-1.414-1.414L6.586 8 .293 1.707a1 1 0 0 1 0-1.414z%27/%3e%3c/svg%3e");
     --highlight-item-list: rgb(77, 77, 77);
+    --progress-bar: #{lighten($background-color, 18%)};
 }
