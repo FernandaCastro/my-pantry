@@ -57,7 +57,7 @@ public class AccessControlService {
 
         List<AccessControl> list = null;
 
-        //Email + Clazz + AccountGroup
+        //Email + Clazz + AccountGroup (Consider accountGroup hierarchy)
         if (clazz != null && !clazz.isEmpty() && accountGroupId != null) {
             list = accessControlRepository.findAllByEmailAndClazzAndAccountGroupId(email, clazz, accountGroupId);
 
