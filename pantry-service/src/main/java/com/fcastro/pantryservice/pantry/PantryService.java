@@ -115,6 +115,38 @@ public class PantryService {
         authorizationHandler.deleteAccessControl(Pantry.class.getSimpleName(), id);
     }
 
+    /**
+     * Creates a new Pantry and its items. Each item will be created based on the code of a product that fits the following:
+     * (1) - product associated to the informed account group, if exits
+     * (2) - product associated to the parent account group, if exits
+     * (3) - if product does not exit, create new product associated to the parent account group.
+     *
+     * @param dto
+     * @return PantryDto
+     */
+    @Transactional
+    public PantryDto createWizard(PantryWizardDto dto) {
+        if (dto.getAccountGroup() == null || dto.getAccountGroup().getId() == 0)
+            throw new AccessControlNotDefinedException(MessageTranslator.getMessage("error.pantry.and.group.association.required"));
+
+        var pantryDto = PantryDto.builder()
+                .name(dto.getName())
+                .type(dto.getType())
+                .isActive(true)
+                .accountGroup(dto.getAccountGroup())
+                .build();
+        var pantryEntity = repository.save(convertToEntity(pantryDto));
+        authorizationHandler.saveAccessControl(Pantry.class.getSimpleName(), pantryEntity.getId(), dto.getAccountGroup().getId());
+
+        var storedDto = convertToDTO(pantryEntity);
+        storedDto.setAccountGroup(dto.getAccountGroup());
+
+        var items = pantryItemService.createWizard(storedDto, dto.getItems());
+        storedDto.setItems(items);
+
+        return storedDto;
+    }
+
     private PantryDto convertToDTO(Pantry entity) {
         if (entity == null) return null;
         return PantryDto.builder()

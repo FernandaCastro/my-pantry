@@ -11,16 +11,20 @@ import NewPantryReviewWizard from '../components/NewPantryReviewWizard.js';
 import NewPantryDetailsWizard from '../components/NewPantryDetailsWizard.js';
 import VariantType from '../components/VariantType.js';
 import useAlert from '../hooks/useAlert.js';
+import { useNavigate } from 'react-router-dom';
+import { createPantryWizard } from '../services/apis/mypantry/requests/PantryRequests.js';
 import { getAccountGroupList } from '../services/apis/mypantry/requests/AccountRequests.js';
 
 function NewPantryWizard() {
 
     const { t } = useTranslation(['pantry', 'common']);
+    const navigate = useNavigate();
 
     const [pantryForm, setPantryForm] = useState({});
     const [productList, setProductList] = useState([]);
     const [finalProductList, setFinalProductList] = useState([]);
     const [accountGroupOptions, setAccountGroupOptions] = useState([])
+    const [accountGroups, setAccountGroups] = useState([])
     const [selectAll, setSelectAll] = useState(true);
     const [expandAllProducts, setExpandAllProducts] = useState(true);
     const [expandAllReview, setExpandAllReview] = useState(true);
@@ -48,8 +52,23 @@ function NewPantryWizard() {
                 }]
             });
 
+            setAccountGroups(res);
             setAccountGroupOptions(list);
             setIsLoading(false);
+        } catch (error) {
+            showAlert(VariantType.DANGER, error.message);
+        }
+    }
+
+    async function fetchCreatePantryWizard(pantryWizardDto) {
+        setIsLoading(true);
+        try {
+            const res = await createPantryWizard(pantryWizardDto);;
+
+            console.log(res);
+            setIsLoading(false);
+            showAlert(VariantType.SUCCESS, t('create-pantry-success'));
+            navigate('/pantries');
         } catch (error) {
             showAlert(VariantType.DANGER, error.message);
         }
@@ -59,6 +78,19 @@ function NewPantryWizard() {
         console.log("Form completed!");
         console.log("Pantry: ", pantryForm);
         console.log("Products: ", finalProductList);
+
+        const accountGroup = accountGroups.find(g => g.id === pantryForm.accountGroup.value);
+
+        const pantryWizardDto = {
+            accountGroup: accountGroup,
+            name: pantryForm.name,
+            type: pantryForm.type.value,
+            items: finalProductList
+        }
+
+        console.log("PantryWizardDto: ", pantryWizardDto);
+        fetchCreatePantryWizard(pantryWizardDto);
+
     };
 
     const checkValidateStep1 = () => {
