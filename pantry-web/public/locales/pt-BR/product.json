@@ -20,5 +20,5 @@
   "size": "Tamanho",
   "category": "Categoria",
   "description": "Descrição",
-  "delete-product-alert": "Você realmente deseja remover este produto?"
+  "delete-product-alert": "Você realmente deseja remover o produto {{product}}?"
 }

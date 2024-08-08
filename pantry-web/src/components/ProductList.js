@@ -139,7 +139,7 @@ function ProductList({ disabled, onEdit, onRemove }) {
             <Modal className='custom-alert' size='sm' show={showModal} onHide={() => setShowModal(false)} >
                 <Modal.Body className='custom-alert-body pb-0'>
                     <span className='title text-center'>
-                        {t('delete-product-alert')}
+                        {t('delete-product-alert', { product: camelCase(productToDelete?.code) })}
                     </span>
                 </Modal.Body>
                 <Modal.Footer className='custom-alert-footer p-2'>

@@ -9,6 +9,7 @@ import Select from '../components/Select';
 import { getAccountGroupList } from '../services/apis/mypantry/requests/AccountRequests.js';
 import { getAllSupermarkets, createSupermarket, updateSupermarket, deleteSupermarket } from '../services/apis/mypantry/requests/PurchaseRequests.js'
 import iconSupermarket from '../assets/images/supermarket-gradient.png';
+import Modal from 'react-bootstrap/Modal';
 
 export function Supermarket() {
 
@@ -25,6 +26,8 @@ export function Supermarket() {
     const [showNew, setShowNew] = useState(false);
     const [refresh, setRefresh] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
+    const [showModal, setShowModal] = useState(false);
+    const [supermarketToDelete, setSupermarketToDelete] = useState();
 
     const { showAlert } = useAlert();
 
@@ -135,6 +138,18 @@ export function Supermarket() {
         }
     }
 
+    function showConfirmDeletion(item) {
+        setSupermarketToDelete(item);
+        setShowModal(!showModal);
+    }
+
+    function handleRemove() {
+        if (supermarketToDelete) {
+            fetchDelete(supermarketToDelete.id);
+        }
+        setShowModal(false);
+    }
+
     function handleClickEdit(item) {
         setSelectedSupermarket(item);
         setEditSupermarketId(item.id);
@@ -208,7 +223,7 @@ export function Supermarket() {
 
                 <div className="d-flex justify-content-end gap-4">
                     <Button className="m-0 p-0 pe-2" onClick={() => handleClickEdit(item)} variant="link" disabled={editSupermarketId > 0}><BsPencil className='icon' /></Button>
-                    <Button className="m-0 p-0"onClick={() => fetchDelete(item.id)} variant="link" disabled={setEditSupermarketId > 0}><BsTrash className='icon' /></Button>
+                    <Button className="m-0 p-0" onClick={() => showConfirmDeletion(item)} variant="link" disabled={setEditSupermarketId > 0}><BsTrash className='icon' /></Button>
                 </div>
             </div>
         )
@@ -229,33 +244,43 @@ export function Supermarket() {
 
 
     return (
-        <Stack gap={3}>
-            <div className="d-flex align-items-end mt-4">
-                <Image src={iconSupermarket} width={40} height={40} className="ms-2 me-3" />
-                <h6 className='title flex-grow-1'>{t("supermarket-title")}</h6>
-                <Button bsPrefix="btn-custom" size="sm" onClick={handleClickNew} className="pe-2 ps-2" disabled={editSupermarketId > 0 || showNew}><span>{t("btn-create")}</span></Button>
-            </div>
-            <div className='d-flex flex-row align-text-center gap-2 mt-5'>
-                <span className="title">{t('group-title')}</span>
-                <Form.Group className="mb-2 flex-grow-1" controlId="formAccountGroups" size="sm">
-                    {isLoading ? <span>Loading...</span> :
-                        <Select name="accountGroup" key={accountGroupOption?.value}
-                            defaultValue={accountGroupOption}
-                            options={accountGroupOptions}
-                            onChange={setAccountGroupOption} />
-                    }
-                </Form.Group>
-            </div>
-            {/* <div className="scroll-supermarkets mt-3"> */}
-            <Row xs={1} md={2} lg={3} className='m-0'>
-                {renderCards()}
-            </Row>
-            {/* {renderSupermarkets()} */}
-            {/* </div> */}
-            <div className="mt-4">
-                <CategoryDragDrop key={selectedSupermarket.id} innitialList={selectedSupermarket.categories} handleListChange={handleCategoriesChange} disabled={editSupermarketId === 0 && !showNew} />
-            </div>
-        </Stack>
+        <>
+            <Stack gap={3}>
+                <div className="d-flex align-items-end mt-4">
+                    <Image src={iconSupermarket} width={40} height={40} className="ms-2 me-3" />
+                    <h6 className='title flex-grow-1'>{t("supermarket-title")}</h6>
+                    <Button bsPrefix="btn-custom" size="sm" onClick={handleClickNew} className="pe-2 ps-2" disabled={editSupermarketId > 0 || showNew}><span>{t("btn-create")}</span></Button>
+                </div>
+                <div className='d-flex flex-row align-text-center gap-2 mt-5'>
+                    <span className="title">{t('group-title')}</span>
+                    <Form.Group className="mb-2 flex-grow-1" controlId="formAccountGroups" size="sm">
+                        {isLoading ? <span>Loading...</span> :
+                            <Select name="accountGroup" key={accountGroupOption?.value}
+                                defaultValue={accountGroupOption}
+                                options={accountGroupOptions}
+                                onChange={setAccountGroupOption} />
+                        }
+                    </Form.Group>
+                </div>
+                <Row xs={1} md={2} lg={3} className='m-0'>
+                    {renderCards()}
+                </Row>
+                <div className="mt-4">
+                    <CategoryDragDrop key={selectedSupermarket.id} innitialList={selectedSupermarket.categories} handleListChange={handleCategoriesChange} disabled={editSupermarketId === 0 && !showNew} />
+                </div>
+            </Stack>
+            <Modal className='custom-alert' size='sm' show={showModal} onHide={() => setShowModal(false)} >
+                <Modal.Body className='custom-alert-body pb-0'>
+                    <span className='title text-center'>
+                        {t('delete-supermarket-alert', { supermarket: supermarketToDelete?.name })}
+                    </span>
+                </Modal.Body>
+                <Modal.Footer className='custom-alert-footer p-2'>
+                    <Button bsPrefix='btn-custom' size='sm' onClick={() => setShowModal(false)}><span>{t("btn-no", { ns: "common" })}</span></Button>
+                    <Button bsPrefix='btn-custom' size='sm' onClick={handleRemove}><span>{t("btn-yes", { ns: "common" })}</span></Button>
+                </Modal.Footer>
+            </Modal >
+        </>
     )
 
 }

@@ -11,6 +11,7 @@ import { camelCase } from '../services/Utils.js';
 import useAlert from '../hooks/useAlert.js';
 import { useTranslation } from 'react-i18next';
 import { Card, Col, Row } from 'react-bootstrap';
+import Modal from 'react-bootstrap/Modal';
 
 function PantryItemList({ pantryId, setIsEmpty }) {
 
@@ -22,6 +23,8 @@ function PantryItemList({ pantryId, setIsEmpty }) {
     const [filteredItems, setFilteredItems] = useState([]);
     const [searchText, setSearchText] = useState("");
     const { showAlert } = useAlert();
+    const [showModal, setShowModal] = useState(false);
+    const [itemToDelete, setItemToDelete] = useState();
 
     useEffect(() => {
         setIsLoading(true);
@@ -65,9 +68,18 @@ function PantryItemList({ pantryId, setIsEmpty }) {
         }
     }
 
+    function showConfirmDeletion(item) {
+        setItemToDelete(item);
+        setShowModal(!showModal);
+    }
+
     function handleRemove(item) {
-        fetchDeletePantryItem(item.pantry.id, item.product.id)
-        showAlert(VariantType.SUCCESS, t('delete-item-success'));
+        if (itemToDelete) {
+            fetchDeletePantryItem(itemToDelete.pantry.id, itemToDelete.product.id)
+            showAlert(VariantType.SUCCESS, t('delete-item-success'));
+        }
+        setShowModal(false);
+
         return
     }
 
@@ -101,7 +113,7 @@ function PantryItemList({ pantryId, setIsEmpty }) {
                                     <Image src={food} width={20} height={20} rounded />
                                     <Card.Title as="h6" className='mb-0'><span className='text-wrap'>{camelCase(item.product.code)}</span></Card.Title>
                                 </div>
-                                <Button onClick={() => handleRemove(item)} variant="link" className='pt-0 pb-0 pe-0'><BsTrash className='icon' /></Button>
+                                <Button onClick={() => showConfirmDeletion(item)} variant="link" className='pt-0 pb-0 pe-0'><BsTrash className='icon' /></Button>
                             </div>
 
                             <div className='d-flex gap-2 mb-2'>
@@ -140,6 +152,17 @@ function PantryItemList({ pantryId, setIsEmpty }) {
             <Row key="row-0" xs={1} md={2} lg={3} className='m-0'>
                 {renderCards()}
             </Row>
+            <Modal className='custom-alert' size='sm' show={showModal} onHide={() => setShowModal(false)} >
+                <Modal.Body className='custom-alert-body pb-0'>
+                    <span className='title text-center'>
+                        {t('delete-item-alert', { item: camelCase(itemToDelete?.product.code) })}
+                    </span>
+                </Modal.Body>
+                <Modal.Footer className='custom-alert-footer p-2'>
+                    <Button bsPrefix='btn-custom' size='sm' onClick={() => setShowModal(false)}><span>{t("btn-no", { ns: "common" })}</span></Button>
+                    <Button bsPrefix='btn-custom' size='sm' onClick={handleRemove}><span>{t("btn-yes", { ns: "common" })}</span></Button>
+                </Modal.Footer>
+            </Modal >
         </div>
     );
 }
