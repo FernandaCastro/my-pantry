@@ -7,8 +7,9 @@ import useAlert from '../hooks/useAlert.js';
 import { BsPencil, BsTrash, BsCardChecklist } from "react-icons/bs";
 import Modal from 'react-bootstrap/Modal';
 import { useTranslation } from 'react-i18next';
-import { Card, Col, Row } from 'react-bootstrap';
+import { Card, Col, OverlayTrigger, Row, Tooltip } from 'react-bootstrap';
 import iconPantry from '../assets/images/cupboard-gradient.png';
+import iconMagicWand from '../assets/images/magic-wand.png';
 import Image from 'react-bootstrap/Image';
 
 export default function Pantries() {
@@ -98,8 +99,11 @@ export default function Pantries() {
                 <div className="d-flex justify-content-start align-items-end mt-4">
                     <Image src={iconPantry} width={40} height={40} className="ms-2 me-3" />
                     <h6 className='title'>{t('pantry-list-title')}</h6>
-                    <Button bsPrefix="btn-custom" href={"/pantries/new-wizard"} className="pe-2 ps-2 ms-auto"><span>{t('btn-new-pantry-wizardx')}</span></Button>
-                    <Button bsPrefix="btn-custom" href={"/pantries/new"} className="ms-3 pe-2 ps-2"><span>{t('btn-new-pantry')}</span></Button>
+
+                    <OverlayTrigger placement="bottom" delay={{ show: 250, hide: 400 }} overlay={<Tooltip className="custom-tooltip">{t("tooltip-pantry-wizard")}</Tooltip>}>
+                    <Button variant="link" href={"/pantries/new-wizard"} className="pt-0 pb-0 ms-auto"><div className="bigger-icon gradient-icon-box-body"><Image src={iconMagicWand} className="bigger-icon" /></div></Button>
+                    </OverlayTrigger>
+                    <Button bsPrefix="btn-custom" href={"/pantries/new"} className="ms-2 pe-2 ps-2"><span>{t('btn-new-pantry')}</span></Button>
                 </div>
                 <div>
                     {renderCards()}

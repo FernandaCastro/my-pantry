@@ -17,7 +17,7 @@
   "type-recurring": "Recorrente",
   "type-no-recurring": "Não Recorrente",
   "btn-new-pantry": "Criar Despensa",
-  "btn-new-pantry-wizardx": "Wizard",
+  "tooltip-pantry-wizard": "Assistente de Criação de Despensa",
   "btn-add-pantry-items": "Gerenciar Itens",
   "btn-balance-inventtory": "Analisar o estoque",
   "tooltip-balance-inventory": "Analisar e provisionar itens",
@@ -36,6 +36,9 @@
   "wizard-info-empty-pantry": "Você não adicionou nenhum produto à esta despensa. A despensa será criada vazia.",
   "wizard-product-details": "Produtos na despensa",
   "label-switch-selectAll": "Selecionar tudo",
-  "label-switch-expandAll": "Expandir Tudo"
-
+  "label-switch-expandAll": "Expandir Tudo",
+  "label-top-low-level": "Top 5 Nível Baixo",
+  "welcome-no-pantry": "Bem-vindo ao My Pantry!",
+  "no-pantry-message": "Que tal criar a sua primeira Despensa?",
+  "analyse-pantry": "Analisar e adicionar à lista de compras?"
 }

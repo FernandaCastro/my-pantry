@@ -231,11 +231,27 @@
     text-align: center;
 }
 
-.gradient-icon-box {
+.gradient-icon-box-header {
     background: transparent;
     height: 45px;
     width: 45px;
     background-image: var(--gradient-image-icon-background);
+    background-clip: padding-box, border-box;
+    background-origin: border-box;
+    border: 3px solid transparent;
+    border-radius: 50%;
+
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+.gradient-icon-box-body{
+    background: transparent;
+    height: 45px;
+    width: 45px;
+    background-image: var(--gradient-image-button);
     background-clip: padding-box, border-box;
     background-origin: border-box;
     border: 3px solid transparent;
@@ -485,6 +501,11 @@ table.bordered {
     padding: 5px;
 }
 
+.subtitle {
+    color: var(--text-color-2);
+    margin: initial;
+}
+
 .link {
     color: var(--link-color);
 }
@@ -530,6 +551,13 @@ p {
     width: 25px;
     height: 25px;
     padding: 0;
+}
+
+div.bigger-icon{
+.bigger-icon{
+    width: 30px;
+    height: 30px;
+}
 }
 
 .icon {
@@ -1151,4 +1179,45 @@ span.stepTitle {
     -webkit-text-fill-color: transparent !important;
 
 }
+
 //End Wizards
+//Chart
+.chart-text {
+    fill: var(--text-color);
+    font-size: small;
+}
+
+.chart-subtext {
+    fill: var(--text-color-2);
+}
+
+.chart-center {
+    position: relative;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 0;
+    margin: 0;
+}
+
+.recharts-wrapper {
+
+    .recharts-surface {
+        padding: 0;
+        margin: 0;
+    }
+
+
+}
+
+li.top-critical-item{
+    display: list-item;
+    list-style-type: none;
+    height: 7px;
+    margin: 10px;
+    vertical-align: middle;
+}
+
+
+//Chart

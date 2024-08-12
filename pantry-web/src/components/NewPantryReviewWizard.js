@@ -5,11 +5,12 @@ import { useEffect, useState } from "react";
 import i18n from 'i18next';
 import { BsArrow90DegRight } from "react-icons/bs";
 
-function NewPantryReviewWizard({ pantry, productList, setFinalProductList, expandAll, setExpandAll }) {
+function NewPantryReviewWizard({ pantry, productList, setFinalProductList, expandAll, setExpandAll, analysePantry, setAnalysePantry }) {
 
     const { t } = useTranslation(['pantry', 'categories', 'common']);
     const [categories, setCategories] = useState(() => { return populateCategories() });
     const [finalList, setFinalList] = useState(() => { return populateFinalList() });
+
 
     useEffect(() => {
         setFinalProductList(finalList);
@@ -218,6 +219,12 @@ function NewPantryReviewWizard({ pantry, productList, setFinalProductList, expan
             <Col>
                 <span className="title">{t('account-group', { ns: 'common' })}: </span>
                 <span>{pantry.accountGroup.label}</span>
+            </Col>
+
+            <Col className="pt-4">
+                <FormCheck label={t('analyse-pantry')}
+                    defaultChecked={analysePantry}
+                    onChange={() => setAnalysePantry(!analysePantry)} />
             </Col>
 
             <h5 className="title pt-5 pb-2">{t('wizard-product-details')}</h5>

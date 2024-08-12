@@ -17,7 +17,7 @@
   "type-recurring": "Recurring",
   "type-no-recurring": "No Recurring",
   "btn-new-pantry": "New Pantry",
-  "btn-new-pantry-wizardx": "Wizard",
+  "tooltip-pantry-wizard": "New Pantry Wizard",
   "btn-add-pantry-items": "Manage Items",
   "btn-balance-inventtory": "Balance Inventory",
   "tooltip-btn-balance-inventory": "Analyse and provision items",
@@ -36,5 +36,10 @@
   "wizard-info-empty-pantry": "You haven't added any product to this pantry. The Pantry will be created empty.",
   "wizard-product-details": "Products in the Pantry",
   "label-switch-selectAll": "Select All",
-  "label-switch-expandAll": "Expand All"
+  "label-switch-expandAll": "Expand All",
+  "label-top-low-level": "Top 5 Low-Level",
+  "welcome-no-pantry": "Welcome to My Pantry!",
+  "no-pantry-message": "What about creating your first Pantry?",
+  "analyse-pantry": "Analyse and add to the shopping list?"
+
 }
