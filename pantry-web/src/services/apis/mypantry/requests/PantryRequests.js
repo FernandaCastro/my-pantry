@@ -83,4 +83,9 @@ export async function createPantryWizard(pantryWizardDto) {
     return FetchPantry('pantries/wizard', "POST", pantryWizardDto);
 }
 
+export async function getPantryChartData() {
+    return FetchPantry(`pantries/charts-data`, "GET");
+}
+
+
 

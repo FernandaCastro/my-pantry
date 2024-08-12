@@ -36,6 +36,7 @@ public class PantryController {
         return ResponseEntity.ok(service.getAll(SecurityContextHolder.getContext().getAuthentication().getName()));
     }
 
+
     @GetMapping("/all-with-permission")
     public ResponseEntity<List<PantryDto>> getAllWithPermission(@RequestParam String permission) {
         return ResponseEntity.ok(service.getAllWithPermission(SecurityContextHolder.getContext().getAuthentication().getName(), permission));
@@ -83,6 +84,12 @@ public class PantryController {
     @PreAuthorize("hasPermissionInAGroup(#pantry.getAccountGroup().getId(), 'create_pantry')")
     public ResponseEntity<PantryDto> create(@P("pantry") @Valid @RequestBody PantryWizardDto newDto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(service.createWizard(newDto));
+    }
+
+    @GetMapping("/charts-data")
+    @PreAuthorize("hasPermissionInAnyGroup('list_pantry')")
+    public ResponseEntity<List<PantryChartDto>> getChartData() {
+        return ResponseEntity.ok(service.getChartData(SecurityContextHolder.getContext().getAuthentication().getName()));
     }
 
 }
