@@ -84,5 +84,6 @@ here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-
 * `jsencrypt` (RSA Javascript encryption)
 * `react-form-wizard-component` (A react form wizard component with validation and progress bar with no external
   dependencies which simplifies tab wizard management.)
+* `recharts`(A composable charting library built on React components)  
 
 
