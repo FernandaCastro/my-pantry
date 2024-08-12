@@ -2,14 +2,17 @@ package com.fcastro.pantryservice.pantry;
 
 import com.fcastro.app.config.MessageTranslator;
 import com.fcastro.app.exception.ResourceNotFoundException;
+import com.fcastro.pantryservice.pantryitem.PantryItem;
 import com.fcastro.pantryservice.pantryitem.PantryItemService;
 import com.fcastro.security.authorization.AuthorizationHandler;
 import com.fcastro.security.core.model.AccessControlDto;
+import com.fcastro.security.core.model.AccountGroupDto;
 import com.fcastro.security.exception.AccessControlNotDefinedException;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -144,7 +147,88 @@ public class PantryService {
         var items = pantryItemService.createWizard(storedDto, dto.getItems());
         storedDto.setItems(items);
 
+        if (dto.isAnalysePantry()) {
+            items = pantryItemService.processPurchaseNeed(storedDto.getId());
+            storedDto.setItems(items);
+        }
+
         return storedDto;
+    }
+
+    /**
+     * Calculate the consume percentage of all pantries the user has access,
+     * and list the 5 items with the lowest consume percentage in each pantry
+     *
+     * @param email String
+     * @return List<PantryChartDto>
+     */
+    @Transactional
+    public List<PantryChartDto> getChartData(String email) {
+        var accessControlList = authorizationHandler.listAccessControl(email, Pantry.class.getSimpleName(), null, null, null);
+        var pantryIds = accessControlList.stream().map(AccessControlDto::getClazzId).collect(Collectors.toSet());
+        var pantryList = repository.findAllByIds(pantryIds);
+
+        var pantryChartList = pantryList.stream().map(p -> {
+            var items = p.getItems();
+            var pantryChart = PantryChartDto.builder()
+                    .id(p.getId()).name(p.getName()).type(p.getType()).isActive(p.getIsActive())
+                    .percentage(calculatePercentage(items))
+                    .criticalItems(calculateCriticalItems(items))
+                    .accountGroup(getAccountGroup(p.getId(), accessControlList))
+                    .build();
+
+            return pantryChart;
+        }).collect(Collectors.toList());
+
+        return pantryChartList;
+    }
+
+    //It finds and attaches AccountGroup to the Pantry
+    private AccountGroupDto getAccountGroup(Long pantryId, List<AccessControlDto> accessControlList) {
+        var accountControl = accessControlList.stream()
+                .filter((accessControl) -> accessControl.getClazzId() == pantryId)
+                .findFirst()
+                .orElseThrow(() -> new AccessControlNotDefinedException(MessageTranslator.getMessage("error.embedding.group.to.pantry")));
+
+        return accountControl.getAccountGroup();
+    }
+
+    private double calculatePercentage(List<PantryItem> items) {
+        var percentual = 0.0;
+        var idealQty = items.stream().mapToInt(i -> i.getIdealQty()).sum();
+        var currentQty = items.stream().mapToInt(i -> i.getCurrentQty()).sum();
+        if (idealQty > 0) {
+            percentual = (100 * currentQty) / idealQty;
+        }
+        return percentual;
+    }
+
+    private List<PantryItemChartDto> calculateCriticalItems(List<PantryItem> items) {
+
+        var criticalItems = items.stream().map(i -> {
+                    var percentage = 0.0;
+
+                    if (i.getIdealQty() > 0) {
+                        percentage = (100 * i.getCurrentQty()) / i.getIdealQty();
+                    }
+
+                    return PantryItemChartDto.builder()
+                            .productId(i.getProduct().getId())
+                            .productCode(i.getProduct().getCode())
+                            .idealQty(i.getIdealQty())
+                            .currentQty(i.getCurrentQty())
+                            .percentage(percentage)
+                            .build();
+
+                })
+                .filter(i -> i.getPercentage() <= 30)
+                .sorted(Comparator.comparingDouble(PantryItemChartDto::getPercentage))
+                .collect(Collectors.toList());
+
+        if (criticalItems.size() > 5) {
+            return criticalItems.subList(0, 5);
+        }
+        return criticalItems;
     }
 
     private PantryDto convertToDTO(Pantry entity) {

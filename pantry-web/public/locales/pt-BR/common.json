@@ -21,5 +21,9 @@
   "datetime": "{{date, DATETIME_SHORT}}",
   "tooltip-category-not-associated-to-supermarket": "Seção não associada ao supermercado.",
   "status-401": "Status 401: Você não está autenticado. Por favor, faça login.",
-  "status-403": "Status 403: Você não tem permissão para executar essa ação."
+  "status-403": "Status 403: Você não tem permissão para executar essa ação.",
+  "empty": "Vazio",
+  "good": "Bom",
+  "full": "Cheio"
+
 }

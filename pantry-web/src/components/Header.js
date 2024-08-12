@@ -35,13 +35,13 @@ export default function Header() {
                 <div className="menu">
                     <OverlayTrigger placement="bottom" delay={{ show: 250, hide: 400 }} overlay={<Tooltip className="custom-tooltip">{t("tooltip-consume")}</Tooltip>}>
                         <Nav.Item><Nav.Link href={"/pantries/consume"} eventKey="link-consume" className="menuItem" disabled={!hasActiveProfile} >
-                            <div className="gradient-icon-box"><Image src={iconConsume} className="menu-icon" /></div></Nav.Link>
+                            <div className="gradient-icon-box-header"><Image src={iconConsume} className="menu-icon" /></div></Nav.Link>
                         </Nav.Item>
                     </OverlayTrigger>
                     <OverlayTrigger placement="bottom" delay={{ show: 250, hide: 400 }} overlay={<Tooltip className="custom-tooltip">{t("tooltip-purchase")}</Tooltip>}>
                         <Nav.Item>
                             <Nav.Link href="/purchase" eventKey="link-purchases" className="menuItem" disabled={!hasActiveProfile}>
-                            <div className="gradient-icon-box"><Image src={iconPurchase} className="menu-icon" /></div>
+                            <div className="gradient-icon-box-header"><Image src={iconPurchase} className="menu-icon" /></div>
                             </Nav.Link>
                         </Nav.Item>
                     </OverlayTrigger>

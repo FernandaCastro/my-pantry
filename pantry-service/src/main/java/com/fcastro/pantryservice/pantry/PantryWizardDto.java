@@ -26,6 +26,7 @@ public class PantryWizardDto {
     @NotBlank(message = "Type is mandatory")
     private String type;
     private AccountGroupDto accountGroup;
+    private boolean analysePantry;
 
 
     //    [

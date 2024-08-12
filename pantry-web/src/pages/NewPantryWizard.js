@@ -28,6 +28,7 @@ function NewPantryWizard() {
     const [selectAll, setSelectAll] = useState(true);
     const [expandAllProducts, setExpandAllProducts] = useState(true);
     const [expandAllReview, setExpandAllReview] = useState(true);
+    const [analysePantry, setAnalysePantry] = useState(true);
 
     const [isLoading, setIsLoading] = useState(false);
     const { showAlert } = useAlert();
@@ -78,6 +79,7 @@ function NewPantryWizard() {
         console.log("Form completed!");
         console.log("Pantry: ", pantryForm);
         console.log("Products: ", finalProductList);
+        console.log("AnalysePantry", analysePantry);
 
         const accountGroup = accountGroups.find(g => g.id === pantryForm.accountGroup.value);
 
@@ -85,7 +87,8 @@ function NewPantryWizard() {
             accountGroup: accountGroup,
             name: pantryForm.name,
             type: pantryForm.type.value,
-            items: finalProductList
+            items: finalProductList,
+            analysePantry: analysePantry
         }
 
         console.log("PantryWizardDto: ", pantryWizardDto);
@@ -139,7 +142,9 @@ function NewPantryWizard() {
                         productList={productList}
                         setFinalProductList={setFinalProductList}
                         expandAll={expandAllReview}
-                        setExpandAll={setExpandAllReview} />
+                        setExpandAll={setExpandAllReview} 
+                        analysePantry={analysePantry}
+                        setAnalysePantry={setAnalysePantry}/>
                 </FormWizard.TabContent>
 
             </FormWizard>

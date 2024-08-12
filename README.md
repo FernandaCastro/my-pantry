@@ -55,6 +55,7 @@ Security, Postgres and Kafka (prov/sub for asynch communication only).
 
 Screenshots: <br />
 <img height="400" width="200" title="Login" src="./readme_images/login.png"/>
+<img height="400" width="200" src="./readme_images/pantry-piechart.png"/>
 <img height="400" width="200" src="./readme_images/pantries.png"/>
 <img height="400" width="200" src="./readme_images/pantry.png"/>
 <img height="400" width="200" src="./readme_images/pantry-items.png"/>
