@@ -526,6 +526,11 @@ span[disabled] {
     color: var(--text-color-2);
 }
 
+.removed {
+    color: red;
+    text-decoration: line-through;
+}
+
 p {
     color: var(--text-color);
 }

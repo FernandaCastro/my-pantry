@@ -1,6 +1,7 @@
 package com.fcastro.pantryservice.pantryitem;
 
 import com.fcastro.app.exception.ResourceNotFoundException;
+import com.fcastro.app.model.Action;
 import com.fcastro.kafka.exception.EventProcessingException;
 import com.fcastro.kafka.model.PurchaseEventDto;
 import com.fcastro.pantryservice.event.PurchaseEventProducer;
@@ -42,7 +43,10 @@ public class PantryItemServiceUnitTest {
     ModelMapper modelMapper;
 
     @Captor
-    ArgumentCaptor<PantryItem> captor;
+    ArgumentCaptor<PantryItem> captorPantryItem;
+
+    @Captor
+    ArgumentCaptor<PurchaseEventDto> captorPurchaseEventDto;
 
     @Mock
     LocaleContextHolder localeContextHolder;
@@ -118,61 +122,6 @@ public class PantryItemServiceUnitTest {
                         .productId(1L).build());
     }
 
-    @Test
-    public void givenValidIds_whenConsumeProduct_shouldCalculateQtyAndNoPurchase() {
-        //given
-        var entity = PantryItem.builder()
-                .currentQty(10)
-                .idealQty(10)
-                .pantry(Pantry.builder().id(1L).name("PANTRY1").isActive(true).build())
-                .product(Product.builder().id(1L).description("MILK").size("1L").build())
-                .build();
-
-        given(repository.findEagerByPantryIdAndProductId(anyLong(), anyLong())).willReturn(Optional.of(entity));
-        given(repository.save(captor.capture())).willReturn(entity);
-
-        //when
-        var consumedDto = PantryItemConsumedDto.builder().pantryId(1L).productId(1L).qty(1).build();
-        service.consumePantryItem(consumedDto);
-
-        //then
-        var item = captor.getValue();
-        assertThat(item.getCurrentQty()).isEqualTo(9);
-        verify(eventProducer, times(0)).send(any(PurchaseEventDto.class));
-    }
-
-    @Test
-    public void givenValidIds_whenConsumeProduct_shouldCalculateQtyAndPurchase() {
-        //given
-        var entity = PantryItem.builder()
-                .currentQty(6)
-                .idealQty(10)
-                .pantry(Pantry.builder().id(1L).name("PANTRY1").isActive(true).type("R").build())
-                .product(Product.builder().id(1L).description("MILK").size("1L").build())
-                .build();
-
-        given(repository.findEagerByPantryIdAndProductId(anyLong(), anyLong())).willReturn(Optional.of(entity));
-        given(repository.save(captor.capture())).willReturn(entity);
-        doNothing().when(eventProducer).send(any(PurchaseEventDto.class));
-
-        //when
-        var consumedDto = PantryItemConsumedDto.builder().pantryId(1L).productId(1L).qty(1).build();
-        service.consumePantryItem(consumedDto);
-
-        //then
-        var item = captor.getValue();
-        assertThat(item.getCurrentQty()).isEqualTo(5);
-        assertThat(item.getProvisionedQty()).isEqualTo(5);
-
-
-        var purchaseEventDto = PurchaseEventDto.builder()
-                .qtyProvisioned(5)
-                .pantryId(entity.getPantry().getId())
-                .pantryName(entity.getPantry().getName())
-                .productId(entity.getProduct().getId())
-                .build();
-        verify(eventProducer, times(0)).send(purchaseEventDto);
-    }
 
     @Test
     public void givenInvalidIds_whenConsumeProduct_shouldReturnQuantityNotAvailable() {
@@ -233,32 +182,6 @@ public class PantryItemServiceUnitTest {
         verify(eventProducer, times(0)).send(any(PurchaseEventDto.class));
     }
 
-
-    @Test
-    public void givenListOfValidIds_whenConsumeProduct_shouldCalculateQtyAndPurchase() {
-        //given
-        var entity = PantryItem.builder()
-                .currentQty(10)
-                .idealQty(10)
-                .pantry(Pantry.builder().id(1L).name("PANTRY1").isActive(true).build())
-                .product(Product.builder().id(1L).description("MILK").size("1L").build())
-                .build();
-
-        given(repository.findEagerByPantryIdAndProductId(anyLong(), anyLong())).willReturn(Optional.of(entity));
-        given(repository.save(captor.capture())).willReturn(entity);
-
-        //when
-        var list = new ArrayList<PantryItemConsumedDto>();
-        list.add(PantryItemConsumedDto.builder().pantryId(1L).productId(1L).qty(2).build());
-        list.add(PantryItemConsumedDto.builder().pantryId(1L).productId(1L).qty(2).build());
-        service.consumePantryItem(1L, list);
-
-        //then
-        var item = captor.getValue();
-        assertThat(item.getCurrentQty()).isEqualTo(6);
-        assertThat(item.getProvisionedQty()).isEqualTo(0);
-    }
-
     @Test
     public void givenInvalidPurchaseEventDtoList_whenProcessPurchaseCompleteEvent_shouldEventProcessingException() {
         //given
@@ -270,6 +193,125 @@ public class PantryItemServiceUnitTest {
 
         //when then
         Assertions.assertThrows(EventProcessingException.class, () -> service.processPurchaseCompleteEvent(eventDtoList));
+    }
+
+    @Test
+    public void givenHighAvailabilityAndLowConsumption_whenConsumeProduct_shouldOnlyDecreaseCurrentQtyNoProvision() {
+        //given
+        var entity = PantryItem.builder()
+                .currentQty(10)
+                .idealQty(10)
+                .provisionedQty(0)
+                .pantry(Pantry.builder().id(1L).name("PANTRY1").isActive(true).build())
+                .product(Product.builder().id(1L).description("MILK").size("1L").build())
+                .build();
+
+        given(repository.findEagerByPantryIdAndProductId(anyLong(), anyLong())).willReturn(Optional.of(entity));
+        given(repository.save(captorPantryItem.capture())).willReturn(entity);
+
+        //when
+        var list = new ArrayList<PantryItemConsumedDto>();
+        list.add(PantryItemConsumedDto.builder().pantryId(1L).productId(1L).qty(2).build());
+        list.add(PantryItemConsumedDto.builder().pantryId(1L).productId(1L).qty(2).build());
+        service.consumePantryItem(1L, list);
+
+        //then
+        var item = captorPantryItem.getValue();
+        assertThat(item.getCurrentQty()).isEqualTo(6);
+        assertThat(item.getProvisionedQty()).isEqualTo(0);
+        verify(eventProducer, times(0)).send(any(PurchaseEventDto.class));
+
+    }
+
+    @Test
+    public void givenHighAvailabilityAndHighConsumption_whenConsumeProduct_shouldCreateProvisioning() {
+        //given
+        var entity = PantryItem.builder()
+                .currentQty(6)
+                .idealQty(10)
+                .provisionedQty(0)
+                .pantry(Pantry.builder().id(1L).name("PANTRY1").isActive(true).type("R").build())
+                .product(Product.builder().id(1L).description("MILK").size("1L").build())
+                .build();
+
+        given(repository.findEagerByPantryIdAndProductId(anyLong(), anyLong())).willReturn(Optional.of(entity));
+        given(repository.save(captorPantryItem.capture())).willReturn(entity);
+        doNothing().when(eventProducer).send(captorPurchaseEventDto.capture());
+
+        //when
+        var consumedDto = PantryItemConsumedDto.builder().pantryId(1L).productId(1L).qty(1).build();
+        service.consumePantryItem(consumedDto);
+
+        //then
+        var item = captorPantryItem.getValue();
+        assertThat(item.getCurrentQty()).isEqualTo(5);
+        assertThat(item.getProvisionedQty()).isEqualTo(5);
+
+        verify(eventProducer, times(1)).send(any(PurchaseEventDto.class));
+        var purchaseEventDto = captorPurchaseEventDto.getValue();
+        assertThat(purchaseEventDto.getAction()).isEqualTo(Action.CREATE);
+        assertThat(purchaseEventDto.getQtyProvisioned()).isEqualTo(5);
+    }
+
+    @Test
+    public void givenLowAvailabilityAndLowProvisionedQty_whenConsumeProduct_shouldIncreaseProvision() {
+        //given
+        var entity = PantryItem.builder()
+                .currentQty(5)
+                .idealQty(10)
+                .provisionedQty(5)
+                .pantry(Pantry.builder().id(1L).name("PANTRY1").type("R").isActive(true).build())
+                .product(Product.builder().id(1L).description("MILK").size("1L").build())
+                .build();
+
+        given(repository.findEagerByPantryIdAndProductId(anyLong(), anyLong())).willReturn(Optional.of(entity));
+        given(repository.save(captorPantryItem.capture())).willReturn(entity);
+        doNothing().when(eventProducer).send(captorPurchaseEventDto.capture());
+
+        //when
+        var consumedDto = PantryItemConsumedDto.builder().pantryId(1L).productId(1L).qty(1).build();
+        service.consumePantryItem(consumedDto);
+
+        //then
+        var item = captorPantryItem.getValue();
+        assertThat(item.getCurrentQty()).isEqualTo(4);
+        assertThat(item.getProvisionedQty()).isEqualTo(6);
+
+        verify(eventProducer, times(1)).send(any(PurchaseEventDto.class));
+        var purchaseEventDto = captorPurchaseEventDto.getValue();
+        assertThat(purchaseEventDto.getAction()).isEqualTo(Action.CREATE);
+        assertThat(purchaseEventDto.getQtyProvisioned()).isEqualTo(1);
+    }
+
+    @Test
+    public void givenHighAvailabilityAndHasProvisionedQty_whenConsumeProduct_shouldZeroProvision() {
+        //given
+        var entity = PantryItem.builder()
+                .currentQty(10)
+                .idealQty(10)
+                .provisionedQty(5)
+                .pantry(Pantry.builder().id(1L).name("PANTRY1").isActive(true).type("R").build())
+                .product(Product.builder().id(1L).description("MILK").size("1L").build())
+                .build();
+
+        given(repository.findEagerByPantryIdAndProductId(anyLong(), anyLong())).willReturn(Optional.of(entity));
+        given(repository.save(captorPantryItem.capture())).willReturn(entity);
+        doNothing().when(eventProducer).send(captorPurchaseEventDto.capture());
+
+        //when
+        var consumedDto = PantryItemConsumedDto.builder().pantryId(1L).productId(1L).qty(1).build();
+        service.consumePantryItem(consumedDto);
+
+        //then
+        var item = captorPantryItem.getValue();
+        assertThat(item.getCurrentQty()).isEqualTo(9);
+        assertThat(item.getProvisionedQty()).isEqualTo(0);
+
+        verify(eventProducer, times(1)).send(any(PurchaseEventDto.class));
+        var purchaseEventDto = captorPurchaseEventDto.getValue();
+        assertThat(purchaseEventDto.getAction()).isEqualTo(Action.DELETE);
+        assertThat(purchaseEventDto.getQtyProvisioned()).isEqualTo(5);
+
     }
 
     private PantryItem buildPantryItem(long pantryId, long productId, int currentQty, int idealQty) {

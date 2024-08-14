@@ -2,17 +2,21 @@
 
 # My Pantry
 
-version: 0.7.0
+<b>version: 0.8.0</b> (account-service: v0.3.3, pantry-service: v0.5.0, purchase-service: v0.4.0, pantry-web: v.0.8.0)
 
-- Pantries Dashboard to give you a quick idea how empty are your pantries. It also lists the top 5 lowest level
-  products.
-- Wizard to create pantries can add items to the shopping list, if you choose so.
+- 'Analyse Pantry' button (on Pantry page) should not only create a provisioning, but also create new provisioning,
+  increase or decrease already provisioned quantitty and delete unecessary provisionings.
 
 Plans for next versions:
 
-- Delete provisioned products from the shopping list
-- 'Analyse Pantry' button should not only create an item provisioning, but also delete unecessary provisionings.
+- Delete provisioned products from the shopping list (on Shopping List page)
+
+- Manually increasing or decreasing a quantity of a Pantry Item (on Pantry page), should analyse the provisioning for
+  that item (creating, deleting, increasing or decreasing any provisioning for that item).
+
 - CRUD for Role and Permissions
+
+
 - <s>Integrate with Google Home (ie: "Consume [qty] of [product] from [pantry-name])/</s>
 
 ### Description:
@@ -79,6 +83,7 @@ Themes:
 
 | Path                                                                                                                         | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
 |:-----------------------------------------------------------------------------------------------------------------------------|:----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Home Page                                                                                                                    | When user is not logged in, show Login page link; </br> When <b><u>no Pantry exists yet</u></b>, suggests creation of first Pantry using the <b>Pantry Wizard</b>; <br/> When <b><u>at least one Pantry exists</u></b>, show <b>Pantry Dashboad</b>.                                                                                                                                                                                                            |
 | Consume from Pantry <br/><br/> <img height="30" width="30" src="./pantry-web/src/assets/images/cook-gradient.png"/>          | <b><u>Select the pantries</u></b>, you want to list and consume items. <br /><br/> Find the item using the search mechanism, and comsume the amount. <br/> <br/>Once <b>the consumption of an item is above 50%</b>, an event to purchase more of that item is fired. You should be able to see the in tem in the Shopping List page.                                                                                                                           
 | Shopping List <br/><br/> <img height="30" width="30" src="./pantry-web/src/assets/images/shoppingcart-gradient.png" />       | <b><u>Select the pantries</u></b>, you want to list your Shopping Lists.Lists items to be purchased. <br/><br/> Open a <b>New Order</b> and choose the <b>Supermarket</b> you plan to go shopping. The items in your Shopping List will be sorted by the section categories order of the supermarket chosen. Making it easier to go shopping. <br/><br/> When you're done, click on <b>Checkout</b>, and it will update your Pantries with the purchased items. 
 | Pantry Register <br/><br/> <img height="30" width="30" src="./pantry-web/src/assets/images/cupboard-gradient.png" />         | This is the Pantry register. It lists your pantries and its basic actions for pantries and pantry items: new, edit and delete. <br/> <br/> Here you can add or remove items to your pantry, change the ideal quantity or fix the current quantity of an item. <br/> <br/> Don't forget to click <b>Analyse Pantry</b>, so My Pantry can fix the current Shopping Lists, adding or removing items from it.                                                       |

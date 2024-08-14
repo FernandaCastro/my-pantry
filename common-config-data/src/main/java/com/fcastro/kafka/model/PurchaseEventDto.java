@@ -1,5 +1,6 @@
 package com.fcastro.kafka.model;
 
+import com.fcastro.app.model.Action;
 import lombok.*;
 
 import java.io.Serializable;
@@ -10,6 +11,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PurchaseEventDto implements Serializable {
+    Action action;
     long pantryId;
     String pantryName;
     long productId;
@@ -19,7 +21,8 @@ public class PurchaseEventDto implements Serializable {
     @Override
     public String toString() {
         return "PurchaseEventDto{" +
-                "pantryId=" + pantryId +
+                "action=" + action.toString() +
+                ", pantryId=" + pantryId +
                 ", pantryName='" + pantryName + '\'' +
                 ", productId=" + productId +
                 ", qtyProvisioned=" + qtyProvisioned +

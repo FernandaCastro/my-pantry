@@ -2,6 +2,7 @@ package com.fcastro.pantryservice.pantryitem;
 
 import com.fcastro.app.config.MessageTranslator;
 import com.fcastro.app.exception.ResourceNotFoundException;
+import com.fcastro.app.model.Action;
 import com.fcastro.kafka.exception.EventProcessingException;
 import com.fcastro.kafka.model.PurchaseEventDto;
 import com.fcastro.pantryservice.event.PurchaseEventProducer;
@@ -149,31 +150,55 @@ public class PantryItemService {
 
     private PantryItem processPurchaseNeed(PantryItem itemEntity) {
 
-        if (itemEntity.getIdealQty() <= 0) return itemEntity;
+        //IdalQty = 0 => (100%) No need of provisioning
+        if (itemEntity.getIdealQty() <= 0 && itemEntity.getProvisionedQty() <= 0) return itemEntity;
 
-        var usagePercentage = calculateUsagePercentage(itemEntity);
-        var provision = calculateProvision(itemEntity);
+        var currPlusProv = itemEntity.getCurrentQty() + itemEntity.getProvisionedQty();
+        var provision = itemEntity.getIdealQty() - currPlusProv;
+        var availabilityPercentage = calculateAvailability(itemEntity);
 
-        if (usagePercentage <= SEND_PURCHASE_EVENT_THRESHOLD && provision > 0) {
-            sendPurchaseCreateEvent(itemEntity, provision);
-            itemEntity.setProvisionedQty(itemEntity.getProvisionedQty() + provision);
-            itemEntity.setLastProvisioning(LocalDateTime.now());
+        // Availability is below SEND_PURCHASE_EVENT_THRESHOLD (50%)
+        if (availabilityPercentage <= SEND_PURCHASE_EVENT_THRESHOLD) {
+
+            if (provision == 0) return itemEntity;
+
+            if (provision > 0)
+                sendPurchaseEvent(Action.CREATE, itemEntity, provision);
+
+            if (provision < 0)
+                sendPurchaseEvent(Action.DELETE, itemEntity, (provision * -1));
+
+            var provisionedQty = Math.max(itemEntity.getProvisionedQty() + provision, 0);
+
+            itemEntity.setProvisionedQty(provisionedQty);
+            itemEntity.setLastProvisioning((provisionedQty > 0) ? LocalDateTime.now() : null);
+
+            return itemEntity;
         }
+
+        // Availability is above SEND_PURCHASE_EVENT_THRESHOLD (50%) - No Provisioning need
+        if (availabilityPercentage > SEND_PURCHASE_EVENT_THRESHOLD) {
+
+            if (itemEntity.getProvisionedQty() > 0) {
+                sendPurchaseEvent(Action.DELETE, itemEntity, itemEntity.getProvisionedQty());
+                itemEntity.setProvisionedQty(0);
+                itemEntity.setLastProvisioning(null);
+            }
+        }
+
         return itemEntity;
     }
 
-    private long calculateUsagePercentage(PantryItem itemEntity) {
-        if(itemEntity.getCurrentQty() == 0) return 0;
-        return (100L * itemEntity.getCurrentQty()) / itemEntity.getIdealQty();
+    private double calculateAvailability(PantryItem itemEntity) {
+        if (itemEntity.getCurrentQty() == 0 || itemEntity.getIdealQty() == 0) return 0;
+        return ((Double.valueOf(itemEntity.getCurrentQty()) / Double.valueOf(itemEntity.getIdealQty())) * 100);
     }
 
-    private int calculateProvision(PantryItem itemEntity) {
-        var provisioned = itemEntity.getCurrentQty() + itemEntity.getProvisionedQty();
-        return provisioned < itemEntity.getIdealQty() ? itemEntity.getIdealQty() - provisioned : 0;
-    }
-
-    private void sendPurchaseCreateEvent(PantryItem itemEntity, int provision) {
-        var purchaseEventItemDto = PurchaseEventDto.builder().qtyProvisioned(provision).build();
+    private void sendPurchaseEvent(Action action, PantryItem itemEntity, int provision) {
+        var purchaseEventItemDto = PurchaseEventDto.builder()
+                .action(action)
+                .qtyProvisioned(provision)
+                .build();
         enrichPurchaseItemDto(purchaseEventItemDto, itemEntity);
         eventProducer.send(purchaseEventItemDto);
     }

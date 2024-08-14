@@ -20,7 +20,7 @@
   "tooltip-pantry-wizard": "Assistente de Criação de Despensa",
   "btn-add-pantry-items": "Gerenciar Itens",
   "btn-balance-inventtory": "Analisar o estoque",
-  "tooltip-balance-inventory": "Analisar e provisionar itens",
+  "tooltip-btn-balance-inventory": "Analisar o provisionamento de itens",
   "wizard-step-1": "Despensa",
   "wizard-step-2": "Produtos",
   "wizard-step-3": "Revisão",

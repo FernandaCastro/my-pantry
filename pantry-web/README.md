@@ -1,4 +1,22 @@
-# Getting Started with Create React App
+# Pantry Web
+
+version: 0.8.0
+
+### Extra Libraries
+
+* `i18next` (JavaScript internationalization framework)
+* `react-i18next` (The React/React Native internationalization framework)
+* `i18next-browser-languagedetector` (Plugin that detects the language in the browser-based on the user's preferences.
+  Session storage, cookies, local storage, directories, and HTML elements are also supported across several locales)
+* `i18next-http-backend` (Store them in dedicated JSON files, and load them asynchronously (on demand))
+* `luxon` (Datetime Translations)
+* `react-beautiful-dnd` (Beautiful and accessible drag and drop for lists with React)
+* `jsencrypt` (RSA Javascript encryption)
+* `react-form-wizard-component` (A react form wizard component with validation and progress bar with no external
+  dependencies which simplifies tab wizard management.)
+* `recharts`(A composable charting library built on React components)
+
+## Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
@@ -71,19 +89,5 @@ here: [https://facebook.github.io/create-react-app/docs/deployment](https://face
 
 This section has moved
 here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
-
-### Extra Libraries
-
-* `i18next` (JavaScript internationalization framework)
-* `react-i18next` (The React/React Native internationalization framework)
-* `i18next-browser-languagedetector` (Plugin that detects the language in the browser-based on the user's preferences.
-  Session storage, cookies, local storage, directories, and HTML elements are also supported across several locales)
-* `i18next-http-backend` (Store them in dedicated JSON files, and load them asynchronously (on demand))
-* `luxon` (Datetime Translations)
-* `react-beautiful-dnd` (Beautiful and accessible drag and drop for lists with React)
-* `jsencrypt` (RSA Javascript encryption)
-* `react-form-wizard-component` (A react form wizard component with validation and progress bar with no external
-  dependencies which simplifies tab wizard management.)
-* `recharts`(A composable charting library built on React components)  
 
 

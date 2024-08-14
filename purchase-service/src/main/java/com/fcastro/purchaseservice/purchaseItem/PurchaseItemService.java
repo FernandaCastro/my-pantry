@@ -38,14 +38,64 @@ public class PurchaseItemService {
     public void processPurchaseEvent(PurchaseEventDto dto) {
         if (dto == null) return;
 
-        var entity = repository.findByPantryIdAndProductIdAndPurchaseIdIsNull(dto.getPantryId(), dto.getProductId());
+        switch (dto.getAction()) {
+            case CREATE:
+                processCreateProvisioningEvent(dto);
+                return;
 
-        if (entity != null)
-            entity.setQtyProvisioned(entity.getQtyProvisioned() + dto.getQtyProvisioned());
-        else
-            entity = convertToEntity(dto);
+            case DELETE:
+                processDeleteProvisioningEvent(dto);
+        }
+    }
 
-        repository.save(entity);
+    private void processCreateProvisioningEvent(PurchaseEventDto dto) {
+
+        //It's in an open order => increase provisionedQty and signalise
+        var openOrderItem = repository.findByPantryIdAndProductIdAndOpenPurchaseOrder(dto.getPantryId(), dto.getProductId());
+        if (openOrderItem != null) {
+            openOrderItem.setQtyProvisioned(openOrderItem.getQtyProvisioned() + dto.getQtyProvisioned());
+            //TODO: Signalise qty changed
+            repository.save(openOrderItem);
+            return;
+        }
+
+        //It's not in an order => increase provisionedQty
+        var noOrderItem = repository.findByPantryIdAndProductIdAndNoPurchaseOrder(dto.getPantryId(), dto.getProductId());
+        if (noOrderItem != null) {
+            noOrderItem.setQtyProvisioned(noOrderItem.getQtyProvisioned() + dto.getQtyProvisioned());
+            repository.save(noOrderItem);
+            return;
+        }
+
+        //It doesn't exist => create new provisioning
+        var newProvisioning = convertToEntity(dto);
+        repository.save(newProvisioning);
+    }
+
+
+    private void processDeleteProvisioningEvent(PurchaseEventDto dto) {
+
+        //It's in an open order => decrease provisionedQty and signalise
+        var openOrderItem = repository.findByPantryIdAndProductIdAndOpenPurchaseOrder(dto.getPantryId(), dto.getProductId());
+        if (openOrderItem != null) {
+            openOrderItem.setQtyProvisioned(Math.max(openOrderItem.getQtyProvisioned() - dto.getQtyProvisioned(), 0));
+            //TODO: Signalise qty changed
+            repository.save(openOrderItem);
+            return;
+        }
+
+        //It's not in an order,
+        //  provisionedQty  > 0 => decrease provisionedQty;
+        //  provisionedQty <= 0 => delete the entire provisioning
+        var noOrderItem = repository.findByPantryIdAndProductIdAndNoPurchaseOrder(dto.getPantryId(), dto.getProductId());
+        if (noOrderItem != null) {
+            if (noOrderItem.getQtyProvisioned() - dto.getQtyProvisioned() > 0) {
+                noOrderItem.setQtyProvisioned(Math.max(noOrderItem.getQtyProvisioned() - dto.getQtyProvisioned(), 0));
+                repository.save(noOrderItem);
+                return;
+            }
+            repository.delete(noOrderItem);
+        }
     }
 
     public List<PurchaseItemDto> listPendingPurchase(String email) {
