@@ -25,7 +25,10 @@ public interface PurchaseItemRepository extends JpaRepository<PurchaseItem, Long
     List<PurchaseItem> findAllByPurchaseId(@Param("purchaseId") Long purchaseId);
 
     @Query("select p from purchaseItem p where p.pantryId = :pantryId and p.product.id = :productId and p.purchase.id is null")
-    PurchaseItem findByPantryIdAndProductIdAndPurchaseIdIsNull(Long pantryId, Long productId);
+    PurchaseItem findByPantryIdAndProductIdAndNoPurchaseOrder(Long pantryId, Long productId);
+
+    @Query("select p from purchaseItem p, purchase o where p.pantryId = :pantryId and p.product.id = :productId and p.purchase.id = o.id and o.processedAt is null")
+    PurchaseItem findByPantryIdAndProductIdAndOpenPurchaseOrder(Long pantryId, Long productId);
 
     @Query("select p from purchaseItem p where p.id = :id and p.purchase.id = :purchaseId")
     Optional<PurchaseItem> findByIdAndPurchaseId(Long id, Long purchaseId);
