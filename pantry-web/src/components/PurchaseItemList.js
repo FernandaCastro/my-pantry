@@ -276,7 +276,7 @@ function PurchaseItemList({ selectedPurchase, selectedPantries, setOuterPurchase
                         <div className="d-flex justify-content-between" >
                             <div className='d-flex gap-2'>
                                 <Image src={food} width={20} height={20} rounded />
-                                <Card.Title as="h6" className='mb-0'><span className='text-wrap'>{camelCase(item.product.code)}</span></Card.Title>
+                                <Card.Title as="h6" className='mb-0'><span className={item.qtyProvisioned === 0 ? "text-wrap removed" : "text-wrap"}>{camelCase(item.product.code)}</span></Card.Title>
                             </div>
                             <NumericField object={item} attribute="qtyPurchased" onValueChange={updatePurchasedItem} disabled={!isOpenOrder} />
                         </div>
@@ -291,7 +291,7 @@ function PurchaseItemList({ selectedPurchase, selectedPantries, setOuterPurchase
                         </div>
 
                         <div className="d-flex gap-3 mt-auto">
-                            <span className="small">{t('provisioned')}: {item.qtyProvisioned}</span>
+                            <span className={item.qtyProvisioned === 0 ? "small removed" : "small"}>{t('provisioned')}: {item.qtyProvisioned}</span>
                         </div>
 
                     </Card.Body>
