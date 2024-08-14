@@ -2,7 +2,7 @@
 
 # My Pantry
 
-<b>version: 0.8.0</b> (account-service: v0.3.2, pantry-service: v0.5.0, purchase-service: v0.4.0, pantry-web: v.0.8.0)
+<b>version: 0.8.0</b> (account-service: v0.3.3, pantry-service: v0.5.0, purchase-service: v0.4.0, pantry-web: v.0.8.0)
 
 - 'Analyse Pantry' button (on Pantry page) should not only create a provisioning, but also create new provisioning,
   increase or decrease already provisioned quantitty and delete unecessary provisionings.
