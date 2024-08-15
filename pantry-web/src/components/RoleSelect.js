@@ -20,11 +20,13 @@ export default function RoleSelect({ setSelectedRole }) {
         const res = await getRoles();
         let list = [];
         res.map(r => {
-            list = [...list,
-            {
-                value: r.id,
-                label: t(r.name.toLowerCase())
-            }]
+            if (r.name.toLowerCase() !== 'owner') {
+                list = [...list,
+                {
+                    value: r.id,
+                    label: t(r.name.toLowerCase())
+                }]
+            }
         })
         setRoles(list);
     }

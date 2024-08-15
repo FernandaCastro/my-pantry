@@ -130,7 +130,7 @@ function ProductList({ disabled, onEdit, onRemove }) {
                     onChange={() => setShowGroup(!showGroup)}
                 />
             </div>
-            <Form.Control size="sm" type="text" id="search" className="form-control mb-1 input-custom" value={searchText} placeholder={t('placeholder-search-product')} onChange={(e) => filter(e.target.value)} />
+            <Form.Control type="text" id="search" className="form-control mb-1 search-input" value={searchText} placeholder={t('placeholder-search-product')} onChange={(e) => filter(e.target.value)} />
 
             <Row xs={1} md={2} lg={3} xl={4} className='m-0'>
                 {renderCards()}

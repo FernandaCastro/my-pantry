@@ -1,9 +1,9 @@
 {
   "purchase-title": "Go Shopping for Pantries",
   "purchase-order-title": "Shopping List",
-  "purchase-order-pending": "No selection - Listing pending items",
-  "purchase-order-open": "Open Shopping List",
-  "purchase-order-closed": "Closed Shopping List",
+  "purchase-order-pending": "Listing pending items",
+  "purchase-order-open": "Listing Open-Order Items",
+  "purchase-order-closed": "Listing Closed-Order Items",
   "btn-refresh": "Refresh",
   "btn-new-order": "New Order",
   "btn-checkout": "Checkout",

@@ -96,30 +96,30 @@ export default function Purchase() {
                 </div>
 
                 <Collapse in={showPantries} >
-                    <div><PantrySelect handleSelectedPantryList={setPantries} permission='purchase_pantry' isSelected={false} /></div>
+                    <div className='mt-0'><PantrySelect handleSelectedPantryList={setPantries} permission='purchase_pantry' isSelected={false} /></div>
                 </Collapse>
             </div>
 
-            <div className='d-flex justify-content-start align-items-center gap-2 mt-4' onClick={() => setShowOrder(!showOrder)}>
-                <h6 className='simple-title'>{purchase ? isOpenOrder ? t("purchase-order-open") : t("purchase-order-closed") : t("purchase-order-pending")}</h6>
+            <div className='d-flex justify-content-start align-items-center gap-2 mt-3' onClick={() => setShowOrder(!showOrder)}>
+                <h6 className='simple-title highlight'>{purchase ? isOpenOrder ? t("purchase-order-open") : t("purchase-order-closed") : t("purchase-order-pending")}</h6>
                 <BsChevronDown className='small-icon' />
             </div>
 
-            <div>
+            <div className="pb-0">
                 <Collapse in={showOrder} >
-                    <div className='mt-3'>
+                    <div className='mt-0 mb-3'>
                         <PurchaseOrderList key={refreshOrders} selectedPantries={pantries} handleSelectedPurchase={selectPurchase} />
                     </div>
                 </Collapse>
             </div>
 
-            <div className="d-flex justify-content-evenly align-items-start mt-4" >
+            <div className="d-flex justify-content-evenly align-items-start mt-0" >
                 <Button bsPrefix="btn-custom" size="sm" onClick={handleNewOrder} disabled={((!purchase && purchaseItems.length === 0) || (purchase && purchase.processedAt !== null) || isOpenOrder || pantries.length === 0)}><span>{t("btn-new-order")}</span></Button>
                 <Button bsPrefix="btn-custom" size="sm" onClick={handleRefresh} disabled={purchase || pantries.length === 0}><span>{t("btn-refresh")}</span></Button>
                 <Button bsPrefix="btn-custom" size="sm" onClick={handleSave} disabled={!isOpenOrder || pantries.length === 0}><span>{t("btn-checkout")}</span></Button>
             </div>
 
-            <div className='mt-3'>
+            <div className='mt-2'>
                 <PurchaseItemList ref={purchaseItemListRef} selectedPurchase={purchase} selectedPantries={pantries} setOuterPurchaseItems={setPurchaseItems} />
             </div>
 

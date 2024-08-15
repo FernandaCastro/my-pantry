@@ -161,7 +161,7 @@ export default function Consume() {
         />
       </div>
       <div>
-        <Form.Control size="sm" type="text" id="search" className="form-control mb-1" placeholder={t('placeholder-search-items', { ns: 'common' })} value={searchText} onChange={(e) => filter(e.target.value)} />
+        <Form.Control type="text" id="search" className="form-control mb-1 search-input" placeholder={t('placeholder-search-items', { ns: 'common' })} value={searchText} onChange={(e) => filter(e.target.value)} />
         <Row xs={1} md={2} lg={3} xl={4} className='m-0'>
           {renderCards()}
         </Row>
