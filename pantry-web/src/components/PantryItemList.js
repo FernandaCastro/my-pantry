@@ -147,7 +147,7 @@ function PantryItemList({ pantryId, setIsEmpty }) {
 
     return (
         <div>
-            <Form.Control size="sm" type="text" id="search" className="form-control mb-1" value={searchText} placeholder={t('placeholder-search-items', { ns: 'common' })} onChange={(e) => filter(e.target.value)} />
+            <Form.Control type="text" id="search" className="form-control mb-1 search-input" value={searchText} placeholder={t('placeholder-search-items', { ns: 'common' })} onChange={(e) => filter(e.target.value)} />
 
             <Row key="row-0" xs={1} md={2} lg={3} className='m-0'>
                 {renderCards()}

@@ -301,11 +301,69 @@ function PurchaseItemList({ selectedPurchase, selectedPantries, setOuterPurchase
         )
     }
 
+    const supermarketStyles = {
+        singleValue: (provided, state) => ({
+            ...provided,
+            color: 'var(--text-color)',
+          }),
+    
+        control: (provided, state) => ({
+            ...provided,
+            backgroundColor: 'var(--background)',
+            borderColor: 'var(--border-color)',
+            minHeight: '45px',
+            height: '45px',
+            boxShadow: null,
+            fontSize: '16px',
+            "&:hover": {
+                borderColor: 'var(--link-color)'
+            }
+        }),
+    
+        valueContainer: (provided, state) => ({
+            ...provided,
+            height: '45px',
+            padding: '0 6px',
+        }),
+    
+        placeholder: (provided, state) => ({
+            ...provided,
+            fontSize: '16px',
+            color: 'var(--text-color-2)',
+        }),
+    
+        indicatorSeparator: state => ({
+            display: 'none',
+        }),
+    
+        indicatorsContainer: (provided, state) => ({
+            ...provided,
+            height: '40px',
+        }),
+    
+        menu: (provided, state) => ({
+            ...provided,
+            backgroundColor: 'var(--background)',
+        }),
+    
+        option: (provided, { data, isDisabled, isFocused, isSelected }) => ({
+            ...provided,
+            backgroundColor: isSelected ? 'var(--highlight-item-list)' : 'var(--background)',
+            color: 'var(--text-color)',
+            minHeight: '45px',
+            height: '45px',
+            fontSize: '16px',
+            "&:hover": {
+                color: 'var(--highlight-text)'
+            }
+        }),
+    };
+
     return (
         <div>
             {selectedPantries?.length === 0 ? "" : isLoading ? "Loading..." :
                 <div className="pt-2">
-                    <div className='d-flex justify-content-evenly pb-2'>
+                    <div className='d-flex justify-content-evenly pb-4'>
                         <FormCheck label={t('tooltip-switch-product-detail', { ns: 'common' })}
                             className='form-switch'
                             defaultChecked={expandProdDetail}
@@ -322,9 +380,10 @@ function PurchaseItemList({ selectedPurchase, selectedPantries, setOuterPurchase
                             placeholder={t("placeholder-select-supermarket")}
                             options={supermarkets}
                             onChange={setSupermarketOption}
-                        />
+                            customStyles={supermarketStyles}
+/>
                     </div>
-                    <Form.Control size="sm" type="text" id="search" className="form-control mb-1" placeholder={t("placeholder-search-items", { ns: "common" })} value={searchText} onChange={(e) => filter(e.target.value)} />
+                    <Form.Control type="text" id="search" className="form-control mb-1 search-input" placeholder={t("placeholder-search-items", { ns: "common" })} value={searchText} onChange={(e) => filter(e.target.value)} />
                     {renderCards()}
                 </div>
             }

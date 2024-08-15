@@ -8,7 +8,7 @@ import PantryItemList from '../components/PantryItemList.js';
 import Button from 'react-bootstrap/Button';
 import { getAccountGroupList } from '../services/apis/mypantry/requests/AccountRequests.js';
 import { useTranslation } from 'react-i18next';
-import { Image } from 'react-bootstrap';
+import { Image, Stack } from 'react-bootstrap';
 import iconPantry from '../assets/images/cupboard-gradient.png';
 
 export default function PantryItems() {
@@ -112,6 +112,7 @@ export default function PantryItems() {
     }
 
     return (
+        <Stack gap={3}>
         <div className="mt-4">
             <div className="d-flex justify-content-start align-items-end">
                 <Image src={iconPantry} width={40} height={40} className="ms-2 me-3" />
@@ -129,5 +130,6 @@ export default function PantryItems() {
                 <PantryItemList key={refresh} pantryId={pantry?.id} setIsEmpty={setIsEmpty} />
             </div>
         </div>
+        </Stack>
     );
 }

@@ -1,6 +1,6 @@
 import Select from 'react-select';
 
-const customStyles = {
+const defaultStyles = {
     singleValue: (provided, state) => ({
         ...provided,
         color: 'var(--text-color)',
@@ -61,13 +61,13 @@ const customStyles = {
         height: '30px',
         fontSize: '15px',
         "&:hover": {
-            color: 'var(--highlight-text)'
+            color: 'var(--backgroud-1)'
         }
     }),
 };
 
-export default ({ name, placeholder, options, onChange, defaultValue, value, disabled }) =>
-(<Select styles={customStyles}
+export default ({ name, placeholder, options, onChange, defaultValue, value, disabled, customStyles }) =>
+(<Select styles={customStyles ? customStyles : defaultStyles}
     name={name}
     placeholder={placeholder}
     options={options}
@@ -75,6 +75,7 @@ export default ({ name, placeholder, options, onChange, defaultValue, value, dis
     defaultValue={defaultValue}
     disabled={disabled}
     value={value}
+    isSearchable={false}
 />
 );
 

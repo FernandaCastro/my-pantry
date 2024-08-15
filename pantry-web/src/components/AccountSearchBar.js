@@ -12,6 +12,7 @@ import { getFilteredAccountList } from '../services/apis/mypantry/requests/Accou
 import RoleSelect from './RoleSelect';
 import AccountForm from './AccountForm';
 import { useTranslation } from 'react-i18next';
+import { maskEmail } from '../services/Utils.js'
 
 function AccountSearchBar({ handleSelectAction, handleClearAction, disabled }) {
 
@@ -87,13 +88,13 @@ function AccountSearchBar({ handleSelectAction, handleClearAction, disabled }) {
             <div >
                 {results.map((item) => {
                     return (
-                        <div className='d-flex justify-content-between align-items-center gap-2'>
+                        <div key={item.id} className='d-flex justify-content-between align-items-center gap-2'>
                             <div className='d-lg-none d-flex flex-column flex-grow-1 align-items-start'>
                                 <span>{item.name}</span>
-                                <span>{item.email}</span>
+                                <span>{maskEmail(item.email)}</span>
                             </div>
                             <div className='d-none d-lg-block d-flex flex-column align-items-start'>
-                                <span>{item.name} - {item.email}</span>
+                                <span>{item.name} - {maskEmail(item.email)}</span>
                             </div>
                             <div className='d-flex align-items-start gap-2'>
                                 <RoleSelect setSelectedRole={setSelectedRole} />

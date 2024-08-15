@@ -12,7 +12,7 @@
   "update-item-success": "Item alterado com sucesso!",
   "pantry-title": "Detalhes da Despensa",
   "active": "Ativa",
-  "inactive": "Inativa",
+  "inactive": "Desativada",
   "type": "Tipo",
   "type-recurring": "Recorrente",
   "type-no-recurring": "Não Recorrente",

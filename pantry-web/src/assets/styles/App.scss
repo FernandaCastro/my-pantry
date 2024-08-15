@@ -247,7 +247,7 @@
     text-align: center;
 }
 
-.gradient-icon-box-body{
+.gradient-icon-box-body {
     background: transparent;
     height: 45px;
     width: 45px;
@@ -494,6 +494,10 @@ table.bordered {
     color: var(--title-text-color);
 }
 
+.highlight {
+    color: var(--highlight-text); 
+}
+
 .bigger-title {
     color: var(--title-text-color);
     margin: initial;
@@ -527,7 +531,7 @@ span[disabled] {
 }
 
 .removed {
-    color: red;
+    color: var(--highlight-critical);
     text-decoration: line-through;
 }
 
@@ -558,11 +562,11 @@ p {
     padding: 0;
 }
 
-div.bigger-icon{
-.bigger-icon{
-    width: 30px;
-    height: 30px;
-}
+div.bigger-icon {
+    .bigger-icon {
+        width: 30px;
+        height: 30px;
+    }
 }
 
 .icon {
@@ -1188,7 +1192,7 @@ span.stepTitle {
 //End Wizards
 //Chart
 .chart-text {
-    fill: var(--text-color);
+    fill: var(--title-text-color);
     font-size: small;
 }
 
@@ -1216,13 +1220,21 @@ span.stepTitle {
 
 }
 
-li.top-critical-item{
+li.top-critical-item {
     display: list-item;
     list-style-type: none;
     height: 7px;
     margin: 10px;
     vertical-align: middle;
+    color: var(--title-text-color);
 }
 
-
 //Chart
+
+.search-input {
+    height: 50px;
+}
+
+span.critical {
+    color: var(--highlight-critical);
+}

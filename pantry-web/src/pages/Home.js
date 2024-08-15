@@ -52,7 +52,8 @@ export default function Home() {
 
     return (
         <>
-            {profileCtx && Object.keys(profileCtx).length > 0 ?
+            {isLoading ? "Loading..." :
+            profileCtx && Object.keys(profileCtx).length > 0 ?
                 pantries.length === 0 ? renderNoPantryYet() :
                     <PantriesPieChart /> : <Login />}
         </>

@@ -242,6 +242,64 @@ export function Supermarket() {
         )
     }
 
+    const accountGroupStyles = {
+        singleValue: (provided, state) => ({
+            ...provided,
+            color: 'var(--text-color)',
+        }),
+
+        control: (provided, state) => ({
+            ...provided,
+            backgroundColor: 'var(--background)',
+            borderColor: 'var(--border-color)',
+            minHeight: '45px',
+            height: '45px',
+            boxShadow: null,
+            fontSize: '16px',
+            "&:hover": {
+                borderColor: 'var(--link-color)'
+            }
+        }),
+
+        valueContainer: (provided, state) => ({
+            ...provided,
+            height: '45px',
+            padding: '0 6px',
+        }),
+
+        placeholder: (provided, state) => ({
+            ...provided,
+            fontSize: '16px',
+            color: 'var(--text-color-2)',
+        }),
+
+        indicatorSeparator: state => ({
+            display: 'none',
+        }),
+
+        indicatorsContainer: (provided, state) => ({
+            ...provided,
+            height: '40px',
+        }),
+
+        menu: (provided, state) => ({
+            ...provided,
+            backgroundColor: 'var(--background)',
+        }),
+
+        option: (provided, { data, isDisabled, isFocused, isSelected }) => ({
+            ...provided,
+            backgroundColor: isSelected ? 'var(--highlight-item-list)' : 'var(--background)',
+            color: 'var(--text-color)',
+            minHeight: '45px',
+            height: '45px',
+            fontSize: '16px',
+            "&:hover": {
+                color: 'var(--highlight-text)'
+            }
+        }),
+    };
+
 
     return (
         <>
@@ -251,14 +309,15 @@ export function Supermarket() {
                     <h6 className='title flex-grow-1'>{t("supermarket-title")}</h6>
                     <Button bsPrefix="btn-custom" size="sm" onClick={handleClickNew} className="pe-2 ps-2" disabled={editSupermarketId > 0 || showNew}><span>{t("btn-create")}</span></Button>
                 </div>
-                <div className='d-flex flex-row align-text-center gap-2 mt-5'>
-                    <span className="title">{t('group-title')}</span>
+                <div className='d-flex flex-row mt-5 align-items-center gap-2'>
+                    <div><span className="title">{t('group-title')}</span></div>
                     <Form.Group className="mb-2 flex-grow-1" controlId="formAccountGroups" size="sm">
                         {isLoading ? <span>Loading...</span> :
                             <Select name="accountGroup" key={accountGroupOption?.value}
                                 defaultValue={accountGroupOption}
                                 options={accountGroupOptions}
-                                onChange={setAccountGroupOption} />
+                                onChange={setAccountGroupOption}
+                                customStyles={accountGroupStyles} />
                         }
                     </Form.Group>
                 </div>
