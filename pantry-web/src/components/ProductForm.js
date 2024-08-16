@@ -75,46 +75,46 @@ export default function ProductForm({ product, accountGroupId, categories, accou
 
     return (
         <Form onSubmit={handleSubmit} className="ms-2">
-            <Row>
-                <Form.Group as={Col} className="mb-2" controlId="formAccountGroups" size="sm">
-                    <Form.Label size="sm" className="title mb-1">{t('account-group', { ns: 'common' })}</Form.Label>
+            <Row className="mb-2">
+                <Form.Group as={Col} className="mb-2" controlId="formAccountGroups" >
+                    <Form.Label  className="title mb-1">{t('account-group', { ns: 'common' })}</Form.Label>
                     <Select key={accountGroupOption.value} name="accountGroup"
                         defaultValue={accountGroupOption}
                         options={accountGroupOptions}
                         onChange={setAccountGroupOption} />
                 </Form.Group>
             </Row>
-            <Row>
+            <Row className="mb-3">
                 <Form.Group className="w-25" controlId="formId">
-                    <Form.Label size="sm" className="title mb-1">{t('id', { ns: 'common' })}</Form.Label>
-                    <Form.Control size="sm" className="mb-1 input-custom" type="text" name="id" defaultValue={product.id} disabled />
+                    <Form.Label  className="title mb-1">{t('id', { ns: 'common' })}</Form.Label>
+                    <Form.Control  className="mb-1 input-custom" type="text" name="id" defaultValue={product.id} disabled />
                 </Form.Group>
                 <Form.Group as={Col} controlId="formCode">
-                    <Form.Label size="sm" className="title mb-1">{t('code')}</Form.Label>
-                    <Form.Control size="sm" className="mb-1 input-custom" type="text" name="code" placeholder={t('placeholder-code')} defaultValue={product.code} />
+                    <Form.Label  className="title mb-1">{t('code')}</Form.Label>
+                    <Form.Control  className="mb-1 input-custom" type="text" name="code" placeholder={t('placeholder-code')} defaultValue={product.code} />
                 </Form.Group>
             </Row>
-            <Row>
+            <Row className="mb-3">
                 <Form.Group key={categoryOption.value} className="w-25" controlId="formSize">
-                    <Form.Label size="sm" className="title mb-1">{t('size')}</Form.Label>
-                    <Form.Control size="sm" className="mb-1 input-custom" type="text" name="size" placeholder={t('placeholder-size')}  defaultValue={product.size} />
+                    <Form.Label  className="title mb-1">{t('size')}</Form.Label>
+                    <Form.Control  className="mb-1 input-custom" type="text" name="size" placeholder={t('placeholder-size')}  defaultValue={product.size} />
                 </Form.Group>
-                <Form.Group as={Col} className="mb-2" controlId="formCategory" size="sm">
-                    <Form.Label size="sm" className="title mb-1">{t('category')}</Form.Label>
+                <Form.Group as={Col} className="mb-2" controlId="formCategory" >
+                    <Form.Label  className="title mb-1">{t('category')}</Form.Label>
                     <Select key={categoryList.length} name="category" defaultValue={categoryOption} options={categoryList}
                         onChange={setCategoryOption} />
                 </Form.Group>
             </Row>
-            <Row>
-                <Form.Group as={Col} className="mb-2" controlId="formDescription" size="sm">
-                    <Form.Label size="sm" className="title mb-1">{t('description')}</Form.Label>
-                    <Form.Control size="sm" className="mb-1 input-custom" type="text" name="description" placeholder={t('placeholder-description')}  defaultValue={product.description} />
+            <Row className="mb-3">
+                <Form.Group as={Col} className="mb-2" controlId="formDescription" >
+                    <Form.Label  className="title mb-1">{t('description')}</Form.Label>
+                    <Form.Control  className="mb-1 input-custom" type="text" name="description" placeholder={t('placeholder-description')}  defaultValue={product.description} />
                 </Form.Group>
             </Row>
             <Row>
                 <Stack direction="horizontal" gap={4} className="mb-3 d-flex justify-content-end">
-                    <div><Button bsPrefix='btn-custom' type="reset" size="sm"><span className="gradient-text">{t('btn-clear', { ns: 'common' })}</span></Button></div>
-                    <div><Button bsPrefix='btn-custom' type="submit" size="sm"><span className="gradient-text">{t('btn-save', { ns: 'common' })}</span></Button></div>
+                    <div><Button bsPrefix='btn-custom' type="reset" ><span className="gradient-text">{t('btn-clear', { ns: 'common' })}</span></Button></div>
+                    <div><Button bsPrefix='btn-custom' type="submit" ><span className="gradient-text">{t('btn-save', { ns: 'common' })}</span></Button></div>
                 </Stack>
             </Row>
         </Form>

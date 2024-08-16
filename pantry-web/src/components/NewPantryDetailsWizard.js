@@ -41,25 +41,25 @@ function NewPantryDetailsWizard({ accountGroupOptions, pantryForm, setPantryForm
     return (
         <div className="d-flex flex-column gap-3">
             <div>
-                <Form.Label size="sm" className="mb-1 title">{t('account-group', { ns: 'common' })}</Form.Label>
+                <Form.Label className="mb-1 title">{t('account-group', { ns: 'common' })}</Form.Label>
                 <Select name="accountGroup" key={accountGroupOption?.value}
                     defaultValue={accountGroupOption}
                     options={accountGroupOptions}
                     onChange={handleOnChangeGroup} />
             </div>
             <div>
-                <Form.Label size="sm" className="mb-1 title text-l">{t('name', { ns: 'common' })}</Form.Label>
-                <Form.Control size="sm" type="text" name="name" defaultValue={pantryForm?.name} onChange={(e) => setPantryForm({ ...pantryForm, name: e.target.value })} />
+                <Form.Label className="mb-1 title text-l">{t('name', { ns: 'common' })}</Form.Label>
+                <Form.Control type="text" name="name" defaultValue={pantryForm?.name} onChange={(e) => setPantryForm({ ...pantryForm, name: e.target.value })} />
             </div>
             <div>
-                <Form.Label size="sm" className="mb-1 title">{t('type')}</Form.Label>
+                <Form.Label className="mb-1 title">{t('type')}</Form.Label>
                 <Select name="type" key={typeOption?.value}
                     defaultValue={typeOption}
                     options={typeOptions}
                     onChange={(e) => handleOnChangeType(e)} />
             </div>
             <div className="mt-3">
-                <Form.Label size="sm" className="mb-1 title">{t('wizard-pantry-size')}</Form.Label>
+                <Form.Label className="mb-1 title">{t('wizard-pantry-size')}</Form.Label>
                 <Form.Check type="radio" name="group1" id="pantry-size-solo" label={t('wizard-pantry-size-solo')} onChange={(e) => handleOnChangePantrySize("solo", e)} defaultChecked={pantryForm?.size === "solo"} />
                 <Form.Check type="radio" name="group1" id="pantry-size-couple" label={t('wizard-pantry-size-couple')} onChange={(e) => handleOnChangePantrySize("couple", e)} defaultChecked={pantryForm?.size === "couple"} />
                 <Form.Check type="radio" name="group1" id="pantry-size-fam3" label={t('wizard-pantry-size-fam3')} onChange={(e) => handleOnChangePantrySize("fam3", e)} defaultChecked={pantryForm?.size === "fam3"} />

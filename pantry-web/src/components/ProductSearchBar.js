@@ -62,7 +62,7 @@ function ProductSearchBar({ accountGroupId, accountGroupOptions, handleSelectAct
         return (
             <Stack direction="horizontal" gap={2} className="w-100">
                 <div className="w-75 pe-0">
-                    <Form.Control size="sm" type="text" placeholder={t('placeholder-search-product')}
+                    <Form.Control type="text" placeholder={t('placeholder-search-product')}
                         value={searchText}
                         onChange={(e) => handleSearch(e)} />
                 </div>

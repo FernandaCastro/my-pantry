@@ -495,7 +495,7 @@ table.bordered {
 }
 
 .highlight {
-    color: var(--highlight-text); 
+    color: var(--highlight-text);
 }
 
 .bigger-title {
@@ -1227,6 +1227,11 @@ li.top-critical-item {
     margin: 10px;
     vertical-align: middle;
     color: var(--title-text-color);
+}
+
+g:focus,
+path:focus {
+    outline: none !important;
 }
 
 //Chart
