@@ -28,7 +28,7 @@ public interface PantryRepository extends JpaRepository<Pantry, Long> {
     Optional<Pantry> findByName(String name);
 
     ///
-    @Query("select p from pantry p where p.id in :pantryIds")
+    @Query("select p from pantry p where p.id in :pantryIds order by p.isActive desc, p.name")
     List<Pantry> findAllByIds(Set<Long> pantryIds);
 
 }
