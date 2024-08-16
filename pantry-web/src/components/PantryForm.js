@@ -78,43 +78,43 @@ export default function PantryForm({ pantry, handleSave, accountGroupOptions }) 
 
     return (
         <Form onSubmit={handleSubmit} className="ms-2">
-            <Row>
+            <Row className="mb-3">
                 <Form.Group className="mb-2" controlId="formAccountGroups" size="sm">
-                    <Form.Label size="sm" className="title mb-1">{t('account-group', { ns: 'common' })}</Form.Label>
+                    <Form.Label className="title mb-1">{t('account-group', { ns: 'common' })}</Form.Label>
                     <Select name="accountGroup" key={accountGroupOption.value}
                         defaultValue={accountGroupOption}
                         options={accountGroupOptions}
                         onChange={setAccountGroupOption} />
                 </Form.Group>
             </Row>
-            <Row>
+            <Row className="mb-3">
                 <Form.Group className="mb-2 w-25" controlId="formId">
-                    <Form.Label size="sm" className="mb-1 title">{t('id', { ns: 'common' })}</Form.Label>
-                    <Form.Control size="sm" className="mb-1" type="text" name="id" defaultValue={id} disabled />
+                    <Form.Label className="mb-1 title">{t('id', { ns: 'common' })}</Form.Label>
+                    <Form.Control className="mb-1" type="text" name="id" defaultValue={id} disabled />
                 </Form.Group>
                 <Form.Group as={Col} className="mb-2" controlId="formName">
-                    <Form.Label size="sm" className="mb-1 title">{t('name', { ns: 'common' })}</Form.Label>
-                    <Form.Control size="sm" className="mb-1" type="text" name="name" defaultValue={pantry.name} />
+                    <Form.Label className="mb-1 title">{t('name', { ns: 'common' })}</Form.Label>
+                    <Form.Control className="mb-1" type="text" name="name" defaultValue={pantry.name} />
                 </Form.Group>
             </Row>
-            <Row>
+            <Row className="mb-3">
                 <Form.Group className="mb-2 w-25" controlId="formIsActive">
-                    <Form.Label size="sm" className="mb-1"></Form.Label>
-                    <Form.Check size="sm" className="mb-1 title"
+                    <Form.Label className="mb-1"></Form.Label>
+                    <Form.Check className="mb-1 title"
                         name="isActive"
                         defaultChecked={pantry.isActive}
                         onClick={e => setIsActiveLabel(e.target.checked ? t("active") : t("inactive"))}
                         label={isActiveLabel} />
                 </Form.Group>
                 <Form.Group as={Col} className="mb-2" controlId="formType">
-                    <Form.Label size="sm" className="mb-1 title">{t('type')}</Form.Label>
+                    <Form.Label className="mb-1 title">{t('type')}</Form.Label>
                     <Select name="type" key={typeOption.value}
                         defaultValue={typeOption}
                         options={typeOptions}
                         onChange={setTypeOption} />
                 </Form.Group>
             </Row>
-            <Row>
+            <Row >
                 <Stack direction="horizontal" gap={4} className="mb-3 mt-3 d-flex justify-content-end">
                     <Button bsPrefix='btn-custom' type="reset" size="sm" disabled={isProcessing}><span className="gradient-text">{t('btn-clear', { ns: 'common' })}</span></Button>
                     <Button bsPrefix='btn-custom' type="submit" size="sm" disabled={isProcessing}><span className="gradient-text">{t('btn-save', { ns: 'common' })}</span></Button>

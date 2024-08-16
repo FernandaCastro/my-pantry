@@ -246,7 +246,6 @@ public class PantryItemService {
         repository.save(entity);
     }
 
-    @Transactional
     public List<PantryItemDto> createWizard(PantryDto pantry, List<PantryItemWizardDto> items) {
         List<PantryItemDto> list = new ArrayList<>();
 

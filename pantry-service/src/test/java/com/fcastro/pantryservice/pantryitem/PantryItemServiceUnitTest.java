@@ -217,6 +217,7 @@ public class PantryItemServiceUnitTest {
 
         //then
         var item = captorPantryItem.getValue();
+        assertThat(item.getIdealQty()).isEqualTo(10);
         assertThat(item.getCurrentQty()).isEqualTo(6);
         assertThat(item.getProvisionedQty()).isEqualTo(0);
         verify(eventProducer, times(0)).send(any(PurchaseEventDto.class));
@@ -244,6 +245,7 @@ public class PantryItemServiceUnitTest {
 
         //then
         var item = captorPantryItem.getValue();
+        assertThat(item.getIdealQty()).isEqualTo(10);
         assertThat(item.getCurrentQty()).isEqualTo(5);
         assertThat(item.getProvisionedQty()).isEqualTo(5);
 
@@ -274,6 +276,7 @@ public class PantryItemServiceUnitTest {
 
         //then
         var item = captorPantryItem.getValue();
+        assertThat(item.getIdealQty()).isEqualTo(10);
         assertThat(item.getCurrentQty()).isEqualTo(4);
         assertThat(item.getProvisionedQty()).isEqualTo(6);
 
@@ -304,6 +307,7 @@ public class PantryItemServiceUnitTest {
 
         //then
         var item = captorPantryItem.getValue();
+        assertThat(item.getIdealQty()).isEqualTo(10);
         assertThat(item.getCurrentQty()).isEqualTo(9);
         assertThat(item.getProvisionedQty()).isEqualTo(0);
 

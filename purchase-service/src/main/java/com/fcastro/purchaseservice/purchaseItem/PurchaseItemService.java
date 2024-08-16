@@ -3,6 +3,7 @@ package com.fcastro.purchaseservice.purchaseItem;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fcastro.app.config.MessageTranslator;
 import com.fcastro.app.exception.ResourceNotFoundException;
+import com.fcastro.app.model.Action;
 import com.fcastro.kafka.model.PurchaseEventDto;
 import com.fcastro.purchaseservice.product.Product;
 import com.fcastro.purchaseservice.supermarket.SupermarketService;
@@ -178,7 +179,7 @@ public class PurchaseItemService {
             repository.save(entity);
 
             processPendingProvisioning(entity);
-            purchaseEventList.add(convertToItemDto(entity));
+            purchaseEventList.add(convertToItemDto(Action.UPDATE, entity));
         }
 
         return purchaseEventList;
@@ -199,8 +200,9 @@ public class PurchaseItemService {
         }
     }
 
-    private PurchaseEventDto convertToItemDto(PurchaseItem entity) {
+    private PurchaseEventDto convertToItemDto(Action action, PurchaseItem entity) {
         return PurchaseEventDto.builder()
+                .action(action)
                 .pantryId(entity.getPantryId())
                 .pantryName(entity.getPantryName())
                 .productId(entity.getProduct().getId())

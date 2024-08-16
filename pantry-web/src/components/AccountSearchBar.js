@@ -68,7 +68,7 @@ function AccountSearchBar({ handleSelectAction, handleClearAction, disabled }) {
         return (
             <Stack direction="horizontal" gap={2} className="w-100">
                 <div className="w-75 pe-0">
-                    <Form.Control size="sm" type="text" placeholder={t("search-by-email-name")} value={searchText} onChange={(e) => setSearchText(e.target.value)} disabled={disabled} />
+                    <Form.Control type="text" placeholder={t("search-by-email-name")} value={searchText} onChange={(e) => setSearchText(e.target.value)} disabled={disabled} />
                 </div>
                 <div>
                     <Button className="w-0 p-0" variant="link" onClick={handleSearch} title={t('tooltip-btn-search')} disabled={!searchText && searchText.length < 3}><BsSearch className='icon' /></Button>
@@ -98,7 +98,7 @@ function AccountSearchBar({ handleSelectAction, handleClearAction, disabled }) {
                             </div>
                             <div className='d-flex align-items-start gap-2'>
                                 <RoleSelect setSelectedRole={setSelectedRole} />
-                                <Button onClick={() => handleSelect(item)} variant="link" title={t('tooltip-btn-add-member')}><BsCheck2All className='icon' /></Button>
+                                <Button onClick={() => handleSelect(item)} variant="link" title={t('tooltip-btn-add-member')} disabled={!selectedRole || selectedRole.id === 0}><BsCheck2All className='icon' /></Button>
                             </div>
                         </div>
                     )

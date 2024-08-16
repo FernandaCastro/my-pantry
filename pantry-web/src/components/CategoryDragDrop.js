@@ -255,7 +255,7 @@ export function DraggableItem({ item, index }) {
                         style={_style} className="hover-box" >
 
                         <span className='text-wrap'>{item.name}</span>
-                        <GrDrag />
+                        <GrDrag className='icon'/>
                     </div>
                 )
             }}

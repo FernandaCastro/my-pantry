@@ -4,7 +4,54 @@ const defaultStyles = {
     singleValue: (provided, state) => ({
         ...provided,
         color: 'var(--text-color)',
-      }),
+    }),
+
+    control: (provided, state) => ({
+        ...provided,
+        backgroundColor: 'var(--background)',
+        borderColor: 'var(--border-color)',
+        boxShadow: null,
+        "&:hover": {
+            borderColor: 'var(--link-color)'
+        }
+    }),
+
+    input: (provided, state) => ({
+        ...provided,
+        margin: '0px',
+        color: 'var(--text-color)',
+        borderColor: 'var(--border-color)',
+    }),
+
+    placeholder: (provided, state) => ({
+        ...provided,
+        color: 'var(--text-color)',
+    }),
+
+    indicatorSeparator: state => ({
+        display: 'none',
+    }),
+
+    menu: (provided, state) => ({
+        ...provided,
+        backgroundColor: 'var(--background)',
+    }),
+
+    option: (provided, { data, isDisabled, isFocused, isSelected }) => ({
+        ...provided,
+        backgroundColor: isSelected ? 'var(--highlight-item-list)' : 'var(--background)',
+        color: 'var(--text-color)',
+        "&:hover": {
+            color: 'var(--highlight-text)'
+        }
+    }),
+};
+
+const defaultSmallStyles = {
+    singleValue: (provided, state) => ({
+        ...provided,
+        color: 'var(--text-color)',
+    }),
 
     control: (provided, state) => ({
         ...provided,
@@ -61,13 +108,13 @@ const defaultStyles = {
         height: '30px',
         fontSize: '15px',
         "&:hover": {
-            color: 'var(--backgroud-1)'
+            color: 'var(--highlight-text)'
         }
     }),
 };
 
-export default ({ name, placeholder, options, onChange, defaultValue, value, disabled, customStyles }) =>
-(<Select styles={customStyles ? customStyles : defaultStyles}
+export default ({ name, placeholder, options, onChange, defaultValue, value, disabled, customStyles, small = false }) =>
+(<Select styles={customStyles ? customStyles : small ? defaultSmallStyles : defaultStyles}
     name={name}
     placeholder={placeholder}
     options={options}
