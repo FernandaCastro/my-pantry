@@ -6,7 +6,6 @@ import com.fcastro.app.exception.ResourceNotFoundException;
 import com.fcastro.app.model.Action;
 import com.fcastro.kafka.model.PurchaseEventDto;
 import com.fcastro.purchaseservice.product.Product;
-import com.fcastro.purchaseservice.product.ProductService;
 import com.fcastro.purchaseservice.supermarket.SupermarketService;
 import com.fcastro.security.authorization.AuthorizationHandler;
 import com.fcastro.security.core.model.AccessControlDto;
@@ -25,15 +24,13 @@ public class PurchaseItemService {
 
     private final PurchaseItemRepository repository;
     private final SupermarketService supermarketService;
-    private final ProductService productService;
     private final ModelMapper modelMapper;
     private final AuthorizationHandler authorizationHandler;
     private ObjectMapper jsonMapper;
 
-    public PurchaseItemService(PurchaseItemRepository repository, SupermarketService supermarketService, ProductService productService, ModelMapper modelMapper, AuthorizationHandler authorizationHandler) {
+    public PurchaseItemService(PurchaseItemRepository repository, SupermarketService supermarketService, ModelMapper modelMapper, AuthorizationHandler authorizationHandler) {
         this.repository = repository;
         this.supermarketService = supermarketService;
-        this.productService = productService;
         this.modelMapper = modelMapper;
         this.authorizationHandler = authorizationHandler;
         this.jsonMapper = new ObjectMapper();
@@ -53,9 +50,6 @@ public class PurchaseItemService {
     }
 
     private void processCreateProvisioningEvent(PurchaseEventDto dto) {
-
-        var product = productService.get(dto.getProductId()).orElseThrow(
-                () -> new ResourceNotFoundException(MessageTranslator.getMessage("error.product.not.found")));
 
         //It's in an open order => increase provisionedQty and signalise
         var openOrderItem = repository.findByPantryIdAndProductIdAndOpenPurchaseOrder(dto.getPantryId(), dto.getProductId());
