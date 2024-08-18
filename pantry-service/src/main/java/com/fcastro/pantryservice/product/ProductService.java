@@ -14,6 +14,7 @@ import com.fcastro.security.exception.AccessControlNotDefinedException;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Objects;
@@ -135,6 +136,7 @@ public class ProductService {
     //It trys to get product from (1) the informed accountGroup or (2) its accountGroup.parent,
     //otherwise it creates new product on accountGroup.parent (this way it keeps single behavior)
     //TODO: does it scale? Use cache for access-control, account-group?
+    @Transactional
     public ProductDto getOrCreate(ProductDto dto) {
         if (dto.getAccountGroup() == null || dto.getAccountGroup().getId() == 0)
             throw new AccessControlNotDefinedException(MessageTranslator.getMessage("error.product.and.group.association.required"));
