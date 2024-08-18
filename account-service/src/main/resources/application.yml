@@ -7,6 +7,13 @@ spring:
     active: default
   datasource:
     platform: postgres
+    #    url: jdbc:postgresql://m1r.h.filess.io:5433/pantrydb_showfinal
+    #    username: pantrydb_showfinal
+    #    password: 292faeaadf4439e6c5e2d27a26699a0a9f7e1fe1
+    #    schema: account
+    #    hikari:
+    #      minimum-idle: 1
+    #      maximum-pool-size: 1
     url: jdbc:postgresql://localhost:5434/account-db
     username: account
     password: account
@@ -18,11 +25,13 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         format_sql: true
+        default_schema: account
   sql:
     init:
         mode: always
   flyway:
     baselineOnMigrate: true
+    defaultSchema: account
     baselineVersion: 0
     encoding: ISO-8859-1
 management:
