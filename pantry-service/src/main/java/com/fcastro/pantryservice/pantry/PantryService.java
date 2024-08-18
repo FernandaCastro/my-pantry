@@ -127,11 +127,22 @@ public class PantryService {
      * @param dto
      * @return PantryDto
      */
-    @Transactional
     public PantryDto createWizard(PantryWizardDto dto) {
         if (dto.getAccountGroup() == null || dto.getAccountGroup().getId() == 0)
             throw new AccessControlNotDefinedException(MessageTranslator.getMessage("error.pantry.and.group.association.required"));
 
+        var createdPantry = createPantyAndItems(dto);
+
+        if (dto.isAnalysePantry()) {
+            var items = pantryItemService.processPurchaseNeed(createdPantry.getId());
+            createdPantry.setItems(items);
+        }
+
+        return createdPantry;
+    }
+
+    @Transactional
+    public PantryDto createPantyAndItems(PantryWizardDto dto) {
         var pantryDto = PantryDto.builder()
                 .name(dto.getName())
                 .type(dto.getType())
@@ -147,13 +158,9 @@ public class PantryService {
         var items = pantryItemService.createWizard(storedDto, dto.getItems());
         storedDto.setItems(items);
 
-        if (dto.isAnalysePantry()) {
-            items = pantryItemService.processPurchaseNeed(storedDto.getId());
-            storedDto.setItems(items);
-        }
-
         return storedDto;
     }
+
 
     /**
      * Calculate the consume percentage of all pantries the user has access,
