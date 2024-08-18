@@ -2,12 +2,16 @@ package com.fcastro.purchaseservice.purchaseItem;
 
 import com.fcastro.app.model.Action;
 import com.fcastro.kafka.model.PurchaseEventDto;
+import com.fcastro.purchaseservice.product.ProductDto;
+import com.fcastro.purchaseservice.product.ProductService;
 import com.fcastro.purchaseservice.purchase.Purchase;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
+
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -21,6 +25,9 @@ public class PurchaseItemSeviceUnitTest {
     PurchaseItemService service;
 
     @Mock
+    ProductService productService;
+
+    @Mock
     PurchaseItemRepository repository;
 
     @Spy
@@ -32,6 +39,7 @@ public class PurchaseItemSeviceUnitTest {
     @Test
     public void givenProvisioningNotExistsAndCreateAction_whenProcessPurchaseCreateEvent_thenCreateNewProvisioning() {
         //given
+        when(productService.get(anyLong())).thenReturn(Optional.ofNullable(ProductDto.builder().build()));
         when(repository.findByPantryIdAndProductIdAndOpenPurchaseOrder(anyLong(), anyLong())).thenReturn(null);
         when(repository.findByPantryIdAndProductIdAndNoPurchaseOrder(anyLong(), anyLong())).thenReturn(null);
         when(repository.save(captorPurchaseItem.capture())).thenReturn(null);
@@ -57,6 +65,8 @@ public class PurchaseItemSeviceUnitTest {
                 .purchase(null)
                 .build();
 
+
+        when(productService.get(anyLong())).thenReturn(Optional.ofNullable(ProductDto.builder().build()));
         when(repository.findByPantryIdAndProductIdAndOpenPurchaseOrder(anyLong(), anyLong())).thenReturn(null);
         when(repository.findByPantryIdAndProductIdAndNoPurchaseOrder(anyLong(), anyLong())).thenReturn(givenPurchaseItem);
         when(repository.save(captorPurchaseItem.capture())).thenReturn(null);
@@ -83,6 +93,7 @@ public class PurchaseItemSeviceUnitTest {
                 .purchase(purchaseOrder)
                 .build();
 
+        when(productService.get(anyLong())).thenReturn(Optional.ofNullable(ProductDto.builder().build()));
         when(repository.findByPantryIdAndProductIdAndOpenPurchaseOrder(anyLong(), anyLong())).thenReturn(givenPurchaseItem);
         when(repository.save(captorPurchaseItem.capture())).thenReturn(null);
 
@@ -160,6 +171,7 @@ public class PurchaseItemSeviceUnitTest {
                 .purchase(purchaseOrder)
                 .build();
 
+        when(productService.get(anyLong())).thenReturn(Optional.ofNullable(ProductDto.builder().build()));
         when(repository.findByPantryIdAndProductIdAndOpenPurchaseOrder(anyLong(), anyLong())).thenReturn(givenPurchaseItem);
         when(repository.save(captorPurchaseItem.capture())).thenReturn(null);
 
