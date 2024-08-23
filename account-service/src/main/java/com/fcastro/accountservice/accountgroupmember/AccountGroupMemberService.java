@@ -91,11 +91,11 @@ public class AccountGroupMemberService {
     public AccountGroupMemberDto save(AccountGroupMemberDto dto) {
         //User should be OWNER in the group
         var member = repository.findByGroupIdAndEmail(dto.getAccountGroupId(), SecurityContextHolder.getContext().getAuthentication().getName()).get();
-        if (!AccountGroupMemberRole.OWNER.value.equals(member.getRole().getName())) {
+        if (!AccountGroupMemberRole.OWNER.value.equals(member.getRole().getId())) {
             throw new NotAllowedException(MessageTranslator.getMessage("error.update.group.not.allowed"));
         }
 
-        if (AccountGroupMemberRole.OWNER.value.equals(dto.getRole().getName())) {
+        if (AccountGroupMemberRole.OWNER.value.equals(dto.getRole().getId())) {
             throw new OneOwnerMemberMustExistException(MessageTranslator.getMessage("error.only.one.owner.allowed"));
         }
 
@@ -106,7 +106,7 @@ public class AccountGroupMemberService {
     public void delete(long accountGroupId, long accountId) {
         //User should be OWNER in the Group, or User is deleting his own access to the group
         var member = repository.findByGroupIdAndEmail(accountGroupId, SecurityContextHolder.getContext().getAuthentication().getName()).get();
-        if (member.getAccountId() != accountId && !AccountGroupMemberRole.OWNER.value.equals(member.getRole().getName())) {
+        if (member.getAccountId() != accountId && !AccountGroupMemberRole.OWNER.value.equals(member.getRole().getId())) {
             throw new NotAllowedException(MessageTranslator.getMessage("error.update.group.not.allowed"));
         }
 
@@ -115,7 +115,7 @@ public class AccountGroupMemberService {
                 .orElseThrow(() -> new ResourceNotFoundException(MessageTranslator.getMessage("error.member.not.found")));
 
         //deleting an OWNER: there should be at least one Owner in the group
-        if (AccountGroupMemberRole.OWNER.value.equals(member.getRole().getName())) {
+        if (AccountGroupMemberRole.OWNER.value.equals(member.getRole().getId())) {
             throw new OneOwnerMemberMustExistException(MessageTranslator.getMessage("error.delete.owner"));
         }
 
@@ -153,12 +153,11 @@ public class AccountGroupMemberService {
         if (role != null) {
             var permissions = role.getPermissions() == null ? null :
                     role.getPermissions().stream()
-                            .map(p -> PermissionDto.builder().id(p.getId()).name(p.getName()).build())
+                            .map(p -> PermissionDto.builder().id(p.getId()).build())
                             .collect(Collectors.toList());
 
             roleDto = RoleDto.builder()
                     .id(role.getId())
-                    .name(role.getName())
                     .permissions(permissions)
                     .build();
         }
@@ -177,7 +176,6 @@ public class AccountGroupMemberService {
         if (dto.getRole() != null) {
             role = Role.builder()
                     .id(dto.getRole().getId())
-                    .name(dto.getRole().getName())
                     .build();
         }
 

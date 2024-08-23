@@ -63,7 +63,7 @@ public class AccountGroupService {
         if (dto.getId() != null && repository.findById(dto.getId()).isPresent()) {
 
             var member = groupMemberService.getByGroupIdAndEmail(dto.getId(), SecurityContextHolder.getContext().getAuthentication().getName()).get();
-            if (member == null || !AccountGroupMemberRole.OWNER.value.equals(member.getRole().getName())) {
+            if (member == null || !AccountGroupMemberRole.OWNER.value.equals(member.getRole().getId())) {
                 throw new NotAllowedException(MessageTranslator.getMessage("error.update.group.not.allowed"));
             }
 
@@ -89,7 +89,7 @@ public class AccountGroupService {
                 .orElseThrow(() -> new ResourceNotFoundException(MessageTranslator.getMessage("error.group.not.found")));
 
         var member = groupMemberService.getByGroupIdAndEmail(accountGroupId, SecurityContextHolder.getContext().getAuthentication().getName()).get();
-        if (member == null || !AccountGroupMemberRole.OWNER.value.equals(member.getRole().getName())) {
+        if (member == null || !AccountGroupMemberRole.OWNER.value.equals(member.getRole().getId())) {
             throw new NotAllowedException(MessageTranslator.getMessage("error.delete.group.not.allowed"));
         }
 

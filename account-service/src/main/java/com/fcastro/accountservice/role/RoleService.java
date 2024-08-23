@@ -27,14 +27,8 @@ public class RoleService {
         return list.stream().map(this::convertToDto).collect(Collectors.toList());
     }
 
-    public RoleDto getRole(Long id) {
+    public RoleDto getRole(String id) {
         return roleRepository.findById(id)
-                .map(this::convertToDto)
-                .orElseThrow(() -> new ResourceNotFoundException(MessageTranslator.getMessage("error.role.not.found")));
-    }
-
-    public RoleDto getRole(String name) {
-        return roleRepository.findByName(name)
                 .map(this::convertToDto)
                 .orElseThrow(() -> new ResourceNotFoundException(MessageTranslator.getMessage("error.role.not.found")));
     }
@@ -44,7 +38,6 @@ public class RoleService {
 
         return RoleDto.builder()
                 .id(entity.getId())
-                .name(entity.getName())
                 .permissions(convertToDtoList(entity.getPermissions()))
                 .build();
     }
@@ -55,9 +48,8 @@ public class RoleService {
         entities.forEach((e) ->
                 list.add(PermissionDto.builder()
                         .id(e.getId())
-                        .name(e.getName())
                         .build()));
-        list.sort(Comparator.comparing(PermissionDto::getName));
+        list.sort(Comparator.comparing(PermissionDto::getId));
         return list;
     }
 }

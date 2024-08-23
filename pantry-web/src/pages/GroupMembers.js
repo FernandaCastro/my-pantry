@@ -273,7 +273,7 @@ function GroupMembers() {
                 <td >
                     <span>{item.account.name}</span></td>
                 <td >
-                    <span>{t(item.role.name.toLowerCase())}</span></td>
+                    <span>{t(item.role.id.toLowerCase())}</span></td>
                 <td>
                     <Stack direction="horizontal" gap={1} className="d-flex justify-content-end">
                         <div><Button onClick={() => handleRemoveMember(item.accountGroupId, item.accountId)} variant="link" disabled={members.length === 1}><BsTrash className='icon'/></Button></div>

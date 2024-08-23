@@ -279,7 +279,7 @@ const PieChartWithNeedle = React.memo(props => {
         const sin = Math.sin(-RADIAN * ang);
         const cos = Math.cos(-RADIAN * ang);
         const r = 5;
-        const x0 = cx + 0;
+        const x0 = cx + 5;
         const y0 = cy + 5;
         const xba = x0 + r * sin;
         const yba = y0 - r * cos;

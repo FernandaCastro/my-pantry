@@ -9,9 +9,7 @@ import lombok.*;
 @AllArgsConstructor
 public class PermissionDto {
 
-    private Long id;
-
-    private String name;
+    private String id;
 
     private RoleDto roleDto;
 }

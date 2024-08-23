@@ -22,7 +22,7 @@ spring:
     init:
         mode: always
   flyway:
-    baselineOnMigrate: true
+    baselineOnMigrate: true   #Needed when schema is not empty
     baselineVersion: 0
     encoding: ISO-8859-1
 management:

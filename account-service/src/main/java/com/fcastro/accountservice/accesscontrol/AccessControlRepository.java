@@ -93,7 +93,7 @@ public interface AccessControlRepository extends JpaRepository<AccessControl, Ac
             "and role.id = gm.role.id " +
             "and ac.email = :email " +
             "and acc.clazz = :clazz " +
-            "and lower(per.name) = lower(:permission) ")
+            "and lower(per.id) = lower(:permission) ")
     List<AccessControl> findAllByEmailAndClazzAndPermission(String email, String clazz, String permission);
 
 
@@ -107,7 +107,7 @@ public interface AccessControlRepository extends JpaRepository<AccessControl, Ac
             "and acc.accountGroup.id = gm.accountGroup.id " +
             "and role.id = gm.role.id " +
             "and ac.email = :email " +
-            "and lower(per.name) = lower(:permission) " +
+            "and lower(per.id) = lower(:permission) " +
             "and acc.clazz = :clazz " +
             "and acc.clazzId = :clazzId")
     AccessControl hasPermissionInObject(String email, String permission, String clazz, Long clazzId);
@@ -122,7 +122,7 @@ public interface AccessControlRepository extends JpaRepository<AccessControl, Ac
             "and acc.accountGroup.id = gm.accountGroup.id " +
             "and role.id = gm.role.id " +
             "and ac.email = :email " +
-            "and lower(per.name) = lower(:permission) " +
+            "and lower(per.id) = lower(:permission) " +
             "and acc.clazz = :clazz " +
             "and acc.clazzId in :clazzIds")
     List<AccessControl> hasPermissionInObjectList(String email, String permission, String clazz, List<Long> clazzIds);

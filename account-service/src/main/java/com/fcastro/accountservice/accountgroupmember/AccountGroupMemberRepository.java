@@ -41,7 +41,7 @@ public interface AccountGroupMemberRepository extends JpaRepository<AccountGroup
             "where ac.id = gm.account.id " +
             "and role.id = gm.role.id " +
             "and ac.email = :email " +
-            "and lower(per.name) = lower(:permission)")
+            "and lower(per.id) = lower(:permission)")
     List<AccountGroupMember> hasPermissionInAnyGroup(String email, String permission);
 
     @Query("select distinct gm " +
@@ -52,7 +52,7 @@ public interface AccountGroupMemberRepository extends JpaRepository<AccountGroup
             "where ac.id = gm.account.id " +
             "and role.id = gm.role.id " +
             "and ac.email = :email " +
-            "and lower(per.name) = lower(:permission) " +
+            "and lower(per.id) = lower(:permission) " +
             "and gm.accountGroup.id = :accountGroupId")
     AccountGroupMember hasPermissionInGroup(String email, String permission, Long accountGroupId);
 }

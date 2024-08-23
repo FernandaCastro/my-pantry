@@ -2,10 +2,16 @@
 
 # My Pantry
 
-<b>version: 0.8.2</b> (account-service: v0.3.3, pantry-service: v0.6.3, purchase-service: v0.4.2, pantry-web: v.0.8.2)
+<b>version: 0.9.0</b>
 
-- 'Analyse Pantry' button (on Pantry page) should not only create a provisioning, but also create new provisioning,
-  increase or decrease already provisioned quantitty and delete unecessary provisionings.
+- pantry-web: v.0.8.3
+- account-service: v0.4.0
+- pantry-service: v0.6.4
+- purchase-service: v0.4.3
+
+### In this version:
+
+- <b>account-service:</b>  Use Redis to chache authorization and access control requests
 
 Plans for next versions:
 

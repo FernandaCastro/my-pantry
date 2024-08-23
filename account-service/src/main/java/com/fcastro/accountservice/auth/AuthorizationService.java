@@ -60,7 +60,7 @@ public class AuthorizationService {
         if (permissions == null || permissions.size() == 0) return false;
 
         return permissions.stream()
-                .anyMatch((p) -> p.getName().equalsIgnoreCase(permission));
+                .anyMatch((p) -> p.getId().equalsIgnoreCase(permission));
     }
 
 }
