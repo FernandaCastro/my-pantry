@@ -26,7 +26,7 @@ public class AccountGroupMember {
     @JoinColumn(name = "role_id", referencedColumnName = "id")
     private Role role;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @MapsId("accountGroupId")
     @JoinColumn(name = "account_group_id")
     private AccountGroup accountGroup;
