@@ -1,10 +1,12 @@
 package com.fcastro.accountservice.role;
 
+import com.fcastro.accountservice.config.CacheConfig;
 import com.fcastro.accountservice.permission.Permission;
 import com.fcastro.app.config.MessageTranslator;
 import com.fcastro.app.exception.ResourceNotFoundException;
 import com.fcastro.security.core.model.PermissionDto;
 import com.fcastro.security.core.model.RoleDto;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -27,6 +29,7 @@ public class RoleService {
         return list.stream().map(this::convertToDto).collect(Collectors.toList());
     }
 
+    @Cacheable(value = CacheConfig.ROLE_CACHE, key = "#id")
     public RoleDto getRole(String id) {
         return roleRepository.findById(id)
                 .map(this::convertToDto)

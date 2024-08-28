@@ -21,8 +21,13 @@ spring:
   sql:
     init:
         mode: always
+  redis:
+    host: localhost
+    port: 6379
+  cache:
+    type: redis
   flyway:
-    #baselineOnMigrate: true   #Needed when schema is not empty
+    baselineOnMigrate: true   #Needed when schema is not empty
     baselineVersion: 0
     encoding: ISO-8859-1
 management:
@@ -43,7 +48,8 @@ logging:
     root: INFO
     org.hibernate.SQL: OFF
     org.springframework.web: INFO
-    og.springframework.security: INFO
+    org.springframework.security: INFO
+    org.springframework.cache: INFO
 
 
 
