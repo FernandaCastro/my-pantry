@@ -26,7 +26,7 @@ public class AuthorizationHandler {
         this.authzServer = authzServer;
     }
 
-    public List<AccountGroupMemberDto> hasPermissionInAnyGroup(String email, String permission) {
+    public boolean hasPermissionInAnyGroup(String email, String permission) {
 
         StringBuilder uri = new StringBuilder("/accountservice/authorization/permission-in-any-group?")
                 .append("email=").append(email)
@@ -40,7 +40,7 @@ public class AuthorizationHandler {
                         status.value() != HttpStatus.OK.value(), (request, response) -> {
                     throw new AccessDeniedException("Request to AuthorizationServer(permission-in-any-group) failed: [" + response.getStatusCode() + " : " + response.getStatusText() + "]");
                 })
-                .body(new ParameterizedTypeReference<List<AccountGroupMemberDto>>() {
+                .body(new ParameterizedTypeReference<Boolean>() {
                 });
     }
 

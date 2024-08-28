@@ -11,5 +11,5 @@ public class PermissionDto {
 
     private String id;
 
-    private RoleDto roleDto;
+//    private RoleDto roleDto;
 }

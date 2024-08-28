@@ -22,7 +22,7 @@ public class AuthorizationController {
     }
 
     @GetMapping("/permission-in-any-group")
-    ResponseEntity<List<AccountGroupMemberDto>> hasPermissionInAnyGroup(@RequestParam String email, @RequestParam String permission) {
+    ResponseEntity<Boolean> hasPermissionInAnyGroup(@RequestParam String email, @RequestParam String permission) {
         return ResponseEntity.ok(accountGroupMemberService.hasPermissionInAnyGroup(email, permission));
     }
 

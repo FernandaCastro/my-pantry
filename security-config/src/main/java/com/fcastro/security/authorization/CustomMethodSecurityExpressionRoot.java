@@ -29,9 +29,7 @@ public class CustomMethodSecurityExpressionRoot {
 
         String email = expressionOperations.getAuthentication().getName();
 
-        var groupMember = authorizationHandler.hasPermissionInAnyGroup(email, permission);
-
-        return groupMember != null && groupMember.size() > 0;
+        return authorizationHandler.hasPermissionInAnyGroup(email, permission);
     }
 
     //Check if connected user has <permission> in the <groupId>
