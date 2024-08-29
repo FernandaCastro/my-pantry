@@ -8,7 +8,7 @@ import com.fcastro.pantryservice.event.ProductEventProducer;
 import com.fcastro.pantryservice.exception.DatabaseConstraintException;
 import com.fcastro.pantryservice.exception.RequestParamExpectedException;
 import com.fcastro.pantryservice.pantryitem.PantryItemRepository;
-import com.fcastro.security.authorization.AuthorizationHandler;
+import com.fcastro.security.authorization.AuthorizationClient;
 import com.fcastro.security.core.model.AccessControlDto;
 import com.fcastro.security.exception.AccessControlNotDefinedException;
 import org.modelmapper.ModelMapper;
@@ -29,18 +29,18 @@ public class ProductService {
     private final PantryItemRepository pantryItemRepository;
     private final ProductEventProducer productEventProducer;
     private final ModelMapper modelMapper;
-    private final AuthorizationHandler authorizationHandler;
+    private final AuthorizationClient authorizationClient;
 
-    public ProductService(ProductRepository repository, PantryItemRepository pantryItemRepository, ProductEventProducer productEventProducer, ModelMapper modelMapper, AuthorizationHandler authorizationHandler) {
+    public ProductService(ProductRepository repository, PantryItemRepository pantryItemRepository, ProductEventProducer productEventProducer, ModelMapper modelMapper, AuthorizationClient authorizationClient) {
         this.repository = repository;
         this.pantryItemRepository = pantryItemRepository;
         this.productEventProducer = productEventProducer;
         this.modelMapper = modelMapper;
-        this.authorizationHandler = authorizationHandler;
+        this.authorizationClient = authorizationClient;
     }
 
     public Optional<ProductDto> getEmbeddingAccountGroup(String email, long id) {
-        var accessControlList = authorizationHandler.listAccessControl(email, Product.class.getSimpleName(), id, null, null);
+        var accessControlList = authorizationClient.listAccessControl(email, Product.class.getSimpleName(), id, null, null);
         var product = repository.findById(id).map(this::convertToDTO)
                 .orElseThrow(() -> new ResourceNotFoundException(MessageTranslator.getMessage("error.product.not.found")));
         return Optional.of(embedAccountGroup(product, accessControlList));
@@ -65,7 +65,7 @@ public class ProductService {
         if (searchParam == null)
             throw new RequestParamExpectedException(MessageTranslator.getMessage("error.param.code.or.description.required"));
 
-        var accessControlList = authorizationHandler.listAccessControl(email, Product.class.getSimpleName(), null, groupId, null);
+        var accessControlList = authorizationClient.listAccessControl(email, Product.class.getSimpleName(), null, groupId, null);
         var productIds = accessControlList.stream().map(AccessControlDto::getClazzId).collect(toSet());
 
         var productList = repository.findAllByCodeOrDescription(searchParam.toLowerCase(), productIds).stream()
@@ -77,7 +77,7 @@ public class ProductService {
 
     public List<ProductDto> getAll(String email) {
 
-        var accessControlList = authorizationHandler.listAccessControl(email, Product.class.getSimpleName(), null, null, null);
+        var accessControlList = authorizationClient.listAccessControl(email, Product.class.getSimpleName(), null, null, null);
 
         var productIds = accessControlList.stream().map(AccessControlDto::getClazzId).collect(toSet());
         var productList = repository.findAllByIds(productIds).stream().map(this::convertToDTO).collect(Collectors.toList());
@@ -115,7 +115,7 @@ public class ProductService {
 
     private ProductDto save(ProductDto dto) {
         var entity = repository.save(convertToEntity(dto));
-        authorizationHandler.saveAccessControl(Product.class.getSimpleName(), entity.getId(), dto.getAccountGroup().getId());
+        authorizationClient.saveAccessControl(Product.class.getSimpleName(), entity.getId(), dto.getAccountGroup().getId());
 
         var storedDto = convertToDTO(entity);
         storedDto.setAccountGroup(dto.getAccountGroup());
@@ -140,7 +140,7 @@ public class ProductService {
             throw new AccessControlNotDefinedException(MessageTranslator.getMessage("error.product.and.group.association.required"));
 
         //get all products this user has access to, based on the account group hierarchy (if child account group, then retrieve also products from parent accont group).
-        var accessList = authorizationHandler.listAccessControl(SecurityContextHolder.getContext().getAuthentication().getName(), "Product", null, dto.getAccountGroup().getId(), null);
+        var accessList = authorizationClient.listAccessControl(SecurityContextHolder.getContext().getAuthentication().getName(), "Product", null, dto.getAccountGroup().getId(), null);
 
         var productIds = accessList.stream()
                 .map(AccessControlDto::getClazzId)
@@ -191,7 +191,7 @@ public class ProductService {
     //TODO: does it scale? Use cache for access-control, account-group?
     private void existsInAccountGroup(ProductDto dto) {
         //var productList = repository.findAllByCode(dto.getCode()); //This can become a huge list (code: "Rice")
-        var accessList = authorizationHandler.listAccessControl(SecurityContextHolder.getContext().getAuthentication().getName(), "Product", null, dto.getAccountGroup().getId(), null);
+        var accessList = authorizationClient.listAccessControl(SecurityContextHolder.getContext().getAuthentication().getName(), "Product", null, dto.getAccountGroup().getId(), null);
 
         var productIds = accessList.stream()
                 .map(AccessControlDto::getClazzId)
@@ -216,8 +216,13 @@ public class ProductService {
         if (dto.getAccountGroup() == null || dto.getAccountGroup().getId() == 0)
             throw new AccessControlNotDefinedException(MessageTranslator.getMessage("error.product.and.group.association.required"));
 
+        var productExists = dto.getId() > 0 ? repository.findById(dto.getId()) : Optional.empty();
         var entity = repository.save(convertToEntity(dto));
-        authorizationHandler.saveAccessControl(Product.class.getSimpleName(), entity.getId(), dto.getAccountGroup().getId());
+
+        //Add to access control only when adding a new Product
+        if (!productExists.isPresent()) {
+            authorizationClient.saveAccessControl(Product.class.getSimpleName(), entity.getId(), dto.getAccountGroup().getId());
+        }
 
         var storedDto = convertToDTO(entity);
         storedDto.setAccountGroup(dto.getAccountGroup());
@@ -242,7 +247,7 @@ public class ProductService {
             throw new DatabaseConstraintException(MessageTranslator.getMessage("error.delete.product.in.use"));
 
         repository.deleteById(id);
-        authorizationHandler.deleteAccessControl(Product.class.getSimpleName(), id);
+        authorizationClient.deleteAccessControl(Product.class.getSimpleName(), id);
 
         productEventProducer.send(ProductEventDto.builder()
                 .action(Action.DELETE)

@@ -1,8 +1,5 @@
-package com.fcastro.accountservice;
+package com.fcastro.accountservice.account;
 
-import com.fcastro.accountservice.account.Account;
-import com.fcastro.accountservice.account.AccountRepository;
-import com.fcastro.accountservice.account.AccountService;
 import com.fcastro.accountservice.accountgroup.AccountGroupService;
 import com.fcastro.accountservice.accountgroupmember.AccountGroupMemberService;
 import com.fcastro.security.core.config.SecurityPropertiesConfig;
@@ -28,9 +25,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-//@ComponentScan(basePackages = {"com.fcastro.accountService", "com.fcastro.service.core"})
-//Loads the application.yml file
-@ContextConfiguration(initializers = ConfigDataApplicationContextInitializer.class)
+@ContextConfiguration(initializers = ConfigDataApplicationContextInitializer.class) //Loads the application.yml file
 @EnableConfigurationProperties(value = SecurityPropertiesConfig.class)
 public class AccountServiceUnitTest {
 

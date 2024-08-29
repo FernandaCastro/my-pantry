@@ -20,7 +20,7 @@ public class RoleController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<RoleDto> getRole(@PathVariable Long id) {
+    public ResponseEntity<RoleDto> getRole(@PathVariable String id) {
         return ResponseEntity.ok(roleService.getRole(id));
     }
 

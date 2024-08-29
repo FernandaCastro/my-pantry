@@ -143,6 +143,19 @@ services:
       - purchase-db
     restart: always
 
+  redis-cache:
+    container_name: redis-cache
+    image: redis/redis-stack:7.4.0-v0
+    volumes:
+      - redis-cache:/local-data/:/data
+    ports:
+      - "6379:6379"
+      - "8001:8001"
+    networks:
+      - spring
+    restart: always
+    #Redis Insight exposed on port 8001
+
   account-service:
     image: fernandacastro/account-service:local
     build:
@@ -163,6 +176,7 @@ services:
       - postgres
     depends_on:
       - account-db
+      - redis-cache
     restart: always
 
   pantry-web:
@@ -192,6 +206,7 @@ volumes:
   purchase-db:
   kafka-data:
   pgadmin:
+  redis-cache:
 networks:
   postgres:
     driver: bridge

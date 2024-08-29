@@ -18,7 +18,7 @@ public class AccountGroup {
 
     private String name;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "parent_account_group_id")
     private AccountGroup parentAccountGroup;
 }

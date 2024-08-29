@@ -1,4 +1,4 @@
-package com.fcastro.accountservice;
+package com.fcastro.accountservice.security;
 
 import com.fcastro.accountservice.account.AccountController;
 import com.fcastro.accountservice.account.AccountService;

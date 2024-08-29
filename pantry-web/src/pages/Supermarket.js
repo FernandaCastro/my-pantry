@@ -10,6 +10,7 @@ import { getAccountGroupList } from '../services/apis/mypantry/requests/AccountR
 import { getAllSupermarkets, createSupermarket, updateSupermarket, deleteSupermarket } from '../services/apis/mypantry/requests/PurchaseRequests.js'
 import iconSupermarket from '../assets/images/supermarket-gradient.png';
 import Modal from 'react-bootstrap/Modal';
+import { useLoading } from '../hooks/useLoading';
 
 export function Supermarket() {
 
@@ -25,11 +26,11 @@ export function Supermarket() {
 
     const [showNew, setShowNew] = useState(false);
     const [refresh, setRefresh] = useState(false);
-    const [isLoading, setIsLoading] = useState(true);
     const [showModal, setShowModal] = useState(false);
     const [supermarketToDelete, setSupermarketToDelete] = useState();
 
     const { showAlert } = useAlert();
+    const { setIsLoading } = useLoading();
 
     useEffect(() => {
         fetchAccountGroups();
@@ -55,9 +56,10 @@ export function Supermarket() {
 
             setAccountGroupOptions(list);
             setAccountGroupOption(list[0]);
-            setIsLoading(false);
         } catch (error) {
             showAlert(VariantType.DANGER, error.message);
+        } finally {
+            setIsLoading(false);
         }
     }
 
@@ -74,10 +76,10 @@ export function Supermarket() {
             else if (selectedSupermarket.id > 0 && (!res || res.length === 0)) {
                 setSelectedSupermarket({ id: 0, name: "", categories: [] })
             }
-
-            setIsLoading(false);
         } catch (error) {
             showAlert(VariantType.DANGER, error.message);
+        } finally {
+            setIsLoading(false);
         }
     }
 
@@ -166,10 +168,6 @@ export function Supermarket() {
     }
 
     function renderCards() {
-
-        if (isLoading) {
-            return (<span>Loading...</span>)
-        }
 
         const elements = [];
 
@@ -312,13 +310,11 @@ export function Supermarket() {
                 <div className='d-flex flex-row mt-5 align-items-center gap-2'>
                     <div><span className="title">{t('group-title')}</span></div>
                     <Form.Group className="mb-2 flex-grow-1" controlId="formAccountGroups" size="sm">
-                        {isLoading ? <span>Loading...</span> :
-                            <Select name="accountGroup" key={accountGroupOption?.value}
-                                defaultValue={accountGroupOption}
-                                options={accountGroupOptions}
-                                onChange={setAccountGroupOption}
-                                customStyles={accountGroupStyles} />
-                        }
+                        <Select name="accountGroup" key={accountGroupOption?.value}
+                            defaultValue={accountGroupOption}
+                            options={accountGroupOptions}
+                            onChange={setAccountGroupOption}
+                            customStyles={accountGroupStyles} />
                     </Form.Group>
                 </div>
                 <Row xs={1} md={2} lg={3} className='m-0'>

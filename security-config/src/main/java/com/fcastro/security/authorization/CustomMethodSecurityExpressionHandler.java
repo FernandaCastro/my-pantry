@@ -13,9 +13,9 @@ import java.util.function.Supplier;
 @Component
 public class CustomMethodSecurityExpressionHandler extends DefaultMethodSecurityExpressionHandler {
 
-    private final AuthorizationHandler authorizationService;
+    private final AuthorizationClient authorizationService;
 
-    CustomMethodSecurityExpressionHandler(AuthorizationHandler authorizationService) {
+    CustomMethodSecurityExpressionHandler(AuthorizationClient authorizationService) {
         this.authorizationService = authorizationService;
     }
 

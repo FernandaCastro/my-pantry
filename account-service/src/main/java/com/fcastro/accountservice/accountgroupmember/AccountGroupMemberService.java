@@ -2,9 +2,11 @@ package com.fcastro.accountservice.accountgroupmember;
 
 import com.fcastro.accountservice.account.Account;
 import com.fcastro.accountservice.account.AccountRepository;
+import com.fcastro.accountservice.cache.MemberCacheService;
 import com.fcastro.accountservice.exception.NotAllowedException;
 import com.fcastro.accountservice.exception.OneOwnerMemberMustExistException;
 import com.fcastro.accountservice.role.Role;
+import com.fcastro.accountservice.role.RoleEnum;
 import com.fcastro.accountservice.role.RoleService;
 import com.fcastro.app.config.MessageTranslator;
 import com.fcastro.app.exception.ResourceNotFoundException;
@@ -14,7 +16,6 @@ import com.fcastro.security.core.model.PermissionDto;
 import com.fcastro.security.core.model.RoleDto;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -26,11 +27,13 @@ public class AccountGroupMemberService {
     private final AccountGroupMemberRepository repository;
     private final AccountRepository accountRepository;
     private final RoleService roleService;
+    private final MemberCacheService groupMemberCacheService;
 
-    public AccountGroupMemberService(AccountGroupMemberRepository repository, AccountRepository accountRepository, RoleService roleService) {
+    public AccountGroupMemberService(AccountGroupMemberRepository repository, AccountRepository accountRepository, RoleService roleService, MemberCacheService groupMemberCacheService) {
         this.repository = repository;
         this.accountRepository = accountRepository;
         this.roleService = roleService;
+        this.groupMemberCacheService = groupMemberCacheService;
     }
 
     public Optional<AccountGroupMemberDto> get(long accountGroupId, long accountId) {
@@ -59,79 +62,82 @@ public class AccountGroupMemberService {
         return listEntity.stream().map(this::convertToDTO).collect(Collectors.toList());
     }
 
-    @Transactional
+    //@Transactional
     public AccountGroupMemberDto createParentGroupMember(long accountId, long accountGroupId) {
-
-        var ownerRole = roleService.getRole(AccountGroupMemberRole.OWNER.value);
 
         var groupMember = AccountGroupMember.builder()
                 .accountId(accountId)
                 .accountGroupId(accountGroupId)
-                .role(Role.builder().id(ownerRole.getId()).build())
+                .role(Role.builder().id(RoleEnum.OWNER.value).build())
                 .build();
         return convertToDTO(repository.save(groupMember));
     }
 
+    //Adding OWNER to a Child group
     public AccountGroupMemberDto createChildGroupMember(String email, long accountGroupId) {
 
         var account = accountRepository.findByEmail(email)
                 .orElseThrow(() -> new ResourceNotFoundException(MessageTranslator.getMessage("error.email.not.found")));
 
-        var ownerRole = roleService.getRole(AccountGroupMemberRole.OWNER.value);
-
         var groupMember = AccountGroupMember.builder()
                 .accountId(account.getId())
                 .accountGroupId(accountGroupId)
-                .role(Role.builder().id(ownerRole.getId()).build())
+                .role(Role.builder().id(RoleEnum.OWNER.value).build())
                 .build();
 
         return convertToDTO(repository.save(groupMember));
     }
 
+    //Adding other members to an existing group
+    //It should check and update MemberCache
     public AccountGroupMemberDto save(AccountGroupMemberDto dto) {
-        //User should be OWNER in the group
-        var member = repository.findByGroupIdAndEmail(dto.getAccountGroupId(), SecurityContextHolder.getContext().getAuthentication().getName()).get();
-        if (!AccountGroupMemberRole.OWNER.value.equals(member.getRole().getName())) {
-            throw new NotAllowedException(MessageTranslator.getMessage("error.update.group.not.allowed"));
-        }
 
-        if (AccountGroupMemberRole.OWNER.value.equals(dto.getRole().getName())) {
+        //new member cannot be OWNER in the group
+        if (RoleEnum.OWNER.value.equals(dto.getRole().getId())) {
             throw new OneOwnerMemberMustExistException(MessageTranslator.getMessage("error.only.one.owner.allowed"));
         }
 
+        //User adding a member should be OWNER in the group
+        var owner = repository.findByGroupIdAndEmail(dto.getAccountGroupId(), SecurityContextHolder.getContext().getAuthentication().getName()).get();
+        if (owner != null && !RoleEnum.OWNER.value.equals(owner.getRole().getId())) {
+            throw new NotAllowedException(MessageTranslator.getMessage("error.update.group.not.allowed"));
+        }
+
+        //New member's account exists
+        var newMember = accountRepository.getReferenceById(dto.getAccountId());
+        if (newMember == null) {
+            throw new ResourceNotFoundException(MessageTranslator.getMessage("error.account.not.found"));
+        }
+
         var entity = repository.save(convertToEntity(dto));
+        groupMemberCacheService.updateCache(newMember.getEmail(), owner.getAccountGroup(), dto.getRole().getId());
+
         return convertToDTO(entity);
     }
 
     public void delete(long accountGroupId, long accountId) {
         //User should be OWNER in the Group, or User is deleting his own access to the group
-        var member = repository.findByGroupIdAndEmail(accountGroupId, SecurityContextHolder.getContext().getAuthentication().getName()).get();
-        if (member.getAccountId() != accountId && !AccountGroupMemberRole.OWNER.value.equals(member.getRole().getName())) {
+        var owner = repository.findByGroupIdAndEmail(accountGroupId, SecurityContextHolder.getContext().getAuthentication().getName()).get();
+        if (owner.getAccountId() != accountId && !RoleEnum.OWNER.value.equals(owner.getRole().getId())) {
             throw new NotAllowedException(MessageTranslator.getMessage("error.update.group.not.allowed"));
         }
 
         var key = AccountGroupMemberKey.builder().accountGroupId(accountGroupId).accountId(accountId).build();
-        member = repository.findById(key)
+        var member = repository.findById(key)
                 .orElseThrow(() -> new ResourceNotFoundException(MessageTranslator.getMessage("error.member.not.found")));
 
         //deleting an OWNER: there should be at least one Owner in the group
-        if (AccountGroupMemberRole.OWNER.value.equals(member.getRole().getName())) {
+        if (RoleEnum.OWNER.value.equals(member.getRole().getId())) {
             throw new OneOwnerMemberMustExistException(MessageTranslator.getMessage("error.delete.owner"));
         }
 
-        repository.deleteById(key);
+        repository.delete(member);
+        groupMemberCacheService.deleteFromCache(member.getAccount().getEmail(), member.getAccountGroup().getId(), member.getRole().getId());
     }
 
-    //Authorization methods
-    public List<AccountGroupMemberDto> hasPermissionInAnyGroup(String email, String permission) {
-        var list = repository.hasPermissionInAnyGroup(email, permission);
-        return list.stream().map(this::convertToDTO).toList();
-    }
+    public void deleteAllByGroupId(long accountGroupId) {
+        var listEntity = repository.findAllByAccountGroupId(accountGroupId);
 
-    //Authorization method
-    public List<AccountGroupMemberDto> hasPermissionInGroup(String email, String permission, Long accountGroupId) {
-        var member = convertToDTO(repository.hasPermissionInGroup(email, permission, accountGroupId));
-        return member == null ? List.of() : List.of(member);
     }
 
     private AccountGroupMemberDto convertToDTO(AccountGroupMember entity) {
@@ -153,12 +159,11 @@ public class AccountGroupMemberService {
         if (role != null) {
             var permissions = role.getPermissions() == null ? null :
                     role.getPermissions().stream()
-                            .map(p -> PermissionDto.builder().id(p.getId()).name(p.getName()).build())
+                            .map(p -> PermissionDto.builder().id(p.getId()).build())
                             .collect(Collectors.toList());
 
             roleDto = RoleDto.builder()
                     .id(role.getId())
-                    .name(role.getName())
                     .permissions(permissions)
                     .build();
         }
@@ -177,7 +182,6 @@ public class AccountGroupMemberService {
         if (dto.getRole() != null) {
             role = Role.builder()
                     .id(dto.getRole().getId())
-                    .name(dto.getRole().getName())
                     .build();
         }
 

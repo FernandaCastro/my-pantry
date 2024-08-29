@@ -30,7 +30,7 @@ export default function PermissionsView() {
         return (
             <Table key={role.id} size='sm' className='hover-disabled' >
                 <thead>
-                    <tr key={role.id}><th><span className='title'>{t((role.name.toLowerCase()))}</span></th></tr>
+                    <tr key={role.id}><th><span className='title'>{t((role.id.toLowerCase()))}</span></th></tr>
                 </thead>
                 <tbody>
                     {role.permissions.map((permission) => { return renderPermission(permission) })}
@@ -40,7 +40,7 @@ export default function PermissionsView() {
     }
 
     function renderPermission(permission) {
-        let str = permission.name.replaceAll("_", " ");
+        let str = permission.id.replaceAll("_", " ");
         return (
             <tr key={permission.id}>
                 <td><span className="text-small">{fullCamelCase(str)}</span></td>

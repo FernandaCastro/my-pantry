@@ -1,4 +1,4 @@
-package com.fcastro.accountservice;
+package com.fcastro.accountservice.security;
 
 import com.fcastro.security.core.config.SecurityPropertiesConfig;
 import com.fcastro.security.core.jwt.JWTHandler;
@@ -17,7 +17,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(SpringExtension.class)
-//Loads the application.yml file
+//Loads the application.aaa file
 @ContextConfiguration(initializers = ConfigDataApplicationContextInitializer.class,
         classes = JWTHandler.class)
 @EnableConfigurationProperties(value = SecurityPropertiesConfig.class)

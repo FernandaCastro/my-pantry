@@ -151,7 +151,7 @@ public class PantryControllerUnitTest {
                 .clazzId(1L)
                 .accountGroup(AccountGroupDto.builder().id(10L).build())
                 .build();
-        var permissions = List.of(PermissionDto.builder().name("list_pantry").build());
+        var permissions = List.of(PermissionDto.builder().id("list_pantry").build());
         var role = RoleDto.builder().permissions(permissions).build();
         var member = AccountGroupMemberDto.builder().accountGroupId(10L).accountId(1L).role(role).build();
 

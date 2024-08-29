@@ -12,6 +12,7 @@ import { getAccountGroupList } from '../services/apis/mypantry/requests/AccountR
 import { useTranslation } from 'react-i18next';
 import iconProduct from '../assets/images/food-gradient.png';
 import Image from 'react-bootstrap/Image';
+import { useLoading } from '../hooks/useLoading.js';
 
 export default function Product() {
 
@@ -25,8 +26,8 @@ export default function Product() {
     const [categories, setCategories] = useState([]);
 
     const [accountGroupOptions, setAccountGroupOptions] = useState([]);
-    const [isLoading, setIsLoading] = useState(false);
     const { showAlert } = useAlert();
+    const { setIsLoading } = useLoading();
 
     useEffect(() => {
         fetchCategories();
@@ -70,9 +71,10 @@ export default function Product() {
             });
 
             setAccountGroupOptions(list);
-            setIsLoading(false);
         } catch (error) {
             showAlert(VariantType.DANGER, error.message);
+        } finally{
+            setIsLoading(false);
         }
     }
 

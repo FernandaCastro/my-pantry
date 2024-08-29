@@ -2,65 +2,107 @@ package com.fcastro.accountservice.auth;
 
 import com.fcastro.accountservice.accesscontrol.AccessControlService;
 import com.fcastro.accountservice.accountgroupmember.AccountGroupMemberService;
-import com.fcastro.security.core.model.AccountGroupMemberDto;
-import com.fcastro.security.core.model.PermissionDto;
+import com.fcastro.accountservice.cache.AccessControlCacheService;
+import com.fcastro.accountservice.cache.MemberCacheService;
+import com.fcastro.accountservice.role.RoleService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
 public class AuthorizationService {
 
     private final AccessControlService accessControlService;
     private final AccountGroupMemberService accountGroupMemberService;
+    private final RoleService roleService;
+    private final MemberCacheService memberCacheService;
+    private final AccessControlCacheService accessControlCacheService;
 
-    public AuthorizationService(AccessControlService accessControlService, AccountGroupMemberService accountGroupMemberService) {
+    public AuthorizationService(AccessControlService accessControlService, AccountGroupMemberService accountGroupMemberService, RoleService roleService, MemberCacheService memberCacheService, AccessControlCacheService accessControlCacheService) {
         this.accessControlService = accessControlService;
         this.accountGroupMemberService = accountGroupMemberService;
+        this.roleService = roleService;
+        this.memberCacheService = memberCacheService;
+        this.accessControlCacheService = accessControlCacheService;
     }
 
-
-    //Check if connected user has <permission> in at least one group
     public boolean hasPermissionInAnyGroup(String email, String permission) {
 
-        var groupMembers = accountGroupMemberService.getAllByEmail(email);
-        if (groupMembers == null || groupMembers.size() == 0) return false;
+        //Get Groups/Roles from MemberCache, otherwise from database
+        var groupMemberList = memberCacheService.getFromCache(email);
 
-        for (AccountGroupMemberDto gm : groupMembers) {
-            if (checkPermission(gm.getRole().getPermissions(), permission)) return true;
-        }
+        //Get Roles from RoleCache, otherwise from database
+        var permissionFound = groupMemberList.stream()
+                .map(member -> roleService.getRole(member.getRoleId()))
+                .flatMap(role -> role.getPermissions().stream())
+                .anyMatch(p -> p.getId().equalsIgnoreCase(permission));
 
-        return false;
+        return permissionFound;
     }
 
-    //Check if connected user has <permission> in the <groupId>
-    public boolean hasPermission(String email, Long groupId, String permission) {
+    public boolean hasPermissionInGroup(String email, String permission, Long accountGroupId) {
 
-        if (groupId == null || groupId == 0) return false;
-        return checkAccountGroupPermission(email, groupId, permission);
+        //Get Groups/Roles from MemberCache, otherwise from database
+        var memberList = memberCacheService.getFromCache(email);
+
+        //Get Roles from RoleCache, otherwise from database
+        var permissionFound = memberList.stream()
+                .filter(i -> i.getAccountGroupId() == accountGroupId)
+                .map(member -> roleService.getRole(member.getRoleId()))
+                .flatMap(role -> role.getPermissions().stream())
+                .anyMatch(p -> p.getId().equalsIgnoreCase(permission));
+
+        return permissionFound;
     }
 
-    //Check if connected user has <permission> in the group in which clazz/clazzId belongs
-    public boolean hasPermission(String email, String clazz, Long clazzId, String permission) {
+    public boolean hasPermissionInObject(String email, String permission, String clazz, Long clazzId) {
 
-        if (clazz == null || clazz.length() == 0 || clazzId == null || clazzId == 0) return false;
-        var access = accessControlService.get(clazz, clazzId);
+        //Get Groups/Roles from MemberCache, otherwise from database
+        var memberList = memberCacheService.getFromCache(email);
 
-        return checkAccountGroupPermission(email, access.getAccountGroup().getId(), permission);
+        //Find the correct AccountGroupId and verify the permission in it
+        var permissionFound = memberList.stream()
+
+                //Find the AccountGroupId the Object belongs to
+                .flatMap(member -> accessControlCacheService.getFromCache(member.getAccountGroupId(), clazz).stream()
+                        .filter(id -> id.equals(clazzId))  // Filter to match the clazzId
+                        .map(i -> member) // Map to the MemberCacheDto
+                )
+                //Verify the permission according to member.roleId
+                .map(member -> roleService.getRole(member.getRoleId()))
+                .flatMap(role -> role.getPermissions().stream())
+                .anyMatch(p -> p.getId().equalsIgnoreCase(permission));
+
+        return permissionFound;
     }
 
-    private boolean checkAccountGroupPermission(String email, Long groupId, String permission) {
-        var groupMember = accountGroupMemberService.createChildGroupMember(email, groupId);
-        if (groupMember == null || groupMember.getRole() == null) return false;
+    /**
+     * Verify if user has access to ALL clazzIds and the permission in all the groups
+     **/
+    public boolean hasPermissionInObjectList(String email, String permission, String clazz, List<Long> clazzIds) {
+        //Get Groups/Roles from MemberCache, otherwise from database
+        var memberList = memberCacheService.getFromCache(email);
 
-        return checkPermission(groupMember.getRole().getPermissions(), permission);
-    }
+        AtomicInteger count = new AtomicInteger();
+        //Find the correct AccountGroupId and verify the permission in it
+        var permissionFound = memberList.stream()
 
-    private boolean checkPermission(List<PermissionDto> permissions, String permission) {
-        if (permissions == null || permissions.size() == 0) return false;
+                //Find all the AccountGroupIds the Objects in classIds list belong to
+                .flatMap(member -> accessControlCacheService.getFromCache(member.getAccountGroupId(), clazz).stream()
+                        .filter(clazzIds::contains)  // Filter to match the clazzId
+                        .map(i -> {
+                            count.getAndIncrement();
+                            return member;
+                        }) // Map to the MemberCacheDto
+                )
+                //Verify the permission in all accountGroups found, according to member.roleId in each
+                .map(member -> roleService.getRole(member.getRoleId()))
+                .flatMap(role -> role.getPermissions().stream())
+                .anyMatch(p -> p.getId().equalsIgnoreCase(permission));
 
-        return permissions.stream()
-                .anyMatch((p) -> p.getName().equalsIgnoreCase(permission));
+        var hasAccessToObjects = count.get() == clazzIds.size();
+        return permissionFound && hasAccessToObjects;
     }
 
 }

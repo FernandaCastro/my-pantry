@@ -11,10 +11,11 @@ import java.util.Optional;
 @Repository
 public interface AccountGroupMemberRepository extends JpaRepository<AccountGroupMember, AccountGroupMemberKey> {
 
-    @Query("select aga, a, r from account a, accountGroupMember aga, role r " +
-            "where aga.accountId = a.id  " +
-            "and r.id = aga.role.id " +
-            "and a.email = :email ")
+    @Query("SELECT gm, g, a, r FROM accountGroupMember gm " +
+            "JOIN FETCH gm.accountGroup g " +
+            "JOIN gm.account a " +
+            "JOIN gm.role r " +
+            "WHERE a.email = :email ")
     List<AccountGroupMember> findAllByEmail(String email);
 
     @Query("select aga, a, r " +
@@ -33,6 +34,7 @@ public interface AccountGroupMemberRepository extends JpaRepository<AccountGroup
 
     List<AccountGroupMember> findAllByAccountGroupId(long groupId);
 
+    @Deprecated
     @Query("select distinct gm " +
             "from accountGroupMember gm, " +
             "account ac, " +
@@ -41,9 +43,10 @@ public interface AccountGroupMemberRepository extends JpaRepository<AccountGroup
             "where ac.id = gm.account.id " +
             "and role.id = gm.role.id " +
             "and ac.email = :email " +
-            "and lower(per.name) = lower(:permission)")
+            "and lower(per.id) = lower(:permission)")
     List<AccountGroupMember> hasPermissionInAnyGroup(String email, String permission);
 
+    @Deprecated
     @Query("select distinct gm " +
             "from accountGroupMember gm, " +
             "account ac, " +
@@ -52,7 +55,7 @@ public interface AccountGroupMemberRepository extends JpaRepository<AccountGroup
             "where ac.id = gm.account.id " +
             "and role.id = gm.role.id " +
             "and ac.email = :email " +
-            "and lower(per.name) = lower(:permission) " +
+            "and lower(per.id) = lower(:permission) " +
             "and gm.accountGroup.id = :accountGroupId")
     AccountGroupMember hasPermissionInGroup(String email, String permission, Long accountGroupId);
 }

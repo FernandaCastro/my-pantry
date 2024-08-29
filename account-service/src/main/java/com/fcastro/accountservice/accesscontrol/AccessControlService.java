@@ -1,6 +1,7 @@
 package com.fcastro.accountservice.accesscontrol;
 
 import com.fcastro.accountservice.accountgroup.AccountGroup;
+import com.fcastro.accountservice.cache.AccessControlCacheService;
 import com.fcastro.accountservice.exception.AccessControlNotDefinedException;
 import com.fcastro.app.config.MessageTranslator;
 import com.fcastro.security.core.model.AccessControlDto;
@@ -14,9 +15,11 @@ import java.util.stream.Collectors;
 @Service
 public class AccessControlService {
     private final AccessControlRepository accessControlRepository;
+    private final AccessControlCacheService accessControlCacheService;
 
-    public AccessControlService(AccessControlRepository accessControlRepository) {
+    public AccessControlService(AccessControlRepository accessControlRepository, AccessControlCacheService accessControlCacheService) {
         this.accessControlRepository = accessControlRepository;
+        this.accessControlCacheService = accessControlCacheService;
     }
 
     public boolean isAuthorized(String clazz, Long clazzId, List<Long> groupIds) {
@@ -83,25 +86,19 @@ public class AccessControlService {
     public void save(AccessControlDto accessControlDto) {
         var accessControl = convertToEntity(accessControlDto);
         accessControlRepository.save(accessControl);
+        accessControlCacheService.updateCache(accessControl.getAccountGroup().getId(), accessControl.getClazz(), accessControl.getClazzId());
     }
 
     @Transactional
     public void delete(String clazz, Long clazzId) {
-        accessControlRepository.deleteAllByClazzAndClazzId(clazz, clazzId);
-    }
+        var found = accessControlRepository.findByClazzAndClazzId(clazz, clazzId);
+        if (found.isPresent()) {
+            accessControlRepository.deleteAllByClazzAndClazzId(clazz, clazzId);
 
-    //Authorization method
-    public AccessControlDto hasPermissionInObject(String email, String permission, String clazz, Long clazzId) {
-        var accessControl = convertToDto(accessControlRepository.hasPermissionInObject(email, permission, clazz, clazzId));
-        return accessControl;
+            var accessControl = found.get();
+            accessControlCacheService.deleteFromCache(accessControl.getAccountGroup().getId(), accessControl.getClazz(), accessControl.getClazzId());
+        }
     }
-
-    //Authorization method
-    public List<AccessControlDto> hasPermissionInObjectList(String email, String permission, String clazz, List<Long> clazzIds) {
-        var list = accessControlRepository.hasPermissionInObjectList(email, permission, clazz, clazzIds);
-        return list.stream().map(this::convertToDto).toList();
-    }
-
 
     private AccessControlDto convertToDto(AccessControl entity) {
         if (entity == null) return null;

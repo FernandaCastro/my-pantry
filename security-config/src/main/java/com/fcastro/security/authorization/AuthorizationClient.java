@@ -2,7 +2,6 @@ package com.fcastro.security.authorization;
 
 import com.fcastro.security.core.model.AccessControlDto;
 import com.fcastro.security.core.model.AccountGroupDto;
-import com.fcastro.security.core.model.AccountGroupMemberDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.ParameterizedTypeReference;
@@ -16,19 +15,24 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
-public class AuthorizationHandler {
+public class AuthorizationClient {
 
-    Logger log = LoggerFactory.getLogger(AuthorizationHandler.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(AuthorizationClient.class);
+
+    private final String AUTH_URL = "/accountservice/authorization/";
 
     private final RestClient authzServer;
 
-    public AuthorizationHandler(RestClient authzServer) {
+    public AuthorizationClient(RestClient authzServer) {
         this.authzServer = authzServer;
     }
 
-    public List<AccountGroupMemberDto> hasPermissionInAnyGroup(String email, String permission) {
+    /**
+     * Send Request to Authorization Server: Does the user have the permission in at least one group?
+     **/
+    public boolean hasPermissionInAnyGroup(String email, String permission) {
 
-        StringBuilder uri = new StringBuilder("/accountservice/authorization/permission-in-any-group?")
+        StringBuilder uri = new StringBuilder(AUTH_URL).append("permission-in-any-group?")
                 .append("email=").append(email)
                 .append("&permission=").append(permission);
 
@@ -40,13 +44,16 @@ public class AuthorizationHandler {
                         status.value() != HttpStatus.OK.value(), (request, response) -> {
                     throw new AccessDeniedException("Request to AuthorizationServer(permission-in-any-group) failed: [" + response.getStatusCode() + " : " + response.getStatusText() + "]");
                 })
-                .body(new ParameterizedTypeReference<List<AccountGroupMemberDto>>() {
+                .body(new ParameterizedTypeReference<Boolean>() {
                 });
     }
 
-    public List<AccountGroupMemberDto> hasPermissionInAGroup(String email, String permission, Long accountGroupId) {
+    /**
+     * Send Request to Authorization Server: Does the user have the permission in this group?
+     **/
+    public boolean hasPermissionInAGroup(String email, String permission, Long accountGroupId) {
 
-        StringBuilder uri = new StringBuilder("/accountservice/authorization/permission-in-group?")
+        StringBuilder uri = new StringBuilder(AUTH_URL).append("permission-in-group?")
                 .append("email=").append(email)
                 .append("&permission=").append(permission)
                 .append("&accountGroupId=").append(accountGroupId);
@@ -59,13 +66,13 @@ public class AuthorizationHandler {
                         status.value() != HttpStatus.OK.value(), (request, response) -> {
                     throw new AccessDeniedException("Request to AuthorizationServer(permission-in-group) failed: [" + response.getStatusCode() + " : " + response.getStatusText() + "]");
                 })
-                .body(new ParameterizedTypeReference<List<AccountGroupMemberDto>>() {
+                .body(new ParameterizedTypeReference<Boolean>() {
                 });
     }
 
-    public AccessControlDto hasPermissionInObject(String email, String permission, String clazz, Long clazzId) {
+    public boolean hasPermissionInObject(String email, String permission, String clazz, Long clazzId) {
 
-        StringBuilder uri = new StringBuilder("/accountservice/authorization/permission-in-object?")
+        StringBuilder uri = new StringBuilder(AUTH_URL).append("permission-in-object?")
                 .append("email=").append(email)
                 .append("&permission=").append(permission)
                 .append("&clazz=").append(clazz)
@@ -79,12 +86,12 @@ public class AuthorizationHandler {
                         status.value() != HttpStatus.OK.value(), (request, response) -> {
                     throw new AccessDeniedException("Request to AuthorizationServer(permission-in-object) failed: [" + response.getStatusCode() + " : " + response.getStatusText() + "]");
                 })
-                .body(new ParameterizedTypeReference<AccessControlDto>() {
+                .body(new ParameterizedTypeReference<Boolean>() {
                 });
     }
 
-    public List<AccessControlDto> hasPermissionInObjectList(String email, String permission, String clazz, List<Long> clazzIds) {
-        StringBuilder uri = new StringBuilder("/accountservice/authorization/permission-in-object-list?")
+    public boolean hasPermissionInObjectList(String email, String permission, String clazz, List<Long> clazzIds) {
+        StringBuilder uri = new StringBuilder(AUTH_URL).append("permission-in-object-list?")
                 .append("email=").append(email)
                 .append("&permission=").append(permission)
                 .append("&clazz=").append(clazz)
@@ -98,7 +105,7 @@ public class AuthorizationHandler {
                         status.value() != HttpStatus.OK.value(), (request, response) -> {
                     throw new AccessDeniedException("Request to AuthorizationServer(permission-in-object-list) failed: [" + response.getStatusCode() + " : " + response.getStatusText() + "]");
                 })
-                .body(new ParameterizedTypeReference<List<AccessControlDto>>() {
+                .body(new ParameterizedTypeReference<Boolean>() {
                 });
     }
 

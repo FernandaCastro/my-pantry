@@ -1,7 +1,7 @@
 package com.fcastro.purchaseservice.supermarket;
 
 import com.fcastro.app.exception.ResourceNotFoundException;
-import com.fcastro.security.authorization.AuthorizationHandler;
+import com.fcastro.security.authorization.AuthorizationClient;
 import com.fcastro.security.core.model.AccessControlDto;
 import com.fcastro.security.exception.AccessControlNotDefinedException;
 import org.modelmapper.ModelMapper;
@@ -17,9 +17,9 @@ public class SupermarketService {
 
     private final SupermarketRepository repository;
     private final ModelMapper modelMapper;
-    private final AuthorizationHandler authorizationHandler;
+    private final AuthorizationClient authorizationHandler;
 
-    public SupermarketService(SupermarketRepository repository, ModelMapper modelMapper, AuthorizationHandler authorizationHandler) {
+    public SupermarketService(SupermarketRepository repository, ModelMapper modelMapper, AuthorizationClient authorizationHandler) {
         this.repository = repository;
         this.modelMapper = modelMapper;
         this.authorizationHandler = authorizationHandler;
@@ -69,8 +69,15 @@ public class SupermarketService {
         if (dto.getAccountGroup() == null || dto.getAccountGroup().getId() == 0)
             throw new AccessControlNotDefinedException("Supermarket must be associated to an Account Group");
 
+
+        var supermarktExists = dto.getId() > 0 ? repository.findById(dto.getId()) : Optional.empty();
+
         var entity = repository.save(convertToEntity(dto));
-        authorizationHandler.saveAccessControl(Supermarket.class.getSimpleName(), entity.getId(), dto.getAccountGroup().getId());
+
+        //Add to access control only when adding a new Supermarket
+        if (!supermarktExists.isPresent()) {
+            authorizationHandler.saveAccessControl(Supermarket.class.getSimpleName(), entity.getId(), dto.getAccountGroup().getId());
+        }
 
         var storedDto = convertToDTO(entity);
         storedDto.setAccountGroup(dto.getAccountGroup());

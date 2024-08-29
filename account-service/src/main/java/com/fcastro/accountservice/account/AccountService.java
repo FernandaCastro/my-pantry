@@ -76,6 +76,9 @@ public class AccountService {
                 .build();
     }
 
+    /**
+     * Logs in the user, creating a new and valid JwtToken
+     **/
     public AppTokenDto login(String email) {
 
         var accountFound = accountRepository.findByEmail(email)

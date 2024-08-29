@@ -13,6 +13,7 @@ import { Suspense } from 'react';
 import { AlertContext, ProfileContext } from '../services/context/AppContext.js';
 import { Overlay } from "react-bootstrap";
 import Footer from "../components/Footer.js";
+import { LoadingProvider } from '../services/context/LoadingProvider';
 
 export default function App() {
 
@@ -63,14 +64,17 @@ export default function App() {
               <Alert variant={alert.type} show={alert.show} onClose={() => setAlert((a) => a = { ...a, show: !alert.show })} dismissible transition={Fade}>{alert.message}</Alert>
             </Overlay>
           </div>
-          <Container className="content">
-            <NavigateSetter />
-            <TranslationSetter />
-            <CustomRoutes />
-          </Container>
+          <LoadingProvider>
+            <Container className="content">
+              <NavigateSetter />
+              <TranslationSetter />
+              <CustomRoutes />
+            </Container>
+          </LoadingProvider>
           <Footer />
         </AlertContext.Provider>
       </ProfileContext.Provider>
     </Suspense>
+
   )
 }

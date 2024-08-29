@@ -9,6 +9,7 @@ import { BsArrow90DegRight, BsCardChecklist } from "react-icons/bs";
 import { useTranslation } from 'react-i18next';
 import i18n from 'i18next';
 import { ProfileContext } from '../services/context/AppContext';
+import { useLoading } from '../hooks/useLoading.js';
 
 const RADIAN = Math.PI / 180;
 
@@ -44,7 +45,8 @@ export default function PantriesPieChart() {
     const [refreshChart, setRefreshChart] = useState(true);
     const [activeColor, setActiveColor] = useState(colors.findIndex(c => c.theme === profileCtx.theme, 0));
     const { showAlert } = useAlert();
-    const [isLoading, setIsLoading] = useState(true);
+    const { setIsLoading } = useLoading();
+
     const [pantries, setPantries] = useState([]);
     const [topCriticals, setTopCriticals] = useState([]);
 
@@ -88,11 +90,12 @@ export default function PantriesPieChart() {
         try {
             const res = await getPantryChartData();
             setPantries(res);
-            setIsLoading(false);
             populateTopCritical(res);
             return res;
         } catch (error) {
             showAlert(VariantType.DANGER, error.message);
+        } finally{
+            setIsLoading(false);
         }
     }
 
@@ -279,7 +282,7 @@ const PieChartWithNeedle = React.memo(props => {
         const sin = Math.sin(-RADIAN * ang);
         const cos = Math.cos(-RADIAN * ang);
         const r = 5;
-        const x0 = cx + 0;
+        const x0 = cx + 5;
         const y0 = cy + 5;
         const xba = x0 + r * sin;
         const yba = y0 - r * cos;

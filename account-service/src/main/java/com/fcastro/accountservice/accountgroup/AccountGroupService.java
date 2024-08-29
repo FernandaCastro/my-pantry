@@ -2,9 +2,10 @@ package com.fcastro.accountservice.accountgroup;
 
 import com.fcastro.accountservice.accesscontrol.AccessControlService;
 import com.fcastro.accountservice.account.Account;
-import com.fcastro.accountservice.accountgroupmember.AccountGroupMemberRole;
 import com.fcastro.accountservice.accountgroupmember.AccountGroupMemberService;
+import com.fcastro.accountservice.cache.MemberCacheService;
 import com.fcastro.accountservice.exception.NotAllowedException;
+import com.fcastro.accountservice.role.RoleEnum;
 import com.fcastro.app.config.MessageTranslator;
 import com.fcastro.app.exception.ResourceNotFoundException;
 import com.fcastro.security.core.model.AccountGroupDto;
@@ -22,11 +23,13 @@ public class AccountGroupService {
     private final AccountGroupRepository repository;
     private final AccountGroupMemberService groupMemberService;
     private final AccessControlService accessControlService;
+    private final MemberCacheService groupMemberCacheService;
 
-    public AccountGroupService(AccountGroupRepository repository, AccountGroupMemberService groupMemberService, AccessControlService accessControlService) {
+    public AccountGroupService(AccountGroupRepository repository, AccountGroupMemberService groupMemberService, AccessControlService accessControlService, MemberCacheService groupMemberCacheService) {
         this.repository = repository;
         this.groupMemberService = groupMemberService;
         this.accessControlService = accessControlService;
+        this.groupMemberCacheService = groupMemberCacheService;
     }
 
     public Optional<AccountGroupDto> get(long id) {
@@ -45,6 +48,9 @@ public class AccountGroupService {
         return listEntity.stream().map(this::convertToDTO).collect(Collectors.toList());
     }
 
+    /**
+     * Creates a new PARENT AccountGroup, called when a new Account is created
+     **/
     @Transactional
     public AccountGroupDto createParentGroup(Account account) {
         var accountGroup = AccountGroup.builder()
@@ -57,13 +63,14 @@ public class AccountGroupService {
         return convertToDTO(accountGroup);
     }
 
+    /** It updates an existing AccountGroup or Creates a CHILD AccountGroup **/
     public AccountGroupDto save(AccountGroupDto dto) {
 
         //update
         if (dto.getId() != null && repository.findById(dto.getId()).isPresent()) {
 
             var member = groupMemberService.getByGroupIdAndEmail(dto.getId(), SecurityContextHolder.getContext().getAuthentication().getName()).get();
-            if (member == null || !AccountGroupMemberRole.OWNER.value.equals(member.getRole().getName())) {
+            if (member == null || !RoleEnum.OWNER.value.equals(member.getRole().getId())) {
                 throw new NotAllowedException(MessageTranslator.getMessage("error.update.group.not.allowed"));
             }
 
@@ -84,15 +91,15 @@ public class AccountGroupService {
         return convertToDTO(accountGroup);
     }
 
+    /** Remove  a CHILD AccountGroup **/
     public void delete(long accountGroupId) {
         var accountGroup = repository.findById(accountGroupId)
                 .orElseThrow(() -> new ResourceNotFoundException(MessageTranslator.getMessage("error.group.not.found")));
 
-        var member = groupMemberService.getByGroupIdAndEmail(accountGroupId, SecurityContextHolder.getContext().getAuthentication().getName()).get();
-        if (member == null || !AccountGroupMemberRole.OWNER.value.equals(member.getRole().getName())) {
+        var owner = groupMemberService.getByGroupIdAndEmail(accountGroupId, SecurityContextHolder.getContext().getAuthentication().getName()).get();
+        if (owner == null || !RoleEnum.OWNER.value.equals(owner.getRole().getId())) {
             throw new NotAllowedException(MessageTranslator.getMessage("error.delete.group.not.allowed"));
         }
-
 
         if (accountGroup.getParentAccountGroup() == null)
             throw new NotAllowedException(MessageTranslator.getMessage("error.delete.main.group.not.allowed"));
@@ -102,6 +109,9 @@ public class AccountGroupService {
             throw new NotAllowedException(MessageTranslator.getMessage("error.delete.not.empty.group.not.allowed"));
 
         repository.deleteById(accountGroupId);
+
+        //Update the cache
+        groupMemberCacheService.deleteAllFromCache(accountGroupId);
     }
 
     private AccountGroupDto convertToDTO(AccountGroup entity) {

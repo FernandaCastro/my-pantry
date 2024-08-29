@@ -10,7 +10,7 @@ import com.fcastro.purchaseservice.product.ProductDto;
 import com.fcastro.purchaseservice.purchaseItem.PurchaseItem;
 import com.fcastro.purchaseservice.purchaseItem.PurchaseItemDto;
 import com.fcastro.purchaseservice.purchaseItem.PurchaseItemService;
-import com.fcastro.security.authorization.AuthorizationHandler;
+import com.fcastro.security.authorization.AuthorizationClient;
 import com.fcastro.security.core.model.AccessControlDto;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.access.AccessDeniedException;
@@ -29,9 +29,9 @@ public class PurchaseService {
     private final PurchaseItemService purchaseItemService;
     private final ModelMapper modelMapper;
     private final PurchaseCompleteEventProducer eventProducer;
-    private final AuthorizationHandler authorizationHandler;
+    private final AuthorizationClient authorizationHandler;
 
-    public PurchaseService(PurchaseRepository repository, PurchaseItemService purchaseItemService, ModelMapper modelMapper, PurchaseCompleteEventProducer eventProducer, AuthorizationHandler authorizationHandler) {
+    public PurchaseService(PurchaseRepository repository, PurchaseItemService purchaseItemService, ModelMapper modelMapper, PurchaseCompleteEventProducer eventProducer, AuthorizationClient authorizationHandler) {
         this.repository = repository;
         this.purchaseItemService = purchaseItemService;
         this.modelMapper = modelMapper;

@@ -10,6 +10,7 @@ import { getAccountGroupList } from '../services/apis/mypantry/requests/AccountR
 import { useTranslation } from 'react-i18next';
 import { Image, Stack } from 'react-bootstrap';
 import iconPantry from '../assets/images/cupboard-gradient.png';
+import { useLoading } from '../hooks/useLoading.js';
 
 export default function PantryItems() {
 
@@ -20,9 +21,9 @@ export default function PantryItems() {
     const [accountGroupOptions, setAccountGroupOptions] = useState([]);
     const [isEmpty, setIsEmpty] = useState(true);
 
-    const [isLoading, setIsLoading] = useState(false);
     const [refresh, setRefresh] = useState(false);
     const { showAlert } = useAlert();
+    const { setIsLoading } = useLoading();
 
     useEffect(() => {
         if (id) {
@@ -62,9 +63,10 @@ export default function PantryItems() {
             });
 
             setAccountGroupOptions(list);
-            setIsLoading(false);
         } catch (error) {
             showAlert(VariantType.DANGER, error.message);
+        } finally {
+            setIsLoading(false);
         }
     }
 
