@@ -19,6 +19,11 @@ spring:
   sql:
     init:
         mode: always
+  redis:
+    host: redis-cache
+    port: 6379
+  cache:
+    type: redis
   flyway:
     baselineOnMigrate: true
     baselineVersion: 0
