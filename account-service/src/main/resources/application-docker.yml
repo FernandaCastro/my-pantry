@@ -5,9 +5,9 @@ spring:
     name: account-service
   datasource:
     platform: postgres
-    url: jdbc:postgresql://account-db:5432/account-db
-    username: account
-    password: account
+    url: ${ACCOUNT-DB-URL}
+    username: ${ACCOUNT_DB_USERNAME}
+    password: ${ACCOUNT-DB_PASSWORD}
   jpa:
     hibernate:
       ddl-auto: none
@@ -20,8 +20,8 @@ spring:
     init:
         mode: always
   redis:
-    host: redis-cache
-    port: 6379
+    host: ${REDIS-HOST}
+    port: ${REDIS-PORT}
   cache:
     type: redis
   flyway:
