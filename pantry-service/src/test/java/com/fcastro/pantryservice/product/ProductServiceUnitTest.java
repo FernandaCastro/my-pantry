@@ -4,7 +4,7 @@ import com.fcastro.app.exception.ResourceNotFoundException;
 import com.fcastro.pantryservice.event.ProductEventProducer;
 import com.fcastro.pantryservice.exception.DatabaseConstraintException;
 import com.fcastro.pantryservice.pantryitem.PantryItemRepository;
-import com.fcastro.security.authorization.AuthorizationHandler;
+import com.fcastro.security.authorization.AuthorizationClient;
 import com.fcastro.security.core.model.AccountGroupDto;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -44,7 +44,7 @@ public class ProductServiceUnitTest {
     ModelMapper modelMapper;
 
     @Mock
-    private AuthorizationHandler authorizationHandler;
+    private AuthorizationClient authorizationHandler;
 
     @Mock
     LocaleContextHolder localeContextHolder;

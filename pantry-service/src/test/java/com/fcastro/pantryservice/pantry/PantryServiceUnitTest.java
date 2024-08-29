@@ -2,7 +2,7 @@ package com.fcastro.pantryservice.pantry;
 
 import com.fcastro.app.exception.ResourceNotFoundException;
 import com.fcastro.pantryservice.pantryitem.PantryItemService;
-import com.fcastro.security.authorization.AuthorizationHandler;
+import com.fcastro.security.authorization.AuthorizationClient;
 import com.fcastro.security.core.model.AccountGroupDto;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -36,7 +36,7 @@ public class PantryServiceUnitTest {
     ModelMapper modelMapper;
 
     @Mock
-    private AuthorizationHandler authorizationHandler;
+    private AuthorizationClient authorizationHandler;
 
     @Mock
     private PantryItemService pantryItemService;

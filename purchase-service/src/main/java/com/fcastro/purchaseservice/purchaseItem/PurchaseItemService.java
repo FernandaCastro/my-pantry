@@ -8,7 +8,7 @@ import com.fcastro.kafka.model.PurchaseEventDto;
 import com.fcastro.purchaseservice.product.Product;
 import com.fcastro.purchaseservice.product.ProductService;
 import com.fcastro.purchaseservice.supermarket.SupermarketService;
-import com.fcastro.security.authorization.AuthorizationHandler;
+import com.fcastro.security.authorization.AuthorizationClient;
 import com.fcastro.security.core.model.AccessControlDto;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -27,10 +27,10 @@ public class PurchaseItemService {
     private final ProductService productService;
     private final SupermarketService supermarketService;
     private final ModelMapper modelMapper;
-    private final AuthorizationHandler authorizationHandler;
+    private final AuthorizationClient authorizationHandler;
     private ObjectMapper jsonMapper;
 
-    public PurchaseItemService(PurchaseItemRepository repository, ProductService productService, SupermarketService supermarketService, ModelMapper modelMapper, AuthorizationHandler authorizationHandler) {
+    public PurchaseItemService(PurchaseItemRepository repository, ProductService productService, SupermarketService supermarketService, ModelMapper modelMapper, AuthorizationClient authorizationHandler) {
         this.repository = repository;
         this.productService = productService;
         this.supermarketService = supermarketService;
