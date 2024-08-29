@@ -2,6 +2,7 @@ package com.fcastro.accountservice.accountgroupmember;
 
 import com.fcastro.accountservice.account.Account;
 import com.fcastro.accountservice.account.AccountRepository;
+import com.fcastro.accountservice.cache.MemberCacheService;
 import com.fcastro.accountservice.exception.NotAllowedException;
 import com.fcastro.accountservice.exception.OneOwnerMemberMustExistException;
 import com.fcastro.accountservice.role.Role;
@@ -26,9 +27,9 @@ public class AccountGroupMemberService {
     private final AccountGroupMemberRepository repository;
     private final AccountRepository accountRepository;
     private final RoleService roleService;
-    private final GroupMemberCacheService groupMemberCacheService;
+    private final MemberCacheService groupMemberCacheService;
 
-    public AccountGroupMemberService(AccountGroupMemberRepository repository, AccountRepository accountRepository, RoleService roleService, GroupMemberCacheService groupMemberCacheService) {
+    public AccountGroupMemberService(AccountGroupMemberRepository repository, AccountRepository accountRepository, RoleService roleService, MemberCacheService groupMemberCacheService) {
         this.repository = repository;
         this.accountRepository = accountRepository;
         this.roleService = roleService;
@@ -137,28 +138,6 @@ public class AccountGroupMemberService {
     public void deleteAllByGroupId(long accountGroupId) {
         var listEntity = repository.findAllByAccountGroupId(accountGroupId);
 
-    }
-
-    //Authorization methods
-    public boolean hasPermissionInAnyGroup(String email, String permission) {
-        //Check the Cache: key:{email} value:[GroupMemberCacheDto]
-        var groupMemberList = groupMemberCacheService.getFromCache(email);
-
-        //Check Cache  key:{roleId} value: [{PermissionDto}]
-        var permissionFound = groupMemberList.stream()
-                .map(member -> roleService.getRole(member.getRoleId()))
-                .flatMap(role -> role.getPermissions().stream())
-                .anyMatch(p -> p.getId().equalsIgnoreCase(permission));
-
-        return permissionFound;
-//        var list = repository.hasPermissionInAnyGroup(email, permission);
-//        return list.stream().map(this::convertToDTO).toList();
-    }
-
-    //Authorization method
-    public List<AccountGroupMemberDto> hasPermissionInGroup(String email, String permission, Long accountGroupId) {
-        var member = convertToDTO(repository.hasPermissionInGroup(email, permission, accountGroupId));
-        return member == null ? List.of() : List.of(member);
     }
 
     private AccountGroupMemberDto convertToDTO(AccountGroupMember entity) {

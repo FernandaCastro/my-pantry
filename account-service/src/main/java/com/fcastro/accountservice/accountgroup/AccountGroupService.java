@@ -3,7 +3,7 @@ package com.fcastro.accountservice.accountgroup;
 import com.fcastro.accountservice.accesscontrol.AccessControlService;
 import com.fcastro.accountservice.account.Account;
 import com.fcastro.accountservice.accountgroupmember.AccountGroupMemberService;
-import com.fcastro.accountservice.accountgroupmember.GroupMemberCacheService;
+import com.fcastro.accountservice.cache.MemberCacheService;
 import com.fcastro.accountservice.exception.NotAllowedException;
 import com.fcastro.accountservice.role.RoleEnum;
 import com.fcastro.app.config.MessageTranslator;
@@ -23,9 +23,9 @@ public class AccountGroupService {
     private final AccountGroupRepository repository;
     private final AccountGroupMemberService groupMemberService;
     private final AccessControlService accessControlService;
-    private final GroupMemberCacheService groupMemberCacheService;
+    private final MemberCacheService groupMemberCacheService;
 
-    public AccountGroupService(AccountGroupRepository repository, AccountGroupMemberService groupMemberService, AccessControlService accessControlService, GroupMemberCacheService groupMemberCacheService) {
+    public AccountGroupService(AccountGroupRepository repository, AccountGroupMemberService groupMemberService, AccessControlService accessControlService, MemberCacheService groupMemberCacheService) {
         this.repository = repository;
         this.groupMemberService = groupMemberService;
         this.accessControlService = accessControlService;

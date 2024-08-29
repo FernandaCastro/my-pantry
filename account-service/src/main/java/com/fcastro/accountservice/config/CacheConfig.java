@@ -15,8 +15,10 @@ import java.time.Duration;
 @Configuration
 public class CacheConfig {
 
-    public static final String MEMBER_CACHE = "memberCache";
-    public static final String ROLE_CACHE = "roleCache";
+    public static final String MEMBER_CACHE = "members";
+    public static final String ROLE_CACHE = "rolePermissions";
+    public static final String ACCESS_CONTROL_CACHE = "acl";
+
 
     @Bean
     public RedisCacheConfiguration cacheConfiguration() {
@@ -27,6 +29,42 @@ public class CacheConfig {
                 .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(new GenericJackson2JsonRedisSerializer()));
     }
 
+    @Bean
+    public CacheManager cacheManager(RedisConnectionFactory redisConnectionFactory) {
+        return RedisCacheManager.builder(redisConnectionFactory)
+                .cacheDefaults(cacheConfiguration())
+//                .withCacheConfiguration(MEMBER_CACHE, RedisCacheConfiguration.defaultCacheConfig())
+//                .withCacheConfiguration(ROLE_CACHE, RedisCacheConfiguration.defaultCacheConfig())
+                .build();
+    }
+
+    /**
+     * key: account.email,
+     * values: List of MemberCacheDto
+     **/
+    @Bean
+    public Cache members(CacheManager cacheManager) {
+        return cacheManager.getCache(MEMBER_CACHE);
+    }
+
+    /**
+     * key: role.id,
+     * values: List of PermissionDto
+     **/
+    @Bean
+    public Cache rolePermissions(CacheManager cacheManager) {
+        return cacheManager.getCache(ROLE_CACHE);
+    }
+
+    /**
+     * key: accountGroup.id:clazzType,
+     * values: List of clazzId
+     **/
+    @Bean
+    public Cache acl(CacheManager cacheManager) {
+        return cacheManager.getCache(ACCESS_CONTROL_CACHE);
+    }
+
 //    @Bean
 //    public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory connectionFactory) {
 //        RedisTemplate<String, Object> template = new RedisTemplate<>();
@@ -35,26 +73,6 @@ public class CacheConfig {
 //        template.setValueSerializer(new GenericJackson2JsonRedisSerializer());
 //        return template;
 //    }
-
-    @Bean
-    public CacheManager cacheManager(RedisConnectionFactory redisConnectionFactory) {
-        return RedisCacheManager.builder(redisConnectionFactory)
-                .cacheDefaults(cacheConfiguration())
-                .withCacheConfiguration(MEMBER_CACHE, RedisCacheConfiguration.defaultCacheConfig())
-                .withCacheConfiguration(ROLE_CACHE, RedisCacheConfiguration.defaultCacheConfig())
-                .build();
-    }
-
-    @Bean
-    public Cache memberCache(CacheManager cacheManager) {
-        return cacheManager.getCache(MEMBER_CACHE);
-    }
-
-    @Bean
-    public Cache roleCache(CacheManager cacheManager) {
-        return cacheManager.getCache(ROLE_CACHE);
-    }
-
 
 //    @Bean
 //    public RedisCacheManagerBuilderCustomizer redisCacheManagerBuilderCustomizer() {

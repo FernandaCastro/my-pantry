@@ -3,7 +3,6 @@ package com.fcastro.accountservice.auth;
 import com.fcastro.accountservice.accesscontrol.AccessControlService;
 import com.fcastro.accountservice.accountgroupmember.AccountGroupMemberService;
 import com.fcastro.security.core.model.AccessControlDto;
-import com.fcastro.security.core.model.AccountGroupMemberDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,27 +14,27 @@ public class AuthorizationController {
 
     private final AccessControlService accessControlService;
     private final AccountGroupMemberService accountGroupMemberService;
+    private final AuthorizationService authorizationService;
 
-    public AuthorizationController(AccessControlService accessControlService, AccountGroupMemberService accountGroupMemberService) {
+    public AuthorizationController(AccessControlService accessControlService, AccountGroupMemberService accountGroupMemberService, AuthorizationService authorizationService) {
         this.accessControlService = accessControlService;
         this.accountGroupMemberService = accountGroupMemberService;
+        this.authorizationService = authorizationService;
     }
 
     @GetMapping("/permission-in-any-group")
     ResponseEntity<Boolean> hasPermissionInAnyGroup(@RequestParam String email, @RequestParam String permission) {
-        return ResponseEntity.ok(accountGroupMemberService.hasPermissionInAnyGroup(email, permission));
+        return ResponseEntity.ok(authorizationService.hasPermissionInAnyGroup(email, permission));
     }
 
     @GetMapping("/permission-in-group")
-    ResponseEntity<List<AccountGroupMemberDto>> hasPermissionInAGroup(@RequestParam String email, @RequestParam String permission, @RequestParam Long accountGroupId) {
-        return ResponseEntity.ok(accountGroupMemberService.hasPermissionInGroup(email, permission, accountGroupId));
+    ResponseEntity<Boolean> hasPermissionInAGroup(@RequestParam String email, @RequestParam String permission, @RequestParam Long accountGroupId) {
+        return ResponseEntity.ok(authorizationService.hasPermissionInGroup(email, permission, accountGroupId));
     }
 
     @GetMapping("/permission-in-object")
-    ResponseEntity<AccessControlDto> hasPermissionInObject(@RequestParam String email, @RequestParam String permission, @RequestParam String clazz, @RequestParam Long clazzId) {
-        var access = accessControlService.hasPermissionInObject(email, permission, clazz, clazzId);
-        if (access == null) return ResponseEntity.notFound().build();
-        return ResponseEntity.ok(access);
+    ResponseEntity<Boolean> hasPermissionInObject(@RequestParam String email, @RequestParam String permission, @RequestParam String clazz, @RequestParam Long clazzId) {
+        return ResponseEntity.ok(authorizationService.hasPermissionInObject(email, permission, clazz, clazzId));
     }
 
     @GetMapping("/permission-in-object-list")
@@ -50,13 +49,6 @@ public class AuthorizationController {
 
     /**
      * Retrieves accessControl considering accountgroup hierarchy
-     *
-     * @param email
-     * @param clazz
-     * @param clazzId
-     * @param accountGroupId
-     * @param permission
-     * @return
      */
     @GetMapping("/access-control")
     public ResponseEntity<List<AccessControlDto>> getAllByEmail(@RequestParam String email, @RequestParam String clazz, @RequestParam(required = false) Long clazzId, @RequestParam(required = false) Long accountGroupId, @RequestParam(required = false) String permission) {

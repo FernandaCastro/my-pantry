@@ -126,4 +126,7 @@ public interface AccessControlRepository extends JpaRepository<AccessControl, Ac
             "and acc.clazz = :clazz " +
             "and acc.clazzId in :clazzIds")
     List<AccessControl> hasPermissionInObjectList(String email, String permission, String clazz, List<Long> clazzIds);
+
+
+    List<AccessControl> findAllByAccountGroupIdAndClazz(long accountGroupId, String clazz);
 }
