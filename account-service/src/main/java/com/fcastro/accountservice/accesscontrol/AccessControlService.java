@@ -100,13 +100,6 @@ public class AccessControlService {
         }
     }
 
-    //Authorization method
-    public List<AccessControlDto> hasPermissionInObjectList(String email, String permission, String clazz, List<Long> clazzIds) {
-        var list = accessControlRepository.hasPermissionInObjectList(email, permission, clazz, clazzIds);
-        return list.stream().map(this::convertToDto).toList();
-    }
-
-
     private AccessControlDto convertToDto(AccessControl entity) {
         if (entity == null) return null;
 

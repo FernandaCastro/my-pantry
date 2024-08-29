@@ -38,8 +38,8 @@ public class AuthorizationController {
     }
 
     @GetMapping("/permission-in-object-list")
-    ResponseEntity<List<AccessControlDto>> hasPermissionInObjectList(@RequestParam String email, @RequestParam String permission, @RequestParam String clazz, @RequestParam List<Long> clazzIds) {
-        return ResponseEntity.ok(accessControlService.hasPermissionInObjectList(email, permission, clazz, clazzIds));
+    ResponseEntity<Boolean> hasPermissionInObjectList(@RequestParam String email, @RequestParam String permission, @RequestParam String clazz, @RequestParam List<Long> clazzIds) {
+        return ResponseEntity.ok(authorizationService.hasPermissionInObjectList(email, permission, clazz, clazzIds));
     }
 
     @GetMapping("/access-control-strict")

@@ -225,4 +225,159 @@ public class AuthorizationServiceUnitTest {
         //then
         assertThat(hasPermission).isFalse();
     }
+
+    @Test
+    public void givenPemissionFound_whenHasPermissionInObjectList_returnTrue() {
+        //given
+        String email = "pantry@pantry.com";
+        String permission = "consume_pantry";
+        String clazz = "Pantry";
+        long accountGroup1 = 1L;
+        long accountGroup2 = 2L;
+
+        //Member of the groups in cache
+        List<MemberCacheDto> givenMemberCache = new ArrayList<>();
+        givenMemberCache.add(MemberCacheDto.builder()
+                .accountGroupId(accountGroup1)
+                .roleId("OWNER")
+                .build());
+
+        givenMemberCache.add(MemberCacheDto.builder()
+                .accountGroupId(accountGroup2)
+                .roleId("USER")
+                .build());
+        when(groupMemberCacheService.getFromCache(email)).thenReturn(givenMemberCache);
+
+        //Objects (clazz + clazzId) in AccessControl cache for each accountGroup
+        Set<Long> givenCacheGroup1 = new HashSet<>();
+        givenCacheGroup1.add(2L);
+        givenCacheGroup1.add(10L);
+
+        Set<Long> givenCacheGroup2 = new HashSet<>();
+        givenCacheGroup2.add(4L);
+        givenCacheGroup2.add(20L);
+
+        when(accessControlCacheService.getFromCache(accountGroup1, clazz)).thenReturn(givenCacheGroup1);
+        when(accessControlCacheService.getFromCache(accountGroup2, clazz)).thenReturn(givenCacheGroup2);
+
+
+        //Roles in cache
+        RoleDto givenOwnerRole = RoleDto.builder()
+                .id("OWNER")
+                .permissions(List.of(PermissionDto.builder().id("consume_pantry").build()))
+                .build();
+
+        RoleDto givenUserRole = RoleDto.builder()
+                .id("USER")
+                .permissions(List.of(PermissionDto.builder().id("consume_pantry").build()))
+                .build();
+
+        when(roleService.getRole("OWNER")).thenReturn(givenOwnerRole);
+        when(roleService.getRole("USER")).thenReturn(givenUserRole);
+
+        //when
+        var clazzIds = List.of(10L, 20L);
+        var hasPermission = authorizationService.hasPermissionInObjectList(email, permission, clazz, clazzIds);
+
+        //then
+        assertThat(hasPermission).isTrue();
+    }
+
+    @Test
+    public void givenPemissionNotFound_whenHasPermissionInObjectList_returnFalse() {
+        //given
+        String email = "pantry@pantry.com";
+        String permission = "consume_pantry";
+        String clazz = "Pantry";
+        long accountGroup1 = 1L;
+        long accountGroup2 = 2L;
+
+        //Member of the groups in cache
+        List<MemberCacheDto> givenMemberCache = new ArrayList<>();
+        givenMemberCache.add(MemberCacheDto.builder()
+                .accountGroupId(accountGroup1)
+                .roleId("OWNER")
+                .build());
+
+        givenMemberCache.add(MemberCacheDto.builder()
+                .accountGroupId(accountGroup2)
+                .roleId("USER")
+                .build());
+        when(groupMemberCacheService.getFromCache(email)).thenReturn(givenMemberCache);
+
+        //Objects (clazz + clazzId) in AccessControl cache for each accountGroup
+        Set<Long> givenCacheGroup1 = new HashSet<>();
+        givenCacheGroup1.add(2L);
+        givenCacheGroup1.add(10L);
+
+        Set<Long> givenCacheGroup2 = new HashSet<>();
+        givenCacheGroup2.add(4L);
+        givenCacheGroup2.add(20L);
+
+        when(accessControlCacheService.getFromCache(accountGroup1, clazz)).thenReturn(givenCacheGroup1);
+        when(accessControlCacheService.getFromCache(accountGroup2, clazz)).thenReturn(givenCacheGroup2);
+
+
+        //Roles in cache
+        RoleDto givenOwnerRole = RoleDto.builder()
+                .id("OWNER")
+                .permissions(List.of(PermissionDto.builder().id("consume_pantry").build()))
+                .build();
+
+        RoleDto givenUserRole = RoleDto.builder()
+                .id("USER")
+                .permissions(List.of(PermissionDto.builder().id("list_pantry").build())) //it shoould have right permission in all accountGroups
+                .build();
+
+        when(roleService.getRole("OWNER")).thenReturn(givenOwnerRole);
+        when(roleService.getRole("USER")).thenReturn(givenUserRole);
+
+        //when
+        var clazzIds = List.of(10L, 20L);
+        var hasPermission = authorizationService.hasPermissionInObjectList(email, permission, clazz, clazzIds);
+
+        //then
+        assertThat(hasPermission).isFalse();
+    }
+
+    @Test
+    public void givenNotMember_whenHasPermissionInObjectList_returnFalse() {
+        //given
+        String email = "pantry@pantry.com";
+        String permission = "consume_pantry";
+        String clazz = "Pantry";
+        long accountGroup1 = 1L;
+        long accountGroup2 = 2L;
+
+        //Member of the groups in cache
+        List<MemberCacheDto> givenMemberCache = new ArrayList<>();
+        givenMemberCache.add(MemberCacheDto.builder()
+                .accountGroupId(accountGroup1)  //User as access to only one Object
+                .roleId("OWNER")
+                .build());
+
+        when(groupMemberCacheService.getFromCache(email)).thenReturn(givenMemberCache);
+
+        //Objects (clazz + clazzId) in AccessControl cache for each accountGroup
+        Set<Long> givenCacheGroup1 = new HashSet<>();
+        givenCacheGroup1.add(2L);
+        givenCacheGroup1.add(10L);
+
+        when(accessControlCacheService.getFromCache(accountGroup1, clazz)).thenReturn(givenCacheGroup1);
+
+        //Roles in cache
+        RoleDto givenOwnerRole = RoleDto.builder()
+                .id("OWNER")
+                .permissions(List.of(PermissionDto.builder().id("consume_pantry").build()))
+                .build();
+        when(roleService.getRole("OWNER")).thenReturn(givenOwnerRole);
+
+        //when
+        var clazzIds = List.of(10L, 20L);
+        var hasPermission = authorizationService.hasPermissionInObjectList(email, permission, clazz, clazzIds);
+
+        //then
+        assertThat(hasPermission).isFalse();
+    }
+
 }

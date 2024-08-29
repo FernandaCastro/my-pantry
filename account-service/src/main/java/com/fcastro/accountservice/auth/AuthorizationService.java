@@ -7,6 +7,9 @@ import com.fcastro.accountservice.cache.MemberCacheService;
 import com.fcastro.accountservice.role.RoleService;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
+
 @Service
 public class AuthorizationService {
 
@@ -24,7 +27,6 @@ public class AuthorizationService {
         this.accessControlCacheService = accessControlCacheService;
     }
 
-    //Authorization methods
     public boolean hasPermissionInAnyGroup(String email, String permission) {
 
         //Get Groups/Roles from MemberCache, otherwise from database
@@ -75,47 +77,32 @@ public class AuthorizationService {
         return permissionFound;
     }
 
-    //Check if connected user has <permission> in at least one group
-//    public boolean hasPermissionInAnyGroup(String email, String permission) {
-//
-//        var groupMembers = accountGroupMemberService.getAllByEmail(email);
-//        if (groupMembers == null || groupMembers.size() == 0) return false;
-//
-//        for (AccountGroupMemberDto gm : groupMembers) {
-//            if (checkPermission(gm.getRole().getPermissions(), permission)) return true;
-//        }
-//
-//        return false;
-//    }
-//
-//    //Check if connected user has <permission> in the <groupId>
-//    public boolean hasPermission(String email, Long groupId, String permission) {
-//
-//        if (groupId == null || groupId == 0) return false;
-//        return checkAccountGroupPermission(email, groupId, permission);
-//    }
-//
-//    //Check if connected user has <permission> in the group in which clazz/clazzId belongs
-//    public boolean hasPermission(String email, String clazz, Long clazzId, String permission) {
-//
-//        if (clazz == null || clazz.length() == 0 || clazzId == null || clazzId == 0) return false;
-//        var access = accessControlService.get(clazz, clazzId);
-//
-//        return checkAccountGroupPermission(email, access.getAccountGroup().getId(), permission);
-//    }
-//
-//    private boolean checkAccountGroupPermission(String email, Long groupId, String permission) {
-//        var groupMember = accountGroupMemberService.createChildGroupMember(email, groupId);
-//        if (groupMember == null || groupMember.getRole() == null) return false;
-//
-//        return checkPermission(groupMember.getRole().getPermissions(), permission);
-//    }
-//
-//    private boolean checkPermission(List<PermissionDto> permissions, String permission) {
-//        if (permissions == null || permissions.size() == 0) return false;
-//
-//        return permissions.stream()
-//                .anyMatch((p) -> p.getId().equalsIgnoreCase(permission));
-//    }
+    /**
+     * Verify if user has access to ALL clazzIds and the permission in all the groups
+     **/
+    public boolean hasPermissionInObjectList(String email, String permission, String clazz, List<Long> clazzIds) {
+        //Get Groups/Roles from MemberCache, otherwise from database
+        var memberList = memberCacheService.getFromCache(email);
+
+        AtomicInteger count = new AtomicInteger();
+        //Find the correct AccountGroupId and verify the permission in it
+        var permissionFound = memberList.stream()
+
+                //Find all the AccountGroupIds the Objects in classIds list belong to
+                .flatMap(member -> accessControlCacheService.getFromCache(member.getAccountGroupId(), clazz).stream()
+                        .filter(clazzIds::contains)  // Filter to match the clazzId
+                        .map(i -> {
+                            count.getAndIncrement();
+                            return member;
+                        }) // Map to the MemberCacheDto
+                )
+                //Verify the permission in all accountGroups found, according to member.roleId in each
+                .map(member -> roleService.getRole(member.getRoleId()))
+                .flatMap(role -> role.getPermissions().stream())
+                .anyMatch(p -> p.getId().equalsIgnoreCase(permission));
+
+        var hasAccessToObjects = count.get() == clazzIds.size();
+        return permissionFound && hasAccessToObjects;
+    }
 
 }

@@ -34,6 +34,7 @@ public interface AccountGroupMemberRepository extends JpaRepository<AccountGroup
 
     List<AccountGroupMember> findAllByAccountGroupId(long groupId);
 
+    @Deprecated
     @Query("select distinct gm " +
             "from accountGroupMember gm, " +
             "account ac, " +
@@ -45,6 +46,7 @@ public interface AccountGroupMemberRepository extends JpaRepository<AccountGroup
             "and lower(per.id) = lower(:permission)")
     List<AccountGroupMember> hasPermissionInAnyGroup(String email, String permission);
 
+    @Deprecated
     @Query("select distinct gm " +
             "from accountGroupMember gm, " +
             "account ac, " +

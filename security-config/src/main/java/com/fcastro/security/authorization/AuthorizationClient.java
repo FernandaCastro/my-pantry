@@ -90,8 +90,8 @@ public class AuthorizationClient {
                 });
     }
 
-    public List<AccessControlDto> hasPermissionInObjectList(String email, String permission, String clazz, List<Long> clazzIds) {
-        StringBuilder uri = new StringBuilder("/accountservice/authorization/permission-in-object-list?")
+    public boolean hasPermissionInObjectList(String email, String permission, String clazz, List<Long> clazzIds) {
+        StringBuilder uri = new StringBuilder(AUTH_URL).append("permission-in-object-list?")
                 .append("email=").append(email)
                 .append("&permission=").append(permission)
                 .append("&clazz=").append(clazz)
@@ -105,7 +105,7 @@ public class AuthorizationClient {
                         status.value() != HttpStatus.OK.value(), (request, response) -> {
                     throw new AccessDeniedException("Request to AuthorizationServer(permission-in-object-list) failed: [" + response.getStatusCode() + " : " + response.getStatusText() + "]");
                 })
-                .body(new ParameterizedTypeReference<List<AccessControlDto>>() {
+                .body(new ParameterizedTypeReference<Boolean>() {
                 });
     }
 

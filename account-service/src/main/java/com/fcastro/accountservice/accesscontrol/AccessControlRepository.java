@@ -97,6 +97,7 @@ public interface AccessControlRepository extends JpaRepository<AccessControl, Ac
     List<AccessControl> findAllByEmailAndClazzAndPermission(String email, String clazz, String permission);
 
 
+    @Deprecated
     @Query("select acc " +
             "from accountGroupMember gm, " +
             "account ac, " +
@@ -112,6 +113,7 @@ public interface AccessControlRepository extends JpaRepository<AccessControl, Ac
             "and acc.clazzId = :clazzId")
     AccessControl hasPermissionInObject(String email, String permission, String clazz, Long clazzId);
 
+    @Deprecated
     @Query("select acc " +
             "from accountGroupMember gm, " +
             "account ac, " +

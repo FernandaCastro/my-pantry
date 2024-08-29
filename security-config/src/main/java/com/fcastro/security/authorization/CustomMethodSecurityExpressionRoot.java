@@ -54,8 +54,6 @@ public class CustomMethodSecurityExpressionRoot {
 
         String email = expressionOperations.getAuthentication().getName();
 
-        var list = authorizationHandler.hasPermissionInObjectList(email, permission, clazz, clazzIds);
-
-        return list != null && list.size() == clazzIds.size();
+        return authorizationHandler.hasPermissionInObjectList(email, permission, clazz, clazzIds);
     }
 }
