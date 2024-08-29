@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 @Service
 public class AuthorizationService {
@@ -84,25 +85,33 @@ public class AuthorizationService {
         //Get Groups/Roles from MemberCache, otherwise from database
         var memberList = memberCacheService.getFromCache(email);
 
-        AtomicInteger count = new AtomicInteger();
-        //Find the correct AccountGroupId and verify the permission in it
-        var permissionFound = memberList.stream()
+        AtomicInteger countClassIds = new AtomicInteger();
 
-                //Find all the AccountGroupIds the Objects in classIds list belong to
+        //Find all the AccountGroupIds the Objects in classIds list belong to
+        var filteredMemberList = memberList.stream()
                 .flatMap(member -> accessControlCacheService.getFromCache(member.getAccountGroupId(), clazz).stream()
                         .filter(clazzIds::contains)  // Filter to match the clazzId
                         .map(i -> {
-                            count.getAndIncrement();
+                            countClassIds.getAndIncrement();
                             return member;
                         }) // Map to the MemberCacheDto
                 )
-                //Verify the permission in all accountGroups found, according to member.roleId in each
-                .map(member -> roleService.getRole(member.getRoleId()))
-                .flatMap(role -> role.getPermissions().stream())
-                .anyMatch(p -> p.getId().equalsIgnoreCase(permission));
+                .distinct()
+                .collect(Collectors.toList());
 
-        var hasAccessToObjects = count.get() == clazzIds.size();
-        return permissionFound && hasAccessToObjects;
+        //Verify the permission in all accountGroupIds found, according to member.roleId in each
+        var countMembers = 0;
+        for (var member : filteredMemberList) {
+            var role = roleService.getRole(member.getRoleId());
+            var permissionFound = role.getPermissions().stream().anyMatch(p -> p.getId().equalsIgnoreCase(permission));
+            if (permissionFound) {
+                countMembers++;
+            }
+        }
+
+        var hasAccessToObjects = countClassIds.get() == clazzIds.size();
+        var hasPermissionAsMember = countMembers == filteredMemberList.size();
+        return hasAccessToObjects && hasPermissionAsMember;
     }
 
 }

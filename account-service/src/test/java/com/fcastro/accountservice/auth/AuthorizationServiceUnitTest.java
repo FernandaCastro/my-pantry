@@ -264,12 +264,16 @@ public class AuthorizationServiceUnitTest {
         //Roles in cache
         RoleDto givenOwnerRole = RoleDto.builder()
                 .id("OWNER")
-                .permissions(List.of(PermissionDto.builder().id("consume_pantry").build()))
+                .permissions(List.of(
+                        PermissionDto.builder().id("consume_pantry").build(),
+                        PermissionDto.builder().id("list_pantry").build()))
                 .build();
 
         RoleDto givenUserRole = RoleDto.builder()
                 .id("USER")
-                .permissions(List.of(PermissionDto.builder().id("consume_pantry").build()))
+                .permissions(List.of(
+                        PermissionDto.builder().id("consume_pantry").build(),
+                        PermissionDto.builder().id("list_pantry").build()))
                 .build();
 
         when(roleService.getRole("OWNER")).thenReturn(givenOwnerRole);
