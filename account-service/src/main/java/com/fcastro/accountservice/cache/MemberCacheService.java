@@ -1,6 +1,7 @@
-package com.fcastro.accountservice.accountgroupmember;
+package com.fcastro.accountservice.cache;
 
 import com.fcastro.accountservice.accountgroup.AccountGroup;
+import com.fcastro.accountservice.accountgroupmember.AccountGroupMemberRepository;
 import com.fcastro.accountservice.config.CacheConfig;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.cache.Cache;
@@ -12,22 +13,24 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class GroupMemberCacheService {
+public class MemberCacheService {
 
     private final AccountGroupMemberRepository repository;
+
+    //key: account.email, values: [MemberCacheDto]
     private final Cache memberCache;
 
-    public GroupMemberCacheService(@Qualifier(CacheConfig.MEMBER_CACHE) Cache memberCache, AccountGroupMemberRepository repository) {
+    public MemberCacheService(@Qualifier(CacheConfig.MEMBER_CACHE) Cache memberCache, AccountGroupMemberRepository repository) {
         this.repository = repository;
         this.memberCache = memberCache;
     }
 
     @Cacheable(value = CacheConfig.MEMBER_CACHE, key = "#email")
     @Transactional
-    public List<GroupMemberCacheDto> getFromCache(String email) {
+    public List<MemberCacheDto> getFromCache(String email) {
 
         var list = repository.findAllByEmail(email).stream()
-                .map(i -> GroupMemberCacheDto.builder()
+                .map(i -> MemberCacheDto.builder()
                         .accountGroupId(i.getAccountGroupId())
                         .parentAccountGroupId(i.getAccountGroup().getParentAccountGroup() == null ? null : i.getAccountGroup().getParentAccountGroup().getId())
                         .roleId(i.getRole().getId())
@@ -45,8 +48,8 @@ public class GroupMemberCacheService {
         if (valueWrapper == null) return;
 
         // Key exists, proceed to update it
-        List<GroupMemberCacheDto> list = (List<GroupMemberCacheDto>) valueWrapper.get();
-        list.add(GroupMemberCacheDto.builder()
+        List<MemberCacheDto> list = (List<MemberCacheDto>) valueWrapper.get();
+        list.add(MemberCacheDto.builder()
                 .accountGroupId(group.getId())
                 .parentAccountGroupId(group.getParentAccountGroup() != null ? group.getParentAccountGroup().getId() : null)
                 .roleId(roleId)
@@ -63,8 +66,8 @@ public class GroupMemberCacheService {
         if (valueWrapper == null) return;
 
         // Key exists, proceed to update it
-        List<GroupMemberCacheDto> list = (List<GroupMemberCacheDto>) valueWrapper.get();
-        list.remove(GroupMemberCacheDto.builder()
+        List<MemberCacheDto> list = (List<MemberCacheDto>) valueWrapper.get();
+        list.remove(MemberCacheDto.builder()
                 .accountGroupId(groupId)
                 .roleId(roleId)
                 .build());

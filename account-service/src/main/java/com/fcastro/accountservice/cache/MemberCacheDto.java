@@ -1,19 +1,21 @@
-package com.fcastro.accountservice.accountgroupmember;
+package com.fcastro.accountservice.cache;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class GroupMemberCacheDto implements Serializable {
+public class MemberCacheDto implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+    @Serial
+    private static final long serialVersionUID = 2221528169840173134L;
 
     private Long accountGroupId;
     private Long parentAccountGroupId;
@@ -22,7 +24,7 @@ public class GroupMemberCacheDto implements Serializable {
     @Override
     public final boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof GroupMemberCacheDto that)) return false;
+        if (!(o instanceof MemberCacheDto that)) return false;
 
         return getAccountGroupId().equals(that.getAccountGroupId()) && getRoleId().equals(that.getRoleId());
     }

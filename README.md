@@ -11,7 +11,7 @@
 
 ### In this version:
 
-- <b>account-service:</b>  Use Redis to chache authorization and access control requests
+- <b>account-service:</b>  Use Redis to cache authorization and access control requests
 
 Plans for next versions:
 

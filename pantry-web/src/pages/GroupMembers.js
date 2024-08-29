@@ -119,7 +119,7 @@ function GroupMembers() {
         try {
             setIsLoading(true);
             await deleteAccountGroup(groupId);
-            showAlert(VariantType.SUCCESS,  t("delete-group-success"));
+            showAlert(VariantType.SUCCESS, t("delete-group-success"));
         } catch (error) {
             showAlert(VariantType.DANGER, error.message);
         } finally {
@@ -276,7 +276,7 @@ function GroupMembers() {
                     <span>{t(item.role.id.toLowerCase())}</span></td>
                 <td>
                     <Stack direction="horizontal" gap={1} className="d-flex justify-content-end">
-                        <div><Button onClick={() => handleRemoveMember(item.accountGroupId, item.accountId)} variant="link" disabled={members.length === 1}><BsTrash className='icon'/></Button></div>
+                        <div><Button onClick={() => handleRemoveMember(item.accountGroupId, item.accountId)} variant="link" disabled={item.role.id === 'OWNER'}><BsTrash className='icon' /></Button></div>
                     </Stack>
                 </td>
             </tr>

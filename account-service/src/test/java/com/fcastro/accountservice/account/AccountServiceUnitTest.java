@@ -25,9 +25,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-//@ComponentScan(basePackages = {"com.fcastro.accountService", "com.fcastro.service.core"})
-//Loads the application.aaa file
-@ContextConfiguration(initializers = ConfigDataApplicationContextInitializer.class)
+@ContextConfiguration(initializers = ConfigDataApplicationContextInitializer.class) //Loads the application.yml file
 @EnableConfigurationProperties(value = SecurityPropertiesConfig.class)
 public class AccountServiceUnitTest {
 
