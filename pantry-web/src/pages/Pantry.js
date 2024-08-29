@@ -10,6 +10,7 @@ import { useTranslation } from 'react-i18next';
 import { Image, Stack } from 'react-bootstrap';
 import iconPantry from '../assets/images/cupboard-gradient.png';
 import { useNavigate } from 'react-router-dom';
+import { useLoading } from '../hooks/useLoading.js';
 
 export default function Pantry({ mode }) {
 
@@ -28,8 +29,8 @@ export default function Pantry({ mode }) {
             accountGroup: { id: 0 }
         });
 
-    const [isLoading, setIsLoading] = useState(false);
     const { showAlert } = useAlert();
+    const { setIsLoading } = useLoading();
 
     useEffect(() => {
         if (id && mode === 'edit') {
@@ -57,9 +58,10 @@ export default function Pantry({ mode }) {
             });
 
             setAccountGroupOptions(list);
-            setIsLoading(false);
         } catch (error) {
             showAlert(VariantType.DANGER, error.message);
+        } finally {
+            setIsLoading(false);
         }
     }
 
@@ -101,9 +103,7 @@ export default function Pantry({ mode }) {
                 <Button bsPrefix="btn-custom" href={"/pantries/" + pantry.id + "/items"} className="pe-2 ps-2 ms-auto" disabled={pantry.id === 0}><span>{t('btn-add-pantry-items')}</span></Button>
             </div>
             <div>
-                {mode === "edit" && isLoading ?
-                    <h6>Loading...</h6> :
-                    <PantryForm key={pantry.id} pantry={pantry} handleSave={fetchSavePantry} accountGroupOptions={accountGroupOptions} />}
+                <PantryForm key={pantry.id} pantry={pantry} handleSave={fetchSavePantry} accountGroupOptions={accountGroupOptions} />
             </div>
         </Stack >
     );

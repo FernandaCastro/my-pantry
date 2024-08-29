@@ -16,6 +16,7 @@ import { getAssociatedPantries } from '../services/apis/mypantry/requests/Pantry
 import useAlert from '../hooks/useAlert.js';
 import PermissionsView from '../components/PermissionsView.js'
 import { useTranslation } from 'react-i18next';
+import { useLoading } from '../hooks/useLoading.js';
 
 function GroupMembers() {
 
@@ -23,7 +24,6 @@ function GroupMembers() {
 
     const [refresh, setRefresh] = useState(true);
     const [refreshMembers, setRefreshMembers] = useState(false);
-    const [isLoading, setIsLoading] = useState(true);
 
     const [groups, setGroups] = useState([]);
     const [members, setMembers] = useState([]);
@@ -38,6 +38,7 @@ function GroupMembers() {
     const [showModal, setShowModal] = useState(false);
 
     const { showAlert } = useAlert();
+    const { setIsLoading } = useLoading();
 
     useEffect(() => {
         if (refresh) fetchGroups();
@@ -59,9 +60,10 @@ function GroupMembers() {
             setGroups(res);
             if (res.length > 0 ? setSelectedGroup(res[0]) : "");
             setRefresh(false);
-            setIsLoading(false);
         } catch (error) {
             showAlert(VariantType.DANGER, error.message);
+        } finally {
+            setIsLoading(false);
         }
     }
 
@@ -72,9 +74,10 @@ function GroupMembers() {
             const res = await getAccountGroupMemberList(selectedGroup.id);
             setMembers(res);
             // setRefresh(false);
-            setIsLoading(false);
         } catch (error) {
             showAlert(VariantType.DANGER, error.message);
+        } finally {
+            setIsLoading(false);
         }
     }
 
@@ -193,9 +196,6 @@ function GroupMembers() {
 
     function renderGroups() {
 
-        if (isLoading)
-            return (<span>Loading...</span>)
-
         return (
             <Table size='sm' className='bordered'>
                 <tbody>
@@ -254,9 +254,6 @@ function GroupMembers() {
     }
 
     function renderMembers() {
-
-        if (isLoading)
-            return (<span>Loading...</span>)
 
         return (
             <Table size='sm' className='bordered'>

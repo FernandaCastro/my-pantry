@@ -13,6 +13,7 @@ import { BsArrow90DegRight } from "react-icons/bs";
 import { Card, Col, FormCheck, Row } from "react-bootstrap";
 import { useTranslation } from 'react-i18next';
 import NumericField from './NumericField';
+import { useLoading } from '../hooks/useLoading';
 
 function PurchaseItemList({ selectedPurchase, selectedPantries, setOuterPurchaseItems }, ref) {
 
@@ -27,7 +28,7 @@ function PurchaseItemList({ selectedPurchase, selectedPantries, setOuterPurchase
 
     const [searchText, setSearchText] = useState("");
     const { showAlert } = useAlert();
-    const [isLoading, setIsLoading] = useState(true);
+    const { setIsLoading } = useLoading();
     const [isOpenOrder, setIsOpenOrder] = useState(false);
 
     const [expandProdDetail, setExpandProdDetail] = useState(false);
@@ -93,7 +94,6 @@ function PurchaseItemList({ selectedPurchase, selectedPantries, setOuterPurchase
             }
 
             setPurchaseItems(res);
-            setIsLoading(false);
         } catch (error) {
             showAlert(VariantType.DANGER, error.message);
         } finally {
@@ -141,7 +141,6 @@ function PurchaseItemList({ selectedPurchase, selectedPantries, setOuterPurchase
                     keepPurchasedQty(res) : setPurchaseItems(res);
             }
 
-            setIsLoading(false);
         } catch (error) {
             showAlert(VariantType.DANGER, error.message);
         } finally {
@@ -361,7 +360,7 @@ function PurchaseItemList({ selectedPurchase, selectedPantries, setOuterPurchase
 
     return (
         <div>
-            {selectedPantries?.length === 0 ? "" : isLoading ? "Loading..." :
+            {selectedPantries?.length === 0 ? "" :
                 <div className="pt-2">
                     <div className='d-flex justify-content-evenly pb-4'>
                         <FormCheck label={t('tooltip-switch-product-detail', { ns: 'common' })}

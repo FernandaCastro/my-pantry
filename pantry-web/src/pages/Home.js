@@ -9,6 +9,7 @@ import iconMagicWand from '../assets/images/magic-wand.png';
 import Image from 'react-bootstrap/Image';
 import VariantType from '../components/VariantType.js';
 import useAlert from '../hooks/useAlert.js';
+import { useLoading } from '../hooks/useLoading.js';
 
 export default function Home() {
 
@@ -16,7 +17,8 @@ export default function Home() {
     const { profileCtx } = useContext(ProfileContext);
     const [pantries, setPantries] = useState([]);
     const { showAlert } = useAlert();
-    const [isLoading, setIsLoading] = useState(true);
+    const { setIsLoading } = useLoading();
+
 
     useEffect(() => {
         fetchPantries();
@@ -27,9 +29,10 @@ export default function Home() {
         try {
             const res = await getPantryList();
             setPantries(res);
-            setIsLoading(false);
         } catch (error) {
             showAlert(VariantType.DANGER, error.message);
+        } finally {
+            setIsLoading(false);
         }
     }
 
@@ -52,8 +55,7 @@ export default function Home() {
 
     return (
         <>
-            {isLoading ? "Loading..." :
-            profileCtx && Object.keys(profileCtx).length > 0 ?
+            {profileCtx && Object.keys(profileCtx).length > 0 ?
                 pantries.length === 0 ? renderNoPantryYet() :
                     <PantriesPieChart /> : <Login />}
         </>

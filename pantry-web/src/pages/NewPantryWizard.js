@@ -14,6 +14,7 @@ import useAlert from '../hooks/useAlert.js';
 import { useNavigate } from 'react-router-dom';
 import { createPantryWizard } from '../services/apis/mypantry/requests/PantryRequests.js';
 import { getAccountGroupList } from '../services/apis/mypantry/requests/AccountRequests.js';
+import { useLoading } from '../hooks/useLoading';
 
 function NewPantryWizard() {
 
@@ -30,8 +31,8 @@ function NewPantryWizard() {
     const [expandAllReview, setExpandAllReview] = useState(true);
     const [analysePantry, setAnalysePantry] = useState(true);
 
-    const [isLoading, setIsLoading] = useState(false);
     const { showAlert } = useAlert();
+    const { setIsLoading } = useLoading();
 
     useEffect(() => {
         if (!accountGroupOptions || accountGroupOptions.length === 0) {
@@ -55,9 +56,10 @@ function NewPantryWizard() {
 
             setAccountGroups(res);
             setAccountGroupOptions(list);
-            setIsLoading(false);
         } catch (error) {
             showAlert(VariantType.DANGER, error.message);
+        } finally {
+            setIsLoading(false);
         }
     }
 
@@ -67,11 +69,12 @@ function NewPantryWizard() {
             const res = await createPantryWizard(pantryWizardDto);;
 
             console.log(res);
-            setIsLoading(false);
             showAlert(VariantType.SUCCESS, t('create-pantry-success'));
             navigate('/pantries');
         } catch (error) {
             showAlert(VariantType.DANGER, error.message);
+        } finally {
+            setIsLoading(false);
         }
     }
 

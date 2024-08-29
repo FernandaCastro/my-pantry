@@ -12,17 +12,18 @@ import useAlert from '../hooks/useAlert.js';
 import { useTranslation } from 'react-i18next';
 import { Card, Col, Row } from 'react-bootstrap';
 import Modal from 'react-bootstrap/Modal';
+import { useLoading } from '../hooks/useLoading.js';
 
 function PantryItemList({ pantryId, setIsEmpty }) {
 
     const { t } = useTranslation(['pantry', 'common']);
 
-    const [isLoading, setIsLoading] = useState(true);
     const [refresh, setRefresh] = useState(true);
     const [pantryItems, setPantryItems] = useState([]);
     const [filteredItems, setFilteredItems] = useState([]);
     const [searchText, setSearchText] = useState("");
     const { showAlert } = useAlert();
+    const { setIsLoading } = useLoading();
     const [showModal, setShowModal] = useState(false);
     const [itemToDelete, setItemToDelete] = useState();
 
@@ -43,9 +44,10 @@ function PantryItemList({ pantryId, setIsEmpty }) {
             const res = await getPantryItems(pantryId);
             setPantryItems(res);
             setRefresh(false);
-            setIsLoading(false);
         } catch (error) {
             showAlert(VariantType.DANGER, error.message);
+        } finally {
+            setIsLoading(false);
         }
     }
 
