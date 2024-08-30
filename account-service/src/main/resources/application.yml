@@ -21,9 +21,13 @@ spring:
   sql:
     init:
         mode: always
-  redis:
-    host: localhost
-    port: 6379
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      timeout: 30000
+      repositories:
+        enabled: false
   cache:
     type: redis
   flyway:
@@ -34,7 +38,10 @@ management:
   endpoints:
     web:
       exposure:
-        include: health
+        include: "*"
+    metrics:
+      enable:
+        all: true
 security-config:
   secret: ${SECURITY_SECRET}
   allowedOrigin:
@@ -43,13 +50,17 @@ security-config:
     - http://localhost:8081
   googleClientId: ${GOOGLE_CLIENT_ID}
   googleClientSecret: ${GOOGLE_CLIENT_SECRET}
+cache-config:
+  role-ttl: 5
+  members-ttl: 5
+  acl-ttl: 5
 logging:
   level:
     root: INFO
     org.hibernate.SQL: OFF
     org.springframework.web: INFO
     org.springframework.security: INFO
-    org.springframework.cache: INFO
+    org.springframework.cache: DEBUG
 
 
 

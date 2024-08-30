@@ -19,9 +19,13 @@ spring:
   sql:
     init:
         mode: always
-  redis:
-    host: ${REDIS_HOST}
-    port: ${REDIS_PORT}
+  data:
+    redis:
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT}
+      timeout: ${REDIS_TIMEOUT}
+      repositories:
+        enabled: false
   cache:
     type: redis
   flyway:
@@ -38,9 +42,13 @@ security-config:
   allowedOrigin: ${ALLOWED_ORIGINS}
   googleClientId: ${GOOGLE_CLIENT_ID}
   googleClientSecret: ${GOOGLE_CLIENT_SECRET}
+cache-config:
+  role.TTL: ${ROLE_TTL}
+  members.TTL: ${MEMBERS_TTL}
+  acl.TTL: ${ACL_TTL}
 logging:
   level:
     root: ${LOG_LEVEL}
     org.hibernate.SQL: ${LOG_LEVEL}
     org.springframework.web: ${LOG_LEVEL}
-    og.springframework.security: ${LOG_LEVEL}
+    org.springframework.security: ${LOG_LEVEL}

@@ -5,7 +5,7 @@ import com.fcastro.accountservice.accesscontrol.AccessControlRepository;
 import com.fcastro.accountservice.accountgroup.AccountGroup;
 import com.fcastro.accountservice.cache.AccessControlCacheService;
 import com.fcastro.accountservice.cache.MemberCacheDto;
-import com.fcastro.accountservice.config.CacheConfig;
+import com.fcastro.accountservice.config.CustomCacheConfig;
 import com.fcastro.utils.InitializeRedisContainer;
 import com.fcastro.utils.RedisTestConfig;
 import org.junit.jupiter.api.BeforeEach;
@@ -26,7 +26,7 @@ import static org.mockito.Mockito.*;
 
 @SpringBootTest(classes = {AccessControlCacheService.class})
 @InitializeRedisContainer
-@Import({RedisTestConfig.class, CacheConfig.class})
+@Import({RedisTestConfig.class, CustomCacheConfig.class})
 
 public class AccessControlCacheServiceIT {
 
@@ -36,7 +36,7 @@ public class AccessControlCacheServiceIT {
     @Autowired
     private AccessControlCacheService accessControlCacheService;
 
-    @SpyBean(name = CacheConfig.ACCESS_CONTROL_CACHE)
+    @SpyBean(name = CustomCacheConfig.ACCESS_CONTROL_CACHE)
     private Cache accessControlCache;
 
     private String anKey = "pantry@pantry.com";
