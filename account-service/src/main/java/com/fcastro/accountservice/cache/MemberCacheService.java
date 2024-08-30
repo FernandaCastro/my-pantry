@@ -2,7 +2,7 @@ package com.fcastro.accountservice.cache;
 
 import com.fcastro.accountservice.accountgroup.AccountGroup;
 import com.fcastro.accountservice.accountgroupmember.AccountGroupMemberRepository;
-import com.fcastro.accountservice.config.CacheConfig;
+import com.fcastro.accountservice.config.CustomCacheConfig;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.cache.Cache;
 import org.springframework.cache.annotation.Cacheable;
@@ -20,12 +20,12 @@ public class MemberCacheService {
     //key: account.email, values: [MemberCacheDto]
     private final Cache memberCache;
 
-    public MemberCacheService(@Qualifier(CacheConfig.MEMBER_CACHE) Cache memberCache, AccountGroupMemberRepository repository) {
+    public MemberCacheService(@Qualifier(CustomCacheConfig.MEMBER_CACHE) Cache memberCache, AccountGroupMemberRepository repository) {
         this.repository = repository;
         this.memberCache = memberCache;
     }
 
-    @Cacheable(value = CacheConfig.MEMBER_CACHE, key = "#email")
+    @Cacheable(value = CustomCacheConfig.MEMBER_CACHE, key = "#email")
     @Transactional
     public List<MemberCacheDto> getFromCache(String email) {
 

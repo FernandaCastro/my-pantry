@@ -1,6 +1,6 @@
 package com.fcastro.accountservice.role;
 
-import com.fcastro.accountservice.config.CacheConfig;
+import com.fcastro.accountservice.config.CustomCacheConfig;
 import com.fcastro.accountservice.permission.Permission;
 import com.fcastro.app.config.MessageTranslator;
 import com.fcastro.app.exception.ResourceNotFoundException;
@@ -29,7 +29,7 @@ public class RoleService {
         return list.stream().map(this::convertToDto).collect(Collectors.toList());
     }
 
-    @Cacheable(value = CacheConfig.ROLE_CACHE, key = "#id")
+    @Cacheable(value = CustomCacheConfig.ROLE_CACHE, key = "#id")
     public RoleDto getRole(String id) {
         return roleRepository.findById(id)
                 .map(this::convertToDto)

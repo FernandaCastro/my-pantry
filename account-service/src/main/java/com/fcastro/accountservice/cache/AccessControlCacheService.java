@@ -2,7 +2,7 @@ package com.fcastro.accountservice.cache;
 
 import com.fcastro.accountservice.accesscontrol.AccessControl;
 import com.fcastro.accountservice.accesscontrol.AccessControlRepository;
-import com.fcastro.accountservice.config.CacheConfig;
+import com.fcastro.accountservice.config.CustomCacheConfig;
 import com.fcastro.accountservice.exception.InvalidCacheKeyException;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.cache.Cache;
@@ -21,7 +21,7 @@ public class AccessControlCacheService {
     private final AccessControlRepository accessControlRepository;
     private final Cache accessControlCache;
 
-    public AccessControlCacheService(@Qualifier(CacheConfig.ACCESS_CONTROL_CACHE) Cache accessControlCache, AccessControlRepository accessControlRepository) {
+    public AccessControlCacheService(@Qualifier(CustomCacheConfig.ACCESS_CONTROL_CACHE) Cache accessControlCache, AccessControlRepository accessControlRepository) {
         this.accessControlRepository = accessControlRepository;
         this.accessControlCache = accessControlCache;
     }
@@ -52,7 +52,7 @@ public class AccessControlCacheService {
         return matcher.group("clazz");
     }
 
-    @Cacheable(value = CacheConfig.ACCESS_CONTROL_CACHE, key = "#root.target.encodeKey(#accountGroupId,#clazz)")
+    @Cacheable(value = CustomCacheConfig.ACCESS_CONTROL_CACHE, key = "#root.target.encodeKey(#accountGroupId,#clazz)")
     @Transactional
     public Set<Long> getFromCache(long accountGroupId, String clazz) {
 

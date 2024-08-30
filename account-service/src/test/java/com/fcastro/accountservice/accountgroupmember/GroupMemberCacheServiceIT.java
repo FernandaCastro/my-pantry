@@ -4,7 +4,7 @@ import com.fcastro.accountservice.account.Account;
 import com.fcastro.accountservice.accountgroup.AccountGroup;
 import com.fcastro.accountservice.cache.MemberCacheDto;
 import com.fcastro.accountservice.cache.MemberCacheService;
-import com.fcastro.accountservice.config.CacheConfig;
+import com.fcastro.accountservice.config.CustomCacheConfig;
 import com.fcastro.accountservice.role.Role;
 import com.fcastro.utils.InitializeRedisContainer;
 import com.fcastro.utils.RedisTestConfig;
@@ -25,8 +25,7 @@ import static org.mockito.Mockito.*;
 
 @SpringBootTest(classes = {MemberCacheService.class})
 @InitializeRedisContainer
-@Import({RedisTestConfig.class, CacheConfig.class})
-
+@Import({RedisTestConfig.class, CustomCacheConfig.class})
 public class GroupMemberCacheServiceIT {
 
     @MockBean
@@ -35,7 +34,7 @@ public class GroupMemberCacheServiceIT {
     @Autowired
     private MemberCacheService memberCacheService;
 
-    @SpyBean(name = CacheConfig.MEMBER_CACHE)
+    @SpyBean(name = CustomCacheConfig.MEMBER_CACHE)
     private Cache memberCache;
 
     private String anKey = "pantry@pantry.com";
