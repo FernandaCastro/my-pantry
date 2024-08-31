@@ -28,7 +28,7 @@ function PantryItemList({ pantryId, setIsEmpty }) {
     const [itemToDelete, setItemToDelete] = useState();
 
     useEffect(() => {
-        setIsLoading(true);
+        // setIsLoading(true);
         if (pantryId && pantryId > 0 && refresh) {
             fetchPantryItems();
         }
@@ -41,6 +41,7 @@ function PantryItemList({ pantryId, setIsEmpty }) {
 
     async function fetchPantryItems() {
         try {
+            setIsLoading(true);
             const res = await getPantryItems(pantryId);
             setPantryItems(res);
             setRefresh(false);
