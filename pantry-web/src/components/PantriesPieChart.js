@@ -10,6 +10,7 @@ import { useTranslation } from 'react-i18next';
 import i18n from 'i18next';
 import { ProfileContext } from '../services/context/AppContext';
 import { useLoading } from '../hooks/useLoading.js';
+import { t } from 'i18next';
 
 const RADIAN = Math.PI / 180;
 
@@ -196,6 +197,8 @@ export default function PantriesPieChart() {
 const PieChartWithNeedle = React.memo(props => {
     const { index, data, activeColor, stockLevel, refreshChart } = props;
 
+    const { t } = useTranslation(['pantry', 'common']);
+
     const [activeIndex, setActiveIndex] = useState(-1),
         onMouseEnter = useCallback((_, i) => setActiveIndex(i), []),
         onMouseOut = useCallback((_, i) => setActiveIndex(-1), []);
@@ -295,7 +298,7 @@ const PieChartWithNeedle = React.memo(props => {
             <circle key={`circle-${cx}`} cx={x0} cy={y0} r={r} fill={colors[props.activeColor].needle} stroke="none" style={{ pointerEvents: 'none' }}/>,
             <path key={`path-${cx}`} d={`M${xba} ${yba}L${xbb} ${ybb} L${xp} ${yp} L${xba} ${yba}`} stroke="#none" fill={colors[props.activeColor].needle} style={{ pointerEvents: 'none' }} />,
             <text key={`stockLevel-${cx}`} className="chart-text" x={cx} y={cy} dx={10} dy={30} textAnchor="middle" style={{ pointerEvents: 'none' }}>
-                {stockLevel}%
+                {stockLevel !== 'NaN' ? stockLevel+'%': t('no-items-defined')}
             </text>
         ];
 
