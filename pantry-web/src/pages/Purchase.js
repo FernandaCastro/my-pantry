@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useContext, useRef, useState } from 'react';
 import { postClosePurchaseOrder, postNewPurchaseOrder } from '../services/apis/mypantry/requests/PurchaseRequests.js';
 import Button from 'react-bootstrap/Button';
 import VariantType from '../components/VariantType.js';
@@ -12,11 +12,13 @@ import { useTranslation } from 'react-i18next';
 import iconPurchase from '../assets/images/shoppingcart-gradient.png';
 import Image from 'react-bootstrap/Image';
 import { Stack } from 'react-bootstrap';
+import { PurchaseContext } from '../services/context/AppContext.js';
 
 export default function Purchase() {
 
     const { t } = useTranslation(['purchase', 'common']);
     const purchaseItemListRef = useRef();
+    const { purchaseCtx, setPurchaseCtx } = useContext(PurchaseContext);
 
     const [pantries, setPantries] = useState([]);
 
@@ -31,13 +33,14 @@ export default function Purchase() {
 
     const { showAlert } = useAlert();
 
-    async function fetchClosePurchaseOrder(body) {
+    async function fetchClosePurchaseOrder(order) {
         try {
             setRefreshOrders(false);
-            await postClosePurchaseOrder(body);
+            await postClosePurchaseOrder(order);
             setPurchase();
             setIsOpenOrder(false);
             setRefreshOrders(true);
+            removeFromCache(order.id)
             showAlert(VariantType.SUCCESS, t("close-purchase-order-success"));
         } catch (error) {
             showAlert(VariantType.DANGER, error.message);
@@ -59,7 +62,18 @@ export default function Purchase() {
         }
     }
 
-    function handleSave() {
+    function removeFromCache(orderId) {
+        var cache = [...purchaseCtx];
+        var index = cache.findIndex(c => c.id === orderId);
+        
+        //Remove the order from cache
+        if (index > -1) {
+            cache.splice(index, 1);
+            setPurchaseCtx(cache);
+        }
+    }
+
+    function handleCloseOrder() {
         let order = purchase;
         order = {
             ...order,
@@ -116,7 +130,7 @@ export default function Purchase() {
             <div className="d-flex justify-content-evenly align-items-start mt-0" >
                 <Button bsPrefix="btn-custom" size="sm" onClick={handleNewOrder} disabled={((!purchase && purchaseItems.length === 0) || (purchase && purchase.processedAt !== null) || isOpenOrder || pantries.length === 0)}><span>{t("btn-new-order")}</span></Button>
                 <Button bsPrefix="btn-custom" size="sm" onClick={handleRefresh} disabled={purchase || pantries.length === 0}><span>{t("btn-refresh")}</span></Button>
-                <Button bsPrefix="btn-custom" size="sm" onClick={handleSave} disabled={!isOpenOrder || pantries.length === 0}><span>{t("btn-checkout")}</span></Button>
+                <Button bsPrefix="btn-custom" size="sm" onClick={handleCloseOrder} disabled={!isOpenOrder || pantries.length === 0}><span>{t("btn-checkout")}</span></Button>
             </div>
 
             <div className='mt-2'>

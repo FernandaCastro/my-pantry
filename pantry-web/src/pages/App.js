@@ -10,7 +10,7 @@ import History from '../routes/History.js';
 import TranslationSetter from '../services/TranslationSetter.js'
 import NavigateSetter from "../routes/NavigateSetter.js";
 import { Suspense } from 'react';
-import { AlertContext, ProfileContext } from '../services/context/AppContext.js';
+import { AlertContext, ProfileContext, PurchaseContext } from '../services/context/AppContext.js';
 import { Overlay } from "react-bootstrap";
 import Footer from "../components/Footer.js";
 import { LoadingProvider } from '../services/context/LoadingProvider';
@@ -24,6 +24,11 @@ export default function App() {
   const [profileCtx, setProfileCtx] = useState(() => {
     const data = localStorage.getItem("profile-context");
     return !data || data === 'undefined' || Object.keys(data).length === 0 ? {} : JSON.parse(data);
+  });
+
+  const [purchaseCtx, setPurchaseCtx] = useState(() => {
+    const data = localStorage.getItem("purchase-context");
+    return !data || data === 'undefined' || Object.keys(data).length === 0 ? [] : JSON.parse(data);
   });
 
   const [alert, setAlert] = useState({
@@ -52,11 +57,16 @@ export default function App() {
     localStorage.setItem("profile-context", JSON.stringify(profileCtx));
   }, [profileCtx]);
 
+  useEffect(() => {
+    localStorage.setItem("purchase-context", JSON.stringify(purchaseCtx));
+  }, [purchaseCtx]);
+
   // style={{ height: '40px', verticalAlign: 'middle' }}
 
   return (
     <Suspense fallback="...loading">
       <ProfileContext.Provider value={{ profileCtx, setProfileCtx }}>
+        <PurchaseContext.Provider value={{purchaseCtx, setPurchaseCtx}}>
         <AlertContext.Provider value={{ alert, setAlert }}>
           <Header />
           <div ref={target} className='alert-box'>
@@ -73,6 +83,7 @@ export default function App() {
           </LoadingProvider>
           <Footer />
         </AlertContext.Provider>
+        </PurchaseContext.Provider>
       </ProfileContext.Provider>
     </Suspense>
 

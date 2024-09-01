@@ -1,5 +1,5 @@
 import Form from 'react-bootstrap/Form';
-import React, { useState, useEffect, forwardRef, useImperativeHandle } from 'react';
+import React, { useState, useEffect, forwardRef, useImperativeHandle, useContext } from 'react';
 import { getPendingPurchaseItems, getPurchaseItems, getAllSupermarkets } from '../services/apis/mypantry/requests/PurchaseRequests';
 import Button from 'react-bootstrap/Button';
 import Image from 'react-bootstrap/Image';
@@ -14,10 +14,15 @@ import { Card, Col, FormCheck, Row } from "react-bootstrap";
 import { useTranslation } from 'react-i18next';
 import NumericField from './NumericField';
 import { useLoading } from '../hooks/useLoading';
+import Purchase from '../pages/Purchase';
+import { PurchaseContext } from '../services/context/AppContext';
+import { Prev } from 'react-bootstrap/esm/PageItem';
 
 function PurchaseItemList({ selectedPurchase, selectedPantries, setOuterPurchaseItems }, ref) {
 
     const { t } = useTranslation(['purchase', 'common', 'categories']);
+
+    const { purchaseCtx, setPurchaseCtx } = useContext(PurchaseContext);
 
     const [purchaseItems, setPurchaseItems] = useState([]);
     const [filteredItems, setFilteredItems] = useState([]);
@@ -131,15 +136,31 @@ function PurchaseItemList({ selectedPurchase, selectedPantries, setOuterPurchase
                 return showAlert(VariantType.INFO, t("purchase-order-empty"));
             }
 
-            //keep the already entered qtyPurchased when sorting by supermarket
-            if (clear) {
-                setPurchaseItems(res);
+            //In case It's a open order, retrieve qtyPurchased from cache when any defined
+            if (!selectedPurchase.processedAt) {
+                var cachePurchase = purchaseCtx?.find(p => p.id === selectedPurchase.id);
 
-            } else {
-
-                (Object.keys(purchaseItems).length > 0) ?
-                    keepPurchasedQty(res) : setPurchaseItems(res);
+                if (!cachePurchase) {
+                    //create a new entry in the cache
+                    var newCacheList = [];
+                    setPurchaseCtx(
+                        [...purchaseCtx,
+                        {
+                            id: selectedPurchase.id,
+                            items: newCacheList
+                        }])
+                } else {
+                    //update res with the cache qtyPurchased
+                    var updatedRes = res.map(i => {
+                        var foundIdx = cachePurchase.items.findIndex(c => c.id === i.id);
+                        return foundIdx !== -1 ? i = { ...i, qtyPurchased: cachePurchase.items[foundIdx].qtyPurchased } : i;
+                    })
+                    setPurchaseItems(updatedRes);
+                    return
+                }
             }
+            setPurchaseItems(res);
+
 
         } catch (error) {
             showAlert(VariantType.DANGER, error.message);
@@ -163,16 +184,30 @@ function PurchaseItemList({ selectedPurchase, selectedPantries, setOuterPurchase
                 c = { ...c, qtyPurchased: c.qtyPurchased } : c;
         })
         setPurchaseItems(array);
+        updateCache(item);
     }
 
-    function keepPurchasedQty(items) {
-        const updatedList = items.map(i => {
+    function updateCache(item) {
+        var cachePurchase = purchaseCtx?.find(p => p.id === selectedPurchase.id);
 
-            var found = purchaseItems.find((p) => p.id === i.id);
-            return (found) ?
-                i = { ...i, qtyPurchased: found.qtyPurchased } : i;
-        });
-        setPurchaseItems(updatedList);
+        if (cachePurchase) {
+
+            var foundIdx = cachePurchase.items.findIndex(c => c.id === item.id);
+            if (foundIdx !== -1) {
+                //Either update the item in cache
+                cachePurchase.items[foundIdx].qtyPurchased = item.qtyPurchased
+            } else {
+                //or add a new item to cache
+                const newItem = { id: item.id, qtyPurchased: item.qtyPurchased }
+                cachePurchase.items = [...cachePurchase.items, newItem];
+            }
+
+            //Update PurchaseCtx
+            const newPurchaseCtx = purchaseCtx.map((p) => {
+                return (p.id === cachePurchase.id) ? p = cachePurchase : p;
+            })
+            setPurchaseCtx(newPurchaseCtx);
+        }
     }
 
     function getOpen(id) {
@@ -304,8 +339,8 @@ function PurchaseItemList({ selectedPurchase, selectedPantries, setOuterPurchase
         singleValue: (provided, state) => ({
             ...provided,
             color: 'var(--text-color)',
-          }),
-    
+        }),
+
         control: (provided, state) => ({
             ...provided,
             backgroundColor: 'var(--background)',
@@ -318,33 +353,33 @@ function PurchaseItemList({ selectedPurchase, selectedPantries, setOuterPurchase
                 borderColor: 'var(--link-color)'
             }
         }),
-    
+
         valueContainer: (provided, state) => ({
             ...provided,
             height: '45px',
             padding: '0 6px',
         }),
-    
+
         placeholder: (provided, state) => ({
             ...provided,
             fontSize: '16px',
             color: 'var(--text-color-2)',
         }),
-    
+
         indicatorSeparator: state => ({
             display: 'none',
         }),
-    
+
         indicatorsContainer: (provided, state) => ({
             ...provided,
             height: '40px',
         }),
-    
+
         menu: (provided, state) => ({
             ...provided,
             backgroundColor: 'var(--background)',
         }),
-    
+
         option: (provided, { data, isDisabled, isFocused, isSelected }) => ({
             ...provided,
             backgroundColor: isSelected ? 'var(--highlight-item-list)' : 'var(--background)',
@@ -380,7 +415,7 @@ function PurchaseItemList({ selectedPurchase, selectedPantries, setOuterPurchase
                             options={supermarkets}
                             onChange={setSupermarketOption}
                             customStyles={supermarketStyles}
-/>
+                        />
                     </div>
                     <Form.Control type="text" id="search" className="form-control mb-1 search-input" placeholder={t("placeholder-search-items", { ns: "common" })} value={searchText} onChange={(e) => filter(e.target.value)} />
                     {renderCards()}
