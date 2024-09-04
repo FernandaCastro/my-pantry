@@ -2,14 +2,21 @@ server:
   port: 8082
 spring:
   application:
-    name: account-service
+    name: accountservice
   profiles:
     active: default
+  config:
+    import: optional:file:dev.env[.properties]
+
   datasource:
     platform: postgres
-    url: jdbc:postgresql://localhost:5434/account-db
-    username: account
-    password: account
+    url: ${ACCOUNT_DB_URL:jdbc:postgresql://localhost:5434/account-db}
+    username: ${ACCOUNT_DB_USERNAME:account}
+    password: ${ACCOUNT_DB_PASSWORD:account}
+    schema: account
+    hikari:
+      minimum-idle: ${ACCOUNT_DB_IDLE_CONN:1}
+      maximum-poolsize: ${ACCOUNT_DB_MAX_POOL_SIZE:2}
   jpa:
     hibernate:
       ddl-auto: none
@@ -18,49 +25,47 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         format_sql: true
+        default_schema: account
   sql:
     init:
         mode: always
   data:
     redis:
-      host: localhost
-      port: 6379
-      timeout: 30000
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+      timeout: ${REDIS_TIMEOUT:30000}
       repositories:
         enabled: false
   cache:
     type: redis
   flyway:
-    baselineOnMigrate: true   #Needed when schema is not empty
+    baselineOnMigrate: ${ACCOUNT_SCHEMA_EXISTS:false}   #Set to true when schema is not empty
     baselineVersion: 0
     encoding: ISO-8859-1
+    defaultSchema: account
 management:
   endpoints:
     web:
       exposure:
-        include: "*"
+        include: ${ACTUATOR_WEB_EXPOSURE:health}
     metrics:
       enable:
         all: true
 security-config:
   secret: ${SECURITY_SECRET}
-  allowedOrigin:
-    - http://localhost:3000
-    - http://localhost:8080
-    - http://localhost:8081
-  googleClientId: ${GOOGLE_CLIENT_ID}
+  allowedOrigin: ${ALLOWED_ORIGINS}
+  googleClientId: ${DV_GOOGLE_CLIENT_ID}
   googleClientSecret: ${GOOGLE_CLIENT_SECRET}
 cache-config:
-  role-ttl: 5
-  members-ttl: 5
-  acl-ttl: 5
+  role.TTL: ${ROLE_TTL:5}
+  members.TTL: ${MEMBERS_TTL:5}
+  acl.TTL: ${ACL_TTL:5}
 logging:
   level:
-    root: INFO
-    org.hibernate.SQL: OFF
-    org.springframework.web: INFO
-    org.springframework.security: INFO
-    org.springframework.cache: DEBUG
+    root: ${ROOT_LOG_LEVEL:INFO}
+    org.hibernate.SQL: ${HIBERNATE_LOG_LEVEL:OFF}
+    org.springframework.web: ${WEB_LOG_LEVEL:ERROR}
+    org.springframework.security: ${SECURITY_LOG_LEVEL:ERROR}
 
 
 

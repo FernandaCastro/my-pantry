@@ -65,3 +65,5 @@ build/
 
 #*.yml
 .env
+*.env
+
