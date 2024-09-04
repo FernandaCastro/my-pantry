@@ -3,18 +3,25 @@ import { LoadingContext } from "./AppContext";
 
 export const LoadingProvider = ({ children }) => {
 
-    const [loading, setIsLoading] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
 
     // Memoize the context value to prevent unnecessary re-renders
-    const value = useMemo(() => ({ loading, setIsLoading }), [loading]);
+    const value = useMemo(() => ({ isLoading, setIsLoading }), [isLoading]);
 
     return (
+
         <LoadingContext.Provider value={value}>
-            {loading &&
-                <div className="loader-container" >
-                    <div className="ripple"></div>
-                </div>}
+            {/* Reactive Listening to isLoading  */}
+            {isLoading && <RippleLoadingAnimation />}
             {children}
         </LoadingContext.Provider>
     );
 };
+
+export const RippleLoadingAnimation = () => {
+    return (
+        <div className="loader-container" >
+            <div className="ripple"></div>
+        </div>
+    )
+}

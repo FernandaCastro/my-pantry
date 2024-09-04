@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useContext, useRef } from 'react';
+import React, { useState, useEffect, useCallback, useContext, useRef, Suspense } from 'react';
 import { PieChart, Pie, Cell, Sector, ResponsiveContainer } from 'recharts';
 import { Button, Card, Col, Collapse, Row } from 'react-bootstrap';
 import VariantType from '../components/VariantType.js';
@@ -11,6 +11,7 @@ import i18n from 'i18next';
 import { ProfileContext } from '../services/context/AppContext';
 import { useLoading } from '../hooks/useLoading.js';
 import { t } from 'i18next';
+import { RippleLoadingAnimation } from '../services/context/LoadingProvider.js';
 
 const RADIAN = Math.PI / 180;
 
@@ -46,7 +47,7 @@ export default function PantriesPieChart() {
     const [refreshChart, setRefreshChart] = useState(true);
     const [activeColor, setActiveColor] = useState(colors.findIndex(c => c.theme === profileCtx.theme, 0));
     const { showAlert } = useAlert();
-    const { setIsLoading } = useLoading();
+    const { isLoading, setIsLoading } = useLoading();
 
     const [pantries, setPantries] = useState([]);
     const [topCriticals, setTopCriticals] = useState([]);
@@ -95,7 +96,7 @@ export default function PantriesPieChart() {
             return res;
         } catch (error) {
             showAlert(VariantType.DANGER, error.message);
-        } finally{
+        } finally {
             setIsLoading(false);
         }
     }
@@ -160,36 +161,42 @@ export default function PantriesPieChart() {
         )
     }
 
-    return (
-        <Row xs={1} xxl={2}>
-            {pantries?.map((item, index) => {
-                return (
-                    <Col key={item.id} className="d-flex flex-column g-3">
-                        <Card className="card1">
-                            <Card.Body className='d-flex flex-column'>
-                                <Card.Title className="d-flex align-items-center pb-0 mb-0">
-                                    <span className="title" disabled={!item.isActive}>{item.name}</span>
-                                    <Button href={"/pantries/" + item.id + "/items"} variant="link"><BsCardChecklist className='icon' /></Button>
-                                </Card.Title>
-                                <Card.Subtitle >
-                                    <span className="subtitle small">{item.accountGroup?.name}</span>
-                                    <span className="subtitle small"> - {item.type === 'R' ? t("type-recurring") : t("type-no-recurring")}</span>
-                                    <span className="subtitle small">{!item.isActive ? " - " + t("inactive") : null}</span>
-                                </Card.Subtitle>
-                                <div className="d-flex justify-items-start align-items-top">
-                                    <PieChartWithNeedle refreshChart={index + refreshChart} index={index} data={data} activeColor={activeColor} stockLevel={item.percentage} language={i18n.language} />
-                                    <div className="d-none d-md-block w-50">
-                                        {renderTopCritical(item)}
-                                    </div>
-                                </div>
-                                <div className="d-md-none">
+    function renderPieCharts() {
+        return pantries?.map((item, index) => renderPantryPieChart(item, index))
+    }
+
+    function renderPantryPieChart(item, index) {
+        return (
+            <Col key={item.id} className="d-flex flex-column g-3">
+                    <Card className="card1">
+                        <Card.Body className='d-flex flex-column'>
+                            <Card.Title className="d-flex align-items-center pb-0 mb-0">
+                                <span className="title" disabled={!item.isActive}>{item.name}</span>
+                                <Button href={"/pantries/" + item.id + "/items"} variant="link"><BsCardChecklist className='icon' /></Button>
+                            </Card.Title>
+                            <Card.Subtitle >
+                                <span className="subtitle small">{item.accountGroup?.name}</span>
+                                <span className="subtitle small"> - {item.type === 'R' ? t("type-recurring") : t("type-no-recurring")}</span>
+                                <span className="subtitle small">{!item.isActive ? " - " + t("inactive") : null}</span>
+                            </Card.Subtitle>
+                            <div className="d-flex justify-items-start align-items-top">
+                                <PieChartWithNeedle key={index} refreshChart={index + refreshChart} index={index} data={data} activeColor={activeColor} stockLevel={item.percentage} language={i18n.language} />
+                                <div className="d-none d-md-block w-50">
                                     {renderTopCritical(item)}
                                 </div>
-                            </Card.Body>
-                        </Card>
-                    </Col>
-                )
-            })}
+                            </div>
+                            <div className="d-md-none">
+                                {renderTopCritical(item)}
+                            </div>
+                        </Card.Body>
+                    </Card>
+            </Col>
+        )
+    }
+
+    return (
+        <Row xs={1} xxl={2}>
+            {renderPieCharts()}
         </Row >
     )
 }
@@ -295,10 +302,10 @@ const PieChartWithNeedle = React.memo(props => {
         const yp = y0 + length * sin;
 
         return [
-            <circle key={`circle-${cx}`} cx={x0} cy={y0} r={r} fill={colors[props.activeColor].needle} stroke="none" style={{ pointerEvents: 'none' }}/>,
+            <circle key={`circle-${cx}`} cx={x0} cy={y0} r={r} fill={colors[props.activeColor].needle} stroke="none" style={{ pointerEvents: 'none' }} />,
             <path key={`path-${cx}`} d={`M${xba} ${yba}L${xbb} ${ybb} L${xp} ${yp} L${xba} ${yba}`} stroke="#none" fill={colors[props.activeColor].needle} style={{ pointerEvents: 'none' }} />,
             <text key={`stockLevel-${cx}`} className="chart-text" x={cx} y={cy} dx={10} dy={30} textAnchor="middle" style={{ pointerEvents: 'none' }}>
-                {stockLevel !== 'NaN' ? stockLevel+'%': t('no-items-defined')}
+                {stockLevel !== 'NaN' ? stockLevel + '%' : t('no-items-defined')}
             </text>
         ];
 
@@ -327,7 +334,7 @@ const PieChartWithNeedle = React.memo(props => {
                     stroke="none"
                 >
                     {props.data.map((entry, index) => (
-                        <Cell key={`cell-${index}`} style={{outline: 'none'}} fill={colors[activeColor].colors[index]} />
+                        <Cell key={`cell-${index}`} style={{ outline: 'none' }} fill={colors[activeColor].colors[index]} />
                     ))}
                 </Pie>
                 {renderPieChartNeedle(stockLevel)}
