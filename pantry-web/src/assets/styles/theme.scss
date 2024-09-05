@@ -37,7 +37,7 @@
 .theme-dark {
     $background-color: rgb(34, 33, 33);
     --background: #{$background-color};
-    --background-1: #{lighten($background-color, 2%)};
+    --background-1: #{lighten($background-color, 3%)};
     --background-2: #{lighten($background-color, 5%)};
     --background-3: var(--highlight-item-list);
     --btn-background-color: black;
@@ -95,7 +95,7 @@
 .theme-mono-dark {
     $background-color: rgb(34, 33, 33);
     --background: #{$background-color};
-    --background-1: #{lighten($background-color, 2%)};
+    --background-1: #{lighten($background-color, 3%)};
     --background-2: #{lighten($background-color, 5%)};
     --background-3: var(--highlight-item-list);
     --btn-background-color: black;

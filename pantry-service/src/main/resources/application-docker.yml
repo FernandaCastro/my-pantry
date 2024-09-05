@@ -1,21 +1,17 @@
 server:
   port: 8080
-kafka-config:
-  bootstrap-servers-config: kafka-broker:9092
-  purchase-create-topic: purchaseCreateTopic
-  purchase-complete-topic: purchaseCompleteTopic
-  product-topic: productTopic
-  group: pantryGroup
-  partitions: ${PARTITIONS}
-  replicas: ${REPLICAS}
 spring:
   application:
     name: pantry-service
   datasource:
     platform: postgres
-    url: jdbc:postgresql://pantry-db:5432/pantry-db
-    username: pantry
-    password: pantry
+    url: ${PANTRY_DB_URL}
+    username: ${PANTRY_DB_USERNAME}
+    password: ${PANTRY_DB_PASSWORD}
+    schema: pantry
+    hikari:
+      minimum-idle: ${PANTRY_DB_IDLE_CONN}
+      maximum-pool-size: ${PANTRY_DB_MAX_POOL_SIZE}
   jpa:
     hibernate:
       ddl-auto: none
@@ -28,23 +24,32 @@ spring:
     init:
       mode: always
   flyway:
-    baselineOnMigrate: true  #Needed when schema is not empty
+    baselineOnMigrate: ${PANTRY_SCHEMA_EXISTS}  #Needed when schema is not empty
     baselineVersion: 0
     encoding: ISO-8859-1
-management:
-  endpoints:
-    web:
-      exposure:
-        include: health
+    defaultSchema: pantry
+kafka-config:
+  bootstrap-servers-config: ${KAFKA_SERVER}
+  purchase-create-topic: purchaseCreateTopic
+  purchase-complete-topic: purchaseCompleteTopic
+  product-topic: productTopic
+  group: pantryGroup
+  partitions: ${PARTITIONS}
+  replicas: ${REPLICAS}
 security-config:
   secret: ${SECURITY_SECRET}
   allowedOrigin: ${ALLOWED_ORIGINS}
   googleClientId: ${GOOGLE_CLIENT_ID}
   googleClientSecret: ${GOOGLE_CLIENT_SECRET}
-  authzServer: http://account-service:8082
+  authzServer: ${AUTHZ_SERVER}
+management:
+  endpoints:
+    web:
+      exposure:
+        include: ${ACTUATOR_WEB_EXPOSURE}
 logging:
   level:
-    root: ${LOG_LEVEL}
-    org.hibernate.SQL: ${LOG_LEVEL}
-    org.springframework.web: ${LOG_LEVEL}
-    og.springframework.security: ${LOG_LEVEL}
+    root: ${ROOT_LOG_LEVEL}
+    org.hibernate.SQL: ${HIBERNATE_LOG_LEVEL}
+    org.springframework.web: ${WEB_LOG_LEVEL}
+    org.springframework.security: ${SECURITY_LOG_LEVEL}

@@ -1,23 +1,21 @@
 server:
   port: 8081
-kafka-config:
-  bootstrap-servers-config: localhost:9092
-  purchase-create-topic: purchaseCreateTopic
-  purchase-complete-topic: purchaseCompleteTopic
-  product-topic: productTopic
-  group: purchaseGroup
-  partitions: 3
-  replicas: 2
 spring:
   application:
     name: purchase-service
   profiles:
     active: default
+  config:
+    import: optional:file:dev.env[.properties]
   datasource:
     platform: postgres
-    url: jdbc:postgresql://localhost:5433/purchase-db
-    username: purchase
-    password: purchase
+    url: ${PURCHASE_DB_URL:jdbc:postgresql://localhost:5433/purchase-db}
+    username: ${PURCHASE_DB_USERNAME:purchase}
+    password: ${PURCHASE_DB_PASSWORD:purchase}
+    schema: purchase
+    hikari:
+      minimum-idle: ${ACCOUNT_DB_IDLE_CONN:1}
+      maximum-poolsize: ${ACCOUNT_DB_MAX_POOL_SIZE:2}
   jpa:
     hibernate:
       ddl-auto: none
@@ -26,28 +24,37 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         format_sql: true
+        default_schema: purchase
   sql:
     init:
         mode: always
   flyway:
-    #baselineOnMigrate: true  #Needed when schema is not empty
+    baselineOnMigrate: ${PURCHASE_SCHEMA_EXISTS:false}  #Set to true when schema is not empty
     baselineVersion: 0
     encoding: ISO-8859-1
+    defaultSchema: purchase
+kafka-config:
+  bootstrap-servers-config: ${KAFKA_SERVER:localhost:9092}
+  purchase-create-topic: purchaseCreateTopic
+  purchase-complete-topic: purchaseCompleteTopic
+  product-topic: productTopic
+  group: pantryGroup
+  partitions: ${PARTITIONS:1}
+  replicas: ${REPLICAS:1}
+security-config:
+  secret: ${SECURITY_SECRET}
+  allowedOrigin: ${ALLOWED_ORIGINS:http://localhost:3000}
+  googleClientId: ${GOOGLE_CLIENT_ID}
+  googleClientSecret: ${GOOGLE_CLIENT_SECRET}
+  authzServer: ${AUTHZ_SERVER:http://localhost:8082}
 management:
   endpoints:
     web:
       exposure:
-        include: health
-security-config:
-  secret: ${SECURITY_SECRET}
-  allowedOrigin:
-    - http://localhost:3000
-  googleClientId: ${GOOGLE_CLIENT_ID}
-  googleClientSecret: ${GOOGLE_CLIENT_SECRET}
-  authzServer: http://localhost:8082
+        include: ${ACTUATOR_WEB_EXPOSURE:health}
 logging:
   level:
-    root: INFO
-    org.hibernate.SQL: OFF
-    org.springframework.web: INFO
-    og.springframework.security: INFO
+    root: ${ROOT_LOG_LEVEL:INFO}
+    org.hibernate.SQL: ${HIBERNATE_LOG_LEVEL:OFF}
+    org.springframework.web: ${WEB_LOG_LEVEL:ERROR}
+    org.springframework.security: ${SECURITY_LOG_LEVEL:ERROR}

@@ -21,7 +21,9 @@ export default function Home() {
 
 
     useEffect(() => {
-        fetchPantries();
+        if (profileCtx && Object.keys(profileCtx).length > 1){
+            fetchPantries();
+        }
     }, [])
 
     async function fetchPantries() {
@@ -55,9 +57,9 @@ export default function Home() {
 
     return (
         <>
-            {profileCtx && Object.keys(profileCtx).length > 0 ?
-                pantries.length === 0 ? renderNoPantryYet() :
-                    <PantriesPieChart /> : <Login />}
+            {profileCtx && Object.keys(profileCtx).length > 1 ?
+                pantries.length === 0 ? renderNoPantryYet() : <PantriesPieChart /> 
+                : <Login />}
         </>
     )
 }

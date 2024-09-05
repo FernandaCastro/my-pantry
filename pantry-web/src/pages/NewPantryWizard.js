@@ -79,11 +79,6 @@ function NewPantryWizard() {
     }
 
     const handleComplete = () => {
-        console.log("Form completed!");
-        console.log("Pantry: ", pantryForm);
-        console.log("Products: ", finalProductList);
-        console.log("AnalysePantry", analysePantry);
-
         const accountGroup = accountGroups.find(g => g.id === pantryForm.accountGroup.value);
 
         const pantryWizardDto = {
@@ -96,7 +91,6 @@ function NewPantryWizard() {
 
         console.log("PantryWizardDto: ", pantryWizardDto);
         fetchCreatePantryWizard(pantryWizardDto);
-
     };
 
     const checkValidateStep1 = () => {

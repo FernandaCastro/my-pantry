@@ -4,13 +4,13 @@ import { useTranslation } from 'react-i18next';
 import { useEffect, useState } from "react";
 import i18n from 'i18next';
 import { BsArrow90DegRight } from "react-icons/bs";
+import { useLoading } from "../hooks/useLoading";
 
 function NewPantryReviewWizard({ pantry, productList, setFinalProductList, expandAll, setExpandAll, analysePantry, setAnalysePantry }) {
 
     const { t } = useTranslation(['pantry', 'categories', 'common']);
     const [categories, setCategories] = useState(() => { return populateCategories() });
     const [finalList, setFinalList] = useState(() => { return populateFinalList() });
-
 
     useEffect(() => {
         setFinalProductList(finalList);

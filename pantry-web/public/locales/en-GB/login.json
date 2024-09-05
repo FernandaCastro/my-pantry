@@ -15,7 +15,7 @@
   "confirm-password-invalid-not-match": "Passwords do not match.",
   "password-question-invalid": "Please enter a question to be used when resetting your password.",
   "password-answer-invalid": "Please enter the answer for the question above.",
-  "create-account-success": "Your Account has been successfully created. Redirecting to Login page...",
+  "create-account-success": "Your Account has been successfully created. Please log in.",
   "update-account-success": "Your Account has been successfully updated.",
   "new-account-title": "New Account",
   "edit-account-title": "Edit Account",

@@ -1,4 +1,55 @@
 services:
+  pantry-db:
+    container_name: pantry-db
+    image: postgres
+    environment:
+      POSTGRES_DB: pantry-db
+      POSTGRES_USER: pantry
+      POSTGRES_PASSWORD: pantry
+      PGDATA: /data/postgres
+    volumes:
+      - pantry-db:/data/postgres
+    ports:
+      - "5432:5432"
+    networks:
+      - postgres
+      - spring
+    restart: always
+
+  purchase-db:
+    container_name: purchase-db
+    image: postgres
+    environment:
+      POSTGRES_DB: purchase-db
+      POSTGRES_USER: purchase
+      POSTGRES_PASSWORD: purchase
+      PGDATA: /data/postgres
+    volumes:
+      - purchase-db:/data/postgres
+    ports:
+      - "5433:5432"
+    networks:
+      - postgres
+      - spring
+    restart: always
+
+  account-db:
+    container_name: account-db
+    image: postgres
+    environment:
+      POSTGRES_DB: account-db
+      POSTGRES_USER: account
+      POSTGRES_PASSWORD: account
+      PGDATA: /data/postgres
+    volumes:
+      - account-db:/data/postgres
+    ports:
+      - "5434:5432"
+    networks:
+      - postgres
+      - spring
+    restart: always
+
   pgadmin:
     container_name: pgadmin
     image: dpage/pgadmin4
@@ -43,19 +94,6 @@ services:
       - kafka-data:/kafka-data
     restart: always
 
-  redis-cache:
-    container_name: redis-cache
-    image: redis/redis-stack:7.4.0-v0
-    volumes:
-      - redis-cache:/local-data/:/data
-    ports:
-      - "6379:6379"
-      - "8001:8001"
-    networks:
-      - spring
-    restart: always
-    #Redis Insight exposed on port 8001
-
   pantry-service:
     image: fernandacastro/pantry-service:local
     build:
@@ -74,9 +112,10 @@ services:
       - KAFKA_SERVER=${KAFKA_SERVER:-kafka-broker:9092}
       - PARTITIONS=1
       - REPLICAS=1
-      - PANTRY_DB_URL=${PANTRY_DB_URL}
-      - PANTRY_DB_USERNAME=${PANTRY_DB_USERNAME}
-      - PANTRY_DB_PASSWORD=${PANTRY_DB_PASSWORD}
+      - PANTRY_DB_URL=${PANTRY_DB_URL:-jdbc:postgresql://pantry-db:5432/pantry-db}
+      - PANTRY_DB_USERNAME=${PANTRY_DB_USERNAME:-pantry}
+      - PANTRY_DB_PASSWORD=${PANTRY_DB_PASSWORD:-pantry}
+      - PANTRY_SCHEMA_EXISTS=${PANTRY_SCHEMA_EXISTS:-false}
       - PANTRY_DB_IDLE_CONN=${PANTRY_DB_IDLE_CONN:-1}
       - PANTRY_DB_MAX_POOL_SIZE=${PANTRY_DB_MAX_POOL_SIZE:-2}
       - PANTRY_SCHEMA_EXISTS=${PANTRY_SCHEMA_EXISTS:-false}
@@ -87,8 +126,10 @@ services:
       - SECURITY_LOG_LEVEL=${SECURITY_LOG_LEVEL:-ERROR}
     networks:
       - spring
+      - postgres
     depends_on:
       - kafka-broker
+      - pantry-db
     restart: always
 
   purchase-service:
@@ -109,9 +150,10 @@ services:
       - KAFKA_SERVER=${KAFKA_SERVER:-kafka-broker:9092}
       - PARTITIONS=1
       - REPLICAS=1
-      - PURCHASE_DB_URL=${PURCHASE_DB_URL}
-      - PURCHASE_DB_USERNAME=${PURCHASE_DB_USERNAME}
-      - PURCHASE_DB_PASSWORD=${PURCHASE_DB_PASSWORD}
+      - PURCHASE_DB_URL=${PURCHASE_DB_URL:-jdbc:postgresql://purchase-db:5432/purchase-db}
+      - PURCHASE_DB_USERNAME=${PURCHASE_DB_USERNAME:-purchase}
+      - PURCHASE_DB_PASSWORD=${PURCHASE_DB_PASSWORD:-purchase}
+      - PURCHASE_SCHEMA_EXISTS=${PURCHASE_SCHEMA_EXISTS:-false}
       - PURCHASE_DB_IDLE_CONN=${PURCHASE_DB_IDLE_CONN:-1}
       - PURCHASE_DB_MAX_POOL_SIZE=${PURCHASE_DB_MAX_POOL_SIZE:-2}
       - PURCHASE_SCHEMA_EXISTS=${PURCHASE_SCHEMA_EXISTS:-false}
@@ -122,9 +164,24 @@ services:
       - SECURITY_LOG_LEVEL=${SECURITY_LOG_LEVEL:-ERROR}
     networks:
       - spring
+      - postgres
     depends_on:
       - kafka-broker
+      - purchase-db
     restart: always
+
+  redis-cache:
+    container_name: redis-cache
+    image: redis/redis-stack:7.4.0-v0
+    volumes:
+      - redis-cache:/local-data/:/data
+    ports:
+      - "6379:6379"
+      - "8001:8001"
+    networks:
+      - spring
+    restart: always
+    #Redis Insight exposed on port 8001
 
   account-service:
     image: fernandacastro/account-service:local
@@ -140,12 +197,12 @@ services:
       - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
       - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
       - ALLOWED_ORIGINS=${ALLOWED_ORIGINS}
-      - ACCOUNT_DB_URL=${ACCOUNT_DB_URL}
-      - ACCOUNT_DB_USERNAME=${ACCOUNT_DB_USERNAME}
-      - ACCOUNT_DB_PASSWORD=${ACCOUNT_DB_PASSWORD}
+      - ACCOUNT_DB_URL=${ACCOUNT_DB_URL:-jdbc:postgresql://account-db:5432/account-db}
+      - ACCOUNT_DB_USERNAME=${ACCOUNT_DB_USERNAME:-account}
+      - ACCOUNT_DB_PASSWORD=${ACCOUNT_DB_PASSWORD:-account}
+      - ACCOUNT_SCHEMA_EXISTS=${ACCOUNT_SCHEMA_EXISTS:-false}
       - ACCOUNT_DB_IDLE_CONN=${ACCOUNT_DB_IDLE_CONN:-1}
       - ACCOUNT_DB_MAX_POOL_SIZE=${ACCOUNT_DB_MAX_POOL_SIZE:-2}
-      - ACCOUNT_SCHEMA_EXISTS=${ACCOUNT_SCHEMA_EXISTS}
       - REDIS_HOST=${REDIS_HOST:-redis-cache}
       - REDIS_PORT=${REDIS_PORT:-6379}
       - REDIS_TIMEOUT=${REDIS_TIMEOUT:-30000}
@@ -159,8 +216,10 @@ services:
       - SECURITY_LOG_LEVEL=${SECURITY_LOG_LEVEL:-ERROR}
     networks:
       - spring
+      - postgres
     depends_on:
       - redis-cache
+      - account-db
     restart: always
 
   pantry-web:
@@ -185,9 +244,12 @@ services:
     restart: always
 
 volumes:
+  account-db:
+  pantry-db:
+  purchase-db:
   kafka-data:
-  redis-cache:
   pgadmin:
+  redis-cache:
 networks:
   postgres:
     driver: bridge

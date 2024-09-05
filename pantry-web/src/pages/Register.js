@@ -11,6 +11,7 @@ import { useTranslation } from 'react-i18next';
 import useEncrypt from '../hooks/useRSAEncrypt';
 import { BsChatDots } from 'react-icons/bs';
 import { TbMessageCircleOff } from 'react-icons/tb'
+import { useLoading } from '../hooks/useLoading';
 
 export default function Register({ mode }) {
 
@@ -19,7 +20,7 @@ export default function Register({ mode }) {
 
     const navigate = useNavigate();
     const { showAlert } = useAlert();
-    const { profileCtx, setProfileCtx} = useContext(ProfileContext);
+    const { profileCtx, setProfileCtx } = useContext(ProfileContext);
 
 
     const [validateForm, setValidateForm] = useState(false);
@@ -40,7 +41,7 @@ export default function Register({ mode }) {
         passwordQuestion: ""
     });
 
-    const [isProcessing, setIsProcessing] = useState(false);
+    const { isLoading, setIsLoading } = useLoading();
 
     useEffect(() => {
         if (mode === 'edit') {
@@ -59,7 +60,7 @@ export default function Register({ mode }) {
     }, [validateForm])
 
     async function fetchAccount(id) {
-        setIsProcessing(true);
+        setIsLoading(true);
         try {
             const res = await getAccount(id);
 
@@ -76,7 +77,7 @@ export default function Register({ mode }) {
         } catch (error) {
             showAlert(VariantType.DANGER, error.message);
         } finally {
-            setIsProcessing(false);
+            setIsLoading(false);
         }
     }
 
@@ -221,6 +222,8 @@ export default function Register({ mode }) {
 
     const handleOnBlur = (e) => {
         const { name, value } = e.target;
+        setAccount((prev) => ({ ...prev, [name]: value }));
+        validateFields(name, value);
         showChangePassword ? validatePasswordFields(name, value) : validateFields(name, value);
     };
 
@@ -250,8 +253,8 @@ export default function Register({ mode }) {
     }
 
     async function handleCreateAccount(accountData) {
-        if (!isProcessing) {
-            setIsProcessing(true);
+        if (!isLoading) {
+            setIsLoading(true);
 
             try {
                 const encryptAcc = {
@@ -261,13 +264,13 @@ export default function Register({ mode }) {
                 };
                 await register(encryptAcc);
                 showAlert(VariantType.SUCCESS, t("create-account-success"));
-                await wait(3000);
+                //await wait(3000);
                 navigate('/login');
             } catch (error) {
                 showAlert(VariantType.DANGER, error.message);
             } finally {
 
-                setIsProcessing(false);
+                setIsLoading(false);
             }
         }
     }
@@ -288,8 +291,8 @@ export default function Register({ mode }) {
     };
 
     async function handleUpdateAccount(encryptAccount) {
-        if (!isProcessing) {
-            setIsProcessing(true);
+        if (!isLoading) {
+            setIsLoading(true);
             try {
                 const updatedAccount = await updateAccount(encryptAccount);
                 setAccount({
@@ -306,7 +309,7 @@ export default function Register({ mode }) {
             } catch (error) {
                 showAlert(VariantType.DANGER, error.message);
             } finally {
-                setIsProcessing(false);
+                setIsLoading(false);
             }
         }
     }
@@ -401,11 +404,12 @@ export default function Register({ mode }) {
             <div className='centralized-box'>
                 <Form key={refresh} onSubmit={handleSubmit} className='w-100' noValidate>
 
-                    <Form.Group className="mb-2" controlId="formId">
+                    <Form.Group className="mb-2" controlId="formId" hasValidation>
                         <Form.Label size="sm" className="mb-0 title">{t("name")}</Form.Label>
-                        <Form.Control type="text" name="name" defaultValue={account.name}
+                        <Form.Control key={formFields?.name?.isValid} type="text" name="name" defaultValue={account.name}
                             required
-                            isInvalid={!account.name || account.name.length === 0}
+                            isValid={formFields?.name?.isValid}
+                            // isInvalid={!account.name || account.name.length === 0}
                             onChange={handleOnChange}
                             onBlur={handleOnBlur}
                             className={`form-control ${!formFields.name ? '' : formFields.name.isValid ? 'is-valid' : 'is-invalid'}`} />
@@ -416,9 +420,10 @@ export default function Register({ mode }) {
 
                     <Form.Group className="mb-2" controlId="formId">
                         <Form.Label size="sm" className="mb-0 title">{t("email")}</Form.Label>
-                        <Form.Control type="text" name="email" defaultValue={account.email}
+                        <Form.Control key={formFields?.email?.isValid} type="text" name="email" defaultValue={account.email}
                             required
-                            isInvalid={!account.email || !/\S+@\S+\.\S+/.test(account.email)}
+                            isValid={formFields?.email?.isValid}
+                            // isInvalid={!account.email || !/\S+@\S+\.\S+/.test(account.email)}
                             onChange={handleOnChange}
                             onBlur={handleOnBlur}
                             className={`form-control ${!formFields?.email ? '' : formFields.email.isValid ? 'is-valid' : 'is-invalid'}`} />
@@ -437,7 +442,8 @@ export default function Register({ mode }) {
                         <Form.Control type="text" name="passwordQuestion" defaultValue={account.passwordQuestion}
                             required
                             placeholder={t("placeholder-reset-question")}
-                            isInvalid={!account.passwordQuestion || account.passwordQuestion.length === 0}
+                            isValid={formFields?.passwordQuestion?.isValid}
+                            //isInvalid={!account.passwordQuestion || account.passwordQuestion.length === 0}
                             onChange={handleOnChange}
                             onBlur={handleOnBlur}
                             className={`form-control ${!formFields?.passwordQuestion ? '' : formFields.passwordQuestion.isValid ? 'is-valid' : 'is-invalid'}`} />
@@ -451,7 +457,8 @@ export default function Register({ mode }) {
                         <Form.Control key={showResetAnswer} type="password" name="passwordAnswer" defaultValue={account.passwordAnswer}
                             required
                             placeholder={t("placeholder-reset-answer")}
-                            isInvalid={!account.passwordAnswer || account.passwordAnswer.length === 0}
+                            isValid={formFields?.passwordAnswer?.isValid}
+                            //isInvalid={!account.passwordAnswer || account.passwordAnswer.length === 0}
                             onChange={handleOnChange}
                             onBlur={handleOnBlur}
                             className={`form-control ${!formFields?.passwordAnswer ? '' : formFields.passwordAnswer.isValid ? 'is-valid' : 'is-invalid'}`} />
