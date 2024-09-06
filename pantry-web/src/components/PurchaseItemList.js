@@ -188,7 +188,7 @@ function PurchaseItemList({ selectedPurchase, selectedPantries, setOuterPurchase
     }
 
     function updateCache(item) {
-        var cachePurchase = purchaseCtx?.find(p => p.id === selectedPurchase.id);
+        var cachePurchase = purchaseCtx?.find(p => p.id === selectedPurchase?.id);
 
         if (cachePurchase) {
 

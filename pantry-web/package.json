@@ -1,6 +1,6 @@
 {
   "name": "pantry-web",
-  "version": "0.8.6",
+  "version": "0.8.7",
   "private": true,
   "devDependencies": {
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",

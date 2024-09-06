@@ -32,7 +32,7 @@ const colors = [
 //['#a83238', '#FFBB28', '#82ca9d']
 //['#B5B4B4', '#8F8F8F', '#6A6969'
 
-export default function PantriesPieChart() {
+export default function PantriesPieChart({ chartData }) {
 
     const { t } = useTranslation(['pantry', 'common']);
     const { profileCtx } = useContext(ProfileContext);
@@ -49,11 +49,13 @@ export default function PantriesPieChart() {
     const { showAlert } = useAlert();
     const { isLoading, setIsLoading } = useLoading();
 
-    const [pantries, setPantries] = useState([]);
+    const [pantries, setPantries] = useState(chartData);
     const [topCriticals, setTopCriticals] = useState([]);
 
     useEffect(() => {
-        fetchPantriesChartData();
+        if (!chartData) {
+            fetchPantriesChartData();
+        }
     }, [])
 
     useEffect(() => {
@@ -168,28 +170,28 @@ export default function PantriesPieChart() {
     function renderPantryPieChart(item, index) {
         return (
             <Col key={item.id} className="d-flex flex-column g-3">
-                    <Card className="card1">
-                        <Card.Body className='d-flex flex-column'>
-                            <Card.Title className="d-flex align-items-center pb-0 mb-0">
-                                <span className="title" disabled={!item.isActive}>{item.name}</span>
-                                <Button href={"/pantries/" + item.id + "/items"} variant="link"><BsCardChecklist className='icon' /></Button>
-                            </Card.Title>
-                            <Card.Subtitle >
-                                <span className="subtitle small">{item.accountGroup?.name}</span>
-                                <span className="subtitle small"> - {item.type === 'R' ? t("type-recurring") : t("type-no-recurring")}</span>
-                                <span className="subtitle small">{!item.isActive ? " - " + t("inactive") : null}</span>
-                            </Card.Subtitle>
-                            <div className="d-flex justify-items-start align-items-top">
-                                <PieChartWithNeedle key={index} refreshChart={index + refreshChart} index={index} data={data} activeColor={activeColor} stockLevel={item.percentage} language={i18n.language} />
-                                <div className="d-none d-md-block w-50">
-                                    {renderTopCritical(item)}
-                                </div>
-                            </div>
-                            <div className="d-md-none">
+                <Card className="card1">
+                    <Card.Body className='d-flex flex-column'>
+                        <Card.Title className="d-flex align-items-center pb-0 mb-0">
+                            <span className="title" disabled={!item.isActive}>{item.name}</span>
+                            <Button href={"/pantries/" + item.id + "/items"} variant="link"><BsCardChecklist className='icon' /></Button>
+                        </Card.Title>
+                        <Card.Subtitle >
+                            <span className="subtitle small">{item.accountGroup?.name}</span>
+                            <span className="subtitle small"> - {item.type === 'R' ? t("type-recurring") : t("type-no-recurring")}</span>
+                            <span className="subtitle small">{!item.isActive ? " - " + t("inactive") : null}</span>
+                        </Card.Subtitle>
+                        <div className="d-flex justify-items-start align-items-top">
+                            <PieChartWithNeedle key={index} refreshChart={index + refreshChart} index={index} data={data} activeColor={activeColor} stockLevel={item.percentage} language={i18n.language} />
+                            <div className="d-none d-md-block w-50">
                                 {renderTopCritical(item)}
                             </div>
-                        </Card.Body>
-                    </Card>
+                        </div>
+                        <div className="d-md-none">
+                            {renderTopCritical(item)}
+                        </div>
+                    </Card.Body>
+                </Card>
             </Col>
         )
     }
