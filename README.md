@@ -4,14 +4,14 @@
 
 <b>version: 0.9.2</b>
 
-- pantry-web: v.0.8.6
-- account-service: v0.4.5
-- pantry-service: v0.6.5
-- purchase-service: v0.4.4
+- pantry-web: v.0.8.7
+- account-service: v0.4.6
+- pantry-service: v0.6.6
+- purchase-service: v0.4.5
 
 ### In this version:
 
-- <b>account-service:</b>  Use Redis to cache authorization and access control requests
+- <b>account-service:</b>  Use Redis to cache RBAC requests (permissions and access control)
 
 Plans for next versions:
 
@@ -22,23 +22,25 @@ Plans for next versions:
 
 - CRUD for Role and Permissions
 
-
-- <s>Integrate with Google Home (ie: "Consume [qty] of [product] from [pantry-name])/</s>
-
 ### Description:
 
-My Pantry manages your pantries and automatically creates shopping lists. It's core logic mechanism is the product
+My Pantry manages your pantries and creates shopping lists for you. Its core logic mechanism is the product
 consumption. <br/>
 
 ##### Simply tell My Pantry that you opened a new package of pasta. The app will analyse the ideal and current quantities in your pantry, and in case the current quantity is below 50%, it will add Pasta to the Shopping List. <br/>
 
-You can also share your Pantries, Shopping Lists and Products with other users, by adding them to your Account Group.
+<b>RBAC</b> is implemented by the account-service and uses <b>Redis</b> as a cache support.You can also share your
+Pantries, Shopping Lists and Products with other users, by adding them to your Account Group.
 
-The Authentication is possible by either using Google Sign-in (Google IDToken - having localhost as callback) or by the
-traditional user/password. For now it traffics through http, but I plan to move to https soon.
+The Authentication is possible by either <b>Google Sign-in</b> (Google IDToken - configure it as localhost callback) or
+by the
+traditional user/password. A <b>JWT</b> is generated and stored as a http-only cookie.
 
-The frontend is developed in Reactjs and Javascript, while backend is written in Java 17, Spring Boot and Spring
-Security, Postgres and Kafka (prov/sub for asynch communication only).
+The frontend is developed in Reactjs and Javascript.
+
+Backend is written in Java 17, Spring Boot and Spring
+Security, accessing Postgres as database, Redis as cache and Kafka as prov/sub for asynch communication between
+pantry-service and purchase-service.
 
 ### How to run it locally:
 

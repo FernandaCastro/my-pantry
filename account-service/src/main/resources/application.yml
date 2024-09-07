@@ -6,7 +6,7 @@ spring:
   profiles:
     active: default
   config:
-    import: optional:file:dev.env[.properties]
+    import: optional:file:.dev.env[.properties]
 
   datasource:
     platform: postgres
@@ -57,9 +57,9 @@ security-config:
   googleClientId: ${DV_GOOGLE_CLIENT_ID}
   googleClientSecret: ${GOOGLE_CLIENT_SECRET}
 cache-config:
-  role.TTL: ${ROLE_TTL:5}
-  members.TTL: ${MEMBERS_TTL:5}
-  acl.TTL: ${ACL_TTL:5}
+  role_TTL: ${ROLE_TTL:5}
+  members_TTL: ${MEMBERS_TTL:5}
+  acl_TTL: ${ACL_TTL:5}
 logging:
   level:
     root: ${ROOT_LOG_LEVEL:INFO}

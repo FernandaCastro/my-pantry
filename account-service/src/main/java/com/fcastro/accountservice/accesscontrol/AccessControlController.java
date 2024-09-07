@@ -30,5 +30,4 @@ public class AccessControlController {
         return ResponseEntity.ok(accessControlService.get(clazz, clazzId));
     }
 
-
 }

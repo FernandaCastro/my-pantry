@@ -2,6 +2,7 @@ package com.fcastro.accountservice.accountgroupmember;
 
 import com.fcastro.accountservice.account.Account;
 import com.fcastro.accountservice.account.AccountRepository;
+import com.fcastro.accountservice.accountgroup.AccountGroup;
 import com.fcastro.accountservice.cache.MemberCacheService;
 import com.fcastro.accountservice.exception.NotAllowedException;
 import com.fcastro.accountservice.exception.OneOwnerMemberMustExistException;
@@ -74,18 +75,20 @@ public class AccountGroupMemberService {
     }
 
     //Adding OWNER to a Child group
-    public AccountGroupMemberDto createChildGroupMember(String email, long accountGroupId) {
+    public AccountGroupMemberDto createChildGroupMember(String email, AccountGroup accountGroup) {
 
         var account = accountRepository.findByEmail(email)
                 .orElseThrow(() -> new ResourceNotFoundException(MessageTranslator.getMessage("error.email.not.found")));
 
         var groupMember = AccountGroupMember.builder()
                 .accountId(account.getId())
-                .accountGroupId(accountGroupId)
+                .accountGroupId(accountGroup.getId())
                 .role(Role.builder().id(RoleEnum.OWNER.value).build())
                 .build();
 
-        return convertToDTO(repository.save(groupMember));
+        var savedGroupMember = repository.save(groupMember);
+        groupMemberCacheService.updateCache(account.getEmail(), accountGroup, RoleEnum.OWNER.value);
+        return convertToDTO(savedGroupMember);
     }
 
     //Adding other members to an existing group

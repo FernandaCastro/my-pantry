@@ -6,7 +6,7 @@ spring:
   profiles:
     active: default
   config:
-    import: optional:file:dev.env[.properties]
+    import: optional:file:.dev.env[.properties]
   datasource:
     platform: postgres
     url: ${PURCHASE_DB_URL:jdbc:postgresql://localhost:5433/purchase-db}
@@ -34,7 +34,7 @@ spring:
     encoding: ISO-8859-1
     defaultSchema: purchase
 kafka-config:
-  bootstrap-servers-config: ${KAFKA_SERVER:localhost:9092}
+  bootstrap-servers-config: ${KAFKA_SERVER:localhost:29092}
   purchase-create-topic: purchaseCreateTopic
   purchase-complete-topic: purchaseCompleteTopic
   product-topic: productTopic

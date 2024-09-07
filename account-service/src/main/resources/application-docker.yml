@@ -48,9 +48,9 @@ security-config:
   googleClientId: ${GOOGLE_CLIENT_ID}
   googleClientSecret: ${GOOGLE_CLIENT_SECRET}
 cache-config:
-  role.TTL: ${ROLE_TTL}
-  members.TTL: ${MEMBERS_TTL}
-  acl.TTL: ${ACL_TTL}
+  role_TTL: ${ROLE_TTL}
+  members_TTL: ${MEMBERS_TTL}
+  acl_TTL: ${ACL_TTL}
 logging:
   level:
     root: ${ROOT_LOG_LEVEL}
