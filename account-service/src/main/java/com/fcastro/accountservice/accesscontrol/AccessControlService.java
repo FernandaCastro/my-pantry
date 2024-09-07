@@ -2,24 +2,34 @@ package com.fcastro.accountservice.accesscontrol;
 
 import com.fcastro.accountservice.accountgroup.AccountGroup;
 import com.fcastro.accountservice.cache.AccessControlCacheService;
+import com.fcastro.accountservice.cache.MemberCacheDto;
+import com.fcastro.accountservice.cache.MemberCacheService;
 import com.fcastro.accountservice.exception.AccessControlNotDefinedException;
+import com.fcastro.accountservice.role.RoleService;
 import com.fcastro.app.config.MessageTranslator;
 import com.fcastro.security.core.model.AccessControlDto;
 import com.fcastro.security.core.model.AccountGroupDto;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 @Service
 public class AccessControlService {
     private final AccessControlRepository accessControlRepository;
     private final AccessControlCacheService accessControlCacheService;
+    private final RoleService roleService;
+    private final MemberCacheService memberCacheService;
 
-    public AccessControlService(AccessControlRepository accessControlRepository, AccessControlCacheService accessControlCacheService) {
+    public AccessControlService(AccessControlRepository accessControlRepository, AccessControlCacheService accessControlCacheService, RoleService roleService, MemberCacheService memberCacheService) {
         this.accessControlRepository = accessControlRepository;
         this.accessControlCacheService = accessControlCacheService;
+        this.roleService = roleService;
+        this.memberCacheService = memberCacheService;
     }
 
     public boolean isAuthorized(String clazz, Long clazzId, List<Long> groupIds) {
@@ -38,49 +48,142 @@ public class AccessControlService {
         return list.stream().map(this::convertToDto).collect(Collectors.toList());
     }
 
-    //Authorization method
-    //no Account Group hierarchy
-    public List<AccessControlDto> getAllByEmailAndAccessControlStrict(String email, String clazz, Long accountGroupId) {
+    //Strict related to the AccountGroup informed. Do not consider accountgroup hierarchy
+    public List<AccessControlDto> getNonHierarchical(String email, String clazz, Long accountGroupId) {
         if (email.isEmpty()) return List.of();
 
-        List<AccessControl> list = null;
+        List<AccessControlDto> list = new ArrayList<>();
+
+        //Get User's AccountGroups/Roles from MemberCache, otherwise from database
+        var groupMemberList = memberCacheService.getFromCache(email);
 
         //Email + Clazz + AccountGroup
         if (clazz != null && !clazz.isEmpty() && accountGroupId != null) {
-            list = accessControlRepository.findAllByEmailAndClazzAndAccountGroupIdStrict(email, clazz, accountGroupId);
+            list = getNonHierarchicallyByAccountGroup(clazz, accountGroupId, groupMemberList);
+            //list = accessControlRepository.findAllByEmailAndClazzAndAccountGroupIdStrict(email, clazz, accountGroupId);
         }
 
-        return list.stream().map(this::convertToDto).collect(Collectors.toList());
+        return list;
     }
 
+    private void consumeList(Consumer<AccessControlDto> consumer, Set<Long> clazzIds, String clazz, Long groupId, Long parentGroupId) {
 
-    //Authorization method
-    public List<AccessControlDto> getAllByEmailAndAccessControl(String email, String clazz, Long clazzId, Long accountGroupId, String permission) {
+        var parentGroup = parentGroupId == null ? null : AccountGroupDto.builder().id(parentGroupId).build();
+        var group = AccountGroupDto.builder().id(groupId).parentAccountGroup(parentGroup).build();
+
+        clazzIds.forEach(id -> {
+            consumer.accept(AccessControlDto.builder()
+                    .clazzId(id)
+                    .clazz(clazz)
+                    .accountGroup(group)
+                    .build());
+        });
+    }
+
+    //Consider accountgroup hierarchy
+    public List<AccessControlDto> getHierarchical(String email, String clazz, Long clazzId, Long accountGroupId, String permission) {
         if (email.isEmpty()) return List.of();
 
-        List<AccessControl> list = null;
+        List<AccessControlDto> list = new ArrayList<>();
 
-        //Email + Clazz + AccountGroup (Consider accountGroup hierarchy)
+        //Get User's AccountGroups/Roles from MemberCache, otherwise from database
+        var groupMemberList = memberCacheService.getFromCache(email);
+
+        //Email + Clazz + AccountGroup
         if (clazz != null && !clazz.isEmpty() && accountGroupId != null) {
-            list = accessControlRepository.findAllByEmailAndClazzAndAccountGroupId(email, clazz, accountGroupId);
+            list = getHierarchicallyByAccountGroup(clazz, accountGroupId, groupMemberList);
 
             //Email + Clazz + ClazzId
         } else if (clazz != null && !clazz.isEmpty() && clazzId != null) {
-            list = accessControlRepository.findAllByEmailAndClazzAndClazzId(email, clazz, clazzId);
+            list = getHierarchicallyByClazzId(clazz, clazzId, groupMemberList);
 
             //Email + Clazz + Permission
         } else if (clazz != null && !clazz.isEmpty() && permission != null && !permission.isEmpty()) {
-            list = accessControlRepository.findAllByEmailAndClazzAndPermission(email, clazz, permission);
+            list = getHierarchicallyByClazzAndPermission(clazz, permission, groupMemberList);
 
             //Email + Clazz
         } else if (clazz != null && !clazz.isEmpty()) {
-            list = accessControlRepository.findAllByEmailAndClazz(email, clazz);
+            list = getHierarchicallyByClazz(clazz, groupMemberList);
 
         } else {
             throw new AccessControlNotDefinedException("error.access.control.invalid.criteria");
         }
 
-        return list.stream().map(this::convertToDto).collect(Collectors.toList());
+        return list;
+    }
+
+    private List<AccessControlDto> getHierarchicallyByClazz(String clazz, List<MemberCacheDto> groupMemberList) {
+
+        //Filter by clazz, where user is member of groups and its parentGroups
+        return groupMemberList.stream()
+                .mapMulti((MemberCacheDto member, Consumer<AccessControlDto> consumer) -> {
+
+                    //Get all associated to the AccountGroup
+                    var objectsInGroup = accessControlCacheService.getFromCache(member.getAccountGroupId(), clazz);
+                    consumeList(consumer, objectsInGroup, clazz, member.getAccountGroupId(), member.getParentAccountGroupId());
+
+                    //Get all associated to the ParentAccountGroup
+                    if (member.getParentAccountGroupId() != null) {
+                        var objectsInParentGroup = accessControlCacheService.getFromCache(member.getParentAccountGroupId(), clazz);
+                        consumeList(consumer, objectsInParentGroup, clazz, member.getParentAccountGroupId(), null);
+                    }
+
+                }).collect(Collectors.toList());
+    }
+
+    private List<AccessControlDto> getNonHierarchicallyByAccountGroup(String clazz, Long accountGroupId, List<MemberCacheDto> groupMemberList) {
+        return groupMemberList.stream()
+
+                //Filter by accountGroupId
+                .filter(memberCacheDto -> memberCacheDto.getAccountGroupId() == accountGroupId)
+
+                //return all that the groupId and clazz match
+                .mapMulti((MemberCacheDto member, Consumer<AccessControlDto> consumer) -> {
+
+                    //Get all  associated to the AccountGroup
+                    var objectsInGroup = accessControlCacheService.getFromCache(member.getAccountGroupId(), clazz);
+                    consumeList(consumer, objectsInGroup, clazz, member.getAccountGroupId(), member.getParentAccountGroupId());
+
+                }).collect(Collectors.toList());
+    }
+
+    private List<AccessControlDto> getHierarchicallyByAccountGroup(String clazz, Long accountGroupId, List<MemberCacheDto> groupMemberList) {
+
+        //Filter by accountGroupId
+        var filteredByGroupId = groupMemberList.stream()
+                .filter(memberCacheDto -> memberCacheDto.getAccountGroupId() == accountGroupId)
+                .collect(Collectors.toList());
+
+        //Filter By clazz
+        return getHierarchicallyByClazz(clazz, filteredByGroupId);
+    }
+
+    private List<AccessControlDto> getHierarchicallyByClazzId(String clazz, Long clazzId, List<MemberCacheDto> groupMemberList) {
+
+        //Filter By clazz
+        var filteredByClazz = getHierarchicallyByClazz(clazz, groupMemberList);
+
+        //Filter by clazzId
+        return filteredByClazz.stream()
+                .filter(accessControl -> accessControl.getClazzId() == clazzId)
+                .collect(Collectors.toList());
+    }
+
+    private List<AccessControlDto> getHierarchicallyByClazzAndPermission(String clazz, String permission, List<MemberCacheDto> groupMemberList) {
+
+        //Filter by Groups where user has the permission
+        var filteredByPermission = groupMemberList.stream()
+
+                //Filter to only groups where user has the permission
+                .filter(member -> {
+                    return roleService.getRole(member.getRoleId()).getPermissions().stream()
+                            .anyMatch(p -> p.getId().equalsIgnoreCase(permission));
+                })
+                .collect(Collectors.toList());
+
+        //Filter By clazz
+        return getHierarchicallyByClazz(clazz, filteredByPermission);
+
     }
 
     public void save(AccessControlDto accessControlDto) {

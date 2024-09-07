@@ -1,7 +1,7 @@
 import PantriesPieChart from '../components/PantriesPieChart.js';
 import Login from './Login.js';
 import { ProfileContext } from '../services/context/AppContext';
-import { getPantryList } from '../services/apis/mypantry/requests/PantryRequests.js';
+import { getPantryChartData } from '../services/apis/mypantry/requests/PantryRequests.js';
 import { useContext, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button, OverlayTrigger, Stack, Tooltip } from 'react-bootstrap';
@@ -15,22 +15,22 @@ export default function Home() {
 
     const { t } = useTranslation(['pantry', 'common']);
     const { profileCtx } = useContext(ProfileContext);
-    const [pantries, setPantries] = useState([]);
+    const [chartData, setChartData] = useState([]);
     const { showAlert } = useAlert();
     const { setIsLoading } = useLoading();
 
 
     useEffect(() => {
         if (profileCtx && Object.keys(profileCtx).length > 1){
-            fetchPantries();
+            fetchPantryChartData();
         }
     }, [])
 
-    async function fetchPantries() {
+    async function fetchPantryChartData() {
         setIsLoading(true);
         try {
-            const res = await getPantryList();
-            setPantries(res);
+            const res = await getPantryChartData();
+            setChartData(res);
         } catch (error) {
             showAlert(VariantType.DANGER, error.message);
         } finally {
@@ -58,7 +58,7 @@ export default function Home() {
     return (
         <>
             {profileCtx && Object.keys(profileCtx).length > 1 ?
-                pantries.length === 0 ? renderNoPantryYet() : <PantriesPieChart /> 
+                chartData.length === 0 ? renderNoPantryYet() : <PantriesPieChart chartData={chartData}/> 
                 : <Login />}
         </>
     )

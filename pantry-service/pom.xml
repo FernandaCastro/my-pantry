@@ -11,7 +11,7 @@
     </parent>
 
     <artifactId>pantry-service</artifactId>
-    <version>0.6.5</version>
+    <version>0.6.6</version>
     <packaging>jar</packaging>
 
     <dependencies>

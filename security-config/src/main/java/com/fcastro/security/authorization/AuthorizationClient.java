@@ -19,7 +19,14 @@ public class AuthorizationClient {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AuthorizationClient.class);
 
-    private final String AUTH_URL = "/accountservice/authorization/";
+    private final String AUTH_URL = "/accountservice/authorization";
+    private final String PERMISSION_IN_ANY_GROUP = "/permission-in-any-group?";
+    private final String PERMISSION_IN_A_GROUP = "/permission-in-group?";
+    private final String PERMISSION_IN_OBJECT = "/permission-in-object?";
+    private final String PERMISSION_IN_OBJECT_LIST = "/permission-in-object-list?";
+    private final String ACCESS_CONTROL_HIERARCHICAL = "/access-control/hierarchical?";
+    private final String ACCESS_CONTROL_NON_HIERARCHICAL = "/access-control/non-hierarchical?";
+    private final String ACCESS_CONTROL = "/access-control";
 
     private final RestClient authzServer;
 
@@ -32,7 +39,7 @@ public class AuthorizationClient {
      **/
     public boolean hasPermissionInAnyGroup(String email, String permission) {
 
-        StringBuilder uri = new StringBuilder(AUTH_URL).append("permission-in-any-group?")
+        StringBuilder uri = new StringBuilder(AUTH_URL).append(PERMISSION_IN_ANY_GROUP)
                 .append("email=").append(email)
                 .append("&permission=").append(permission);
 
@@ -53,7 +60,7 @@ public class AuthorizationClient {
      **/
     public boolean hasPermissionInAGroup(String email, String permission, Long accountGroupId) {
 
-        StringBuilder uri = new StringBuilder(AUTH_URL).append("permission-in-group?")
+        StringBuilder uri = new StringBuilder(AUTH_URL).append(PERMISSION_IN_A_GROUP)
                 .append("email=").append(email)
                 .append("&permission=").append(permission)
                 .append("&accountGroupId=").append(accountGroupId);
@@ -72,7 +79,7 @@ public class AuthorizationClient {
 
     public boolean hasPermissionInObject(String email, String permission, String clazz, Long clazzId) {
 
-        StringBuilder uri = new StringBuilder(AUTH_URL).append("permission-in-object?")
+        StringBuilder uri = new StringBuilder(AUTH_URL).append(PERMISSION_IN_OBJECT)
                 .append("email=").append(email)
                 .append("&permission=").append(permission)
                 .append("&clazz=").append(clazz)
@@ -91,7 +98,7 @@ public class AuthorizationClient {
     }
 
     public boolean hasPermissionInObjectList(String email, String permission, String clazz, List<Long> clazzIds) {
-        StringBuilder uri = new StringBuilder(AUTH_URL).append("permission-in-object-list?")
+        StringBuilder uri = new StringBuilder(AUTH_URL).append(PERMISSION_IN_OBJECT_LIST)
                 .append("email=").append(email)
                 .append("&permission=").append(permission)
                 .append("&clazz=").append(clazz)
@@ -109,20 +116,8 @@ public class AuthorizationClient {
                 });
     }
 
-    public AccessControlDto getAccessControl(String clazz, Long clazzId) {
-        return authzServer.get()
-                .uri("/accessControl?clazz={clazz}&clazzId={clazzId}", clazz, clazzId)
-                .accept(MediaType.APPLICATION_JSON)
-                .retrieve()
-                .onStatus(status ->
-                        status.value() != HttpStatus.OK.value(), (request, response) -> {
-                    throw new AccessDeniedException("Request to AuthorizationServer(accessControl) failed: [" + response.getStatusCode() + " : " + response.getStatusText() + "]");
-                })
-                .body(AccessControlDto.class);
-    }
-
     public List<AccessControlDto> listAccessControl(String email, String clazz, Long clazzId, Long accountGroupId, String permission) {
-        StringBuilder uri = new StringBuilder("/accountservice/authorization/access-control?")
+        StringBuilder uri = new StringBuilder(AUTH_URL).append(ACCESS_CONTROL_HIERARCHICAL)
                 .append("email=").append(email)
                 .append("&clazz=").append(clazz);
 
@@ -136,14 +131,14 @@ public class AuthorizationClient {
                 .retrieve()
                 .onStatus(status ->
                         status.value() != HttpStatus.OK.value(), (request, response) -> {
-                    throw new AccessDeniedException("Request AuthorizationServer(access-control) failed: [" + response.getStatusCode() + " : " + response.getStatusText() + "]");
+                    throw new AccessDeniedException("Request to AuthorizationServer(/access-control/hierarchical) failed: [" + response.getStatusCode() + " : " + response.getStatusText() + "]");
                 })
                 .body(new ParameterizedTypeReference<List<AccessControlDto>>() {
                 });
     }
 
     public List<AccessControlDto> listAccessControlStrict(String email, String clazz, Long accountGroupId) {
-        StringBuilder uri = new StringBuilder("/accountservice/authorization/access-control-strict?")
+        StringBuilder uri = new StringBuilder(AUTH_URL).append(ACCESS_CONTROL_NON_HIERARCHICAL)
                 .append("email=").append(email)
                 .append("&clazz=").append(clazz)
                 .append("&accountGroupId=").append(accountGroupId);
@@ -154,7 +149,7 @@ public class AuthorizationClient {
                 .retrieve()
                 .onStatus(status ->
                         status.value() != HttpStatus.OK.value(), (request, response) -> {
-                    throw new AccessDeniedException("Request AuthorizationServer(access-control-strict) failed: [" + response.getStatusCode() + " : " + response.getStatusText() + "]");
+                    throw new AccessDeniedException("Request to AuthorizationServer(/access-control/non-hierarchical) failed: [" + response.getStatusCode() + " : " + response.getStatusText() + "]");
                 })
                 .body(new ParameterizedTypeReference<List<AccessControlDto>>() {
                 });
@@ -162,6 +157,7 @@ public class AuthorizationClient {
 
     public void saveAccessControl(String clazz, Long clazzId, Long accountGroupId) {
 
+        StringBuilder uri = new StringBuilder(AUTH_URL).append(ACCESS_CONTROL);
         var body = AccessControlDto.builder()
                 .clazz(clazz)
                 .clazzId(clazzId)
@@ -169,7 +165,7 @@ public class AuthorizationClient {
                 .build();
 
         authzServer.post()
-                .uri("/accountservice/authorization/access-control")
+                .uri(uri.toString())
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(body)
                 .retrieve()
@@ -181,9 +177,8 @@ public class AuthorizationClient {
     }
 
     public void deleteAccessControl(String clazz, Long clazzId) {
-
-        StringBuilder uri = new StringBuilder("/accountservice/authorization/access-control?")
-                .append("clazz=").append(clazz)
+        StringBuilder uri = new StringBuilder(AUTH_URL).append(ACCESS_CONTROL)
+                .append("?clazz=").append(clazz)
                 .append("&clazzId=").append(clazzId);
 
         authzServer.delete()

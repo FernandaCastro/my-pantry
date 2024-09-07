@@ -22,6 +22,10 @@ public class AuthorizationController {
         this.authorizationService = authorizationService;
     }
 
+    /**
+     * PERMISSION
+     **/
+
     @GetMapping("/permission-in-any-group")
     ResponseEntity<Boolean> hasPermissionInAnyGroup(@RequestParam String email, @RequestParam String permission) {
         return ResponseEntity.ok(authorizationService.hasPermissionInAnyGroup(email, permission));
@@ -42,17 +46,19 @@ public class AuthorizationController {
         return ResponseEntity.ok(authorizationService.hasPermissionInObjectList(email, permission, clazz, clazzIds));
     }
 
-    @GetMapping("/access-control-strict")
-    public ResponseEntity<List<AccessControlDto>> getAllByEmail(@RequestParam String email, @RequestParam String clazz, @RequestParam Long accountGroupId) {
-        return ResponseEntity.ok(accessControlService.getAllByEmailAndAccessControlStrict(email, clazz, accountGroupId));
-    }
 
     /**
-     * Retrieves accessControl considering accountgroup hierarchy
-     */
-    @GetMapping("/access-control")
-    public ResponseEntity<List<AccessControlDto>> getAllByEmail(@RequestParam String email, @RequestParam String clazz, @RequestParam(required = false) Long clazzId, @RequestParam(required = false) Long accountGroupId, @RequestParam(required = false) String permission) {
-        return ResponseEntity.ok(accessControlService.getAllByEmailAndAccessControl(email, clazz, clazzId, accountGroupId, permission));
+     * ACCESS CONTRTOL
+     **/
+
+    @GetMapping("/access-control/non-hierarchical")
+    public ResponseEntity<List<AccessControlDto>> getNonHierarchical(@RequestParam String email, @RequestParam String clazz, @RequestParam Long accountGroupId) {
+        return ResponseEntity.ok(accessControlService.getNonHierarchical(email, clazz, accountGroupId));
+    }
+
+    @GetMapping("/access-control/hierarchical")
+    public ResponseEntity<List<AccessControlDto>> getHierarchical(@RequestParam String email, @RequestParam String clazz, @RequestParam(required = false) Long clazzId, @RequestParam(required = false) Long accountGroupId, @RequestParam(required = false) String permission) {
+        return ResponseEntity.ok(accessControlService.getHierarchical(email, clazz, clazzId, accountGroupId, permission));
     }
 
     @PostMapping("/access-control")

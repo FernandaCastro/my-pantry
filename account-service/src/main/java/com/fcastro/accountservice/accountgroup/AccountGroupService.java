@@ -86,7 +86,7 @@ public class AccountGroupService {
         accountGroup.setParentAccountGroup(parentGroup);
         accountGroup = repository.save(accountGroup);
 
-        groupMemberService.createChildGroupMember(SecurityContextHolder.getContext().getAuthentication().getName(), accountGroup.getId());
+        groupMemberService.createChildGroupMember(SecurityContextHolder.getContext().getAuthentication().getName(), accountGroup);
 
         return convertToDTO(accountGroup);
     }

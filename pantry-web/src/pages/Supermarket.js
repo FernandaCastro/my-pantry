@@ -7,7 +7,7 @@ import useAlert from '../hooks/useAlert.js';
 import VariantType from '../components/VariantType.js';
 import Select from '../components/Select';
 import { getAccountGroupList } from '../services/apis/mypantry/requests/AccountRequests.js';
-import { getAllSupermarkets, createSupermarket, updateSupermarket, deleteSupermarket } from '../services/apis/mypantry/requests/PurchaseRequests.js'
+import { getAllSupermarkets, getSupermarketsByGroup, createSupermarket, updateSupermarket, deleteSupermarket } from '../services/apis/mypantry/requests/PurchaseRequests.js'
 import iconSupermarket from '../assets/images/supermarket-gradient.png';
 import Modal from 'react-bootstrap/Modal';
 import { useLoading } from '../hooks/useLoading';
@@ -66,7 +66,7 @@ export function Supermarket() {
     async function fetchSupermarkets() {
         setIsLoading(true);
         try {
-            const res = await getAllSupermarkets(accountGroupOption.value);
+            const res = await getSupermarketsByGroup(accountGroupOption.value);
 
             setSupermarkets(res);
 

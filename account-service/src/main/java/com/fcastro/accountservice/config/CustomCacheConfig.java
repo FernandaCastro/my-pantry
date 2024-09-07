@@ -1,9 +1,12 @@
 package com.fcastro.accountservice.config;
 
+import com.fcastro.accountservice.cache.CustomCacheErrorHandler;
 import org.springframework.boot.autoconfigure.cache.RedisCacheManagerBuilderCustomizer;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.CachingConfigurerSupport;
 import org.springframework.cache.annotation.EnableCaching;
+import org.springframework.cache.interceptor.CacheErrorHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.cache.RedisCacheConfiguration;
@@ -15,7 +18,7 @@ import java.time.Duration;
 
 @Configuration
 @EnableCaching
-public class CustomCacheConfig {
+public class CustomCacheConfig extends CachingConfigurerSupport {
 
     public static final String MEMBER_CACHE = "members";
     public static final String ROLE_CACHE = "rolePermissions";
@@ -26,6 +29,17 @@ public class CustomCacheConfig {
     public CustomCacheConfig(CustomCacheProperties cacheProperties) {
         this.cacheProperties = cacheProperties;
     }
+
+//    @Bean
+//    public RedisCacheManager cacheManager(RedisConnectionFactory connectionFactory) {
+//        return RedisCacheManager.builder(connectionFactory)
+//                .cacheDefaults(defaultConfiguration())
+//                .enableStatistics()
+////                .initialCacheNames(Set.of(MEMBER_CACHE, ROLE_CACHE, ACCESS_CONTROL_CACHE))
+////                .withInitialCacheConfigurations(Collections.singletonMap(MEMBER_CACHE,
+////                        RedisCacheConfiguration.defaultCacheConfig().disableCachingNullValues()))
+//                .build();
+//    }
 
     @Bean
     public RedisCacheConfiguration cacheConfiguration() {
@@ -39,6 +53,7 @@ public class CustomCacheConfig {
     @Bean
     public RedisCacheManagerBuilderCustomizer redisCacheManagerBuilderCustomizer() {
         return (builder) -> builder
+                .enableStatistics()
                 .withCacheConfiguration(MEMBER_CACHE,
                         cacheConfiguration().entryTtl(Duration.ofMinutes(cacheProperties.getMembersTtl())))
                 .withCacheConfiguration(ROLE_CACHE,
@@ -74,4 +89,8 @@ public class CustomCacheConfig {
         return cacheManager.getCache(ACCESS_CONTROL_CACHE);
     }
 
+    @Override
+    public CacheErrorHandler errorHandler() {
+        return new CustomCacheErrorHandler();
+    }
 }
