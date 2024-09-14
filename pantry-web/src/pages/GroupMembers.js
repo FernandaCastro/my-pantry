@@ -45,12 +45,12 @@ function GroupMembers() {
     }, [refresh])
 
     useEffect(() => {
-        if (selectedGroup.id > 0) fetchMembers();
-    }, [selectedGroup.id])
+         fetchMembers();
+    }, [selectedGroup.id, refreshMembers])
 
-    useEffect(() => {
-        if (refreshMembers) fetchMembers();
-    }, [refreshMembers])
+    // useEffect(() => {
+    //     if (refreshMembers) fetchMembers();
+    // }, [refreshMembers])
 
     async function fetchGroups() {
         setRefresh(true);
@@ -68,16 +68,18 @@ function GroupMembers() {
     }
 
     async function fetchMembers() {
-        // setRefresh(true);
-        setIsLoading(true);
+        //setIsLoading(true);
         try {
+            if (selectedGroup.id > 0) {
             const res = await getAccountGroupMemberList(selectedGroup.id);
             setMembers(res);
-            // setRefresh(false);
+            }else{
+                setMembers([]);
+            }
         } catch (error) {
             showAlert(VariantType.DANGER, error.message);
         } finally {
-            setIsLoading(false);
+            //setIsLoading(false);
         }
     }
 
@@ -95,8 +97,9 @@ function GroupMembers() {
     async function fetchCreateGroup(group) {
         try {
             setIsLoading(true);
-            await createAccountGroup(group);
+            const res = await createAccountGroup(group);
             showAlert(VariantType.SUCCESS, t("create-group-success"));
+            setSelectedGroup(res);
         } catch (error) {
             showAlert(VariantType.DANGER, error.message);
         } finally {
@@ -134,7 +137,7 @@ function GroupMembers() {
     async function fetchAddMember(accountMember) {
         try {
             setIsLoading(true);
-            setRefreshMembers(false);
+            setRefreshMembers(!refreshMembers);
             await addAccountMember(accountMember);
             showAlert(VariantType.SUCCESS, t("add-member-success"));
         } catch (error) {
@@ -148,7 +151,7 @@ function GroupMembers() {
     async function fetchDeleteMember(groupId, accountId) {
         try {
             setIsLoading(true);
-            setRefreshMembers(false);
+            setRefreshMembers(!refreshMembers);
             await deleteAccountMember(groupId, accountId);
             showAlert(VariantType.SUCCESS, t("delete-member-success"));
         } catch (error) {
@@ -185,7 +188,12 @@ function GroupMembers() {
         fetchDeleteMember(groupId, accountId);
     }
 
-    function handleEditGroup(item) {
+    function handleEditButtonClick(item) {
+        setEditGroup(item.id);
+        setSelectedGroup(item);
+    }
+
+    function handleEditGroupSave(item) {
         const editedGroup = {
             ...item,
             name: groupName
@@ -210,11 +218,13 @@ function GroupMembers() {
         return (
             <tr key={item.id} className="align-middle">
                 {editGroup === item.id ?
-                    <td colSpan={2}>
+                    <td colSpan={3}>
                         <Stack direction="horizontal" gap={1} className="d-flex justify-content-start">
-                            <div><FormCheck type="radio" checked={true} disabled={true} /></div>
-                            <div className='w-50'><Form.Control size="sm" type="text" defaultValue={item.name} onChange={(e) => setGroupName(e.target.value)} /></div>
-                            <div><Button onClick={() => handleEditGroup(item, groupName)} variant="link" className='pe-0'><BsCheck2All className='icon' /></Button></div>
+                            <div><FormCheck type="radio" checked={selectedGroup && selectedGroup.id === item.id} 
+                            defaultChecked={selectedGroup && selectedGroup.id === item.id}
+                            disabled={true} name="groupId" onChange={() => setSelectedGroup(item)}/></div>
+                            <div className='w-100'><Form.Control size="sm" type="text" defaultValue={item.name} onChange={(e) => setGroupName(e.target.value)} /></div>
+                            <div><Button onClick={() => handleEditGroupSave(item, groupName)} variant="link" className='pe-3'><BsCheck2All className='icon' /></Button></div>
                             <div><Button onClick={() => setEditGroup(0)} variant='link' title='Clear text'><BsXLg className='icon' /></Button></div>
                         </Stack >
                     </td >
@@ -223,12 +233,12 @@ function GroupMembers() {
                         <td><FormCheck type="radio" defaultValue={selectedGroup && selectedGroup.id === item.id}
                             defaultChecked={selectedGroup && selectedGroup.id === item.id}
                             onChange={() => setSelectedGroup(item)} style={{ color: "hsl(219, 11%, 25%)" }}
-                            label={item.name} />
+                            label={item.name} name="groupId"/>
                         </td>
                         <td><span>{!item.parentAccountGroup ? t('parent') : t('child')}</span></td>
                         <td>
                             <Stack direction="horizontal" gap={1} className="d-flex justify-content-end">
-                                <div><Button onClick={() => setEditGroup(item.id)} variant="link"><BsPencil className='icon' /></Button></div>
+                                <div><Button onClick={() => handleEditButtonClick(item)} variant="link"><BsPencil className='icon' /></Button></div>
                                 <div><Button onClick={() => handleRemoveGroup(item.id)} variant="link" disabled={groups.length === 1}><BsTrash className='icon' /></Button></div>
                             </Stack>
                         </td>
@@ -256,7 +266,7 @@ function GroupMembers() {
     function renderMembers() {
 
         return (
-            <Table size='sm' className='bordered'>
+            <Table size='sm' className='bordered' key={selectedGroup?.id}>
                 <tbody>
                     {members.map((item) => (renderMember(item)))}
                 </tbody>
@@ -282,7 +292,6 @@ function GroupMembers() {
 
     return (
         <>
-
             <Stack gap={4}>
                 <div></div>
                 <div className="d-flex align-items-center gap-2">
@@ -296,7 +305,7 @@ function GroupMembers() {
                 <div>
                     <AccountSearchBar key={selectedGroup.id} handleSelectAction={handleAddMember} disabled={selectedGroup.id === 0} />
                 </div>
-                <div>
+                <div key={refreshMembers}>
                     <h6 className='title'>{t("members-title")}</h6>
                     {renderMembers()}
                 </div>

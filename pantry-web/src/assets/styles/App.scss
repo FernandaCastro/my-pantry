@@ -204,6 +204,10 @@
     height: 25px;
 }
 
+.logo {
+    width: 10rem;
+}
+
 .profile-icon {
     background: linear-gradient(white, white) padding-box,
         var(--gradient-color) border-box;
@@ -544,7 +548,7 @@ p {
 }
 
 .small-icon {
-    color: var(--title-text-color);
+    color: var(--icon-color);
     width: 15px;
     height: 15px;
 }
@@ -908,6 +912,12 @@ div.scroll-supermarkets {
     color: var(--text-color-2) !important;
 }
 
+.form-control-password {
+    border-style: none !important;
+    padding: 0;
+    margin: 0;
+}
+
 /* Define a cor de fundo quando autofill é ativado */
 .form-control:-webkit-autofill {
     -webkit-text-fill-color: var(--text-color) !important;
@@ -1258,7 +1268,8 @@ span.critical {
     height: 50px;
 }
 
-.ripple::before, .ripple::after {
+.ripple::before,
+.ripple::after {
     content: '';
     position: absolute;
     width: 100%;

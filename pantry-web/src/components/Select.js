@@ -34,12 +34,14 @@ const defaultStyles = {
 
     menu: (provided, state) => ({
         ...provided,
-        backgroundColor: 'var(--background-1)',
+        border: '1px solid var(--border-color)',
+        backgroundColor: 'var(--background)',
     }),
 
     option: (provided, { data, isDisabled, isFocused, isSelected }) => ({
         ...provided,
-        backgroundColor: isSelected ? 'var(--highlight-item-list)' : 'var(--background-1)',
+        borderColor: 'var(--border-color)',
+        backgroundColor: isSelected ? 'var(--highlight-item-list)' : 'var(--background)',
         color: 'var(--text-color)',
         "&:hover": {
             color: 'var(--highlight-text)'

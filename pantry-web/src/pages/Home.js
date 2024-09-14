@@ -1,4 +1,4 @@
-import PantriesPieChart from '../components/PantriesPieChart.js';
+import PantriesPieChart from './PantryPieCharts.js';
 import Login from './Login.js';
 import { ProfileContext } from '../services/context/AppContext';
 import { getPantryChartData } from '../services/apis/mypantry/requests/PantryRequests.js';
@@ -21,10 +21,10 @@ export default function Home() {
 
 
     useEffect(() => {
-        if (profileCtx && Object.keys(profileCtx).length > 1){
+        if (profileCtx && Object.keys(profileCtx).length > 1) {
             fetchPantryChartData();
         }
-    }, [])
+    }, [profileCtx])
 
     async function fetchPantryChartData() {
         setIsLoading(true);
@@ -58,7 +58,7 @@ export default function Home() {
     return (
         <>
             {profileCtx && Object.keys(profileCtx).length > 1 ?
-                chartData.length === 0 ? renderNoPantryYet() : <PantriesPieChart chartData={chartData}/> 
+                chartData.length === 0 ? renderNoPantryYet() : <PantriesPieChart chartData={chartData} />
                 : <Login />}
         </>
     )
