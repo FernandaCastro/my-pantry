@@ -24,7 +24,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     @Override
     @Transactional
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        Account account = accountRepository.findByEmail(email)
+        Account account = accountRepository.findByEmail(email.toLowerCase())
                 .orElseThrow(() -> new UsernameNotFoundException(MessageTranslator.getMessage("error.email.not.found")));
 
         var roles = new ArrayList<String>();

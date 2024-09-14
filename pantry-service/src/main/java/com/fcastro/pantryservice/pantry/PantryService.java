@@ -25,6 +25,9 @@ public class PantryService {
     private final AuthorizationClient authorizationClient;
     private final PantryItemService pantryItemService;
 
+    // Define the scale Factor (10^decimals)
+    private final double SCALE_FACTOR = Math.pow(10, 2);
+
     public PantryService(PantryRepository repository, ModelMapper modelMapper, AuthorizationClient authorizationService, PantryItemService pantryItemService) {
         this.repository = repository;
         this.modelMapper = modelMapper;
@@ -181,11 +184,15 @@ public class PantryService {
         var pantryList = repository.findAllByIds(pantryIds);
 
         var pantryChartList = pantryList.stream().map(p -> {
+
             var items = p.getItems();
+            var percentage = calculatePercentage(items);
+            var criticalItems = calculateCriticalItems(items);
+
             var pantryChart = PantryChartDto.builder()
                     .id(p.getId()).name(p.getName()).type(p.getType()).isActive(p.getIsActive())
-                    .percentage(calculatePercentage(items))
-                    .criticalItems(calculateCriticalItems(items))
+                    .percentage(percentage)
+                    .criticalItems(criticalItems)
                     .accountGroup(getAccountGroup(p.getId(), accessControlList))
                     .build();
 
@@ -206,29 +213,22 @@ public class PantryService {
     }
 
     private double calculatePercentage(List<PantryItem> items) {
-        var percentual = 0.0;
-
-        var filteredList = items.stream().filter(i -> i.getIdealQty() > 0).collect(Collectors.toList());
 
         //Math.min(value, 100): Limit the availability percentual to 100% to prevent excessive stocks from distorting the calculation.
-        var sum = filteredList.stream()
+        var sum = items.stream()
+                .filter(i -> i.getIdealQty() > 0)
                 .map(i -> Math.min((Double.valueOf(i.getCurrentQty()) / Double.valueOf(i.getIdealQty())) * 100, 100))
                 .reduce(0.0, Double::sum);
 
-        percentual = sum / items.size();
-
-        // Define the scale Factor (10^decimals)
-        double scaleFactor = Math.pow(10, 2);
-
-        // Apply Math.ceil and limit decimals
-        percentual = Math.ceil(sum / items.size() * scaleFactor) / scaleFactor;
+        // Apply Math.ceil and limit decimals to 2
+        var percentual = Math.ceil(sum / items.size() * SCALE_FACTOR) / SCALE_FACTOR;
 
         return percentual;
     }
 
     private List<PantryItemChartDto> calculateCriticalItems(List<PantryItem> items) {
 
-        var criticalItems = items.stream()
+        var filteredItems = items.stream()
                 .filter(i -> i.getIdealQty() > 0)
                 .map(i -> {
                     var percentage = 0.0;
@@ -247,6 +247,9 @@ public class PantryService {
 
                 })
                 .filter(i -> i.getPercentage() <= 30)
+                .collect(Collectors.toList());
+
+        var criticalItems = filteredItems.stream()
                 .sorted(Comparator.comparingDouble(PantryItemChartDto::getPercentage))
                 .collect(Collectors.toList());
 

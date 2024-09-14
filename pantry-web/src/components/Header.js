@@ -8,6 +8,7 @@ import iconPurchase from '../assets/images/shoppingcart-gradient.png';
 import iconProduct from '../assets/images/food-gradient.png';
 import iconPantry from '../assets/images/cupboard-gradient.png';
 import iconSupermarket from '../assets/images/supermarket-gradient.png';
+import logo from '../assets/images/logo.png';
 
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Tooltip from 'react-bootstrap/Tooltip';
@@ -41,11 +42,11 @@ export default function Header() {
                     <OverlayTrigger placement="bottom" delay={{ show: 250, hide: 400 }} overlay={<Tooltip className="custom-tooltip">{t("tooltip-purchase")}</Tooltip>}>
                         <Nav.Item>
                             <Nav.Link href="/purchase" eventKey="link-purchases" className="menuItem" disabled={!hasActiveProfile}>
-                            <div className="gradient-icon-box-header"><Image src={iconPurchase} className="menu-icon" /></div>
+                                <div className="gradient-icon-box-header"><Image src={iconPurchase} className="menu-icon" /></div>
                             </Nav.Link>
                         </Nav.Item>
                     </OverlayTrigger>
-                    
+
                     <OverlayTrigger placement="bottom" delay={{ show: 250, hide: 400 }} overlay={<Tooltip className="custom-tooltip">{t("tooltip-pantries")}</Tooltip>}>
                         <Nav.Item><Nav.Link href="/pantries" eventKey="link-pantries" className="menuItem" disabled={!hasActiveProfile}>
                             <Image src={iconPantry} className="menu-icon" />
@@ -75,17 +76,18 @@ export default function Header() {
                 <Navbar>
                     <LanguageSelect className="menuItem" language={i18n.language} onChange={setLanguage} />
                 </Navbar>
-                <AccountMenu/>
+                <AccountMenu />
             </div>
         )
     }
 
+    //<span className="homeText">{t("app-name", { ns: "common" })}</span>
     return (
         <Stack className="header" direction='vertical'>
             <div>
                 <Navbar className="pt-2 pb-1">
-                    <Navbar.Brand className="homeLink pb-2" href="/home" ><span className="homeText">{t("app-name", { ns: "common" })}</span></Navbar.Brand>
-                    <Container/>
+                    <Navbar.Brand className="homeLink pb-0" href="/home" ><Image src={logo} className="logo" /></Navbar.Brand>
+                    <Container />
 
                     {/*hidden on smaller than md*/}
                     <div className='d-none d-md-block'>

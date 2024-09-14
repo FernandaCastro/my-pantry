@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Consumer;
@@ -114,18 +115,22 @@ public class AccessControlService {
 
     private List<AccessControlDto> getHierarchicallyByClazz(String clazz, List<MemberCacheDto> groupMemberList) {
 
+        var memo = new HashSet<Long>();
+
         //Filter by clazz, where user is member of groups and its parentGroups
         return groupMemberList.stream()
                 .mapMulti((MemberCacheDto member, Consumer<AccessControlDto> consumer) -> {
 
-                    //Get all associated to the AccountGroup
+                    //Get all objects associated to the AccountGroup
                     var objectsInGroup = accessControlCacheService.getFromCache(member.getAccountGroupId(), clazz);
                     consumeList(consumer, objectsInGroup, clazz, member.getAccountGroupId(), member.getParentAccountGroupId());
+                    memo.add(member.getAccountGroupId());
 
                     //Get all associated to the ParentAccountGroup
-                    if (member.getParentAccountGroupId() != null) {
+                    if (member.getParentAccountGroupId() != null && member.getParentAccountGroupId() > 0 && !memo.contains(member.getParentAccountGroupId())) {
                         var objectsInParentGroup = accessControlCacheService.getFromCache(member.getParentAccountGroupId(), clazz);
                         consumeList(consumer, objectsInParentGroup, clazz, member.getParentAccountGroupId(), null);
+                        memo.add(member.getParentAccountGroupId());
                     }
 
                 }).collect(Collectors.toList());

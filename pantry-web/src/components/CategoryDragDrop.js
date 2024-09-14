@@ -237,7 +237,7 @@ export function DraggableItem({ item, index }) {
                     padding: "2px",
                     minWidth: "165px",
                     border: "1.5px solid var(--border-color)",
-                    backgroundColor: 'var(--background)',
+                    backgroundColor: _snapshot.isDragging ? 'var(--highlight-item-list)' : 'var(--background)',
                     display: "flex",
                     flexDirection: "row",
                     justifyContent: "space-between",
