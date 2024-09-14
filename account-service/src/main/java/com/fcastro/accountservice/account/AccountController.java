@@ -32,7 +32,7 @@ public class AccountController {
     }
 
     @PostMapping
-    public ResponseEntity<AccountDto> create(@RequestBody AccountDto newDto) {
+    public ResponseEntity<AccountDto> preCreate(@RequestBody AccountDto newDto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(service.preCreateAccount(newDto));
     }
 

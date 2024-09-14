@@ -29,7 +29,7 @@ public class MemberCacheService {
     @Transactional
     public List<MemberCacheDto> getFromCache(String email) {
 
-        var list = repository.findAllByEmail(email).stream()
+        var list = repository.findAllByEmail(email).parallelStream()
                 .map(i -> MemberCacheDto.builder()
                         .accountGroupId(i.getAccountGroupId())
                         .parentAccountGroupId(i.getAccountGroup().getParentAccountGroup() == null ? null : i.getAccountGroup().getParentAccountGroup().getId())
