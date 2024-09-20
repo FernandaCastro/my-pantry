@@ -9,7 +9,7 @@ import Card from 'react-bootstrap/Card';
 import Stack from 'react-bootstrap/Stack';
 import CloseButton from 'react-bootstrap/CloseButton';
 import ProductForm from './ProductForm.js';
-import { camelCase } from '../services/utils.js';
+import { camelCase } from '../services/Utils.js';
 import Collapse from 'react-bootstrap/Collapse';
 import { useTranslation } from 'react-i18next';
 import NumericField from './NumericField.js';

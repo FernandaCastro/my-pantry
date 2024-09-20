@@ -8,15 +8,13 @@ import VariantType from '../components/VariantType.js';
 import useAlert from '../hooks/useAlert.js';
 import Select from '../components/Select.js';
 import Collapse from 'react-bootstrap/Collapse';
-import { camelCase } from '../services/utils.js';
+import { camelCase } from '../services/Utils.js';
 import { BsArrow90DegRight } from "react-icons/bs";
 import { Card, Col, FormCheck, Row } from "react-bootstrap";
 import { useTranslation } from 'react-i18next';
 import NumericField from './NumericField';
 import { useLoading } from '../hooks/useLoading';
-import Purchase from '../pages/Purchase';
 import { PurchaseContext } from '../services/context/AppContext';
-import { Prev } from 'react-bootstrap/esm/PageItem';
 
 function PurchaseItemList({ selectedPurchase, selectedPantries, setOuterPurchaseItems }, ref) {
 
