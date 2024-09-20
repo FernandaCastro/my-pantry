@@ -12,6 +12,7 @@ spring:
     hikari:
       minimum-idle: ${ACCOUNT_DB_IDLE_CONN}
       maximum-pool-size: ${ACCOUNT_DB_MAX_POOL_SIZE}
+      idle-timeout: ${ACCOUNT_DB_IDLE_TIMEOUT}
   jpa:
     hibernate:
       ddl-auto: none
