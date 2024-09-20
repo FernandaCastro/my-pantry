@@ -7,7 +7,7 @@ import Image from 'react-bootstrap/Image';
 import food from '../assets/images/healthy-food.png';
 import Button from 'react-bootstrap/Button';
 import { BsPencil, BsTrash } from "react-icons/bs";
-import { camelCase } from '../services/utils.js';
+import { camelCase } from '../services/Utils.js';
 import { Card, Col, FormCheck, Row } from "react-bootstrap";
 import Modal from 'react-bootstrap/Modal';
 import { useTranslation } from 'react-i18next';
