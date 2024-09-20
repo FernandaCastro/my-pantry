@@ -12,6 +12,7 @@ spring:
     hikari:
       minimum-idle: ${PANTRY_DB_IDLE_CONN}
       maximum-pool-size: ${PANTRY_DB_MAX_POOL_SIZE}
+      idle-timeout: ${PANTRY_DB_IDLE_TIMEOUT}
   jpa:
     hibernate:
       ddl-auto: none

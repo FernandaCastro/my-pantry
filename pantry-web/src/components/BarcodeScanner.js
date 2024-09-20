@@ -31,7 +31,7 @@ export default function BarcodeScanner({ active, setActive }) {
 
         Quagga.init(
             {
-                numOfWorkers: 4,//navigator.hardwareConcurrency,
+                numOfWorkers: navigator.hardwareConcurrency,
                 locate: true,
                 frequency: 5,
                 multiple: false,
