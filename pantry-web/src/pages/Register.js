@@ -246,12 +246,6 @@ export default function Register({ mode }) {
 
     };
 
-    function wait(time) {
-        return new Promise(resolve => {
-            setTimeout(resolve, time);
-        });
-    }
-
     async function handleCreateAccount(accountData) {
         if (!isLoading) {
             setIsLoading(true);

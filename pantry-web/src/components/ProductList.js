@@ -7,12 +7,12 @@ import Image from 'react-bootstrap/Image';
 import food from '../assets/images/healthy-food.png';
 import Button from 'react-bootstrap/Button';
 import { BsPencil, BsTrash } from "react-icons/bs";
-import { camelCase } from '../services/Utils.js';
+import { camelCase } from '../services/utils.js';
 import { Card, Col, FormCheck, Row } from "react-bootstrap";
 import Modal from 'react-bootstrap/Modal';
 import { useTranslation } from 'react-i18next';
 
-function ProductList({ disabled, onEdit, onRemove }) {
+function ProductList({ hidden, disabled, onEdit, onRemove }) {
 
     const { t } = useTranslation(['product', 'common']);
 
@@ -117,7 +117,7 @@ function ProductList({ disabled, onEdit, onRemove }) {
     }
 
     return (
-        <div>
+        <div hidden={hidden}>
 
             <div className='d-flex justify-content-evenly pt-2 pb-3'>
                 <FormCheck label={t('tooltip-switch-product-detail', { ns: 'common' })}

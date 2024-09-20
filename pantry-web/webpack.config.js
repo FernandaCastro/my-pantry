@@ -1,9 +1,10 @@
 import 'dotenv/config';
-const dotEnv = require('dotenv').config();
+import Quagga from 'quagga'; // ES6
 
+const dotEnv = require('dotenv').config();
+const Quagga = require('quagga').default; // Common JS (important: default)
 const path = require('path');
 // const webpack = require('webpack');
-
 // const NodePolyfillPlugin = require('node-polyfill-webpack-plugin')
 
 module.exports = {

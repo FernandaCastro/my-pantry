@@ -22,13 +22,13 @@ export function maskEmail(email) {
     if (!email) return;
 
     const [user, domain] = email.split('@');
-    
+
     // Keep first and last letter of username
     var maskedUser;
     if (user.length > 4) {
         maskedUser = user.slice(0, 3) + '*'.repeat(user.length - 4) + user.slice(-1);
     } else {
-       maskedUser = user[0] + '*'.repeat(user.length - 2) + user.slice(-1);
+        maskedUser = user[0] + '*'.repeat(user.length - 2) + user.slice(-1);
     }
 
     // Keep first and last letter of domain
@@ -36,4 +36,10 @@ export function maskEmail(email) {
     const maskedDomain = domainParts[0][0] + '*'.repeat(domainParts[0].length - 1) + '.' + domainParts.slice(1).join('.');
 
     return `${maskedUser}@${maskedDomain}`;
+}
+
+export function wait(time) {
+    return new Promise(resolve => {
+        setTimeout(resolve, time);
+    });
 }

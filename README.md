@@ -2,9 +2,9 @@
 
 # My Pantry
 
-<b>version: 0.9.2</b>
+<b>version: 0.9.4</b>
 
-- pantry-web: v.0.8.8
+- pantry-web: v.0.8.9
 - account-service: v0.4.7
 - pantry-service: v0.6.7
 - purchase-service: v0.4.5
@@ -13,12 +13,9 @@
 
 - <b>account-service:</b>  Use Redis to cache RBAC requests (permissions and access control)
 
-Plans for next versions:
+Plans:
 
 - Delete provisioned products from the shopping list (on Shopping List page)
-
-- Manually increasing or decreasing a quantity of a Pantry Item (on Pantry page), should analyse the provisioning for
-  that item (creating, deleting, increasing or decreasing any provisioning for that item).
 
 - CRUD for Role and Permissions
 
