@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { camelCase } from '../services/Utils.js';
+import { camelCase } from '../services/utils.js';
 import { Button, Collapse, Row } from 'react-bootstrap';
 import { BsArrow90DegRight } from "react-icons/bs";
 import { useTranslation } from 'react-i18next';

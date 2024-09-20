@@ -13,6 +13,9 @@ import { useTranslation } from 'react-i18next';
 import iconProduct from '../assets/images/food-gradient.png';
 import Image from 'react-bootstrap/Image';
 import { useLoading } from '../hooks/useLoading.js';
+import { CiBarcode } from "react-icons/ci";
+import BarcodeScanner from '../components/BarcodeScanner.js';
+import { TiArrowBackOutline } from "react-icons/ti";
 
 export default function Product() {
 
@@ -23,6 +26,7 @@ export default function Product() {
     const [productLabel, setProductLabel] = useState("");
     const [refresh, setRefresh] = useState(0);
     const [showForm, setShowForm] = useState(false);
+    const [showScanner, setShowScanner] = useState(false);
     const [categories, setCategories] = useState([]);
 
     const [accountGroupOptions, setAccountGroupOptions] = useState([]);
@@ -73,7 +77,7 @@ export default function Product() {
             setAccountGroupOptions(list);
         } catch (error) {
             showAlert(VariantType.DANGER, error.message);
-        } finally{
+        } finally {
             setIsLoading(false);
         }
     }
@@ -143,10 +147,17 @@ export default function Product() {
                 <Stack direction="horizontal" gap={2} className='mb-3 d-flex justify-content-start align-items-end'>
                     <Image src={iconProduct} width={40} height={40} className='ms-3 me-2' />
                     <h6 className='title'>{t('product-list-title')}</h6>
-                    <Button bsPrefix="btn-custom" size="sm" onClick={handleNew} className='me-2 ms-auto' disabled={(mode === "edit") || (product && Object.keys(product) > 0)}><span>{t('btn-new-product')}</span></Button>
+                    <Button variant='link' onClick={() => setShowScanner(!showScanner)} className='pt-0 pb-0 me-2 ms-auto' disabled={(mode === "edit") || (product && Object.keys(product) > 0)} title="beta">
+                        {showScanner ? <TiArrowBackOutline className='icon' /> : <CiBarcode className='big-icon' />}
+                    </Button>
+                    <Button bsPrefix="btn-custom" size="sm" onClick={handleNew} className='me-2' disabled={showScanner || (mode === "edit") || (product && Object.keys(product) > 0)}><span>{t('btn-new-product')}</span></Button>
                 </Stack>
 
-                <ProductList key={refresh} disabled={showForm} onEdit={handleOnListSelection} onRemove={handleRemove} />
+                <BarcodeScanner active={showScanner} setActive={setShowScanner} />
+
+                <div hidden={showScanner}>
+                    <ProductList key={refresh} disabled={showForm} onEdit={handleOnListSelection} onRemove={handleRemove} />
+                </div>
             </div>
         </Stack>
     );
