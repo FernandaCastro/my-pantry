@@ -1,14 +1,13 @@
-
 import React, { useEffect, useState } from "react";
-import Quagga from "quagga"; // Import QuaggaJS
+import Quagga from "quagga";
 import VariantType from './VariantType.js';
 import useAlert from '../hooks/useAlert.js';
 import { Button, Image, Row } from "react-bootstrap";
 import food from '../assets/images/food-gradient.png';
-import { getBarcodeInfo } from "../services/apis/barcode/BarcodeRequests.js";
 import { CiBarcode } from "react-icons/ci";
 import { RippleLoading } from "./RippleLoading.js";
 import iBarcode from "../assets/images/barcode.png";
+import { getBarcodeInfo } from "../services/apis/barcode/BarcodeRequests.js";
 
 export default function BarcodeScanner({ active, setActive }) {
 
