@@ -1,58 +1,58 @@
 // ============================================================
 // API Docs: http://localhost:8081/purchases
 // ============================================================
-import FetchPurchase from '../FetchPurchase';
+import { FetchPurchase, PostPurchase, PutPurchase, DeletePurchase } from '../FetchPurchase';
 
-export async function getAllPurchaseOrders(pantryIds) {
-    return FetchPurchase(`purchases?pantryIds=${pantryIds}`, "GET");
+export async function getAllPurchaseOrders(pantryIds, signal) {
+    return FetchPurchase(`purchases?pantryIds=${pantryIds}`, signal);
 }
 
 export async function getOpenPurchaseOrder(pantryIds) {
-    return FetchPurchase(`purchases/open?pantryIds=${pantryIds}`, "GET");
+    return FetchPurchase(`purchases/open?pantryIds=${pantryIds}`);
 }
 
-export async function getPendingPurchaseItems(pantryIds, supermarket) {
+export async function getPendingPurchaseItems(pantryIds, supermarket, signal) {
     return !supermarket || supermarket === '' || supermarket === '-' ?
-        FetchPurchase(`purchases/items?pantryIds=${pantryIds}`, "GET") :
-        FetchPurchase(`purchases/items?pantryIds=${pantryIds}&supermarketId=${supermarket}`, "GET");
+        FetchPurchase(`purchases/items?pantryIds=${pantryIds}`, signal) :
+        FetchPurchase(`purchases/items?pantryIds=${pantryIds}&supermarketId=${supermarket}`, signal);
 }
 
-export async function getPurchaseItems(id, pantryIds, supermarket) {
+export async function getPurchaseItems(id, pantryIds, supermarket, signal) {
     return !supermarket || supermarket === '' || supermarket === '-' ?
-        FetchPurchase(`purchases/${id}/items?pantryIds=${pantryIds}`, "GET") :
-        FetchPurchase(`purchases/${id}/items?pantryIds=${pantryIds}&supermarketId=${supermarket}`, "GET");
+        FetchPurchase(`purchases/${id}/items?pantryIds=${pantryIds}`, signal) :
+        FetchPurchase(`purchases/${id}/items?pantryIds=${pantryIds}&supermarketId=${supermarket}`, signal);
 }
 
 export async function postNewPurchaseOrder(pantryIds) {
-    return FetchPurchase(`purchases/new`, "POST", pantryIds);
+    return PostPurchase(`purchases/new`, pantryIds);
 }
 
 export async function postClosePurchaseOrder(purchasedItems) {
-    return FetchPurchase(`purchases/close`, "POST", purchasedItems);
+    return PostPurchase(`purchases/close`, purchasedItems);
 }
 
 export async function getProperty(key) {
-    return FetchPurchase(`properties/${key}`, "GET");
+    return FetchPurchase(`properties/${key}`);
 }
 
 export async function getAllProperty(key) {
-    return FetchPurchase(`properties?key=${key}`, "GET");
+    return FetchPurchase(`properties?key=${key}`);
 }
 
-export async function getAllSupermarkets() {
-    return FetchPurchase(`supermarkets/all`, "GET");
+export async function getAllSupermarkets(signal) {
+    return FetchPurchase(`supermarkets/all`, signal);
 }
 
 export async function getSupermarketsByGroup(groupId) {
-    return FetchPurchase(`supermarkets?groupId=${groupId}`, "GET");
+    return FetchPurchase(`supermarkets?groupId=${groupId}`);
 }
 
 export async function updateSupermarket(supermaketId, body) {
-    return FetchPurchase(`supermarkets/${supermaketId}`, "PUT", body);
+    return PutPurchase(`supermarkets/${supermaketId}`, body);
 }
 export async function createSupermarket(body) {
-    return FetchPurchase(`supermarkets`, "POST", body);
+    return PostPurchase(`supermarkets`, body);
 }
 export async function deleteSupermarket(supermaketId) {
-    return FetchPurchase(`supermarkets/${supermaketId}`, "DELETE");
+    return DeletePurchase(`supermarkets/${supermaketId}`);
 }

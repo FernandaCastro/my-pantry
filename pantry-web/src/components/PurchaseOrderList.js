@@ -4,6 +4,7 @@ import VariantType from '../components/VariantType.js';
 import useAlert from '../hooks/useAlert.js';
 import Table from 'react-bootstrap/Table';
 import { useTranslation } from 'react-i18next';
+import { RippleLoading } from './RippleLoading.js';
 
 export default function PurchaseOrderList({ selectedPantries, handleSelectedPurchase }) {
 
@@ -13,6 +14,9 @@ export default function PurchaseOrderList({ selectedPantries, handleSelectedPurc
     const [purchases, setPurchases] = useState([]);
     const [purchase, setPurchase] = useState();
     const { showAlert } = useAlert();
+
+    const [isLoading, setIsLoading] = useState(false);
+    const abortController = useRef(null);
 
     useEffect(() => {
         setPurchase();
@@ -24,13 +28,21 @@ export default function PurchaseOrderList({ selectedPantries, handleSelectedPurc
     }, [selectedPantries]);
 
     async function fetchAllPurchaseOrders() {
+
+        //Avoid racing condition (TODO: check lib react-query )
+        abortController.current?.abort();
+        abortController.current = new AbortController();
+
         try {
-            const res = await getAllPurchaseOrders(selectedPantries);
+            setIsLoading(true);
+            const res = await getAllPurchaseOrders(selectedPantries, abortController.current?.signal);
             setPurchases(res);
             selectOpenOrder(res);
             return res;
         } catch (error) {
             showAlert(VariantType.DANGER, error.message);
+        } finally {
+            setIsLoading(false);
         }
     }
 
@@ -75,19 +87,24 @@ export default function PurchaseOrderList({ selectedPantries, handleSelectedPurc
     }
 
     return (
-        <div className="scroll-purchase mt-0 pt-0">
-            <Table size='sm'>
-                < thead >
-                    <tr key="order:0" className="align-middle">
-                        <th><h6 className='simple-title'>{t("id-status")}</h6></th>
-                        <th><h6 className='simple-title'>{t("createdAt")}</h6></th>
-                        <th><h6 className='simple-title'>{t("checkoutAt")}</h6></th>
-                    </tr>
-                </thead >
-                <tbody>
-                    {purchases?.map((p) => renderPurchaseOrders(p))}
-                </tbody>
-            </Table >
-        </div >
+        <>
+            {isLoading ? <RippleLoading /> :
+                <div className="scroll-purchase mt-0 pt-0">
+                    <Table size='sm'>
+                        < thead >
+                            <tr key="order:0" className="align-middle">
+                                <th><h6 className='simple-title'>{t("id-status")}</h6></th>
+                                <th><h6 className='simple-title'>{t("createdAt")}</h6></th>
+                                <th><h6 className='simple-title'>{t("checkoutAt")}</h6></th>
+                            </tr>
+                        </thead >
+                        <tbody>
+                            {purchases?.map((p) => renderPurchaseOrders(p))}
+                        </tbody>
+                    </Table >
+
+                </div >
+            }
+        </>
     )
 }

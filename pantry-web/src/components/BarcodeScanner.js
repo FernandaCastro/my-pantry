@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import Quagga from "quagga";
 import VariantType from './VariantType.js';
 import useAlert from '../hooks/useAlert.js';
@@ -20,6 +20,13 @@ export default function BarcodeScanner({ active, setActive }) {
     const [product, setProduct] = useState();
     const [processing, setProcessing] = useState(false);
 
+    const [isLandscape, setIsLandscape] = useState(()=>{
+        const _width = window.innerWidth;
+        const _height = window.innerHeight;
+    
+        return (_width > _height) ? true : false;
+    });
+
     //9:5
     const width = 386;
     const height = 245;
@@ -35,7 +42,6 @@ export default function BarcodeScanner({ active, setActive }) {
                 locate: true,
                 frequency: 5,
                 multiple: false,
-
                 inputStream: {
                     type: "LiveStream", // Uses the live video stream from the camera
                     target: document.querySelector("#scanner-camera"), // ID of the DOM element
@@ -43,7 +49,7 @@ export default function BarcodeScanner({ active, setActive }) {
                         width: width,
                         height: height,
                         facingMode: "environment", // Uses the back camera of mobile devices
-                        aspectRatio: { min: 1, max: 2 }
+                        aspectRatio: isLandscape ? 9 / 5 : 5 / 9
                     },
                 },
                 // area: { // defines rectangle of the detection/localization area
@@ -163,6 +169,27 @@ export default function BarcodeScanner({ active, setActive }) {
             fetchBarcodeFromWeb(barcode);
         }
     }, [barcode]);
+
+    const handleWindowResize = useCallback(event => {
+        const _width = window.innerWidth;
+        const _height = window.innerHeight;
+    
+        if (_width > _height) {
+            setIsLandscape(true);
+            console.log("Landscape mode detected!");
+        } else {
+            setIsLandscape(false);
+            console.log("Portrait mode detected!");
+        }
+    }, []);
+
+    useEffect(() => {
+        window.addEventListener('resize', handleWindowResize);
+        return () => {
+            window.removeEventListener('resize', handleWindowResize);
+        };
+
+    }, [handleWindowResize])
 
     async function fetchBarcodeFromWeb(barcode) {
 
