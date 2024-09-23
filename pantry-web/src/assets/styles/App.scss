@@ -1329,6 +1329,7 @@ span.critical {
 
 #scanner-camera video {
     display: flex;
+    //transform: rotate(0deg); 
 }
 
 .scanner-outer-box {
@@ -1348,7 +1349,7 @@ span.critical {
 
     display: flex;
     padding-right: 0;
-    // max-width: 440px;
+    max-width: 440px;
     max-height: 301px;
 
     justify-content: space-evenly;
@@ -1444,14 +1445,18 @@ span.critical {
     /* Centers horizontally */
     align-items: center;
     /* Centers vertically */
-    height: 100vh;
+    // height: 100vh;
     width: 100%;
+    padding: 20px;
+
 }
 
 .independent-ripple {
     position: relative;
-    width: 50px;
-    height: 50px;
+    min-width: 30px;
+    min-height: 30px;
+    max-width: 50px;
+    max-height: 50px;
 }
 
 .independent-ripple::before,

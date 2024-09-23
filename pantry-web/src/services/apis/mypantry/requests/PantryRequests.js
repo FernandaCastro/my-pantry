@@ -1,90 +1,90 @@
 // ============================================================
 // API Docs: http://localhost:8080/pantries
 // ============================================================
-import FetchPantry from '../FetchPantry';
+import {FetchPantry, PostPantry, PutPantry, DeletePantry} from '../FetchPantry';
 
 export async function getPantryList() {
-    return FetchPantry(`pantries/all`, "GET");
+    return FetchPantry(`pantries/all`);
 }
 
 export async function getPantryListWithPermission(permission) {
-    return FetchPantry(`pantries/all-with-permission?permission=${permission}`, "GET");
+    return FetchPantry(`pantries/all-with-permission?permission=${permission}`);
 }
 
 export async function getPantry(pantryId) {
-    return FetchPantry(`pantries/${pantryId}`, "GET");
+    return FetchPantry(`pantries/${pantryId}`);
 }
 
 export async function getPantryItems(pantryId) {
-    return FetchPantry(`pantries/${pantryId}/items`, "GET")
+    return FetchPantry(`pantries/${pantryId}/items`)
 }
 
-export async function getPantryItemsConsume(pantryIds) {
-    return FetchPantry(`pantries/items/consume?pantryIds=${pantryIds}`, "GET")
+export async function getPantryItemsConsume(pantryIds, signal) {
+    return FetchPantry(`pantries/items/consume?pantryIds=${pantryIds}`, signal)
 }
 
 export async function updatePantry(pantryId, body) {
-    return FetchPantry(`pantries/${pantryId}`, "PUT", body);
+    return PutPantry(`pantries/${pantryId}`, body);
 }
 export async function createPantry(body) {
-    return FetchPantry(`pantries`, "POST", body);
+    return PostPantry(`pantries`, body);
 }
 export async function deletePantry(pantryId) {
-    return FetchPantry(`pantries/${pantryId}`, "DELETE");
+    return DeletePantry(`pantries/${pantryId}`);
 }
 
 export async function getPantryRebalance(pantryId) {
-    return FetchPantry(`pantries/${pantryId}/items/balancing`, "GET");
+    return FetchPantry(`pantries/${pantryId}/items/balancing`);
 }
 
 export async function postPantryConsume(pantryId, body) {
-    return FetchPantry(`pantries/${pantryId}/items/consume`, "POST", body);
+    return PostPantry(`pantries/${pantryId}/items/consume`, body);
 }
 
 export async function postPantryConsumeItem(body) {
-    return FetchPantry(`pantries/items/consume`, "POST", body);
+    return PostPantry(`pantries/items/consume`, body);
 }
 
 export async function createPantryItem(pantryId, body) {
-    return FetchPantry(`pantries/${pantryId}/items`, "POST", body);
+    return PostPantry(`pantries/${pantryId}/items`, body);
 }
 export async function updatePantryItem(pantryId, productId, body) {
-    return FetchPantry(`pantries/${pantryId}/items/${productId}`, "PUT", body);
+    return PutPantry(`pantries/${pantryId}/items/${productId}`, body);
 }
 export async function deletePantryItem(pantryId, productId) {
-    return FetchPantry(`pantries/${pantryId}/items/${productId}`, "DELETE");
+    return DeletePantry(`pantries/${pantryId}/items/${productId}`);
 }
 
 export async function getFilteredProductList(groupId, text) {
     // const newText = text.replace(/%/g, "%25");
     // console.log(newText);
-    return FetchPantry(`products?groupId=${groupId}&searchParam=${text}`, "GET");
+    return FetchPantry(`products?groupId=${groupId}&searchParam=${text}`);
 }
 
 export async function getProductList() {
-    return FetchPantry(`products`, "GET");
+    return FetchPantry(`products`);
 }
 
 export async function createProduct(body) {
-    return FetchPantry(`products`, "POST", body);
+    return PostPantry(`products`, body);
 }
 export async function updateProduct(productId, body) {
-    return FetchPantry(`products/${productId}`, "PUT", body);
+    return PutPantry(`products/${productId}`, body);
 }
 export async function deleteProduct(productId) {
-    return FetchPantry(`products/${productId}`, "DELETE");
+    return DeletePantry(`products/${productId}`);
 }
 
 export async function getAssociatedPantries(groupId) {
-    return FetchPantry(`pantries?groupId=${groupId}`, "GET");
+    return FetchPantry(`pantries?groupId=${groupId}`);
 }
 
 export async function createPantryWizard(pantryWizardDto) {
-    return FetchPantry('pantries/wizard', "POST", pantryWizardDto);
+    return PostPantry('pantries/wizard', pantryWizardDto);
 }
 
 export async function getPantryChartData() {
-    return FetchPantry(`pantries/charts-data`, "GET");
+    return FetchPantry(`pantries/charts-data`);
 }
 
 

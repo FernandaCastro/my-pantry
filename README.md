@@ -4,7 +4,7 @@
 
 <b>version: 0.9.4</b>
 
-- pantry-web: v.0.8.9
+- pantry-web: v.0.8.11
 - account-service: v0.4.8
 - pantry-service: v0.6.8
 - purchase-service: v0.4.6

@@ -1,5 +1,5 @@
 import Form from 'react-bootstrap/Form';
-import React, { useState, useEffect, forwardRef, useImperativeHandle, useContext } from 'react';
+import React, { useState, useEffect, forwardRef, useImperativeHandle, useContext, useRef } from 'react';
 import { getPendingPurchaseItems, getPurchaseItems, getAllSupermarkets } from '../services/apis/mypantry/requests/PurchaseRequests';
 import Button from 'react-bootstrap/Button';
 import Image from 'react-bootstrap/Image';
@@ -15,6 +15,7 @@ import { useTranslation } from 'react-i18next';
 import NumericField from './NumericField';
 import { useLoading } from '../hooks/useLoading';
 import { PurchaseContext } from '../services/context/AppContext';
+import { RippleLoading } from './RippleLoading';
 
 function PurchaseItemList({ selectedPurchase, selectedPantries, setOuterPurchaseItems }, ref) {
 
@@ -31,11 +32,13 @@ function PurchaseItemList({ selectedPurchase, selectedPantries, setOuterPurchase
 
     const [searchText, setSearchText] = useState("");
     const { showAlert } = useAlert();
-    const { setIsLoading } = useLoading();
+    const [isLoading, setIsLoading] = useState(false);
     const [isOpenOrder, setIsOpenOrder] = useState(false);
 
     const [expandProdDetail, setExpandProdDetail] = useState(false);
     const [showPantryCol, setShowPantryCol] = useState(false);
+
+    const abortController = useRef(null);
 
 
     useEffect(() => {
@@ -87,9 +90,13 @@ function PurchaseItemList({ selectedPurchase, selectedPantries, setOuterPurchase
     }));
 
     async function fetchPendingItems() {
+        //Avoid racing condition (TODO: check lib react-query )
+        abortController.current?.abort();
+        abortController.current = new AbortController();
+
         try {
             setIsLoading(true);
-            const res = await getPendingPurchaseItems(selectedPantries, supermarketOption.value);
+            const res = await getPendingPurchaseItems(selectedPantries, supermarketOption.value, abortController.current?.signal);
 
             if (isNull(res) || res.length === 0) {
                 setPurchaseItems([]);
@@ -105,8 +112,13 @@ function PurchaseItemList({ selectedPurchase, selectedPantries, setOuterPurchase
     }
 
     async function fetchSupermarketOptions() {
+
+        //Avoid racing condition (TODO: check lib react-query )
+        abortController.current?.abort();
+        abortController.current = new AbortController();
+
         try {
-            const res = await getAllSupermarkets();
+            const res = await getAllSupermarkets(abortController.current?.signal);
 
             var list = [];
             res.forEach(s => {
@@ -120,14 +132,21 @@ function PurchaseItemList({ selectedPurchase, selectedPantries, setOuterPurchase
 
             setSupermarkets(list);
         } catch (error) {
-            showAlert(VariantType.DANGER, "Unable to load supermarkets: " + error.message);
+            if (error.message && error.message.length > 0) {
+                showAlert(VariantType.DANGER, "Unable to load supermarkets: " + error.message);
+            }
         }
     }
 
     async function fetchPurchaseItems(clear) {
+
+        //Avoid racing condition (TODO: check lib react-query )
+        abortController.current?.abort();
+        abortController.current = new AbortController();
+
         try {
             setIsLoading(true);
-            const res = await getPurchaseItems(selectedPurchase.id, selectedPantries, supermarketOption.value);
+            const res = await getPurchaseItems(selectedPurchase.id, selectedPantries, supermarketOption.value, abortController.current?.signal);
 
             if (isNull(res) || res.length === 0) {
                 setPurchaseItems([]);
@@ -265,6 +284,8 @@ function PurchaseItemList({ selectedPurchase, selectedPantries, setOuterPurchase
     }
 
     function renderCards() {
+        if (isLoading) { return <RippleLoading /> }
+
         var elements = [];
         var index = 0;
         var found = filteredItems.at(index);
@@ -284,7 +305,7 @@ function PurchaseItemList({ selectedPurchase, selectedPantries, setOuterPurchase
 
     function renderCategoryCard(category, filteredCategory) {
         return (
-            <div className="flex-column pt-2 pb-2">
+            <div key={category} className="flex-column pt-2 pb-2">
                 <div className="category" onClick={() => handleExpansion(category)}>
                     <Button variant="link" aria-controls={category} onClick={() => handleExpansion(category)}><BsArrow90DegRight className='small-icon' /></Button>
                     <h6 className='title' style={{ color: !isSupermarketCategory(category) ? "red" : "" }} data-title={!isSupermarketCategory(category) ? t('tooltip-category-not-associated-to-supermarket', { ns: "common" }) : null}>{!category || category === "" ? t("other") : t(category, { ns: 'categories' })}</h6>
@@ -302,7 +323,7 @@ function PurchaseItemList({ selectedPurchase, selectedPantries, setOuterPurchase
         return (
 
             <Col key={item.id} className="d-flex flex-column g-2">
-                <Card className="card1 flex-fill">
+                <Card key={item.id} className="card1 flex-fill">
                     <Card.Body className="d-flex  flex-column h-100">
 
                         <div className="d-flex justify-content-between" >

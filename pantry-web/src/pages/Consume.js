@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { getPantryItemsConsume, postPantryConsumeItem } from '../services/apis/mypantry/requests/PantryRequests.js';
 import Stack from 'react-bootstrap/Stack';
 import Image from 'react-bootstrap/Image';
@@ -14,6 +14,7 @@ import Collapse from 'react-bootstrap/Collapse';
 import { useTranslation } from 'react-i18next';
 import CurrentQuantityField from '../components/CurrentQuantityField.js'
 import iconConsume from '../assets/images/cook-gradient.png';
+import { RippleLoading } from '../components/RippleLoading.js';
 
 export default function Consume() {
 
@@ -32,6 +33,9 @@ export default function Consume() {
   const [showPantries, setShowPantries] = useState(false);
   const [showPantryCol, setShowPantryCol] = useState(false);
 
+  const abortController = useRef(null);
+  const [isLoading, setIsLoading] = useState(false);
+
   useEffect(() => {
     if (selectedPantries && selectedPantries.length > 0) {
       fetchPantryItem();
@@ -47,8 +51,14 @@ export default function Consume() {
   }, [pantryItems])
 
   async function fetchPantryItem() {
+
+    //Avoid racing condition (TODO: check lib react-query )
+    abortController.current?.abort();
+    abortController.current = new AbortController();
+
     try {
-      const res = await getPantryItemsConsume(selectedPantries);
+      setIsLoading(true);
+      const res = await getPantryItemsConsume(selectedPantries, abortController.current?.signal);
       setPantryItems(res);
 
       if (res != null && Object.keys(res).length === 0) {
@@ -57,7 +67,10 @@ export default function Consume() {
 
     } catch (error) {
       showAlert(VariantType.DANGER, error.message);
+    } finally {
+      setIsLoading(false);
     }
+
   }
 
   async function fetchSaveConsumeItem(consumedItem) {
@@ -162,9 +175,11 @@ export default function Consume() {
       </div>
       <div>
         <Form.Control type="text" id="search" className="form-control mb-1 search-input" placeholder={t('placeholder-search-items', { ns: 'common' })} value={searchText} onChange={(e) => filter(e.target.value)} />
-        <Row xs={1} md={2} lg={3} xl={4} className='m-0'>
-          {renderCards()}
-        </Row>
+        {isLoading ? <RippleLoading /> :
+          <Row xs={1} md={2} lg={3} xl={4} className='m-0'>
+            {renderCards()}
+          </Row>
+        }
       </div>
     </Stack >
   )

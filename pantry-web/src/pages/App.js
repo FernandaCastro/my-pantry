@@ -13,7 +13,9 @@ import { Suspense } from 'react';
 import { AlertContext, ProfileContext, PurchaseContext } from '../services/context/AppContext.js';
 import { Overlay } from "react-bootstrap";
 import Footer from "../components/Footer.js";
-import { LoadingProvider, RippleLoadingAnimation } from '../services/context/LoadingProvider';
+import { LoadingProvider } from '../services/context/LoadingProvider';
+import { RippleLoading } from '../components/RippleLoading';
+
 
 export default function App() {
 
@@ -64,7 +66,7 @@ export default function App() {
   // style={{ height: '40px', verticalAlign: 'middle' }}
 
   return (
-    <Suspense fallback={<RippleLoadingAnimation />} >
+    <Suspense fallback={<RippleLoading />} >
       <ProfileContext.Provider value={{ profileCtx, setProfileCtx }}>
         <PurchaseContext.Provider value={{purchaseCtx, setPurchaseCtx}}>
         <AlertContext.Provider value={{ alert, setAlert }}>
