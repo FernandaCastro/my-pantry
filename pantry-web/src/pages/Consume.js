@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { getPantryItemsConsume, postPantryConsumeItem } from '../services/apis/mypantry/requests/PantryRequests.js';
+import { getPantryItemsConsume, postPantryConsumeItem } from '../api/mypantry/pantry/pantryService.js';
 import Stack from 'react-bootstrap/Stack';
 import Image from 'react-bootstrap/Image';
 import food from '../assets/images/healthy-food.png'
 import Form from 'react-bootstrap/Form';
-import { camelCase } from '../services/Utils.js';
+import { camelCase } from '../util/Utils.js';
 import VariantType from '../components/VariantType.js';
 import useAlert from '../hooks/useAlert.js';
 import PantrySelect from '../components/PantrySelect.js'
@@ -38,6 +38,7 @@ export default function Consume() {
 
   useEffect(() => {
     if (selectedPantries && selectedPantries.length > 0) {
+      setIsLoading(true);
       fetchPantryItem();
     } else {
       setPantryItems([]);
@@ -57,7 +58,6 @@ export default function Consume() {
     abortController.current = new AbortController();
 
     try {
-      setIsLoading(true);
       const res = await getPantryItemsConsume(selectedPantries, abortController.current?.signal);
       setPantryItems(res);
 
@@ -70,7 +70,6 @@ export default function Consume() {
     } finally {
       setIsLoading(false);
     }
-
   }
 
   async function fetchSaveConsumeItem(consumedItem) {
