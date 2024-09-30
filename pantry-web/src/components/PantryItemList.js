@@ -1,5 +1,5 @@
-import { getPantryItems, deletePantryItem, updatePantryItem } from '../services/apis/mypantry/requests/PantryRequests.js';
-import React, { useEffect, useState } from 'react';
+import { getPantryItems, deletePantryItem, updatePantryItem } from '../api/mypantry/pantry/pantryService.js';
+import React, { useEffect, useRef, useState } from 'react';
 import VariantType from '../components/VariantType.js';
 import Button from 'react-bootstrap/Button';
 import { BsTrash } from "react-icons/bs";
@@ -7,32 +7,31 @@ import NumericField from './NumericField.js'
 import Form from 'react-bootstrap/Form';
 import Image from 'react-bootstrap/Image';
 import food from '../assets/images/healthy-food.png'
-import { camelCase } from '../services/Utils.js';
+import { camelCase } from '../util/Utils.js';
 import useAlert from '../hooks/useAlert.js';
 import { useTranslation } from 'react-i18next';
 import { Card, Col, Row } from 'react-bootstrap';
 import Modal from 'react-bootstrap/Modal';
-import { useLoading } from '../hooks/useLoading.js';
+import { RippleLoading } from './RippleLoading.js';
 
-function PantryItemList({ pantryId, setIsEmpty }) {
+function PantryItemList({ refetch, setRefetch, pantryId, setIsEmpty }) {
 
     const { t } = useTranslation(['pantry', 'common']);
 
-    const [refresh, setRefresh] = useState(true);
     const [pantryItems, setPantryItems] = useState([]);
     const [filteredItems, setFilteredItems] = useState([]);
     const [searchText, setSearchText] = useState("");
     const { showAlert } = useAlert();
-    const { setIsLoading } = useLoading();
+    const [isLoading, setIsLoading] = useState(false);
     const [showModal, setShowModal] = useState(false);
     const [itemToDelete, setItemToDelete] = useState();
+    const abortController = useRef(null);
 
     useEffect(() => {
-        // setIsLoading(true);
-        if (pantryId && pantryId > 0 && refresh) {
+        if (pantryId && pantryId > 0 & refetch) {
             fetchPantryItems();
         }
-    }, [pantryId, refresh])
+    }, [pantryId, refetch])
 
     useEffect(() => {
         filter(searchText);
@@ -40,11 +39,15 @@ function PantryItemList({ pantryId, setIsEmpty }) {
     }, [pantryItems])
 
     async function fetchPantryItems() {
+        //Avoid racing condition (TODO: check lib react-query )
+        abortController.current?.abort();
+        abortController.current = new AbortController();
+
         try {
             setIsLoading(true);
-            const res = await getPantryItems(pantryId);
+            const res = await getPantryItems(pantryId, abortController.current?.signal);
             setPantryItems(res);
-            setRefresh(false);
+            setRefetch(false);
         } catch (error) {
             showAlert(VariantType.DANGER, error.message);
         } finally {
@@ -55,7 +58,7 @@ function PantryItemList({ pantryId, setIsEmpty }) {
     async function fetchDeletePantryItem(pantryId, productId) {
         try {
             await deletePantryItem(pantryId, productId);
-            setRefresh(true);
+            setRefetch(true);
         } catch (error) {
             showAlert(VariantType.DANGER, error.message);
         }
@@ -67,7 +70,7 @@ function PantryItemList({ pantryId, setIsEmpty }) {
         } catch (error) {
             showAlert(VariantType.DANGER, error.message);
         } finally {
-            setRefresh(true);
+            setRefetch(true);
         }
     }
 
@@ -152,9 +155,12 @@ function PantryItemList({ pantryId, setIsEmpty }) {
         <div>
             <Form.Control type="text" id="search" className="form-control mb-1 search-input" value={searchText} placeholder={t('placeholder-search-items', { ns: 'common' })} onChange={(e) => filter(e.target.value)} />
 
-            <Row key="row-0" xs={1} md={2} lg={3} className='m-0'>
-                {renderCards()}
-            </Row>
+            <div>
+                {isLoading && <RippleLoading />}
+                <Row key={refetch} xs={1} md={2} lg={3} className='m-0'>
+                    {renderCards()}
+                </Row>
+            </div>
             <Modal className='custom-alert' size='sm' show={showModal} onHide={() => setShowModal(false)} >
                 <Modal.Body className='custom-alert-body pb-0'>
                     <span className='title text-center'>
