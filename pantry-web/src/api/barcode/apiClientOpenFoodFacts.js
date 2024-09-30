@@ -1,5 +1,5 @@
-import getResponseContent from '../getResponseContent.js';
-import RequestError from '../RequestError.js';
+import getResponseContent from '../mypantry/getResponseContent.js';
+import RequestError from '../mypantry/RequestError.js';
 
 export async function fetchOpenFoodFacts(barcode, method) {
 

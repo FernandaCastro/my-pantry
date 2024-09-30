@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { getPantryList, deletePantry } from '../services/apis/mypantry/requests/PantryRequests.js';
+import { getPantryList, deletePantry } from '../api/mypantry/pantry/pantryService.js';
 import Stack from 'react-bootstrap/Stack';
 import Button from 'react-bootstrap/Button';
 import VariantType from '../components/VariantType.js';
@@ -38,7 +38,7 @@ export default function Pantries() {
             setRefresh(false);
         } catch (error) {
             showAlert(VariantType.DANGER, error.message);
-        } finally{
+        } finally {
             setIsLoading(false);
         }
     }
@@ -104,7 +104,7 @@ export default function Pantries() {
                     <h6 className='title'>{t('pantry-list-title')}</h6>
 
                     <OverlayTrigger placement="bottom" delay={{ show: 250, hide: 400 }} overlay={<Tooltip className="custom-tooltip">{t("tooltip-pantry-wizard")}</Tooltip>}>
-                    <Button variant="link" href={"/pantries/new-wizard"} className="pt-0 pb-0 ms-auto"><div className="bigger-icon gradient-icon-box-body"><Image src={iconMagicWand} className="bigger-icon" /></div></Button>
+                        <Button variant="link" href={"/pantries/new-wizard"} className="pt-0 pb-0 ms-auto"><div className="bigger-icon gradient-icon-box-body"><Image src={iconMagicWand} className="bigger-icon" /></div></Button>
                     </OverlayTrigger>
                     <Button bsPrefix="btn-custom" href={"/pantries/new"} className="ms-2 pe-2 ps-2"><span>{t('btn-new-pantry')}</span></Button>
                 </div>

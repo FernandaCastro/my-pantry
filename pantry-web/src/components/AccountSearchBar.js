@@ -8,11 +8,11 @@ import Card from 'react-bootstrap/Card';
 import Stack from 'react-bootstrap/Stack';
 import CloseButton from 'react-bootstrap/CloseButton';
 import Collapse from 'react-bootstrap/Collapse';
-import { getFilteredAccountList } from '../services/apis/mypantry/requests/AccountRequests.js';
+import { getFilteredAccountList } from '../api/mypantry/account/accountService.js';
 import RoleSelect from './RoleSelect';
 import AccountForm from './AccountForm';
 import { useTranslation } from 'react-i18next';
-import { maskEmail } from '../services/Utils.js'
+import { maskEmail } from '../util/Utils.js'
 
 function AccountSearchBar({ handleSelectAction, handleClearAction, disabled }) {
 

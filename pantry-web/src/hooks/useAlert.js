@@ -1,4 +1,4 @@
-import { AlertContext } from '../services/context/AppContext.js';
+import { AlertContext } from '../context/AppContext.js';
 import { useContext } from 'react';
 
 function useAlert() {

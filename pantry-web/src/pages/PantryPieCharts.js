@@ -2,10 +2,10 @@ import React, { useState, useEffect, useCallback, useContext, useRef } from 'rea
 import { Row } from 'react-bootstrap';
 import VariantType from '../components/VariantType.js';
 import useAlert from '../hooks/useAlert.js';
-import { getPantryChartData } from '../services/apis/mypantry/requests/PantryRequests.js';
+import { getPantryChartData } from '../api/mypantry/pantry/pantryService.js';
 import { useTranslation } from 'react-i18next';
 import i18n from 'i18next';
-import { ProfileContext } from '../services/context/AppContext.js';
+import { ProfileContext } from '../context/AppContext.js';
 import { useLoading } from '../hooks/useLoading.js';
 import PantryPieChart from '../components/PantryPieChart.js';
 
@@ -87,7 +87,7 @@ export default function PantryPieCharts({ chartData }) {
     return (
         <Row xs={1} xxl={2}>
             {/* {renderPieCharts()} */}
-            {pantries?.map((item, index) => <PantryPieChart key={index} item={item} index={index} data={data} activeColor={activeColor} refreshChart={refreshChart}/>)}
+            {pantries?.map((item, index) => <PantryPieChart key={index} item={item} index={index} data={data} activeColor={activeColor} refreshChart={refreshChart} />)}
         </Row >
     )
 }

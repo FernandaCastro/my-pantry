@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { updateProduct, createProduct } from '../services/apis/mypantry/requests/PantryRequests.js';
-import { getProperty } from '../services/apis/mypantry/requests/PurchaseRequests.js';
+import { updateProduct, createProduct } from '../api/mypantry/pantry/pantryService.js';
+import { getProperty } from '../api/mypantry/purchase/purchaseService.js';
 import Stack from 'react-bootstrap/Stack';
 import VariantType from '../components/VariantType.js';
 import useAlert from '../hooks/useAlert.js';
@@ -8,7 +8,7 @@ import ProductForm from '../components/ProductForm.js';
 import ProductList from '../components/ProductList.js';
 import Button from 'react-bootstrap/Button';
 import CloseButton from 'react-bootstrap/CloseButton';
-import { getAccountGroupList } from '../services/apis/mypantry/requests/AccountRequests.js';
+import { getAccountGroupList } from '../api/mypantry/account/accountService.js'
 import { useTranslation } from 'react-i18next';
 import iconProduct from '../assets/images/food-gradient.png';
 import Image from 'react-bootstrap/Image';

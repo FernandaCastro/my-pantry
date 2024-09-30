@@ -1,4 +1,4 @@
-import { getUserInfo, postGoogleLogin, postLogout, postLogin, postRegister } from '../services/apis/mypantry/requests/AccountRequests.js';
+import { getUserInfo, postGoogleLogin, postLogout, postLogin, postRegister } from './accountService.js';
 
 export async function initLogin() {
     try {

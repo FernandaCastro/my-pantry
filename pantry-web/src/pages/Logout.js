@@ -1,4 +1,4 @@
-import { ProfileContext } from '../services/context/AppContext.js';
+import { ProfileContext } from '../context/AppContext.js';
 import { useEffect, useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';

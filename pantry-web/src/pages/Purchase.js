@@ -1,5 +1,5 @@
 import React, { useContext, useRef, useState } from 'react';
-import { postClosePurchaseOrder, postNewPurchaseOrder } from '../services/apis/mypantry/requests/PurchaseRequests.js';
+import { postClosePurchaseOrder, postNewPurchaseOrder } from '../api/mypantry/purchase/purchaseService'
 import Button from 'react-bootstrap/Button';
 import VariantType from '../components/VariantType.js';
 import useAlert from '../hooks/useAlert.js';
@@ -12,7 +12,7 @@ import { useTranslation } from 'react-i18next';
 import iconPurchase from '../assets/images/shoppingcart-gradient.png';
 import Image from 'react-bootstrap/Image';
 import { Stack } from 'react-bootstrap';
-import { PurchaseContext } from '../services/context/AppContext.js';
+import { PurchaseContext } from '../context/AppContext.js';
 
 export default function Purchase() {
 
@@ -65,7 +65,7 @@ export default function Purchase() {
     function removeFromCache(orderId) {
         var cache = [...purchaseCtx];
         var index = cache.findIndex(c => c.id === orderId);
-        
+
         //Remove the order from cache
         if (index > -1) {
             cache.splice(index, 1);

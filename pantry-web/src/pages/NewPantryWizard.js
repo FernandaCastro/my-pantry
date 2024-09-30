@@ -12,8 +12,8 @@ import NewPantryDetailsWizard from '../components/NewPantryDetailsWizard.js';
 import VariantType from '../components/VariantType.js';
 import useAlert from '../hooks/useAlert.js';
 import { useNavigate } from 'react-router-dom';
-import { createPantryWizard } from '../services/apis/mypantry/requests/PantryRequests.js';
-import { getAccountGroupList } from '../services/apis/mypantry/requests/AccountRequests.js';
+import { createPantryWizard } from '../api/mypantry/pantry/pantryService.js';
+import { getAccountGroupList } from '../api/mypantry/account/accountService.js';
 import { useLoading } from '../hooks/useLoading';
 
 function NewPantryWizard() {
@@ -139,9 +139,9 @@ function NewPantryWizard() {
                         productList={productList}
                         setFinalProductList={setFinalProductList}
                         expandAll={expandAllReview}
-                        setExpandAll={setExpandAllReview} 
+                        setExpandAll={setExpandAllReview}
                         analysePantry={analysePantry}
-                        setAnalysePantry={setAnalysePantry}/>
+                        setAnalysePantry={setAnalysePantry} />
                 </FormWizard.TabContent>
 
             </FormWizard>

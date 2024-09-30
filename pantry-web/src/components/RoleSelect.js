@@ -1,7 +1,7 @@
 import { Form, Col } from 'react-bootstrap';
 import { useEffect, useState } from 'react';
 import Select from './Select';
-import { getRoles } from '../services/apis/mypantry/requests/AccountRequests';
+import { getRoles } from '../api/mypantry/account/accountService';
 import { useTranslation } from 'react-i18next';
 
 export default function RoleSelect({ setSelectedRole }) {

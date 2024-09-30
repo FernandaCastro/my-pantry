@@ -1,7 +1,7 @@
 import PantriesPieChart from './PantryPieCharts.js';
 import Login from './Login.js';
-import { ProfileContext } from '../services/context/AppContext';
-import { getPantryChartData } from '../services/apis/mypantry/requests/PantryRequests.js';
+import { ProfileContext } from '../context/AppContext.js';
+import { getPantryChartData } from '../api/mypantry/pantry/pantryService.js';
 import { useContext, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button, OverlayTrigger, Stack, Tooltip } from 'react-bootstrap';

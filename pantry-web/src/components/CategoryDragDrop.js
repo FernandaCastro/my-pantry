@@ -4,7 +4,7 @@ import { DragDropContext, Draggable } from "react-beautiful-dnd";
 import { StrictModeDroppable } from '../components/StrictModeDroppable'
 import VariantType from '../components/VariantType.js';
 import useAlert from '../hooks/useAlert.js';
-import { getProperty } from '../services/apis/mypantry/requests/PurchaseRequests.js';
+import { getProperty } from '../api/mypantry/purchase/purchaseService.js';
 import i18n from 'i18next';
 import { useTranslation } from 'react-i18next';
 
@@ -255,7 +255,7 @@ export function DraggableItem({ item, index }) {
                         style={_style} className="hover-box" >
 
                         <span className='text-wrap'>{item.name}</span>
-                        <GrDrag className='icon'/>
+                        <GrDrag className='icon' />
                     </div>
                 )
             }}

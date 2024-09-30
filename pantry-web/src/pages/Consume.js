@@ -74,6 +74,7 @@ export default function Consume() {
 
   async function fetchSaveConsumeItem(consumedItem) {
     try {
+      setIsLoading(true)
       const res = await postPantryConsumeItem(consumedItem);
       showAlert(VariantType.SUCCESS, t('consume-item-success'));
     } catch (error) {
@@ -174,11 +175,11 @@ export default function Consume() {
       </div>
       <div>
         <Form.Control type="text" id="search" className="form-control mb-1 search-input" placeholder={t('placeholder-search-items', { ns: 'common' })} value={searchText} onChange={(e) => filter(e.target.value)} />
-        {isLoading ? <RippleLoading /> :
-          <Row xs={1} md={2} lg={3} xl={4} className='m-0'>
-            {renderCards()}
-          </Row>
-        }
+        {isLoading && <RippleLoading />}
+        <Row xs={1} md={2} lg={3} xl={4} className='m-0'>
+          {renderCards()}
+        </Row>
+
       </div>
     </Stack >
   )

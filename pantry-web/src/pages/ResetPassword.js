@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import Form from 'react-bootstrap/Form';
 import VariantType from '../components/VariantType.js';
 import useAlert from '../hooks/useAlert.js';
-import { postResetPassword, getResetPassword } from '../services/apis/mypantry/requests/AccountRequests';
+import { postResetPassword, getResetPassword } from '../api/mypantry/account/accountService.js';
 import { useTranslation } from 'react-i18next';
 import useEncrypt from '../hooks/useRSAEncrypt';
 

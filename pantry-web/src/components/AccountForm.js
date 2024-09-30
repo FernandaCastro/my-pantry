@@ -4,7 +4,7 @@ import Stack from 'react-bootstrap/Stack';
 import Row from 'react-bootstrap/Row';
 import VariantType from './VariantType.js';
 import useAlert from '../hooks/useAlert.js';
-import { createAccount } from '../services/apis/mypantry/requests/AccountRequests';
+import { createAccount } from '../api/mypantry/account/accountService.js';
 
 export default function AccountForm({ handleSaveSuccess, show }) {
 

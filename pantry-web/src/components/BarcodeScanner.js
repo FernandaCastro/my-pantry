@@ -7,7 +7,7 @@ import food from '../assets/images/food-gradient.png';
 import { CiBarcode } from "react-icons/ci";
 import { RippleLoading } from "./RippleLoading.js";
 import iBarcode from "../assets/images/barcode.png";
-import { getBarcodeInfo } from "../services/apis/barcode/BarcodeRequests.js";
+import { getBarcodeInfo } from "../api/barcode/barcodeService.js";
 
 export default function BarcodeScanner({ active, setActive }) {
 
@@ -20,10 +20,10 @@ export default function BarcodeScanner({ active, setActive }) {
     const [product, setProduct] = useState();
     const [processing, setProcessing] = useState(false);
 
-    const [isLandscape, setIsLandscape] = useState(()=>{
+    const [isLandscape, setIsLandscape] = useState(() => {
         const _width = window.innerWidth;
         const _height = window.innerHeight;
-    
+
         return (_width > _height) ? true : false;
     });
 
@@ -173,7 +173,7 @@ export default function BarcodeScanner({ active, setActive }) {
     const handleWindowResize = useCallback(event => {
         const _width = window.innerWidth;
         const _height = window.innerHeight;
-    
+
         if (_width > _height) {
             setIsLandscape(true);
             console.log("Landscape mode detected!");

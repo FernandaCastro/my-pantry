@@ -6,8 +6,8 @@ import { CategoryDragDrop } from '../components/CategoryDragDrop';
 import useAlert from '../hooks/useAlert.js';
 import VariantType from '../components/VariantType.js';
 import Select from '../components/Select';
-import { getAccountGroupList } from '../services/apis/mypantry/requests/AccountRequests.js';
-import { getAllSupermarkets, getSupermarketsByGroup, createSupermarket, updateSupermarket, deleteSupermarket } from '../services/apis/mypantry/requests/PurchaseRequests.js'
+import { getAccountGroupList } from '../api/mypantry/account/accountService.js';
+import { getSupermarketsByGroup, createSupermarket, updateSupermarket, deleteSupermarket } from '../api/mypantry/purchase/purchaseService'
 import iconSupermarket from '../assets/images/supermarket-gradient.png';
 import Modal from 'react-bootstrap/Modal';
 import { useLoading } from '../hooks/useLoading';
