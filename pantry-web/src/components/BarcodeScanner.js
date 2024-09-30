@@ -49,7 +49,7 @@ export default function BarcodeScanner({ active, setActive }) {
                         width: width,
                         height: height,
                         facingMode: "environment", // Uses the back camera of mobile devices
-                        aspectRatio: isLandscape ? 9 / 5 : 5 / 9
+                        aspectRatio: isLandscape ? ( 5 / 9 ): ( 9 / 5 )
                     },
                 },
                 // area: { // defines rectangle of the detection/localization area
@@ -65,7 +65,7 @@ export default function BarcodeScanner({ active, setActive }) {
                 //     showPattern: true
                 // },
                 locator: {
-                    halfSample: true,
+                    halfSample: false,
                     patchSize: "large", // x-small, small, medium, large, x-large
                     // debug: {
                     //     showCanvas: false,
