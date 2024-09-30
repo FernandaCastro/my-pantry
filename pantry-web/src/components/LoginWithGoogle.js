@@ -1,4 +1,4 @@
-import { postLoginToken } from '../services/LoginService';
+import { postLoginToken } from '../api/mypantry/account/loginService';
 import { Button } from 'react-bootstrap';
 import { useRef, useEffect } from 'react';
 import useScript from '../hooks/useScript';

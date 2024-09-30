@@ -17,6 +17,7 @@ version: 0.8.0
 * `recharts`(A composable charting library built on React components)
 * `quagga` (A barcode-scanner written in JavaScript supporting real-time localization and decoding EAN, CODE 128, CODE
   39, EAN 8, UPC-A, UPC-C, I2of5, 2of5, CODE 93 and CODABAR.)
+* `@tanstack/react-query` Hooks for fetching, caching and updating asynchronous data in React
 
 ## Getting Started with Create React App
 

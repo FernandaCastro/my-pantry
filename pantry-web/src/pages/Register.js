@@ -1,12 +1,12 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { Button, Modal, OverlayTrigger, Tooltip } from 'react-bootstrap';
-import { register } from '../services/LoginService';
+import { register } from '../api/mypantry/account/loginService';
 import { useNavigate } from 'react-router-dom';
 import Form from 'react-bootstrap/Form';
 import VariantType from '../components/VariantType.js';
 import useAlert from '../hooks/useAlert.js';
-import { ProfileContext } from '../services/context/AppContext';
-import { getAccount, updateAccount } from '../services/apis/mypantry/requests/AccountRequests';
+import { ProfileContext } from '../context/AppContext';
+import { getAccount, updateAccount } from '../api/mypantry/account/accountService';
 import { useTranslation } from 'react-i18next';
 import useEncrypt from '../hooks/useRSAEncrypt';
 import { BsChatDots } from 'react-icons/bs';

@@ -1,137 +1,112 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { useParams } from 'react-router';
-import { getPantry, createPantryItem, getPantryRebalance } from '../services/apis/mypantry/requests/PantryRequests.js';
 import VariantType from '../components/VariantType.js';
 import useAlert from '../hooks/useAlert.js';
 import ProductSearchBar from '../components/ProductSearchBar.js'
 import PantryItemList from '../components/PantryItemList.js';
 import Button from 'react-bootstrap/Button';
-import { getAccountGroupList } from '../services/apis/mypantry/requests/AccountRequests.js';
 import { useTranslation } from 'react-i18next';
 import { Image, Stack } from 'react-bootstrap';
 import iconPantry from '../assets/images/cupboard-gradient.png';
-import { useLoading } from '../hooks/useLoading.js';
+import { RippleLoading } from '../components/RippleLoading.js';
+import { useGetPantry, useAnalysePantry, useCreatePantryItem } from '../hooks/usePantry.js';
+import { useGetAccountGroups, useGetAccountGroupsOptions } from '../hooks/useAccount.js';
+import { ProfileContext } from '../context/AppContext.js';
 
 export default function PantryItems() {
 
     const { t } = useTranslation(['pantry', 'common']);
+    const { profileCtx } = useContext(ProfileContext);
+    const [isEmpty, setIsEmpty] = useState(true);
+    const [refetch, setRefetch] = useState(true);
+    const { showAlert } = useAlert();
+    const [isLoading, setIsLoading] = useState(false);
 
     let { id } = useParams();
-    const [pantry, setPantry] = useState();
-    const [accountGroupOptions, setAccountGroupOptions] = useState([]);
-    const [isEmpty, setIsEmpty] = useState(true);
 
-    const [refresh, setRefresh] = useState(false);
-    const { showAlert } = useAlert();
-    const { setIsLoading } = useLoading();
+    const { data: pantry } = useGetPantry(
+        { id },
+        { onError: (error) => showAlert(VariantType.DANGER, error) }
+    );
 
-    useEffect(() => {
-        if (id) {
-            fetchPantry();
-        }
+    const { data: accountGroups } = useGetAccountGroups(
+        { email: profileCtx?.email },
+        { onError: (error) => showAlert(VariantType.DANGER, error) }
+    );
 
-        if (!accountGroupOptions || accountGroupOptions.length === 0) {
-            fetchAccountGroups();
-        }
-    }, [])
+    const { data: accountGroupOptions } = useGetAccountGroupsOptions({ email: profileCtx?.email, accountGroups: accountGroups })
 
-    async function fetchPantry() {
-        setIsLoading(true);
-        try {
-            const res = await getPantry(id);
-            setPantry(res);
+    const [analysePantryClick, setAnalysePantryClick] = useState(false);
 
-        } catch (error) {
-            showAlert(VariantType.DANGER, error.message);
-        } finally {
-            setIsLoading(false);
-        }
+    const handleAnalysePantrySuccess = (data) => {
+        setIsLoading(false);
+        setAnalysePantryClick(false);
+        showAlert(VariantType.SUCCESS, t('balance-success'));
+        setRefetch(true);
     }
 
-    async function fetchAccountGroups() {
-        setIsLoading(true);
-        try {
-            const res = await getAccountGroupList();
-
-            var list = [];
-            res.forEach(group => {
-                list = [...list,
-                {
-                    value: group.id,
-                    label: group.name
-                }]
-            });
-
-            setAccountGroupOptions(list);
-        } catch (error) {
-            showAlert(VariantType.DANGER, error.message);
-        } finally {
-            setIsLoading(false);
-        }
+    const handleAnalysePantryError = (error) => {
+        setIsLoading(false);
+        setAnalysePantryClick(false);
+        showAlert(VariantType.DANGER, error.message);
     }
 
-    async function fetchPantryRebalance() {
-        setIsLoading(true);
-        setRefresh(true);
-        try {
-            await getPantryRebalance(pantry.id);
+    const { } = useAnalysePantry({ id: pantry?.id, runQuery: analysePantryClick },
+        {
+            onSuccess: (data) => handleAnalysePantrySuccess(data),
+            onError: (error) => handleAnalysePantryError(error)
+        });
 
-            showAlert(VariantType.SUCCESS, t('balance-success'));
-        } catch (error) {
-            showAlert(VariantType.DANGER, error.message);
-        } finally {
-            setRefresh(false);
-            setIsLoading(false);
-        }
+    const handleCreatePantryItemSuccess = (data) => {
+        setIsLoading(false);
+        showAlert(VariantType.SUCCESS, t('add-item-success'));
+        setRefetch(true);
     }
 
-    async function fetchSavePantryItem(body) {
-        setIsLoading(true);
-        setRefresh(true);
-        try {
-            await createPantryItem(id, body);
-            showAlert(VariantType.SUCCESS, t('add-item-success'));
-        } catch (error) {
-            showAlert(VariantType.DANGER, error.message);
-        } finally {
-            setRefresh(false);
-            setIsLoading(false);
-        }
+    const handleCreatePantryItemError = (error) => {
+        setIsLoading(false);
+        showAlert(VariantType.DANGER, error);
     }
+
+    const { mutate } = useCreatePantryItem({ onSuccess: handleCreatePantryItemSuccess, onError: handleCreatePantryItemError })
 
     function handleAddItem(product, itemQuantity) {
-        const body = {
+        const newItem = {
             pantry: pantry,
             product: product,
             idealQty: itemQuantity.idealQty,
             currentQty: itemQuantity.currentQty
         }
-        fetchSavePantryItem(body);
+
+        setIsLoading(true);
+        mutate({ pantryId: pantry?.id, newItem: newItem });
     }
 
     function handleRebalance() {
-        fetchPantryRebalance();
+        setIsLoading(true);
+        setAnalysePantryClick(!analysePantryClick);
     }
 
     return (
         <Stack gap={3}>
-        <div className="mt-4">
-            <div className="d-flex justify-content-start align-items-end">
-                <Image src={iconPantry} width={40} height={40} className="ms-2 me-3" />
-                <h6 className='title'>{t('pantry-items-title', {pantry: pantry?.name})}</h6>
-            </div>
+            <div className="mt-4">
+                <div className="d-flex justify-content-start align-items-end">
+                    <Image src={iconPantry} width={40} height={40} className="ms-2 me-3" />
+                    <h6 className='title'>{t('pantry-items-title', { pantry: pantry?.name })}</h6>
+                </div>
 
-            <div className="mt-4" style={{ display: pantry && pantry?.id > 0 ? 'block' : 'none' }}>
-                <ProductSearchBar accountGroupId={pantry?.accountGroup?.id} accountGroupOptions={accountGroupOptions} handleSelectAction={handleAddItem} addButtonVisible={true} />
-            </div>
+                <div className="mt-4" style={{ display: pantry && pantry?.id > 0 ? 'block' : 'none' }}>
+                    <ProductSearchBar accountGroupId={pantry?.accountGroup?.id} accountGroupOptions={accountGroupOptions} handleSelectAction={handleAddItem} addButtonVisible={true} />
+                </div>
 
-            <div className="d-flex flex-column mt-4" style={{ display: pantry && pantry?.id > 0 ? 'block' : 'none' }}>
-                <Button className="align-self-end mb-3" bsPrefix='btn-custom' size="sm" onClick={handleRebalance} title={t('tooltip-btn-balance-inventory')} disabled={isEmpty}>
-                    <span className="gradient-text">{t('btn-balance-inventtory')}</span>
-                </Button>
-                <PantryItemList key={refresh} pantryId={pantry?.id} setIsEmpty={setIsEmpty} />
+                <div className="d-flex flex-column mt-4" style={{ display: pantry && pantry?.id > 0 ? 'block' : 'none' }}>
+                    <Button className="align-self-end mb-3" bsPrefix='btn-custom' size="sm" onClick={handleRebalance} title={t('tooltip-btn-balance-inventory')} disabled={isEmpty}>
+                        <span className="gradient-text">{t('btn-balance-inventtory')}</span>
+                    </Button>
+                    {isLoading && <RippleLoading />}
+                    <PantryItemList refetch={refetch} setRefetch={setRefetch} pantryId={pantry?.id} setIsEmpty={setIsEmpty} />
+                </div>
             </div>
-        </div>
         </Stack>
     );
 }

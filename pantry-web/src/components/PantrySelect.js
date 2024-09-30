@@ -3,7 +3,7 @@ import { FormCheck } from "react-bootstrap";
 import Table from 'react-bootstrap/Table';
 import VariantType from '../components/VariantType.js';
 import useAlert from '../hooks/useAlert.js';
-import { getPantryListWithPermission } from '../services/apis/mypantry/requests/PantryRequests.js';
+import { getPantryListWithPermission } from '../api/mypantry/pantry/pantryService.js';
 
 export default function PantrySelect({ handleSelectedPantryList, permission, isSelected }) {
 
@@ -21,8 +21,8 @@ export default function PantrySelect({ handleSelectedPantryList, permission, isS
             const res = await getPantryListWithPermission(permission);
             setPantries(res);
             //Load Pantry List but with none selected
-            if (isSelected){
-                loadSelectedPantries(res); 
+            if (isSelected) {
+                loadSelectedPantries(res);
             }
         } catch (error) {
             showAlert(VariantType.DANGER, error.message);
@@ -31,7 +31,7 @@ export default function PantrySelect({ handleSelectedPantryList, permission, isS
 
     function loadSelectedPantries(pantryList) {
         let list = [];
-        pantryList.forEach((p) => { if (p.isActive) list = [...list, p.id] } );
+        pantryList.forEach((p) => { if (p.isActive) list = [...list, p.id] });
 
         setSelectedPantries(list);
         handleSelectedPantryList(list);

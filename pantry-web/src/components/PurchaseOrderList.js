@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { getAllPurchaseOrders } from '../services/apis/mypantry/requests/PurchaseRequests.js';
+import { getAllPurchaseOrders } from '../api/mypantry/purchase/purchaseService.js';
 import VariantType from '../components/VariantType.js';
 import useAlert from '../hooks/useAlert.js';
 import Table from 'react-bootstrap/Table';

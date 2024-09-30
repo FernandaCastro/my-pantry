@@ -1,6 +1,6 @@
 export const RippleLoading = () => {
     return (
-        <div className="independent-loader-container">
+        <div className="loading-overlay">
             <div className="independent-ripple"></div>
         </div>
     )

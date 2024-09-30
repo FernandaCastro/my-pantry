@@ -6,13 +6,13 @@ import {
     getAccountGroupList, createAccountGroup, editAccountGroup,
     deleteAccountGroup, getAccountGroupMemberList, addAccountMember,
     deleteAccountMember
-} from '../services/apis/mypantry/requests/AccountRequests.js';
+} from '../api/mypantry/account/accountService.js';
 import Table from 'react-bootstrap/Table';
 import { BsPencil, BsTrash, BsCheck2All, BsXLg } from "react-icons/bs";
 import AccountSearchBar from '../components/AccountSearchBar';
 import Form from 'react-bootstrap/Form';
 import Modal from 'react-bootstrap/Modal';
-import { getAssociatedPantries } from '../services/apis/mypantry/requests/PantryRequests.js'
+import { getAssociatedPantries } from '../api/mypantry/pantry/pantryService.js'
 import useAlert from '../hooks/useAlert.js';
 import PermissionsView from '../components/PermissionsView.js'
 import { useTranslation } from 'react-i18next';
@@ -45,7 +45,7 @@ function GroupMembers() {
     }, [refresh])
 
     useEffect(() => {
-         fetchMembers();
+        fetchMembers();
     }, [selectedGroup.id, refreshMembers])
 
     // useEffect(() => {
@@ -71,9 +71,9 @@ function GroupMembers() {
         //setIsLoading(true);
         try {
             if (selectedGroup.id > 0) {
-            const res = await getAccountGroupMemberList(selectedGroup.id);
-            setMembers(res);
-            }else{
+                const res = await getAccountGroupMemberList(selectedGroup.id);
+                setMembers(res);
+            } else {
                 setMembers([]);
             }
         } catch (error) {
@@ -220,9 +220,9 @@ function GroupMembers() {
                 {editGroup === item.id ?
                     <td colSpan={3}>
                         <Stack direction="horizontal" gap={1} className="d-flex justify-content-start">
-                            <div><FormCheck type="radio" checked={selectedGroup && selectedGroup.id === item.id} 
-                            defaultChecked={selectedGroup && selectedGroup.id === item.id}
-                            disabled={true} name="groupId" onChange={() => setSelectedGroup(item)}/></div>
+                            <div><FormCheck type="radio" checked={selectedGroup && selectedGroup.id === item.id}
+                                defaultChecked={selectedGroup && selectedGroup.id === item.id}
+                                disabled={true} name="groupId" onChange={() => setSelectedGroup(item)} /></div>
                             <div className='w-100'><Form.Control size="sm" type="text" defaultValue={item.name} onChange={(e) => setGroupName(e.target.value)} /></div>
                             <div><Button onClick={() => handleEditGroupSave(item, groupName)} variant="link" className='pe-3'><BsCheck2All className='icon' /></Button></div>
                             <div><Button onClick={() => setEditGroup(0)} variant='link' title='Clear text'><BsXLg className='icon' /></Button></div>
@@ -233,7 +233,7 @@ function GroupMembers() {
                         <td><FormCheck type="radio" defaultValue={selectedGroup && selectedGroup.id === item.id}
                             defaultChecked={selectedGroup && selectedGroup.id === item.id}
                             onChange={() => setSelectedGroup(item)} style={{ color: "hsl(219, 11%, 25%)" }}
-                            label={item.name} name="groupId"/>
+                            label={item.name} name="groupId" />
                         </td>
                         <td><span>{!item.parentAccountGroup ? t('parent') : t('child')}</span></td>
                         <td>

@@ -1,15 +1,15 @@
-import { ProfileContext } from '../services/context/AppContext';
+import { ProfileContext } from '../context/AppContext';
 import React, { useContext, useState } from 'react';
 import { Button } from 'react-bootstrap';
 import { LoginWithGoogle } from '../components/LoginWithGoogle.js';
-import { login } from '../services/LoginService';
+import { login } from '../api/mypantry/account/loginService';
 import { useNavigate } from 'react-router-dom';
 import Form from 'react-bootstrap/Form';
 import VariantType from '../components/VariantType.js';
 import useAlert from '../hooks/useAlert.js';
 import { useTranslation } from 'react-i18next';
 import useEncrypt from '../hooks/useRSAEncrypt';
-import  PasswordInput from '../components/PasswordInput';
+import PasswordInput from '../components/PasswordInput';
 
 export default function Login() {
 
@@ -92,7 +92,7 @@ export default function Login() {
         return initials;
     }
 
-    function setPassword(value){
+    function setPassword(value) {
         setAccount({ ...account, password: value });
     }
     // <Form.Control type="password" name="password" defaultValue={account.password} onChange={(v) => setAccount({ ...account, password: v.target.value })} /> 
@@ -115,7 +115,7 @@ export default function Login() {
                             <Form.Label size="sm" className="mb-0 title">{t('password')}</Form.Label>
                             <Button bsPrefix="btn-custom-login" className="text-small" size="sm" href={'/reset-password/' + account.email} >{t('forgot-password')}</Button>
                         </div>
-                        <PasswordInput defaultValue={account.password} updatePassword={setPassword}/>
+                        <PasswordInput defaultValue={account.password} updatePassword={setPassword} />
                     </Form.Group>
                     <div className="d-flex justify-content-end gap-1 pt-2 pb-2">
                         <Button bsPrefix='btn-custom' onClick={clearAccount} size="sm" disabled={account.email.length === 0 && account.password.length === 0}><span>{t('btn-clear', { ns: 'common' })}</span></Button>

@@ -6,18 +6,20 @@ import { useState, useEffect, useRef } from 'react';
 import Container from 'react-bootstrap/Container';
 import Alert from 'react-bootstrap/Alert';
 import Fade from 'react-bootstrap/Fade';
-import History from '../routes/History.js';
-import TranslationSetter from '../services/TranslationSetter.js'
-import NavigateSetter from "../routes/NavigateSetter.js";
+import History from '../util/History.js';
+import TranslationSetter from '../util/TranslationSetter.js'
+import NavigateSetter from "../util/NavigateSetter.js";
 import { Suspense } from 'react';
-import { AlertContext, ProfileContext, PurchaseContext } from '../services/context/AppContext.js';
+import { AlertContext, ProfileContext, PurchaseContext } from '../context/AppContext.js';
 import { Overlay } from "react-bootstrap";
 import Footer from "../components/Footer.js";
-import { LoadingProvider } from '../services/context/LoadingProvider';
+import { LoadingProvider } from '../context/LoadingProvider';
 import { RippleLoading } from '../components/RippleLoading';
-
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 export default function App() {
+
+  const queryClient = new QueryClient();
 
   History.navigate = useNavigate();
 
@@ -68,23 +70,25 @@ export default function App() {
   return (
     <Suspense fallback={<RippleLoading />} >
       <ProfileContext.Provider value={{ profileCtx, setProfileCtx }}>
-        <PurchaseContext.Provider value={{purchaseCtx, setPurchaseCtx}}>
-        <AlertContext.Provider value={{ alert, setAlert }}>
-          <Header />
-          <div ref={target} className='alert-box'>
-            <Overlay target={target.current} show={alert.show} placement="bottom" transition={Fade}>
-              <Alert variant={alert.type} show={alert.show} onClose={() => setAlert((a) => a = { ...a, show: !alert.show })} dismissible transition={Fade}>{alert.message}</Alert>
-            </Overlay>
-          </div>
-          <LoadingProvider>
-            <Container className="content">
-              <NavigateSetter />
-              <TranslationSetter />
-              <CustomRoutes />
-            </Container>
-          </LoadingProvider>
-          <Footer />
-        </AlertContext.Provider>
+        <PurchaseContext.Provider value={{ purchaseCtx, setPurchaseCtx }}>
+          <AlertContext.Provider value={{ alert, setAlert }}>
+            <QueryClientProvider client={queryClient}>
+              <Header />
+              <div ref={target} className='alert-box'>
+                <Overlay target={target.current} show={alert.show} placement="bottom" transition={Fade}>
+                  <Alert variant={alert.type} show={alert.show} onClose={() => setAlert((a) => a = { ...a, show: !alert.show })} dismissible transition={Fade}>{alert.message}</Alert>
+                </Overlay>
+              </div>
+              <LoadingProvider>
+                <Container className="content">
+                  <NavigateSetter />
+                  <TranslationSetter />
+                  <CustomRoutes />
+                </Container>
+              </LoadingProvider>
+              <Footer />
+            </QueryClientProvider>
+          </AlertContext.Provider>
         </PurchaseContext.Provider>
       </ProfileContext.Provider>
     </Suspense>

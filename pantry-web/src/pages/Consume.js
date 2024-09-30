@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { getPantryItemsConsume, postPantryConsumeItem } from '../services/apis/mypantry/requests/PantryRequests.js';
+import { getPantryItemsConsume, postPantryConsumeItem } from '../api/mypantry/pantry/pantryService.js';
 import Stack from 'react-bootstrap/Stack';
 import Image from 'react-bootstrap/Image';
 import food from '../assets/images/healthy-food.png'
 import Form from 'react-bootstrap/Form';
-import { camelCase } from '../services/Utils.js';
+import { camelCase } from '../util/Utils.js';
 import VariantType from '../components/VariantType.js';
 import useAlert from '../hooks/useAlert.js';
 import PantrySelect from '../components/PantrySelect.js'
@@ -38,6 +38,7 @@ export default function Consume() {
 
   useEffect(() => {
     if (selectedPantries && selectedPantries.length > 0) {
+      setIsLoading(true);
       fetchPantryItem();
     } else {
       setPantryItems([]);
@@ -57,7 +58,6 @@ export default function Consume() {
     abortController.current = new AbortController();
 
     try {
-      setIsLoading(true);
       const res = await getPantryItemsConsume(selectedPantries, abortController.current?.signal);
       setPantryItems(res);
 
@@ -70,11 +70,11 @@ export default function Consume() {
     } finally {
       setIsLoading(false);
     }
-
   }
 
   async function fetchSaveConsumeItem(consumedItem) {
     try {
+      setIsLoading(true)
       const res = await postPantryConsumeItem(consumedItem);
       showAlert(VariantType.SUCCESS, t('consume-item-success'));
     } catch (error) {
@@ -175,11 +175,11 @@ export default function Consume() {
       </div>
       <div>
         <Form.Control type="text" id="search" className="form-control mb-1 search-input" placeholder={t('placeholder-search-items', { ns: 'common' })} value={searchText} onChange={(e) => filter(e.target.value)} />
-        {isLoading ? <RippleLoading /> :
-          <Row xs={1} md={2} lg={3} xl={4} className='m-0'>
-            {renderCards()}
-          </Row>
-        }
+        {isLoading && <RippleLoading />}
+        <Row xs={1} md={2} lg={3} xl={4} className='m-0'>
+          {renderCards()}
+        </Row>
+
       </div>
     </Stack >
   )

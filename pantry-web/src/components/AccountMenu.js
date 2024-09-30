@@ -1,10 +1,10 @@
 import Image from 'react-bootstrap/Image';
 import iNoAccount from '../assets/images/no-login.png';
-import { ProfileContext } from '../services/context/AppContext';
+import { ProfileContext } from '../context/AppContext';
 import React, { useContext, useEffect, useState } from 'react';
 import { Button, Offcanvas } from 'react-bootstrap';
 import { LogoutFromGoogle } from './LoginWithGoogle.js';
-import { logout } from '../services/LoginService';
+import { logout } from '../api/mypantry/account/loginService';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import Select from './Select';

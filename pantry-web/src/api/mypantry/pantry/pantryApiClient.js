@@ -1,7 +1,7 @@
 import getResponseContent from '../getResponseContent.js';
 import RequestError from '../RequestError.js';
-import History from '../../../routes/History.js';
-import Translator from '../../Translator.js';
+import History from '../../../util/History.js';
+import Translator from '../../../util/Translator.js';
 
 const language = localStorage.getItem('i18nextLng');
 const headers = {
@@ -10,7 +10,7 @@ const headers = {
     'language': language,
 }
 
-export async function FetchPantry(endpoint, signal) {
+export async function Get(endpoint, signal) {
     var redirecting = false;
     try {
         const res = await fetch(`${process.env.REACT_APP_API_URL_PANTRY}/${endpoint}`, {
@@ -35,7 +35,7 @@ export async function FetchPantry(endpoint, signal) {
     }
 }
 
-export async function PostPantry(endpoint, body) {
+export async function Post(endpoint, body) {
     var redirecting = false;
     try {
         const res = await fetch(`${process.env.REACT_APP_API_URL_PANTRY}/${endpoint}`, {
@@ -59,7 +59,7 @@ export async function PostPantry(endpoint, body) {
 
 }
 
-export async function PutPantry(endpoint, body) {
+export async function Put(endpoint, body) {
     var redirecting = false;
     try {
         const res = await fetch(`${process.env.REACT_APP_API_URL_PANTRY}/${endpoint}`, {
@@ -81,7 +81,7 @@ export async function PutPantry(endpoint, body) {
     }
 }
 
-export async function DeletePantry(endpoint) {
+export async function Delete(endpoint) {
     var redirecting = false;
     try {
         const res = await fetch(`${process.env.REACT_APP_API_URL_PANTRY}/${endpoint}`, {
@@ -105,7 +105,7 @@ export async function DeletePantry(endpoint) {
 async function processResponse(res) {
 
     if (!res) {
-        console.log("Fetch API Pantry-Service: response is null");
+        console.log("Fetch API PantryService: response is null");
         return;
     }
 

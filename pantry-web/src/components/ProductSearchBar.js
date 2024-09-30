@@ -4,12 +4,12 @@ import { useState } from 'react';
 import { BsEraser, BsCheck2All, BsChevronDown, BsPlusLg } from "react-icons/bs";
 import VariantType from './VariantType.js';
 import useAlert from '../hooks/useAlert.js';
-import { getFilteredProductList, createProduct } from '../services/apis/mypantry/requests/PantryRequests.js';
+import { getFilteredProductList, createProduct } from '../api/mypantry/pantry/pantryService.js';
 import Card from 'react-bootstrap/Card';
 import Stack from 'react-bootstrap/Stack';
 import CloseButton from 'react-bootstrap/CloseButton';
 import ProductForm from './ProductForm.js';
-import { camelCase } from '../services/Utils.js';
+import { camelCase } from '../util/Utils.js';
 import Collapse from 'react-bootstrap/Collapse';
 import { useTranslation } from 'react-i18next';
 import NumericField from './NumericField.js';
@@ -83,7 +83,7 @@ function ProductSearchBar({ accountGroupId, accountGroupOptions, handleSelectAct
                 return (
                     <tr key={item.id} className="w-0 p-0 colorfy">
                         <td className="w-0 p-0 border-end-0 colorfy">
-                            <span>{camelCase(item.code)} {item.description === "" ? "" : ' - ' + item.description}</span></td>
+                            <span>{camelCase(item.code)} {item.description && item.description !== "" ? ' - ' + item.description : ""}</span></td>
                         <td className="w-0 p-0 border-start-0 colorfy">
                             <Button onClick={() => handleSelect(item)} variant="link" title={t('tooltip-add-to-pantry')}><BsCheck2All className='icon' /></Button>
                         </td>

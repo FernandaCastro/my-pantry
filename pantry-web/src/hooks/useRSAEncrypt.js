@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import JSEncrypt from 'jsencrypt';
-import { getPublicKey } from '../services/apis/mypantry/requests/AccountRequests'
+import { getPublicKey } from '../api/mypantry/account/accountService'
 
 const useRSAEncrypt = () => {
     const [publicKey, setPublicKey] = useState('');

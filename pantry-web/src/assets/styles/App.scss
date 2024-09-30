@@ -1437,6 +1437,18 @@ span.critical {
     }
 }
 
+.loading-overlay {
+    position: absolute;      /* Position it absolutely */
+    top: 0;                 /* Align to the top */
+    left: 0;                /* Align to the left */
+    right: 0;               /* Stretch to the right */
+    bottom: 0;              /* Stretch to the bottom */
+    background-color: transparent; /* Optional: semi-transparent background */
+    display: flex;          /* Center the content */
+    justify-content: center; /* Center horizontally */
+    align-items: center;    /* Center vertically */
+    z-index: 10;            /* Make sure it's on top */
+}
 
 //independent Loading
 .independent-loader-container {

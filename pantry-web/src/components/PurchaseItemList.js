@@ -1,6 +1,6 @@
 import Form from 'react-bootstrap/Form';
 import React, { useState, useEffect, forwardRef, useImperativeHandle, useContext, useRef } from 'react';
-import { getPendingPurchaseItems, getPurchaseItems, getAllSupermarkets } from '../services/apis/mypantry/requests/PurchaseRequests';
+import { getPendingPurchaseItems, getPurchaseItems, getAllSupermarkets } from '../api/mypantry/purchase/purchaseService';
 import Button from 'react-bootstrap/Button';
 import Image from 'react-bootstrap/Image';
 import food from '../assets/images/healthy-food.png'
@@ -8,13 +8,13 @@ import VariantType from '../components/VariantType.js';
 import useAlert from '../hooks/useAlert.js';
 import Select from '../components/Select.js';
 import Collapse from 'react-bootstrap/Collapse';
-import { camelCase } from '../services/Utils.js';
+import { camelCase } from '../util/Utils.js';
 import { BsArrow90DegRight } from "react-icons/bs";
 import { Card, Col, FormCheck, Row } from "react-bootstrap";
 import { useTranslation } from 'react-i18next';
 import NumericField from './NumericField';
 import { useLoading } from '../hooks/useLoading';
-import { PurchaseContext } from '../services/context/AppContext';
+import { PurchaseContext } from '../context/AppContext';
 import { RippleLoading } from './RippleLoading';
 
 function PurchaseItemList({ selectedPurchase, selectedPantries, setOuterPurchaseItems }, ref) {

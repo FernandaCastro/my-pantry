@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { getProductList, deleteProduct } from '../services/apis/mypantry/requests/PantryRequests.js';
+import { getProductList, deleteProduct } from '../api/mypantry/pantry/pantryService.js';
 import VariantType from './VariantType.js';
 import useAlert from '../hooks/useAlert.js';
 import Form from 'react-bootstrap/Form';
@@ -7,7 +7,7 @@ import Image from 'react-bootstrap/Image';
 import food from '../assets/images/healthy-food.png';
 import Button from 'react-bootstrap/Button';
 import { BsPencil, BsTrash } from "react-icons/bs";
-import { camelCase } from '../services/Utils.js';
+import { camelCase } from '../util/Utils.js';
 import { Card, Col, FormCheck, Row } from "react-bootstrap";
 import Modal from 'react-bootstrap/Modal';
 import { useTranslation } from 'react-i18next';

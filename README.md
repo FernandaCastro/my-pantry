@@ -1,10 +1,10 @@
-<img height="700" width="700" title="Diagram" src="./readme_images/my-pantry_v0.2.0.png"/>
+<img height="700" width="700" title="Diagram" src="./readme_images/my-pantry_v0.9.5.jpg"/>
 
 # My Pantry
 
-<b>version: 0.9.4</b>
+<b>version: 0.9.5</b>
 
-- pantry-web: v.0.8.11
+- pantry-web: v.0.8.12
 - account-service: v0.4.8
 - pantry-service: v0.6.8
 - purchase-service: v0.4.6

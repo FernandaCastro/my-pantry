@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { ProfileContext } from '../services/context/AppContext';
+import { ProfileContext } from '../context/AppContext';
 import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
 import Image from 'react-bootstrap/Image';
