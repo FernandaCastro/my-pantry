@@ -29,6 +29,8 @@ spring:
       host: ${REDIS_HOST}
       port: ${REDIS_PORT}
       timeout: ${REDIS_TIMEOUT}
+      username: ${REDIS_USERNAME:} # optional
+      password: ${REDIS_PASSWORD:} # optional
       repositories:
         enabled: false
   cache:
