@@ -31,6 +31,7 @@ spring:
       timeout: ${REDIS_TIMEOUT}
       username: ${REDIS_USERNAME:} # optional
       password: ${REDIS_PASSWORD:} # optional
+      client-type: ${REDIS_CLIENT_TYPE:lettuce}
       repositories:
         enabled: false
   cache:
