@@ -193,17 +193,25 @@ public class PurchaseItemService {
 
     private void processPendingProvisioning(PurchaseItem purchasedItem) {
         int qtyMissing = purchasedItem.getQtyProvisioned() - purchasedItem.getQtyPurchased();
-        if (qtyMissing > 0) {
-            //Create a new PurchaseItem with the missing quantity
-            var newEntity = PurchaseItem.builder()
-                    .qtyProvisioned(qtyMissing)
-                    .pantryId(purchasedItem.getPantryId())
-                    .pantryName(purchasedItem.getPantryName())
-                    //.productId(purchasedItem.getProductId())
-                    .product(Product.builder().id(purchasedItem.getProduct().getId()).build())
-                    .build();
-            repository.save(newEntity);
+        if (qtyMissing <= 0) return;
+
+        //Increase provisionedQty when a pending item already exists,
+        var pendingItem = repository.findByPantryIdAndProductIdAndNoPurchaseOrder(purchasedItem.getPantryId(), purchasedItem.getProduct().getId());
+        if (pendingItem != null) {
+            var newProvisionedQty = pendingItem.getQtyProvisioned() + qtyMissing;
+            pendingItem.setQtyProvisioned(newProvisionedQty);
+            repository.save(pendingItem);
+            return;
         }
+
+        //Otherwise create a new PurchaseItem with the missing quantity
+        var newEntity = PurchaseItem.builder()
+                .qtyProvisioned(qtyMissing)
+                .pantryId(purchasedItem.getPantryId())
+                .pantryName(purchasedItem.getPantryName())
+                .product(Product.builder().id(purchasedItem.getProduct().getId()).build())
+                .build();
+        repository.save(newEntity);
     }
 
     private PurchaseEventDto convertToItemDto(Action action, PurchaseItem entity) {

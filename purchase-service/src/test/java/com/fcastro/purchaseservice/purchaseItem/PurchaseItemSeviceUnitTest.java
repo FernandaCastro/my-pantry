@@ -2,15 +2,18 @@ package com.fcastro.purchaseservice.purchaseItem;
 
 import com.fcastro.app.model.Action;
 import com.fcastro.kafka.model.PurchaseEventDto;
+import com.fcastro.purchaseservice.product.Product;
 import com.fcastro.purchaseservice.product.ProductDto;
 import com.fcastro.purchaseservice.product.ProductService;
 import com.fcastro.purchaseservice.purchase.Purchase;
+import com.fcastro.purchaseservice.purchase.PurchaseDto;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -188,5 +191,79 @@ public class PurchaseItemSeviceUnitTest {
         assertThat(item.getPurchase().getId()).isEqualTo(1L);
     }
 
+    @Test
+    public void givenExistingPendingItem_whenProcessPurchasedItems_thenUpdateProvisionedQty() {
+        //given
+        var purchaseOrder = Purchase.builder().id(1L).build();
+        var givenPurchaseItem = PurchaseItem.builder()
+                .id(10L)
+                .purchase(purchaseOrder)
+                .pantryId(10L)
+                .product(Product.builder().id(100L).build())
+                .qtyProvisioned(2)
+                .qtyPurchased(0)
+                .build();
 
+        var givenPendingItem = PurchaseItem.builder()
+                .id(20L)
+                .purchase(purchaseOrder)
+                .pantryId(10L)
+                .product(Product.builder().id(100L).build())
+                .qtyProvisioned(1)
+                .build();
+
+        when(repository.findByIdAndPurchaseId(anyLong(), anyLong())).thenReturn(Optional.of(givenPurchaseItem));
+        when(repository.findByPantryIdAndProductIdAndNoPurchaseOrder(anyLong(), anyLong())).thenReturn(givenPendingItem);
+        when(repository.save(captorPurchaseItem.capture())).thenReturn(null);
+
+        //when
+        var givenPurchaseIemDto = PurchaseItemDto.builder()
+                .id(10L)
+                .purchase(PurchaseDto.builder().id(1L).build())
+                .pantryId(10L)
+                .product(ProductDto.builder().id(100L).build())
+                .qtyProvisioned(2)
+                .qtyPurchased(0)
+                .build();
+        service.processPurchasedItems(1L, List.of(givenPurchaseIemDto));
+
+        //then
+        var item = captorPurchaseItem.getValue();
+        assertThat(item.getQtyProvisioned()).isEqualTo(3); //(pendingItem + not purchasedItem)
+
+    }
+
+    @Test
+    public void givenNoPendingItem_whenProcessPurchasedItems_thenCreatePendingItem() {
+        //given
+        var purchaseOrder = Purchase.builder().id(1L).build();
+        var givenPurchaseItem = PurchaseItem.builder()
+                .id(10L)
+                .purchase(purchaseOrder)
+                .pantryId(10L)
+                .product(Product.builder().id(100L).build())
+                .qtyProvisioned(2)
+                .qtyPurchased(0)
+                .build();
+
+        when(repository.findByIdAndPurchaseId(anyLong(), anyLong())).thenReturn(Optional.of(givenPurchaseItem));
+        when(repository.findByPantryIdAndProductIdAndNoPurchaseOrder(anyLong(), anyLong())).thenReturn(null);
+        when(repository.save(captorPurchaseItem.capture())).thenReturn(null);
+
+        //when
+        var givenPurchaseIemDto = PurchaseItemDto.builder()
+                .id(10L)
+                .purchase(PurchaseDto.builder().id(1L).build())
+                .pantryId(10L)
+                .product(ProductDto.builder().id(100L).build())
+                .qtyProvisioned(2)
+                .qtyPurchased(0)
+                .build();
+        service.processPurchasedItems(1L, List.of(givenPurchaseIemDto));
+
+        //then
+        var item = captorPurchaseItem.getValue();
+        assertThat(item.getQtyProvisioned()).isEqualTo(2); //(not purchasedItem)
+
+    }
 }
