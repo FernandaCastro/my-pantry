@@ -19,14 +19,14 @@ function AccountMenu() {
     const [expandMenu, setExpandMenu] = useState(false);
 
     const themes = [
-        { value: 'root', label: 'Default Light' },
-        { value: 'theme-dark', label: 'Default Dark' },
         { value: 'theme-mono-light', label: 'Mono Light' },
-        { value: 'theme-mono-dark', label: 'Mono Dark' }
+        { value: 'theme-mono-dark', label: 'Mono Dark' },
+        { value: 'theme-lila-light', label: 'Lila Light' },
+        { value: 'theme-lila-dark', label: 'Lila Dark' }
 
     ]
     const [themeOption, setThemeOption] = useState(() => {
-        var theme = { value: 'root', label: 'Default Light' };
+        var theme = { value: 'theme-mono-light', label: 'Mono Light' };
         if (profileCtx && profileCtx.theme) {
             const found = themes.find(t => t.value === profileCtx.theme);
             if (found) {
