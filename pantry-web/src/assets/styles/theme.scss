@@ -19,6 +19,7 @@
     --text-color-2: #{lighten($text-color, 35%)};
     --title-text-color: #4B0082;
     --highlight-text: #BA55D3;
+    --highlight-background: #{darken($background-color, 10%)};
     --gradient-image-header: linear-gradient(to bottom right, #1E90FF -20%, #800080 100%); //dodgerblue, purple);
     --gradient-image-profile-background: linear-gradient(to bottom right, #1E90FF -30%, #800080 100%), linear-gradient(90deg, rgba(228, 132, 252, 1) 0%, rgba(132, 212, 255, 1) 100%);
     --gradient-image-icon-background: linear-gradient(to bottom right, #1E90FF -20%, #800080 100%), linear-gradient(90deg, rgba(228, 132, 252, 1) 0%, rgba(132, 212, 255, 1) 100%);
@@ -52,6 +53,7 @@
     --text-color-2: #808080;
     --title-text-color: var(--text-color);
     --highlight-text: rgb(191, 146, 254);
+    --highlight-background: #{lighten($background-color, 20%)};
     --gradient-image-header: linear-gradient(to bottom right, #1E90FF -20%, #800080 100%); //dodgerblue, purple);
     --gradient-image-profile-background: linear-gradient(to bottom right, #1E90FF -30%, #800080 100%), linear-gradient(90deg, rgba(228, 132, 252, 1) 0%, rgba(132, 212, 255, 1) 100%);
     --gradient-image-icon-background: linear-gradient(to bottom right, #1E90FF -20%, #800080 100%), linear-gradient(90deg, rgba(228, 132, 252, 1) 0%, rgba(132, 212, 255, 1) 100%);
@@ -85,6 +87,7 @@
     --text-color-2: #808080;
     --title-text-color: var(--text-color);
     --highlight-text: #BA55D3;
+    --highlight-background: #{darken($background-color, 20%)};
     --gradient-image-header: linear-gradient(to bottom right, #808080, #000000);
     --gradient-image-profile-background: linear-gradient(180deg, #808080, #000000), linear-gradient(90deg, rgba(228, 132, 252, 1) 0%, rgba(132, 212, 255, 1) 100%);
     --gradient-image-icon-background: linear-gradient(180deg, #808080, #000000), linear-gradient(90deg, rgba(228, 132, 252, 1) 0%, rgba(132, 212, 255, 1) 100%);
@@ -117,6 +120,7 @@
     --text-color-2: #808080;
     --title-text-color: var(--text-color);
     --highlight-text: rgb(191, 146, 254);
+    --highlight-background: #{lighten($background-color, 20%)};
     --gradient-image-header: linear-gradient(to bottom right, #808080, #000000);
     --gradient-image-profile-background: linear-gradient(180deg, #808080, #000000), linear-gradient(90deg, rgba(228, 132, 252, 1) 0%, rgba(132, 212, 255, 1) 100%);
     --gradient-image-icon-background: linear-gradient(180deg, #808080, #000000), linear-gradient(90deg, rgba(228, 132, 252, 1) 0%, rgba(132, 212, 255, 1) 100%);

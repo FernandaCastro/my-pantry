@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
-import { camelCase } from '../util/Utils.js';
-import { Button, Collapse, Row } from 'react-bootstrap';
+import { camelCase, truncate } from '../util/Utils.js';
+import { Button, Col, Collapse, Row, Stack } from 'react-bootstrap';
 import { BsArrow90DegRight } from "react-icons/bs";
 import { useTranslation } from 'react-i18next';
+import useBreakpoint from '../hooks/useBreakpoint.js';
 
 export default function PantryTopCritical({ pantryChartData }) {
 
     const { t } = useTranslation(['pantry', 'common']);
+    const isXXL = useBreakpoint(1400);
 
     const topCritical = pantryChartData.criticalItems.length;
     const [isOpen, setIsOpen] = useState(false);
@@ -15,19 +17,24 @@ export default function PantryTopCritical({ pantryChartData }) {
         <div className="d-flex flex-column">
             <div className="category" onClick={() => setIsOpen(!isOpen)}>
                 <Button variant="link" aria-controls={pantryChartData?.id} onClick={() => setIsOpen(!isOpen)}><BsArrow90DegRight className='small-icon' /></Button>
-                <h6 className='title'>{t('label-top-low-level')}{topCritical === 0 ? ` (${topCritical})` : null}</h6>
+                <h6 className='title'>{t('label-top-low-level')} ({topCritical})</h6>
             </div>
             <Collapse in={isOpen}>
-                <Row className='m-0'>
+                <div className='scroll-top-critical'>
                     {pantryChartData.criticalItems?.map((item, index) => {
                         return (
-                            <li key={index} className="top-critical-item">
-                                <span className="small">{camelCase(item.productCode)} </span>
-                                <span className="small critical">({item.currentQty})</span>
-                                <span className="small" >: {item.percentage}%</span></li>
+                            <Stack direction="horizontal" className={index % 2 === 0 ? "highlight-background" : null}>
+                                <div ><span className="small">{camelCase(truncate(item.productCode, isXXL ? 15 : 30))} </span></div>
+                                <div className="ms-auto"><span className="small critical">({item.currentQty})</span></div>
+                                <div ><span className="small" >: {item.percentage}%</span></div>
+                            </Stack>
+                            // <li key={index} className="top-critical-item">
+                            //     <span className="small">{camelCase(truncate(item.productCode, 15))} </span>
+                            //     <span className="small critical">({item.currentQty})</span>
+                            //     <span className="small" >: {item.percentage}%</span></li>
                         )
                     })}
-                </Row>
+                </div>
             </Collapse>
         </div>
     )
