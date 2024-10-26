@@ -83,6 +83,8 @@ export default function PantryItems() {
     }
 
     function handleRebalance() {
+        if (isLoading) return;
+        
         setIsLoading(true);
         setAnalysePantryClick(!analysePantryClick);
     }

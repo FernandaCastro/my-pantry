@@ -30,20 +30,29 @@ export default function Purchase() {
     const [showOrder, setShowOrder] = useState(false);
 
     const [refreshOrders, setRefreshOrders] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
 
     const { showAlert } = useAlert();
 
     async function fetchClosePurchaseOrder(order) {
+        if (isLoading) return;
+
         try {
+            setIsLoading(true);
             setRefreshOrders(false);
+
             await postClosePurchaseOrder(order);
+
             setPurchase();
             setIsOpenOrder(false);
             setRefreshOrders(true);
             removeFromCache(order.id)
+            
             showAlert(VariantType.SUCCESS, t("close-purchase-order-success"));
         } catch (error) {
             showAlert(VariantType.DANGER, error.message);
+        }finally {
+            setIsLoading(false);
         }
     }
 
