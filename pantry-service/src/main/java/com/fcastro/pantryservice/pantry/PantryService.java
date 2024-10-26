@@ -228,7 +228,7 @@ public class PantryService {
 
     private List<PantryItemChartDto> calculateCriticalItems(List<PantryItem> items) {
 
-        var filteredItems = items.stream()
+        var criticalItems = items.stream()
                 .filter(i -> i.getIdealQty() > 0)
                 .map(i -> {
                     var percentage = 0.0;
@@ -247,15 +247,9 @@ public class PantryService {
 
                 })
                 .filter(i -> i.getPercentage() <= 30)
-                .collect(Collectors.toList());
-
-        var criticalItems = filteredItems.stream()
                 .sorted(Comparator.comparingDouble(PantryItemChartDto::getPercentage))
                 .collect(Collectors.toList());
 
-        if (criticalItems.size() > 5) {
-            return criticalItems.subList(0, 5);
-        }
         return criticalItems;
     }
 

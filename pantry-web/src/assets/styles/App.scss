@@ -1438,16 +1438,26 @@ span.critical {
 }
 
 .loading-overlay {
-    position: absolute;      /* Position it absolutely */
-    top: 0;                 /* Align to the top */
-    left: 0;                /* Align to the left */
-    right: 0;               /* Stretch to the right */
-    bottom: 0;              /* Stretch to the bottom */
-    background-color: transparent; /* Optional: semi-transparent background */
-    display: flex;          /* Center the content */
-    justify-content: center; /* Center horizontally */
-    align-items: center;    /* Center vertically */
-    z-index: 10;            /* Make sure it's on top */
+    position: absolute;
+    /* Position it absolutely */
+    top: 0;
+    /* Align to the top */
+    left: 0;
+    /* Align to the left */
+    right: 0;
+    /* Stretch to the right */
+    bottom: 0;
+    /* Stretch to the bottom */
+    background-color: transparent;
+    /* Optional: semi-transparent background */
+    display: flex;
+    /* Center the content */
+    justify-content: center;
+    /* Center horizontally */
+    align-items: center;
+    /* Center vertically */
+    z-index: 10;
+    /* Make sure it's on top */
 }
 
 //independent Loading
@@ -1501,4 +1511,23 @@ span.critical {
         transform: scale(2.5);
         opacity: 0;
     }
+}
+
+div.scroll-top-critical {
+    overflow-y: auto;
+
+    margin-left: 20px;
+    padding-right: 10px;
+
+    @media (max-width: 1399px) {
+        max-height: 200px;
+    }
+
+    @media (min-width: 1400px) {
+        max-height: 160px;
+    }
+}
+
+.highlight-background {
+    background-color: var(--highlight-background);
 }
