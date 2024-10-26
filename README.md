@@ -2,7 +2,7 @@
 
 # My Pantry
 
-<b>version: 0.9.5</b>
+<b>version: 0.9.7</b>
 
 - pantry-web: v.0.8.14
 - account-service: v0.4.8
