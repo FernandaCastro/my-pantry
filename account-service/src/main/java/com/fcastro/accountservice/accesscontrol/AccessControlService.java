@@ -67,10 +67,10 @@ public class AccessControlService {
         return list;
     }
 
-    private void consumeList(Consumer<AccessControlDto> consumer, Set<Long> clazzIds, String clazz, Long groupId, Long parentGroupId) {
+    private void consumeList(Consumer<AccessControlDto> consumer, Set<Long> clazzIds, String clazz, Long groupId, String groupName, Long parentGroupId) {
 
         var parentGroup = parentGroupId == null ? null : AccountGroupDto.builder().id(parentGroupId).build();
-        var group = AccountGroupDto.builder().id(groupId).parentAccountGroup(parentGroup).build();
+        var group = AccountGroupDto.builder().id(groupId).name(groupName).parentAccountGroup(parentGroup).build();
 
         clazzIds.forEach(id -> {
             consumer.accept(AccessControlDto.builder()
@@ -123,13 +123,13 @@ public class AccessControlService {
 
                     //Get all objects associated to the AccountGroup
                     var objectsInGroup = accessControlCacheService.getFromCache(member.getAccountGroupId(), clazz);
-                    consumeList(consumer, objectsInGroup, clazz, member.getAccountGroupId(), member.getParentAccountGroupId());
+                    consumeList(consumer, objectsInGroup, clazz, member.getAccountGroupId(), member.getAccountGroupName(), member.getParentAccountGroupId());
                     memo.add(member.getAccountGroupId());
 
                     //Get all associated to the ParentAccountGroup
                     if (member.getParentAccountGroupId() != null && member.getParentAccountGroupId() > 0 && !memo.contains(member.getParentAccountGroupId())) {
                         var objectsInParentGroup = accessControlCacheService.getFromCache(member.getParentAccountGroupId(), clazz);
-                        consumeList(consumer, objectsInParentGroup, clazz, member.getParentAccountGroupId(), null);
+                        consumeList(consumer, objectsInParentGroup, clazz, member.getParentAccountGroupId(), member.getAccountGroupName(), null);
                         memo.add(member.getParentAccountGroupId());
                     }
 
@@ -147,7 +147,7 @@ public class AccessControlService {
 
                     //Get all  associated to the AccountGroup
                     var objectsInGroup = accessControlCacheService.getFromCache(member.getAccountGroupId(), clazz);
-                    consumeList(consumer, objectsInGroup, clazz, member.getAccountGroupId(), member.getParentAccountGroupId());
+                    consumeList(consumer, objectsInGroup, clazz, member.getAccountGroupId(), member.getAccountGroupName(), member.getParentAccountGroupId());
 
                 }).collect(Collectors.toList());
     }

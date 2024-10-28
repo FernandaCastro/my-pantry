@@ -183,21 +183,24 @@ public class PantryService {
         var pantryIds = accessControlList.stream().map(AccessControlDto::getClazzId).collect(Collectors.toSet());
         var pantryList = repository.findAllByIds(pantryIds);
 
-        var pantryChartList = pantryList.stream().map(p -> {
+        var pantryChartList = pantryList.stream()
+                .filter(p -> p.getIsActive() == true)
+                .map(p -> {
 
-            var items = p.getItems();
-            var percentage = calculatePercentage(items);
-            var criticalItems = calculateCriticalItems(items);
+                    var items = p.getItems();
+                    var percentage = calculatePercentage(items);
+                    var criticalItems = calculateCriticalItems(items);
 
-            var pantryChart = PantryChartDto.builder()
-                    .id(p.getId()).name(p.getName()).type(p.getType()).isActive(p.getIsActive())
-                    .percentage(percentage)
-                    .criticalItems(criticalItems)
-                    .accountGroup(getAccountGroup(p.getId(), accessControlList))
-                    .build();
+                    var pantryChart = PantryChartDto.builder()
+                            .id(p.getId()).name(p.getName()).type(p.getType()).isActive(p.getIsActive())
+                            .percentage(percentage)
+                            .criticalItems(criticalItems)
+                            .accountGroup(getAccountGroup(p.getId(), accessControlList))
+                            .build();
 
-            return pantryChart;
-        }).collect(Collectors.toList());
+                    return pantryChart;
+                })
+                .collect(Collectors.toList());
 
         return pantryChartList;
     }

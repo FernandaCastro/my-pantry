@@ -18,6 +18,7 @@ public class MemberCacheDto implements Serializable {
     private static final long serialVersionUID = 2221528169840173134L;
 
     private Long accountGroupId;
+    private String accountGroupName;
     private Long parentAccountGroupId;
     private String roleId;
 
