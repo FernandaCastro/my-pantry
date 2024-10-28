@@ -32,6 +32,7 @@ public class MemberCacheService {
         var list = repository.findAllByEmail(email).parallelStream()
                 .map(i -> MemberCacheDto.builder()
                         .accountGroupId(i.getAccountGroupId())
+                        .accountGroupName(i.getAccountGroup().getName())
                         .parentAccountGroupId(i.getAccountGroup().getParentAccountGroup() == null ? null : i.getAccountGroup().getParentAccountGroup().getId())
                         .roleId(i.getRole().getId())
                         .build())
@@ -51,6 +52,7 @@ public class MemberCacheService {
         List<MemberCacheDto> list = (List<MemberCacheDto>) valueWrapper.get();
         list.add(MemberCacheDto.builder()
                 .accountGroupId(group.getId())
+                .accountGroupName(group.getName())
                 .parentAccountGroupId(group.getParentAccountGroup() != null ? group.getParentAccountGroup().getId() : null)
                 .roleId(roleId)
                 .build());
