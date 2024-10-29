@@ -250,7 +250,8 @@ public class PantryService {
 
                 })
                 .filter(i -> i.getPercentage() <= 30)
-                .sorted(Comparator.comparingDouble(PantryItemChartDto::getPercentage))
+                .sorted(Comparator.comparingDouble(PantryItemChartDto::getPercentage)
+                        .thenComparing(PantryItemChartDto::getProductCode))
                 .collect(Collectors.toList());
 
         return criticalItems;
