@@ -2,12 +2,12 @@
 
 # My Pantry
 
-<b>version: 0.9.8</b>
+<b>version: 0.9.9</b>
 
-- pantry-web: v.0.8.14
-- account-service: v0.4.9
-- pantry-service: v0.6.10
-- purchase-service: v0.4.7
+- pantry-web: v.0.8.15
+- account-service: v0.4.10
+- pantry-service: v0.6.11
+- purchase-service: v0.4.8
 
 ### In this version:
 

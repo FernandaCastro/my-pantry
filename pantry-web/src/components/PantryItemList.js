@@ -27,6 +27,8 @@ function PantryItemList({ refetch, setRefetch, pantryId, setIsEmpty }) {
     const [itemToDelete, setItemToDelete] = useState();
     const abortController = useRef(null);
 
+    const [timeoutId, setTimeoutId] = useState(null);
+
     useEffect(() => {
         if (pantryId && pantryId > 0 & refetch) {
             fetchPantryItems();
@@ -66,11 +68,20 @@ function PantryItemList({ refetch, setRefetch, pantryId, setIsEmpty }) {
 
     async function fetchUpdatePantryItem(item) {
         try {
-            await updatePantryItem(item.pantry.id, item.product.id, item);
+            const res = await updatePantryItem(item.pantry.id, item.product.id, item);
+            updatePantryItems(res);
         } catch (error) {
             showAlert(VariantType.DANGER, error.message);
-        } finally {
-            setRefetch(true);
+        }
+    }
+
+    function updatePantryItems(res) {
+        if (res) {
+            setPantryItems(prevItems =>
+                prevItems.map(item =>
+                    item.pantry.id === res.pantry.id && item.product.id === res.product.id ? res : item
+                )
+            );
         }
     }
 
@@ -90,9 +101,28 @@ function PantryItemList({ refetch, setRefetch, pantryId, setIsEmpty }) {
     }
 
     function handleSave(item) {
-        fetchUpdatePantryItem(item);
-        //showAlert(VariantType.SUCCESS, t('update-item-success'));
+        //Debouncing: limita a quantidade de vezes que uma função pode ser chamada
+        
+        if (timeoutId) { // clean the previous timeout, if exists
+            clearTimeout(timeoutId);
+        }
+
+        const id = setTimeout(() => {
+            fetchUpdatePantryItem(item);
+            //showAlert(VariantType.SUCCESS, t('update-item-success'));
+
+        }, 300);
+
+        setTimeoutId(id);
     }
+
+    useEffect(() => {
+        return () => {
+            if (timeoutId) {
+                clearTimeout(timeoutId); //Clean the timeout when unloading the component
+            }
+        };
+    }, [timeoutId]);
 
     function filter(text) {
         if (text && text.length > 0)

@@ -36,6 +36,9 @@ export default function Consume() {
   const abortController = useRef(null);
   const [isLoading, setIsLoading] = useState(false);
 
+  const [pendingQuantity, setPendingQuantity] = useState(0);
+  const [timeoutId, setTimeoutId] = useState(null);
+
   useEffect(() => {
     if (selectedPantries && selectedPantries.length > 0) {
       setIsLoading(true);
@@ -76,9 +79,12 @@ export default function Consume() {
     try {
       setIsLoading(true)
       const res = await postPantryConsumeItem(consumedItem);
+      updatePantryItem(res);
       showAlert(VariantType.SUCCESS, t('consume-item-success'));
     } catch (error) {
       showAlert(VariantType.DANGER, error.message);
+    } finally {
+      setIsLoading(false);
     }
   }
 
@@ -88,9 +94,54 @@ export default function Consume() {
   }
 
   async function updateConsumedItem(item) {
-    const consumedItem = { pantryId: item.pantry.id, productId: item.product.id, qty: 1 }
-    await fetchSaveConsumeItem(consumedItem);
-    fetchPantryItem();
+
+        //Debouncing: limita a quantidade de vezes que uma função pode ser chamada
+        setPendingQuantity(prev => prev + 1);
+
+        if (timeoutId) { // clean the previous timeout, if exists
+          clearTimeout(timeoutId);
+      }
+  
+      const id = setTimeout(() => {
+        const consumedItem = { pantryId: item.pantry.id, productId: item.product.id, qty: pendingQuantity + 1 }
+        fetchSaveConsumeItem(consumedItem);
+        setPendingQuantity(0);
+      }, 300);
+  
+      setTimeoutId(id);
+
+    // const consumedItem = { pantryId: item.pantry.id, productId: item.product.id, qty: 1 }
+    // fetchSaveConsumeItem(consumedItem);
+
+    //fetchPantryItem();
+  }
+
+useEffect(() => {
+    return () => {
+        if (timeoutId) {
+            clearTimeout(timeoutId); //Clean the timeout when unloading the component
+        }
+    };
+}, [timeoutId]);
+
+
+  function updatePantryItem(res) {
+    if (!res) return;
+
+    if (res.currentQty === 0) { //remove from consume list
+      var index = pantryItems.findIndex(i => i.pantry.id === res.pantry.id && i.product.id === res.product.id);
+      if (index > -1) {
+        setPantryItems(prevItems => prevItems.filter((_, i) => i !== index));
+      }
+      return;
+    }
+
+    //update consume list
+    setPantryItems(prevItems =>
+      prevItems.map(item =>
+        item.pantry.id === res.pantry.id && item.product.id === res.product.id ? res : item
+      )
+    );
   }
 
   function renderCards() {
