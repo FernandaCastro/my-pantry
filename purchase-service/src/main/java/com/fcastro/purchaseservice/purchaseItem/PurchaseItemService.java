@@ -185,7 +185,11 @@ public class PurchaseItemService {
             repository.save(entity);
 
             processPendingProvisioning(entity);
-            purchaseEventList.add(convertToItemDto(Action.UPDATE, entity));
+
+            //Event should only contain purchased Items
+            if (entity.getQtyPurchased() > 0) {
+                purchaseEventList.add(convertToItemDto(Action.UPDATE, entity));
+            }
         }
 
         return purchaseEventList;
