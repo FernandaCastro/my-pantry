@@ -92,8 +92,8 @@ public class PantryItemController {
     @PostMapping("/items/consume")
     @PreAuthorize("hasPermissionInObject('Pantry', #pantryItem.getPantryId(), 'consume_pantry')")
     public ResponseEntity<PantryItemDto> consumeItem(@P("pantryItem") @RequestBody PantryItemConsumedDto item) {
-        service.consumePantryItem(item);
-        return ResponseEntity.noContent().build();
+        var consumedItem = service.consumePantryItem(item);
+        return ResponseEntity.ok(consumedItem);
     }
 
     @GetMapping("/{pantryId}/items/balancing")
