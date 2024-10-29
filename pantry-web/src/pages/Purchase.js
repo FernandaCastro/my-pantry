@@ -13,6 +13,7 @@ import iconPurchase from '../assets/images/shoppingcart-gradient.png';
 import Image from 'react-bootstrap/Image';
 import { Stack } from 'react-bootstrap';
 import { PurchaseContext } from '../context/AppContext.js';
+import { RippleLoading } from '../components/RippleLoading';
 
 export default function Purchase() {
 
@@ -110,6 +111,8 @@ export default function Purchase() {
     }
 
     return (
+        <>
+        {isLoading && <RippleLoading /> }
         <Stack gap={3}>
             <div className='mt-4'>
                 <div className='d-flex justify-content-start align-items-center gap-2' onClick={() => setShowPantries(!showPantries)}>
@@ -137,16 +140,16 @@ export default function Purchase() {
             </div>
 
             <div className="d-flex justify-content-evenly align-items-start mt-0" >
-                <Button bsPrefix="btn-custom" size="sm" onClick={handleNewOrder} disabled={((!purchase && purchaseItems.length === 0) || (purchase && purchase.processedAt !== null) || isOpenOrder || pantries.length === 0)}><span>{t("btn-new-order")}</span></Button>
-                <Button bsPrefix="btn-custom" size="sm" onClick={handleRefresh} disabled={purchase || pantries.length === 0}><span>{t("btn-refresh")}</span></Button>
-                <Button bsPrefix="btn-custom" size="sm" onClick={handleCloseOrder} disabled={!isOpenOrder || pantries.length === 0}><span>{t("btn-checkout")}</span></Button>
+                <Button bsPrefix="btn-custom" size="sm" onClick={handleNewOrder} disabled={((!purchase && purchaseItems.length === 0) || (purchase && purchase.processedAt !== null) || isOpenOrder || pantries.length === 0 || isLoading)}><span>{t("btn-new-order")}</span></Button>
+                <Button bsPrefix="btn-custom" size="sm" onClick={handleRefresh} disabled={purchase || pantries.length === 0 || isLoading}><span>{t("btn-refresh")}</span></Button>
+                <Button bsPrefix="btn-custom" size="sm" onClick={handleCloseOrder} disabled={isLoading || !isOpenOrder || pantries.length === 0}><span>{t("btn-checkout")}</span></Button>
             </div>
 
             <div className='mt-2'>
-                <PurchaseItemList ref={purchaseItemListRef} selectedPurchase={purchase} selectedPantries={pantries} setOuterPurchaseItems={setPurchaseItems} />
+                <PurchaseItemList key={purchase?.id} ref={purchaseItemListRef} selectedPurchase={purchase} selectedPantries={pantries} setOuterPurchaseItems={setPurchaseItems} />
             </div>
 
         </Stack>
-
+        </>
     )
 }
