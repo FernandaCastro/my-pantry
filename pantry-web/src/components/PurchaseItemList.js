@@ -38,8 +38,9 @@ function PurchaseItemList({ selectedPurchase, selectedPantries, setOuterPurchase
     const [expandProdDetail, setExpandProdDetail] = useState(false);
     const [showPantryCol, setShowPantryCol] = useState(false);
 
-    const abortController = useRef(null);
-
+    const abortControllerPendingItems = useRef(null);
+    const abortControllerSupermarkets = useRef(null);
+    const abortControllerPurchaseItems = useRef(null);
 
     useEffect(() => {
         fetchSupermarketOptions();
@@ -91,12 +92,12 @@ function PurchaseItemList({ selectedPurchase, selectedPantries, setOuterPurchase
 
     async function fetchPendingItems() {
         //Avoid racing condition (TODO: check lib react-query )
-        abortController.current?.abort();
-        abortController.current = new AbortController();
+        abortControllerPendingItems.current?.abort();
+        abortControllerPendingItems.current = new AbortController();
 
         try {
             setIsLoading(true);
-            const res = await getPendingPurchaseItems(selectedPantries, supermarketOption.value, abortController.current?.signal);
+            const res = await getPendingPurchaseItems(selectedPantries, supermarketOption.value, abortControllerPendingItems.current?.signal);
 
             if (isNull(res) || res.length === 0) {
                 setPurchaseItems([]);
@@ -114,11 +115,11 @@ function PurchaseItemList({ selectedPurchase, selectedPantries, setOuterPurchase
     async function fetchSupermarketOptions() {
 
         //Avoid racing condition (TODO: check lib react-query )
-        abortController.current?.abort();
-        abortController.current = new AbortController();
+        abortControllerSupermarkets.current?.abort();
+        abortControllerSupermarkets.current = new AbortController();
 
         try {
-            const res = await getAllSupermarkets(abortController.current?.signal);
+            const res = await getAllSupermarkets(abortControllerSupermarkets.current?.signal);
 
             var list = [];
             res.forEach(s => {
@@ -141,12 +142,12 @@ function PurchaseItemList({ selectedPurchase, selectedPantries, setOuterPurchase
     async function fetchPurchaseItems(clear) {
 
         //Avoid racing condition (TODO: check lib react-query )
-        abortController.current?.abort();
-        abortController.current = new AbortController();
+        abortControllerPurchaseItems.current?.abort();
+        abortControllerPurchaseItems.current = new AbortController();
 
         try {
             setIsLoading(true);
-            const res = await getPurchaseItems(selectedPurchase.id, selectedPantries, supermarketOption.value, abortController.current?.signal);
+            const res = await getPurchaseItems(selectedPurchase.id, selectedPantries, supermarketOption.value, abortControllerPurchaseItems.current?.signal);
 
             if (isNull(res) || res.length === 0) {
                 setPurchaseItems([]);
