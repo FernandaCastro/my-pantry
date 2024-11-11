@@ -1,5 +1,4 @@
-import React, { useContext } from 'react';
-import { ProfileContext } from '../context/AppContext';
+import React, { useContext, useEffect, useState } from 'react';
 import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
 import Image from 'react-bootstrap/Image';
@@ -19,12 +18,37 @@ import { useTranslation } from 'react-i18next';
 
 import LanguageSelect from './LanguageSelect';
 import { Stack } from 'react-bootstrap';
+import useProfile from '../hooks/useProfile';
+import MainMenu from './MainMenu';
+import { Loading } from './Loading';
 
 export default function Header() {
     const { t } = useTranslation(['header', 'common']);
 
-    const { profileCtx } = useContext(ProfileContext);
-    let hasActiveProfile = (profileCtx && Object.keys(profileCtx).length > 1) ? true : false;
+    const { profile, setProfile, DEFAULT_THEME } = useProfile();
+
+    useEffect(() => {
+
+        if (profile && Object.keys(profile).length > 0) {
+
+            var theme = DEFAULT_THEME;
+
+            if (profile?.theme) {
+                theme = profile.theme;
+            }
+
+            if (document.body.className != profile?.theme) {
+                const newProfile = {
+                    ...profile,
+                    theme: theme
+                }
+
+                setProfile(newProfile);
+                document.body.className = theme;
+            }
+        }
+
+    }, [profile])
 
     function setLanguage(code) {
         i18n.changeLanguage(code)
@@ -32,35 +56,35 @@ export default function Header() {
 
     function renderMainMenu() {
         return (
-            <Navbar className="p-0">
+            <Navbar className="p-0" >
                 <div className="menu">
                     <OverlayTrigger placement="bottom" delay={{ show: 250, hide: 400 }} overlay={<Tooltip className="custom-tooltip">{t("tooltip-consume")}</Tooltip>}>
-                        <Nav.Item><Nav.Link href={"/pantries/consume"} eventKey="link-consume" className="menuItem" disabled={!hasActiveProfile} >
+                        <Nav.Item><Nav.Link href={"/pantries/consume"} eventKey="link-consume" className="menuItem" disabled={!(profile && Object.keys(profile).length > 1)} >
                             <div className="gradient-icon-box-header"><Image src={iconConsume} className="menu-icon" /></div></Nav.Link>
                         </Nav.Item>
                     </OverlayTrigger>
                     <OverlayTrigger placement="bottom" delay={{ show: 250, hide: 400 }} overlay={<Tooltip className="custom-tooltip">{t("tooltip-purchase")}</Tooltip>}>
                         <Nav.Item>
-                            <Nav.Link href="/purchase" eventKey="link-purchases" className="menuItem" disabled={!hasActiveProfile}>
+                            <Nav.Link href="/purchase" eventKey="link-purchases" className="menuItem" disabled={!(profile && Object.keys(profile).length > 1)}>
                                 <div className="gradient-icon-box-header"><Image src={iconPurchase} className="menu-icon" /></div>
                             </Nav.Link>
                         </Nav.Item>
                     </OverlayTrigger>
 
                     <OverlayTrigger placement="bottom" delay={{ show: 250, hide: 400 }} overlay={<Tooltip className="custom-tooltip">{t("tooltip-pantries")}</Tooltip>}>
-                        <Nav.Item><Nav.Link href="/pantries" eventKey="link-pantries" className="menuItem" disabled={!hasActiveProfile}>
+                        <Nav.Item><Nav.Link href="/pantries" eventKey="link-pantries" className="menuItem" disabled={!(profile && Object.keys(profile).length > 1)}>
                             <Image src={iconPantry} className="menu-icon" />
                         </Nav.Link>
                         </Nav.Item>
                     </OverlayTrigger>
                     <OverlayTrigger placement="bottom" delay={{ show: 250, hide: 400 }} overlay={<Tooltip className="custom-tooltip">{t("tooltip-products")}</Tooltip>}>
-                        <Nav.Item><Nav.Link href="/product" eventKey="link-products" className="menuItem" disabled={!hasActiveProfile}>
+                        <Nav.Item><Nav.Link href="/product" eventKey="link-products" className="menuItem" disabled={!(profile && Object.keys(profile).length > 1)}>
                             <Image src={iconProduct} className="menu-icon" />
                         </Nav.Link>
                         </Nav.Item>
                     </OverlayTrigger>
                     <OverlayTrigger placement="bottom" delay={{ show: 250, hide: 400 }} overlay={<Tooltip className="custom-tooltip">{t("tooltip-supermarkets")}</Tooltip>}>
-                        <Nav.Item><Nav.Link href="/supermarkets" eventKey="link-supermarkets" className="menuItem" disabled={!hasActiveProfile}>
+                        <Nav.Item><Nav.Link href="/supermarkets" eventKey="link-supermarkets" className="menuItem" disabled={!(profile && Object.keys(profile).length > 1)}>
                             <Image src={iconSupermarket} className="menu-icon" />
                         </Nav.Link>
                         </Nav.Item>
@@ -92,6 +116,7 @@ export default function Header() {
                     {/*hidden on smaller than md*/}
                     <div className='d-none d-md-block'>
                         {renderMainMenu()}
+                        {/* <MainMenu profile={profile} t={t}/> */}
                     </div>
 
                     {renderProfileMenu()}
@@ -101,6 +126,7 @@ export default function Header() {
             {/*hidden on bigger than md*/}
             <div className='d-flex justify-content-around d-block d-md-none'>
                 {renderMainMenu()}
+                {/* <MainMenu profile={profile} t={t}/> */}
             </div>
         </Stack>
     )

@@ -23,15 +23,11 @@ export default function PantryTopCritical({ pantryChartData }) {
                 <div className='scroll-top-critical'>
                     {pantryChartData.criticalItems?.map((item, index) => {
                         return (
-                            <Stack direction="horizontal" className={index % 2 === 0 ? "highlight-background" : null}>
+                            <Stack key={index} direction="horizontal" className={index % 2 === 0 ? "highlight-background" : null}>
                                 <div ><span className="small">{camelCase(truncate(item.productCode, isXXL ? 15 : 30))} </span></div>
                                 <div className="ms-auto"><span className="small critical">({item.currentQty})</span></div>
                                 <div ><span className="small" >: {item.percentage}%</span></div>
                             </Stack>
-                            // <li key={index} className="top-critical-item">
-                            //     <span className="small">{camelCase(truncate(item.productCode, 15))} </span>
-                            //     <span className="small critical">({item.currentQty})</span>
-                            //     <span className="small" >: {item.percentage}%</span></li>
                         )
                     })}
                 </div>

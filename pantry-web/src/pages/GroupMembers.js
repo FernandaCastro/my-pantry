@@ -16,7 +16,7 @@ import { getAssociatedPantries } from '../api/mypantry/pantry/pantryService.js'
 import useAlert from '../hooks/useAlert.js';
 import PermissionsView from '../components/PermissionsView.js'
 import { useTranslation } from 'react-i18next';
-import { useLoading } from '../hooks/useLoading.js';
+import { useGlobalLoading } from '../hooks/useGlobalLoading.js';
 
 function GroupMembers() {
 
@@ -38,7 +38,7 @@ function GroupMembers() {
     const [showModal, setShowModal] = useState(false);
 
     const { showAlert } = useAlert();
-    const { setIsLoading } = useLoading();
+    const { isLoading, setIsLoading } = useGlobalLoading();
 
     useEffect(() => {
         if (refresh) fetchGroups();

@@ -32,6 +32,8 @@ public class Account {
 
     private String passwordAnswer;
 
+    private String theme;
+
     public Account(String externalProvider, String name, String email, String pictureUrl) {
         this.externalProvider = externalProvider;
         this.name = name;

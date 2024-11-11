@@ -11,7 +11,7 @@ import { Card, Col, OverlayTrigger, Row, Tooltip } from 'react-bootstrap';
 import iconPantry from '../assets/images/cupboard-gradient.png';
 import iconMagicWand from '../assets/images/magic-wand.png';
 import Image from 'react-bootstrap/Image';
-import { useLoading } from '../hooks/useLoading.js';
+import { useLoading } from '../hooks/useGlobalLoading.js';
 
 export default function Pantries() {
 
@@ -20,7 +20,8 @@ export default function Pantries() {
     const [refresh, setRefresh] = useState(true);
 
     const { showAlert } = useAlert();
-    const { setIsLoading } = useLoading();
+    //const { setIsLoading } = useLoading();
+    const [isLoading, setIsLoading] = useState(false);
 
     const [showModal, setShowModal] = useState(false);
     const [pantryToDelete, setPantryToDelete] = useState();

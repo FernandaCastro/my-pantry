@@ -12,7 +12,7 @@ import { getAccountGroupList } from '../api/mypantry/account/accountService.js'
 import { useTranslation } from 'react-i18next';
 import iconProduct from '../assets/images/food-gradient.png';
 import Image from 'react-bootstrap/Image';
-import { useLoading } from '../hooks/useLoading.js';
+import { useGlobalLoading } from '../hooks/useGlobalLoading.js';
 import { CiBarcode } from "react-icons/ci";
 import BarcodeScanner from '../components/BarcodeScanner.js';
 import { TiArrowBackOutline } from "react-icons/ti";
@@ -31,7 +31,7 @@ export default function Product() {
 
     const [accountGroupOptions, setAccountGroupOptions] = useState([]);
     const { showAlert } = useAlert();
-    const { setIsLoading } = useLoading();
+    const { isLoading, setIsLoading } = useGlobalLoading();
 
     useEffect(() => {
         fetchCategories();

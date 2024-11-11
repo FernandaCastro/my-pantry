@@ -8,15 +8,15 @@ import Button from 'react-bootstrap/Button';
 import { useTranslation } from 'react-i18next';
 import { Image, Stack } from 'react-bootstrap';
 import iconPantry from '../assets/images/cupboard-gradient.png';
-import { RippleLoading } from '../components/RippleLoading.js';
-import { useGetPantry, useAnalysePantry, useCreatePantryItem } from '../hooks/usePantry.js';
-import { useGetAccountGroups, useGetAccountGroupsOptions } from '../hooks/useAccount.js';
-import { ProfileContext } from '../context/AppContext.js';
+import { Loading } from '../components/Loading.js';
+import { useGetPantry, useAnalysePantry, useCreatePantryItem } from '../hooks/useApiPantry.js';
+import { useGetAccountGroups, useGetAccountGroupsOptions } from '../hooks/useApiAccount.js';
+import useProfile from '../hooks/useProfile.js';
 
 export default function PantryItems() {
 
     const { t } = useTranslation(['pantry', 'common']);
-    const { profileCtx } = useContext(ProfileContext);
+    const { profile } = useProfile();
     const [isEmpty, setIsEmpty] = useState(true);
     const [refetch, setRefetch] = useState(true);
     const { showAlert } = useAlert();
@@ -30,11 +30,11 @@ export default function PantryItems() {
     );
 
     const { data: accountGroups } = useGetAccountGroups(
-        { email: profileCtx?.email },
+        { email: profile?.email },
         { onError: (error) => showAlert(VariantType.DANGER, error) }
     );
 
-    const { data: accountGroupOptions } = useGetAccountGroupsOptions({ email: profileCtx?.email, accountGroups: accountGroups })
+    const { data: accountGroupOptions } = useGetAccountGroupsOptions({ email: profile?.email, accountGroups: accountGroups })
 
     const [analysePantryClick, setAnalysePantryClick] = useState(false);
 
@@ -84,7 +84,7 @@ export default function PantryItems() {
 
     function handleRebalance() {
         if (isLoading) return;
-        
+
         setIsLoading(true);
         setAnalysePantryClick(!analysePantryClick);
     }
@@ -105,7 +105,7 @@ export default function PantryItems() {
                     <Button className="align-self-end mb-3" bsPrefix='btn-custom' size="sm" onClick={handleRebalance} title={t('tooltip-btn-balance-inventory')} disabled={isEmpty}>
                         <span className="gradient-text">{t('btn-balance-inventtory')}</span>
                     </Button>
-                    {isLoading && <RippleLoading />}
+                    {isLoading && <Loading />}
                     <PantryItemList refetch={refetch} setRefetch={setRefetch} pantryId={pantry?.id} setIsEmpty={setIsEmpty} />
                 </div>
             </div>

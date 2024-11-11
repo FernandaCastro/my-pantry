@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { useEffect, useState } from "react";
 import i18n from 'i18next';
 import { BsArrow90DegRight } from "react-icons/bs";
-import { useLoading } from "../hooks/useLoading";
+import { useLoading } from "../hooks/useGlobalLoading";
 
 function NewPantryReviewWizard({ pantry, productList, setFinalProductList, expandAll, setExpandAll, analysePantry, setAnalysePantry }) {
 

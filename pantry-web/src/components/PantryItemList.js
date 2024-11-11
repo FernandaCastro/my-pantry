@@ -12,7 +12,7 @@ import useAlert from '../hooks/useAlert.js';
 import { useTranslation } from 'react-i18next';
 import { Card, Col, Row } from 'react-bootstrap';
 import Modal from 'react-bootstrap/Modal';
-import { RippleLoading } from './RippleLoading.js';
+import { Loading } from './Loading.js';
 
 function PantryItemList({ refetch, setRefetch, pantryId, setIsEmpty }) {
 
@@ -102,7 +102,7 @@ function PantryItemList({ refetch, setRefetch, pantryId, setIsEmpty }) {
 
     function handleSave(item) {
         //Debouncing: limita a quantidade de vezes que uma função pode ser chamada
-        
+
         if (timeoutId) { // clean the previous timeout, if exists
             clearTimeout(timeoutId);
         }
@@ -186,7 +186,7 @@ function PantryItemList({ refetch, setRefetch, pantryId, setIsEmpty }) {
             <Form.Control type="text" id="search" className="form-control mb-1 search-input" value={searchText} placeholder={t('placeholder-search-items', { ns: 'common' })} onChange={(e) => filter(e.target.value)} />
 
             <div>
-                {isLoading && <RippleLoading />}
+                {isLoading && <Loading />}
                 <Row key={refetch} xs={1} md={2} lg={3} className='m-0'>
                     {renderCards()}
                 </Row>

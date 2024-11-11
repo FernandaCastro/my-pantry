@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 
 /**
  * Utility function to create useQuery hooks with success and error callbacks.
@@ -8,13 +8,14 @@ import { useEffect } from "react";
  * @param {object} options - aditional options of useQuery like `enabled`, `refetchInterval`, etc.
  * @param {object} callbacks - Object containing optional `onSuccessCallback` and `onErrorCallback` callbacks.
  */
-export function useQueryWithCallbacks(queryKey, queryFn, options = {}, callbacks = {}) {
+export function useQueryWithCallbacks(queryKey, queryFn, options = {}, callbacks = {}, initialData) {
 
     const { onSuccess, onError } = callbacks;  // Destructure the callbacks object
 
-    const { data, isLoading, isFetching, isSuccess, isError, error } = useQuery({
+    const { data, isLoading, isFetching, isSuccess, isError, error, refetch } = useQuery({
         queryKey,
         queryFn,
+        initialData,
         ...options,
     });
 
@@ -30,7 +31,9 @@ export function useQueryWithCallbacks(queryKey, queryFn, options = {}, callbacks
         }
     }, [isFetching, error])
 
-    return { data: data, isLoading: isLoading, isSuccess: isSuccess, isError: isError, error: error };
+    const memoData = useMemo(() => data, [data]);
+
+    return { data: memoData, isLoading: isLoading, isSuccess: isSuccess, isError: isError, error: error, refetch: refetch };
 }
 
 /**
@@ -57,4 +60,31 @@ export function useMutationWithCallbacks(mutationFn, options = {}, callbacks = {
             if (onError) onError(error);  // Call error callback if provided
         }
     });
+}
+
+export function useCachedState(key, initialValue = null) {
+
+    const queryClient = useQueryClient();
+    const initialDataValue = initialValue == null ? queryClient.getQueryData([key]) : initialValue;
+
+    const { data: cachedState } = useQuery({
+        queryKey: [key],
+        queryF: () => queryClient.getQueryData([key]),
+        initialData: initialDataValue,
+        enabled: false
+    });
+
+    function setCachedState(key, newData) {
+
+        queryClient.setQueryData([key], () => (
+            newData
+        ));
+
+        // queryClient.setQueryData([key], (oldData) => ({
+        //     ...oldData,
+        //     ...newData
+        // }));
+    }
+
+    return { cachedState, setCachedState }
 }

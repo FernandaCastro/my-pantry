@@ -13,9 +13,8 @@ import { BsArrow90DegRight } from "react-icons/bs";
 import { Card, Col, FormCheck, Row } from "react-bootstrap";
 import { useTranslation } from 'react-i18next';
 import NumericField from './NumericField';
-import { useLoading } from '../hooks/useLoading';
-import { PurchaseContext } from '../context/AppContext';
-import { RippleLoading } from './RippleLoading';
+import { PurchaseContext } from '../context/PurchaseProvider';
+import { Loading } from './Loading';
 
 function PurchaseItemList({ selectedPurchase, selectedPantries, setOuterPurchaseItems }, ref) {
 
@@ -285,7 +284,7 @@ function PurchaseItemList({ selectedPurchase, selectedPantries, setOuterPurchase
     }
 
     function renderCards() {
-        if (isLoading) { return <RippleLoading /> }
+        if (isLoading) { return <Loading /> }
 
         var elements = [];
         var index = 0;

@@ -10,7 +10,7 @@ import { getAccountGroupList } from '../api/mypantry/account/accountService.js';
 import { getSupermarketsByGroup, createSupermarket, updateSupermarket, deleteSupermarket } from '../api/mypantry/purchase/purchaseService'
 import iconSupermarket from '../assets/images/supermarket-gradient.png';
 import Modal from 'react-bootstrap/Modal';
-import { useLoading } from '../hooks/useLoading';
+import { useGlobalLoading } from '../hooks/useGlobalLoading';
 
 export function Supermarket() {
 
@@ -30,7 +30,7 @@ export function Supermarket() {
     const [supermarketToDelete, setSupermarketToDelete] = useState();
 
     const { showAlert } = useAlert();
-    const { setIsLoading } = useLoading();
+    const { isLoading, setIsLoading } = useGlobalLoading();
 
     useEffect(() => {
         fetchAccountGroups();

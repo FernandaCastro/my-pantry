@@ -255,6 +255,7 @@ public class AuthenticationService {
                 .email(account.getEmail())
                 .pictureUrl(account.getPictureUrl())
                 .passwordQuestion(account.getPasswordQuestion())
+                .theme(account.getTheme())
                 .build();
     }
 }

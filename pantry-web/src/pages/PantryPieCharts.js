@@ -5,15 +5,16 @@ import useAlert from '../hooks/useAlert.js';
 import { getPantryChartData } from '../api/mypantry/pantry/pantryService.js';
 import { useTranslation } from 'react-i18next';
 import i18n from 'i18next';
-import { ProfileContext } from '../context/AppContext.js';
-import { useLoading } from '../hooks/useLoading.js';
+import { useLoading } from '../hooks/useGlobalLoading.js';
 import PantryPieChart from '../components/PantryPieChart.js';
+import useProfile from '../hooks/useProfile.js';
 
 export default function PantryPieCharts({ chartData }) {
 
     const { t } = useTranslation(['pantry', 'common']);
-    const { profileCtx } = useContext(ProfileContext);
-    const pieRef = useRef(null);
+    //const { profileCtx } = useContext(ProfileContext);
+    // const pieRef = useRef(null);
+    const { profile, DEFAULT_THEME } = useProfile();
 
     const colors = [
         { theme: "theme-lila-light", colors: ['#94A6E3', '#928BD2', '#8F6FC2'], labels: '#404040', needle: '#404040' },
@@ -28,17 +29,21 @@ export default function PantryPieCharts({ chartData }) {
     ]);
 
     const [refreshChart, setRefreshChart] = useState(true);
-    const [activeColor, setActiveColor] = useState(colors.findIndex(c => c.theme === profileCtx.theme, 0));
-    const { showAlert } = useAlert();
-    const { isLoading, setIsLoading } = useLoading();
+    const [activeColor, setActiveColor] = useState(() => {
+        const theme = profile?.theme ? profile.theme : DEFAULT_THEME;
+        return colors.findIndex(c => c.theme === theme, 0);
+    });
 
-    const [pantries, setPantries] = useState(chartData);
+    // const { showAlert } = useAlert();
+    // const { isLoading, setIsLoading } = useLoading();
 
-    useEffect(() => {
-        if (!chartData) {
-            fetchPantriesChartData();
-        }
-    }, [])
+    // const [pantries, setPantries] = useState(chartData);
+
+    // useEffect(() => {
+    //     if (!chartData) {
+    //         fetchPantriesChartData();
+    //     }
+    // }, [])
 
     useEffect(() => {
         updateChartLabels();
@@ -49,8 +54,12 @@ export default function PantryPieCharts({ chartData }) {
     }, []);
 
     useEffect(() => {
-        setActiveColor(colors.findIndex(c => c.theme === profileCtx.theme, 0));
-    }, [profileCtx.theme]);
+        if (profile && profile.theme) {
+            setActiveColor(colors.findIndex(c => c.theme === profile.theme, 0));
+        } else {
+            setActiveColor(colors.findIndex(c => c.theme === DEFAULT_THEME));
+        }
+    }, [profile.theme]);
 
     useEffect(() => {
         window.addEventListener('resize', handleWindowResize);
@@ -71,23 +80,23 @@ export default function PantryPieCharts({ chartData }) {
         setData(() => _data);
     }
 
-    async function fetchPantriesChartData() {
-        setIsLoading(true);
-        try {
-            const res = await getPantryChartData();
-            setPantries(res);
-            return res;
-        } catch (error) {
-            showAlert(VariantType.DANGER, error.message);
-        } finally {
-            setIsLoading(false);
-        }
-    }
+    // async function fetchPantriesChartData() {
+    //     setIsLoading(true);
+    //     try {
+    //         const res = await getPantryChartData();
+    //         setPantries(res);
+    //         return res;
+    //     } catch (error) {
+    //         showAlert(VariantType.DANGER, error.message);
+    //     } finally {
+    //         setIsLoading(false);
+    //     }
+    // }
 
     return (
         <Row xs={1} xxl={2}>
             {/* {renderPieCharts()} */}
-            {pantries?.map((item, index) => <PantryPieChart key={index} item={item} index={index} data={data} activeColor={activeColor} refreshChart={refreshChart} />)}
+            {chartData?.map((item, index) => <PantryPieChart key={index} item={item} index={index} data={data} activeColor={activeColor} refreshChart={refreshChart} />)}
         </Row >
     )
 }

@@ -1,5 +1,5 @@
 import { getAccountGroupList } from "../api/mypantry/account/accountService";
-import { useQueryWithCallbacks } from "./useQueryWithCallbacks";
+import { useQueryWithCallbacks } from "./useCustomQuery";
 
 const ACCOUNT_GROUP_KEY = 'accountGroup';
 const ACCOUNT_GROUP_OPTIONS_KEY = 'accountGroupOptions';

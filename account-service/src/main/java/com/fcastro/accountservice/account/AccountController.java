@@ -3,6 +3,7 @@ package com.fcastro.accountservice.account;
 import com.fcastro.app.config.MessageTranslator;
 import com.fcastro.app.exception.ResourceNotFoundException;
 import com.fcastro.security.core.model.AccountDto;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -40,6 +41,16 @@ public class AccountController {
     ResponseEntity<AccountDto> replace(@RequestBody AccountDto newAccount, @PathVariable Long id) {
 
         var dto = service.updateAccount(newAccount);
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(dto);
+    }
+
+    @PutMapping("/{id}/theme")
+    ResponseEntity<AccountDto> updateThema(@PathVariable Long id, @RequestParam @NotNull String theme) {
+
+        var dto = service.updateAccountTheme(id, theme);
 
         return ResponseEntity
                 .status(HttpStatus.OK)

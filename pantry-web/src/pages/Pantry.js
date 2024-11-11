@@ -10,7 +10,7 @@ import { useTranslation } from 'react-i18next';
 import { Image, Stack } from 'react-bootstrap';
 import iconPantry from '../assets/images/cupboard-gradient.png';
 import { useNavigate } from 'react-router-dom';
-import { useLoading } from '../hooks/useLoading.js';
+import { useGlobalLoading } from '../hooks/useGlobalLoading.js';
 
 export default function Pantry({ mode }) {
 
@@ -30,7 +30,7 @@ export default function Pantry({ mode }) {
         });
 
     const { showAlert } = useAlert();
-    const { setIsLoading } = useLoading();
+    const { isLoading, setIsLoading } = useGlobalLoading();
 
     useEffect(() => {
         if (id && mode === 'edit') {

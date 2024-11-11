@@ -1,6 +1,5 @@
 import Image from 'react-bootstrap/Image';
 import iNoAccount from '../assets/images/no-login.png';
-import { ProfileContext } from '../context/AppContext';
 import React, { useContext, useEffect, useState } from 'react';
 import { Button, Offcanvas } from 'react-bootstrap';
 import { LogoutFromGoogle } from './LoginWithGoogle.js';
@@ -9,13 +8,22 @@ import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import Select from './Select';
 import { BsPalette, BsPeople, BsPersonGear } from 'react-icons/bs';
+import useProfile from '../hooks/useProfile';
+import { updateTheme } from '../api/mypantry/account/accountService';
+import useGlobalLoading from '../hooks/useGlobalLoading';
+import useAlert from '../hooks/useAlert';
+import VariantType from '../components/VariantType.js';
 
 function AccountMenu() {
 
     const { t } = useTranslation(['header']);
 
     const navigate = useNavigate();
-    const { profileCtx, setProfileCtx } = useContext(ProfileContext);
+
+    const { profile, setProfile } = useProfile();
+    const { isLoading, setIsLoading } = useGlobalLoading();
+    const { showAlert } = useAlert();
+
     const [expandMenu, setExpandMenu] = useState(false);
 
     const themes = [
@@ -26,35 +34,55 @@ function AccountMenu() {
 
     ]
     const [themeOption, setThemeOption] = useState(() => {
-        var theme = { value: 'theme-mono-light', label: 'Mono Light' };
-        if (profileCtx && profileCtx.theme) {
-            const found = themes.find(t => t.value === profileCtx.theme);
+        var optionData = { value: 'theme-mono-light', label: 'Mono Light' };
+        if (profile?.theme) {
+            const found = themes.find(t => t.value === profile.theme);
             if (found) {
-                theme = found;
+                optionData = found;
             }
         }
-        return theme;
+        // document.body.className = optionData.value;
+        return optionData;
     });
 
     const handleLogout = async () => {
         await logout();
-        setProfileCtx({ theme: themeOption.value });
+
+        setProfile({ theme: profile.theme });
         setExpandMenu(!expandMenu)
         navigate('/login');
     };
 
     useEffect(() => {
-        if (themeOption.value !== profileCtx.theme) {
+        if (themeOption.value && profile?.theme && themeOption.value !== profile?.theme) {
             document.body.className = themeOption.value;
-            setProfileCtx(
-                {
-                    ...profileCtx,
-                    theme: themeOption.value
-                })
+
+            fetchUpdateTheme(profile.id, themeOption.value);
             handleClose();
 
         }
     }, [themeOption?.value]);
+
+    async function fetchUpdateTheme(id, themeData) {
+        if (!isLoading) {
+            setIsLoading(true);
+            try {
+                await updateTheme(id, themeData);
+
+                const newProfile = {
+                    ...profile,
+                    theme: themeData
+                }
+
+                setProfile(newProfile);
+
+            } catch (error) {
+                showAlert(VariantType.DANGER, error.message);
+            } finally {
+                setIsLoading(false);
+            }
+        }
+    }
 
     function handleClose() {
         document.getElementsByClassName("btn-close")[0]?.click();
@@ -74,22 +102,22 @@ function AccountMenu() {
         return (
             <div>
                 <Button variant='link' onClick={() => setExpandMenu(!expandMenu)} >
-                    {profileCtx.pictureUrl && profileCtx.pictureUrl.length > 0 ?
-                        <Image className='profile-icon hover-effect' width={40} height={40} roundedCircle referrerPolicy="no-referrer" src={profileCtx.pictureUrl} /> :
-                        <div className="gradient-profile-box hover-effect"><span className="gradient-icon-label">{profileCtx.initials}</span></div>
+                    {profile.pictureUrl && profile.pictureUrl.length > 0 ?
+                        <Image className='profile-icon hover-effect' width={40} height={40} roundedCircle referrerPolicy="no-referrer" src={profile.pictureUrl} /> :
+                        <div className="gradient-profile-box hover-effect"><span className="gradient-icon-label">{profile.initials}</span></div>
                     }
                 </Button>
 
                 <Offcanvas className="slide-menu-box" show={expandMenu} placement="end" onHide={() => setExpandMenu(!expandMenu)}>
                     <Offcanvas.Header closeButton className='align-items-start pb-0'>
                         <div className='d-flex flex-column justify-content-start align-items-center flex-grow-1'>
-                            {profileCtx.pictureUrl && profileCtx.pictureUrl.length > 0 ?
-                                <Image className='profile-icon' width={50} height={50} roundedCircle referrerPolicy="no-referrer" src={profileCtx.pictureUrl} /> :
-                                <div className='gradient-profile-box'><span className="gradient-icon-label">{profileCtx.initials}</span></div>
+                            {profile.pictureUrl && profile.pictureUrl.length > 0 ?
+                                <Image className='profile-icon' width={50} height={50} roundedCircle referrerPolicy="no-referrer" src={profile.pictureUrl} /> :
+                                <div className='gradient-profile-box'><span className="gradient-icon-label">{profile.initials}</span></div>
 
                             }
-                            <span className='title mt-2'>{profileCtx.name}</span>
-                            <span className='small'>{profileCtx.email}</span>
+                            <span className='title mt-2'>{profile.name}</span>
+                            <span className='small'>{profile.email}</span>
                         </div>
                     </Offcanvas.Header>
                     <Offcanvas.Body className="d-flex flex-column gap-3">
@@ -123,7 +151,7 @@ function AccountMenu() {
 
     return (
         <div>
-            {profileCtx && Object.keys(profileCtx).length > 1 ? renderUserProfile() : renderSingin()}
+            {profile && Object.keys(profile).length > 1 ? renderUserProfile() : renderSingin()}
         </div>
     )
 }

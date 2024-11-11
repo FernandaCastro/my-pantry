@@ -39,6 +39,10 @@ export async function updateAccount(account) {
     return Put(`accounts/${account.id}`, account);
 }
 
+export async function updateTheme(id, theme) {
+    return Put(`accounts/${id}/theme?theme=${theme}`);
+}
+
 export async function postLogout() {
     return Post('auth/logout');
 }

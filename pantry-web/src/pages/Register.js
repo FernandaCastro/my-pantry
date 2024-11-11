@@ -5,13 +5,13 @@ import { useNavigate } from 'react-router-dom';
 import Form from 'react-bootstrap/Form';
 import VariantType from '../components/VariantType.js';
 import useAlert from '../hooks/useAlert.js';
-import { ProfileContext } from '../context/AppContext';
 import { getAccount, updateAccount } from '../api/mypantry/account/accountService';
 import { useTranslation } from 'react-i18next';
 import useEncrypt from '../hooks/useRSAEncrypt';
 import { BsChatDots } from 'react-icons/bs';
 import { TbMessageCircleOff } from 'react-icons/tb'
-import { useLoading } from '../hooks/useLoading';
+import { useGlobalLoading } from '../hooks/useGlobalLoading';
+import useProfile from '../hooks/useProfile';
 
 export default function Register({ mode }) {
 
@@ -20,7 +20,7 @@ export default function Register({ mode }) {
 
     const navigate = useNavigate();
     const { showAlert } = useAlert();
-    const { profileCtx, setProfileCtx } = useContext(ProfileContext);
+    const { profile, setProfile } = useProfile();
 
 
     const [validateForm, setValidateForm] = useState(false);
@@ -41,14 +41,14 @@ export default function Register({ mode }) {
         passwordQuestion: ""
     });
 
-    const { isLoading, setIsLoading } = useLoading();
+    const { isLoading, setIsLoading } = useGlobalLoading();
 
     useEffect(() => {
-        if (mode === 'edit') {
-            fetchAccount(profileCtx.id);
+        if (mode === 'edit' && profile?.id) {
+            fetchAccount(profile?.id);
         }
 
-    }, [])
+    }, [profile])
 
     useEffect(() => {
         if (validateForm) {
@@ -81,16 +81,16 @@ export default function Register({ mode }) {
         }
     }
 
-    function refreshProfileCtx(updatedAccount) {
+    function refreshProfile(updatedAccount) {
         const profile = {
             id: updatedAccount.id,
             name: updatedAccount.name,
             email: updatedAccount.email,
             pictureUrl: updatedAccount.pictureUrl,
             initials: getInitialsAttribute(updatedAccount.name),
-            theme: profileCtx?.theme
+            theme: profile?.theme
         }
-        setProfileCtx(profile);
+        setProfile(profile);
     }
 
     function getInitialsAttribute(name) {
@@ -298,7 +298,7 @@ export default function Register({ mode }) {
                 setIsChangePasswordFormValid(false);
                 showAlert(VariantType.SUCCESS, t("update-account-success"));
 
-                refreshProfileCtx(updatedAccount);
+                refreshProfile(updatedAccount);
 
             } catch (error) {
                 showAlert(VariantType.DANGER, error.message);
@@ -329,7 +329,7 @@ export default function Register({ mode }) {
             setRefresh(!refresh);
 
         } else {
-            fetchAccount(profileCtx.id);
+            fetchAccount(profile.id);
         }
     }
 
@@ -356,7 +356,7 @@ export default function Register({ mode }) {
     function renderPasswordFields() {
         return (
             <div>
-                <Form.Group className="mb-2" controlId="formId">
+                <Form.Group className="mb-2" controlId="formPassword">
                     <Form.Label size="sm" className="mb-0 title">{t("password")}</Form.Label>
                     <Form.Control type="password" name="password" defaultValue={account.password}
                         required
@@ -369,7 +369,7 @@ export default function Register({ mode }) {
                         {getError('password')}
                     </Form.Control.Feedback>
                 </Form.Group>
-                <Form.Group className="mb-2" controlId="formId">
+                <Form.Group className="mb-2" controlId="formConfirmPassword">
                     <Form.Label size="sm" className="mb-0 title">{t("confirm-password")}</Form.Label>
                     <Form.Control type="password" name="confirmPassword" defaultValue={account.confirmPassword}
                         required
@@ -398,7 +398,7 @@ export default function Register({ mode }) {
             <div className='centralized-box'>
                 <Form key={refresh} onSubmit={handleSubmit} className='w-100' noValidate>
 
-                    <Form.Group className="mb-2" controlId="formId" hasValidation>
+                    <Form.Group className="mb-2" controlId="formName" hasvalidation="true">
                         <Form.Label size="sm" className="mb-0 title">{t("name")}</Form.Label>
                         <Form.Control key={formFields?.name?.isValid} type="text" name="name" defaultValue={account.name}
                             required
@@ -412,7 +412,7 @@ export default function Register({ mode }) {
                         </Form.Control.Feedback>
                     </Form.Group>
 
-                    <Form.Group className="mb-2" controlId="formId">
+                    <Form.Group className="mb-2" controlId="formEmail">
                         <Form.Label size="sm" className="mb-0 title">{t("email")}</Form.Label>
                         <Form.Control key={formFields?.email?.isValid} type="text" name="email" defaultValue={account.email}
                             required
@@ -426,7 +426,7 @@ export default function Register({ mode }) {
                         </Form.Control.Feedback>
                     </Form.Group>
                     {mode === 'new' ? renderPasswordFields() : ""}
-                    <Form.Group className="mt-4 mb-2 w-100" controlId="formId">
+                    <Form.Group className="mt-4 mb-2 w-100" controlId="formPasswordQuestion">
                         <div className="d-flex justify-content-between align-items-center" >
                             <Form.Label size="sm" className="mb-0 title">{t("title-reset-password")}</Form.Label>
                             <OverlayTrigger placement="bottom" delay={{ show: 250, hide: 350 }} overlay={<Tooltip className="custom-tooltip">{showResetAnswer ? t("btn-close-password-answer") : t("btn-change-password-answer")}</Tooltip>}>
@@ -447,7 +447,7 @@ export default function Register({ mode }) {
                     </Form.Group>
 
 
-                    <Form.Group className="mb-2 w-100" controlId="formId" style={{ display: showResetAnswer ? "block" : "none" }}>
+                    <Form.Group className="mb-2 w-100" controlId="formPasswordAnswer" style={{ display: showResetAnswer ? "block" : "none" }}>
                         <Form.Control key={showResetAnswer} type="password" name="passwordAnswer" defaultValue={account.passwordAnswer}
                             required
                             placeholder={t("placeholder-reset-answer")}

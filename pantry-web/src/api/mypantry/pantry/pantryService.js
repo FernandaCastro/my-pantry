@@ -32,8 +32,8 @@ export async function getProductList() {
 export async function getAssociatedPantries(groupId) {
     return Get(`pantries?groupId=${groupId}`);
 }
-export async function getPantryChartData() {
-    return Get(`pantries/charts-data`);
+export async function getPantryChartData(signal) {
+    return Get(`pantries/charts-data`, signal);
 }
 
 

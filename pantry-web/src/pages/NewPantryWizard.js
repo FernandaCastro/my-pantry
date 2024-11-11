@@ -14,7 +14,7 @@ import useAlert from '../hooks/useAlert.js';
 import { useNavigate } from 'react-router-dom';
 import { createPantryWizard } from '../api/mypantry/pantry/pantryService.js';
 import { getAccountGroupList } from '../api/mypantry/account/accountService.js';
-import { useLoading } from '../hooks/useLoading';
+import { useLoading } from '../hooks/useGlobalLoading';
 
 function NewPantryWizard() {
 
@@ -32,7 +32,9 @@ function NewPantryWizard() {
     const [analysePantry, setAnalysePantry] = useState(true);
 
     const { showAlert } = useAlert();
-    const { setIsLoading } = useLoading();
+    // const { setIsLoading } = useLoading();
+    const [isLoading, setIsLoading] = useState(false);
+
 
     useEffect(() => {
         if (!accountGroupOptions || accountGroupOptions.length === 0) {
