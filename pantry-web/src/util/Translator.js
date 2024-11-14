@@ -1,6 +1,4 @@
-const Translator = {
+export const translator = {
     translate: null,
-    push: (text, ...options) => Translator.translate(text, ...options),
+    push: (text, ...options) => translator.translate(text, ...options),
 }
-
-export default Translator

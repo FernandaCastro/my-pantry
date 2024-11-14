@@ -1,11 +1,11 @@
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button, Modal, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { register } from '../api/mypantry/account/loginService';
 import { useNavigate } from 'react-router-dom';
 import Form from 'react-bootstrap/Form';
 import VariantType from '../components/VariantType.js';
 import useAlert from '../hooks/useAlert.js';
-import { getAccount, updateAccount } from '../api/mypantry/account/accountService';
+import { fetchAccount, updateAccount } from '../api/mypantry/account/accountService';
 import { useTranslation } from 'react-i18next';
 import useEncrypt from '../hooks/useRSAEncrypt';
 import { BsChatDots } from 'react-icons/bs';
@@ -45,7 +45,7 @@ export default function Register({ mode }) {
 
     useEffect(() => {
         if (mode === 'edit' && profile?.id) {
-            fetchAccount(profile?.id);
+            getAccount(profile?.id);
         }
 
     }, [profile])
@@ -59,10 +59,10 @@ export default function Register({ mode }) {
 
     }, [validateForm])
 
-    async function fetchAccount(id) {
+    async function getAccount(id) {
         setIsLoading(true);
         try {
-            const res = await getAccount(id);
+            const res = await fetchAccount(id);
 
             setAccount({
                 id: res.id,
@@ -81,16 +81,16 @@ export default function Register({ mode }) {
         }
     }
 
-    function refreshProfile(updatedAccount) {
-        const profile = {
-            id: updatedAccount.id,
-            name: updatedAccount.name,
-            email: updatedAccount.email,
-            pictureUrl: updatedAccount.pictureUrl,
-            initials: getInitialsAttribute(updatedAccount.name),
+    function refreshProfile(accountData) {
+        const newProfile = {
+            id: accountData.id,
+            name: accountData.name,
+            email: accountData.email,
+            pictureUrl: accountData.pictureUrl,
+            initials: getInitialsAttribute(accountData.name),
             theme: profile?.theme
         }
-        setProfile(profile);
+        setProfile(newProfile);
     }
 
     function getInitialsAttribute(name) {
@@ -288,7 +288,7 @@ export default function Register({ mode }) {
         if (!isLoading) {
             setIsLoading(true);
             try {
-                const updatedAccount = await updateAccount(encryptAccount);
+                const res = await updateAccount(encryptAccount);
                 setAccount({
                     ...account,
                     password: null,
@@ -298,7 +298,7 @@ export default function Register({ mode }) {
                 setIsChangePasswordFormValid(false);
                 showAlert(VariantType.SUCCESS, t("update-account-success"));
 
-                refreshProfile(updatedAccount);
+                refreshProfile(res);
 
             } catch (error) {
                 showAlert(VariantType.DANGER, error.message);
@@ -329,7 +329,7 @@ export default function Register({ mode }) {
             setRefresh(!refresh);
 
         } else {
-            fetchAccount(profile.id);
+            getAccount(profile.id);
         }
     }
 

@@ -1,6 +1,6 @@
 import { useQueryClient } from "@tanstack/react-query";
-import { getPantry, getAnalysePantry, createPantryItem, getPantryChartData } from "../api/mypantry/pantry/pantryService";
-import { useMutationWithCallbacks, useQueryWithCallbacks } from "./useCustomQuery";
+import { createPantryItem, fetchPantry, fetchAnalysePantry, fetchPantryChartData } from "../api/mypantry/pantry/pantryService";
+import { useMutationWithCallbacks, useQueryWithCallbacks } from "./fetchCacheApi";
 
 const PANTRY_KEY = 'pantry';
 const ANALYSE_PANTRY_KEY = 'analysePantry';
@@ -8,11 +8,13 @@ const PANTRY_ITEMS_KEY = 'pantryItems'
 const PANTRY_CHARTS_KEY = 'pantryCharts'
 
 export function useGetPantry({ id }, callbacks = {}) {
-
     return useQueryWithCallbacks(
         [PANTRY_KEY, id],
-        ({ signal }) => getPantry(id, signal),
-        { enabled: !!id },
+        ({ signal }) => fetchPantry(id, signal),
+        {
+            enabled: !!id,
+            staleTime: 1000 * 60 * 3
+        },
         callbacks
     );
 }
@@ -21,13 +23,13 @@ export function useAnalysePantry({ id, runQuery }, callbacks = {}) {
 
     return useQueryWithCallbacks(
         [ANALYSE_PANTRY_KEY, id],
-        ({ signal }) => getAnalysePantry(id, signal),
+        ({ signal }) => fetchAnalysePantry(id, signal),
         { enabled: !!id && runQuery },
         callbacks
     );
 }
 
-export function useCreatePantryItem(callbacks = {}) {
+export function useCreateNewPantryItem(callbacks = {}) {
 
     return useMutationWithCallbacks(
         ({ pantryId, newItem }) => createPantryItem(pantryId, newItem),
@@ -36,17 +38,17 @@ export function useCreatePantryItem(callbacks = {}) {
     );
 }
 
-export function useGetPantryCharts({ email}, callbacks = {}) {
+export function useGetPantryCharts({ email }, callbacks = {}) {
 
     return useQueryWithCallbacks(
         [PANTRY_CHARTS_KEY, email],
-        ({ signal }) => getPantryChartData(signal),
+        ({ signal }) => fetchPantryChartData(signal),
         {
             enabled: !!email,
-            staleTime: 1000 * 60 * 5, // Keeps data fresh for 5 minutes
-            gcTime: 1000 * 60 * 30, // Keeps data cached for 30 minutes
+            staleTime: 1000 * 60 * 3, // Keeps data fresh for 3 minutes
+            //gcTime: 1000 * 60 * 30, // Keeps data cached for 30 minutes
+            gcTime: Infinity
         },
         callbacks
     );
-
 }

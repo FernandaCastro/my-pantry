@@ -1,19 +1,14 @@
-import React, { useState, useEffect, useCallback, useContext, useRef } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Row } from 'react-bootstrap';
-import VariantType from '../components/VariantType.js';
-import useAlert from '../hooks/useAlert.js';
-import { getPantryChartData } from '../api/mypantry/pantry/pantryService.js';
 import { useTranslation } from 'react-i18next';
 import i18n from 'i18next';
-import { useLoading } from '../hooks/useGlobalLoading.js';
 import PantryPieChart from '../components/PantryPieChart.js';
 import useProfile from '../hooks/useProfile.js';
 
 export default function PantryPieCharts({ chartData }) {
 
     const { t } = useTranslation(['pantry', 'common']);
-    //const { profileCtx } = useContext(ProfileContext);
-    // const pieRef = useRef(null);
+
     const { profile, DEFAULT_THEME } = useProfile();
 
     const colors = [
@@ -33,17 +28,6 @@ export default function PantryPieCharts({ chartData }) {
         const theme = profile?.theme ? profile.theme : DEFAULT_THEME;
         return colors.findIndex(c => c.theme === theme, 0);
     });
-
-    // const { showAlert } = useAlert();
-    // const { isLoading, setIsLoading } = useLoading();
-
-    // const [pantries, setPantries] = useState(chartData);
-
-    // useEffect(() => {
-    //     if (!chartData) {
-    //         fetchPantriesChartData();
-    //     }
-    // }, [])
 
     useEffect(() => {
         updateChartLabels();
@@ -80,22 +64,8 @@ export default function PantryPieCharts({ chartData }) {
         setData(() => _data);
     }
 
-    // async function fetchPantriesChartData() {
-    //     setIsLoading(true);
-    //     try {
-    //         const res = await getPantryChartData();
-    //         setPantries(res);
-    //         return res;
-    //     } catch (error) {
-    //         showAlert(VariantType.DANGER, error.message);
-    //     } finally {
-    //         setIsLoading(false);
-    //     }
-    // }
-
     return (
         <Row xs={1} xxl={2}>
-            {/* {renderPieCharts()} */}
             {chartData?.map((item, index) => <PantryPieChart key={index} item={item} index={index} data={data} activeColor={activeColor} refreshChart={refreshChart} />)}
         </Row >
     )

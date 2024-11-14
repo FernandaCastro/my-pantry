@@ -1,7 +1,7 @@
 import getResponseContent from '../getResponseContent';
 import RequestError from '../RequestError';
-import History from '../../../util/History.js';
-import Translator from '../../../util/Translator.js';
+import { history } from '../../../util/history.js';
+import { translator } from '../../../util/translator.js';
 
 const language = localStorage.getItem('i18nextLng');
 const headers = {
@@ -115,12 +115,12 @@ async function processResponse(res) {
     }
 
     if (res.status === 401) {
-        const error = Translator.translate('status-401')
+        const error = translator.translate('status-401')
         throw new RequestError(error, res.status);
     }
 
     if (res.status === 403) {
-        const error = Translator.translate('status-403');
+        const error = translator.translate('status-403');
         throw new RequestError(error, res.status);
     }
 

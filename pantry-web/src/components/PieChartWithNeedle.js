@@ -65,7 +65,6 @@ const PieChartWithNeedle = React.memo(props => {
     };
 
     const customPieLabel = (props) => {
-        const outerRadius = props.outerRadius;
         const cx = props.cx;
         const cy = props.cy;
         const midAngle = props.midAngle;

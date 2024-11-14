@@ -95,9 +95,6 @@ export default function BarcodeScanner({ active, setActive }) {
                 console.log("QuaggaJS initialization succeeded");
                 Quagga.start(); // Start scanning
 
-                var drawingCtx = Quagga.canvas.ctx.overlay,
-                    drawingCanvas = Quagga.canvas.dom.overlay;
-
                 setIsInitialized(true);
             }
         );

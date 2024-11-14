@@ -35,5 +35,6 @@
   "btn-close-password-answer": "Cancel",
   "title-reset-password": "Question to Reset Password",
   "placeholder-reset-question": "Question",
-  "placeholder-reset-answer": "Answer"
+  "placeholder-reset-answer": "Answer",
+  "rememberMe": "Remember me"
 }

@@ -1,16 +1,8 @@
-import { useMemo } from 'react';
-import { useCachedState } from './useCustomQuery';
+import { useAlertState } from '../state/alert';
 
 function useAlert() {
 
-    const ALERT_KEY = "alert";
-    const ALERT_DISABLED = {
-        show: false,
-        type: "",
-        message: ""
-    }
-
-    const { cachedState: alert, setCachedState } = useCachedState(ALERT_KEY, ALERT_DISABLED);
+    const { data: alert, setData, resetData } = useAlertState()
 
     function showAlert(type, message) {
         if (type && type.length > 0 && message && message.length > 0) {
@@ -20,17 +12,14 @@ function useAlert() {
                 message: message
             }
 
-            setCachedState(ALERT_KEY, newAlert)
+            setData(newAlert);
         }
     }
 
     function hideAlert() {
 
-        setCachedState(ALERT_KEY, ALERT_DISABLED)
+        resetData();
     }
-
-    // Memoize to prevent unnecessary re-renders
-    //const alert = useMemo(() => cachedState, cachedState);
 
     return { alert, showAlert, hideAlert };
 }

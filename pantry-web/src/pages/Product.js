@@ -8,7 +8,7 @@ import ProductForm from '../components/ProductForm.js';
 import ProductList from '../components/ProductList.js';
 import Button from 'react-bootstrap/Button';
 import CloseButton from 'react-bootstrap/CloseButton';
-import { getAccountGroupList } from '../api/mypantry/account/accountService.js'
+import { fetchAccountGroupList } from '../api/mypantry/account/accountService.js'
 import { useTranslation } from 'react-i18next';
 import iconProduct from '../assets/images/food-gradient.png';
 import Image from 'react-bootstrap/Image';
@@ -31,12 +31,12 @@ export default function Product() {
 
     const [accountGroupOptions, setAccountGroupOptions] = useState([]);
     const { showAlert } = useAlert();
-    const { isLoading, setIsLoading } = useGlobalLoading();
+    const { setIsLoading } = useGlobalLoading();
 
     useEffect(() => {
         fetchCategories();
         if (!accountGroupOptions || accountGroupOptions.length === 0) {
-            fetchAccountGroups();
+            getAccountGroups();
         }
     }, []);
 
@@ -60,10 +60,10 @@ export default function Product() {
         }
     }
 
-    async function fetchAccountGroups() {
+    async function getAccountGroups() {
         setIsLoading(true);
         try {
-            const res = await getAccountGroupList();
+            const res = await fetchAccountGroupList();
 
             var list = [];
             res.forEach(group => {

@@ -1,7 +1,7 @@
 import { Form, Col } from 'react-bootstrap';
 import { useEffect, useState } from 'react';
 import Select from './Select';
-import { getRoles } from '../api/mypantry/account/accountService';
+import { fetchRoles } from '../api/mypantry/account/accountService';
 import { useTranslation } from 'react-i18next';
 
 export default function RoleSelect({ setSelectedRole }) {
@@ -12,11 +12,11 @@ export default function RoleSelect({ setSelectedRole }) {
     const [role, setRole] = useState();
 
     useEffect(() => {
-        fetchRoles();
+        loadRoles();
     }, [])
 
-    async function fetchRoles() {
-        const res = await getRoles();
+    async function loadRoles() {
+        const res = await fetchRoles();
         let list = [];
         res.map(r => {
             if (r.id.toLowerCase() !== 'owner') {

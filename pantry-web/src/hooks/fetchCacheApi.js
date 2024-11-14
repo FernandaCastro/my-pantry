@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useEffect, useMemo } from "react";
+import { useEffect } from "react";
 
 /**
  * Utility function to create useQuery hooks with success and error callbacks.
@@ -10,9 +10,9 @@ import { useEffect, useMemo } from "react";
  */
 export function useQueryWithCallbacks(queryKey, queryFn, options = {}, callbacks = {}, initialData) {
 
-    const { onSuccess, onError } = callbacks;  // Destructure the callbacks object
+    const { onSuccess, onError } = callbacks;
 
-    const { data, isLoading, isFetching, isSuccess, isError, error, refetch } = useQuery({
+    const { data, isLoading, isFetching, isSuccess, isError, error, refetch, status } = useQuery({
         queryKey,
         queryFn,
         initialData,
@@ -31,9 +31,7 @@ export function useQueryWithCallbacks(queryKey, queryFn, options = {}, callbacks
         }
     }, [isFetching, error])
 
-    const memoData = useMemo(() => data, [data]);
-
-    return { data: memoData, isLoading: isLoading, isSuccess: isSuccess, isError: isError, error: error, refetch: refetch };
+    return { data, isLoading, isSuccess, isError, error, refetch, status };
 }
 
 /**
@@ -44,47 +42,20 @@ export function useQueryWithCallbacks(queryKey, queryFn, options = {}, callbacks
  */
 export function useMutationWithCallbacks(mutationFn, options = {}, callbacks = {}) {
 
-    const { onSuccess, onError } = callbacks;  // Destructure the callbacks object
+    const { onSuccess, onError } = callbacks;
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn,  // Mutation function (e.g., API call)
-        ...options,  // Additional options like refetching on success
+        mutationFn,
+        ...options,
         onSuccess: (data) => {
             if (options.invalidateQueriesKey) {
                 queryClient.invalidateQueries(options.invalidateQueriesKey);
             }
-            if (onSuccess) onSuccess(data);  // Call success callback if provided
+            if (onSuccess) onSuccess(data);
         },
         onError: (error) => {
-            if (onError) onError(error);  // Call error callback if provided
+            if (onError) onError(error);
         }
     });
-}
-
-export function useCachedState(key, initialValue = null) {
-
-    const queryClient = useQueryClient();
-    const initialDataValue = initialValue == null ? queryClient.getQueryData([key]) : initialValue;
-
-    const { data: cachedState } = useQuery({
-        queryKey: [key],
-        queryF: () => queryClient.getQueryData([key]),
-        initialData: initialDataValue,
-        enabled: false
-    });
-
-    function setCachedState(key, newData) {
-
-        queryClient.setQueryData([key], () => (
-            newData
-        ));
-
-        // queryClient.setQueryData([key], (oldData) => ({
-        //     ...oldData,
-        //     ...newData
-        // }));
-    }
-
-    return { cachedState, setCachedState }
 }

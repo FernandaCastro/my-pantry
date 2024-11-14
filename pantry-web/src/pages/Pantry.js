@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router';
-import { getPantry, updatePantry, createPantry } from '../api/mypantry/pantry/pantryService.js';
+import { updatePantry, createPantry, fetchPantry } from '../api/mypantry/pantry/pantryService.js';
 import VariantType from '../components/VariantType.js';
 import useAlert from '../hooks/useAlert.js';
 import PantryForm from '../components/PantryForm.js';
 import Button from 'react-bootstrap/Button';
-import { getAccountGroupList } from '../api/mypantry/account/accountService.js';
+import { fetchAccountGroupList } from '../api/mypantry/account/accountService.js';
 import { useTranslation } from 'react-i18next';
 import { Image, Stack } from 'react-bootstrap';
 import iconPantry from '../assets/images/cupboard-gradient.png';
@@ -30,23 +30,23 @@ export default function Pantry({ mode }) {
         });
 
     const { showAlert } = useAlert();
-    const { isLoading, setIsLoading } = useGlobalLoading();
+    const { setIsLoading } = useGlobalLoading();
 
     useEffect(() => {
         if (id && mode === 'edit') {
-            fetchPantry();
+            getPantry();
         }
 
         if (!accountGroupOptions || accountGroupOptions.length === 0) {
-            fetchAccountGroups();
+            loadAccountGroups();
         }
     }, [])
 
 
-    async function fetchAccountGroups() {
+    async function loadAccountGroups() {
         setIsLoading(true);
         try {
-            const res = await getAccountGroupList();
+            const res = await fetchAccountGroupList();
 
             var list = [];
             res.forEach(group => {
@@ -65,14 +65,17 @@ export default function Pantry({ mode }) {
         }
     }
 
-    async function fetchPantry() {
+    async function getPantry() {
         setIsLoading(true);
         try {
-            const res = await getPantry(id);
+            const res = await fetchPantry(id);
             setPantry(res);
 
         } catch (error) {
             showAlert(VariantType.DANGER, error.message);
+            if (error.status === 403) {
+                navigate('/pantries');
+            }
         } finally {
             setIsLoading(false);
         }
@@ -103,7 +106,7 @@ export default function Pantry({ mode }) {
                 <Button bsPrefix="btn-custom" href={"/pantries/" + pantry.id + "/items"} className="pe-2 ps-2 ms-auto" disabled={pantry.id === 0}><span>{t('btn-add-pantry-items')}</span></Button>
             </div>
             <div>
-                <PantryForm key={pantry.id} pantry={pantry} handleSave={fetchSavePantry} accountGroupOptions={accountGroupOptions} />
+                <PantryForm key={pantry.id + accountGroupOptions.length} pantry={pantry} handleSave={fetchSavePantry} accountGroupOptions={accountGroupOptions} />
             </div>
         </Stack >
     );

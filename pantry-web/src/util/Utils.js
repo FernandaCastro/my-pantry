@@ -44,9 +44,9 @@ export function wait(time) {
     });
 }
 
-export function truncate(string, maxSize){
+export function truncate(string, maxSize) {
     if (!string || !maxSize || maxSize < 3) return;
-    if (string.length > maxSize){
+    if (string.length > maxSize) {
         return string.slice(0, (maxSize - 3)) + "..."
     }
     return string;

@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { getPantryItemsConsume, postPantryConsumeItem } from '../api/mypantry/pantry/pantryService.js';
+import { fetchPantryItemsConsume, postPantryConsumeItem } from '../api/mypantry/pantry/pantryService.js';
 import Stack from 'react-bootstrap/Stack';
 import Image from 'react-bootstrap/Image';
 import food from '../assets/images/healthy-food.png'
 import Form from 'react-bootstrap/Form';
-import { camelCase } from '../util/Utils.js';
+import { camelCase } from '../util/utils.js';
 import VariantType from '../components/VariantType.js';
 import useAlert from '../hooks/useAlert.js';
 import PantrySelect from '../components/PantrySelect.js'
@@ -42,7 +42,7 @@ export default function Consume() {
   useEffect(() => {
     if (selectedPantries && selectedPantries.length > 0) {
       setIsLoading(true);
-      fetchPantryItem();
+      loadPantryItem();
     } else {
       setPantryItems([]);
     }
@@ -54,14 +54,14 @@ export default function Consume() {
     setReload(!reload);
   }, [pantryItems])
 
-  async function fetchPantryItem() {
+  async function loadPantryItem() {
 
     //Avoid racing condition (TODO: check lib react-query )
     abortController.current?.abort();
     abortController.current = new AbortController();
 
     try {
-      const res = await getPantryItemsConsume(selectedPantries, abortController.current?.signal);
+      const res = await fetchPantryItemsConsume(selectedPantries, abortController.current?.signal);
       setPantryItems(res);
 
       if (res != null && Object.keys(res).length === 0) {
@@ -75,7 +75,7 @@ export default function Consume() {
     }
   }
 
-  async function fetchSaveConsumeItem(consumedItem) {
+  async function saveConsumeItem(consumedItem) {
     try {
       setIsLoading(true)
       const res = await postPantryConsumeItem(consumedItem);
@@ -104,7 +104,7 @@ export default function Consume() {
 
     const id = setTimeout(() => {
       const consumedItem = { pantryId: item.pantry.id, productId: item.product.id, qty: pendingQuantity + 1 }
-      fetchSaveConsumeItem(consumedItem);
+      saveConsumeItem(consumedItem);
       setPendingQuantity(0);
     }, 300);
 

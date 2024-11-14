@@ -1,19 +1,13 @@
-import { useMemo } from 'react';
-import { useCachedState } from './useCustomQuery';
+import { useGlobalLoadingState } from '../state/loading';
 
 export function useGlobalLoading() {
 
-    const GLOBAL_LOADING_KEY = "globalLoading";
-
-    const { cachedState: isLoading, setCachedState } = useCachedState(GLOBAL_LOADING_KEY, false);
+    const { data: isLoading, setData } = useGlobalLoadingState()
 
     function setIsLoading(value) {
 
-        setCachedState(GLOBAL_LOADING_KEY, value);
+        setData(value);
     }
-
-    // Memoize to prevent unnecessary re-renders
-    // const isLoading = useMemo(() => cachedState, cachedState);
 
     return { isLoading, setIsLoading };
 }

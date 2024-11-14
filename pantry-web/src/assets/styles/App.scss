@@ -1330,6 +1330,9 @@ span.critical {
 #scanner-camera video {
     display: flex;
     //transform: rotate(0deg); 
+    object-fit: cover;
+    width: 100%;
+    height: 100%;
 }
 
 .scanner-outer-box {
@@ -1368,7 +1371,7 @@ span.critical {
 
     display: flex;
     flex-direction: column;
-    align-items: start;
+    align-items: flex-start;
     overflow: hidden;
 }
 

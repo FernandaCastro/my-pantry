@@ -1,6 +1,6 @@
 import Image from 'react-bootstrap/Image';
 import iNoAccount from '../assets/images/no-login.png';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button, Offcanvas } from 'react-bootstrap';
 import { LogoutFromGoogle } from './LoginWithGoogle.js';
 import { logout } from '../api/mypantry/account/loginService';
@@ -13,6 +13,7 @@ import { updateTheme } from '../api/mypantry/account/accountService';
 import useGlobalLoading from '../hooks/useGlobalLoading';
 import useAlert from '../hooks/useAlert';
 import VariantType from '../components/VariantType.js';
+import CustomLink from './CustomLink';
 
 function AccountMenu() {
 
@@ -20,7 +21,7 @@ function AccountMenu() {
 
     const navigate = useNavigate();
 
-    const { profile, setProfile } = useProfile();
+    const { profile, setProfile, resetProfile } = useProfile();
     const { isLoading, setIsLoading } = useGlobalLoading();
     const { showAlert } = useAlert();
 
@@ -41,15 +42,14 @@ function AccountMenu() {
                 optionData = found;
             }
         }
-        // document.body.className = optionData.value;
         return optionData;
     });
 
     const handleLogout = async () => {
         await logout();
 
-        setProfile({ theme: profile.theme });
-        setExpandMenu(!expandMenu)
+        resetProfile();
+        setExpandMenu(false)
         navigate('/login');
     };
 
@@ -85,30 +85,30 @@ function AccountMenu() {
     }
 
     function handleClose() {
-        document.getElementsByClassName("btn-close")[0]?.click();
-        //document.getElementById("btn-close")?.click();
+        //document.getElementsByClassName("btn-close")[0]?.click();
+        setExpandMenu(false);
     }
 
-    function renderSingin() {
+    function Singin() {
         return (
-            <Button variant='link' href="/login" >
+            <CustomLink to="/login" >
                 <Image className='hover-effect' width={30} height={30} roundedCircle referrerPolicy="no-referrer" src={iNoAccount} />
-            </Button>
+            </CustomLink>
         )
     }
 
-    function renderUserProfile() {
+    function UserProfile() {
 
         return (
             <div>
-                <Button variant='link' onClick={() => setExpandMenu(!expandMenu)} >
+                <Button variant='link' onClick={() => setExpandMenu(true)} >
                     {profile.pictureUrl && profile.pictureUrl.length > 0 ?
                         <Image className='profile-icon hover-effect' width={40} height={40} roundedCircle referrerPolicy="no-referrer" src={profile.pictureUrl} /> :
                         <div className="gradient-profile-box hover-effect"><span className="gradient-icon-label">{profile.initials}</span></div>
                     }
                 </Button>
 
-                <Offcanvas className="slide-menu-box" show={expandMenu} placement="end" onHide={() => setExpandMenu(!expandMenu)}>
+                <Offcanvas className="slide-menu-box" show={expandMenu} placement="end" onHide={() => setExpandMenu(false)}>
                     <Offcanvas.Header closeButton className='align-items-start pb-0'>
                         <div className='d-flex flex-column justify-content-start align-items-center flex-grow-1'>
                             {profile.pictureUrl && profile.pictureUrl.length > 0 ?
@@ -130,14 +130,14 @@ function AccountMenu() {
                                     options={themes}
                                     onChange={(e) => setThemeOption(e)} />
                             </div>
-                            <Button bsPrefix="btn-profile-menu" href={"/account/edit"} onClick={handleClose}>
+                            <CustomLink bsPrefix="btn-profile-menu" to={"/account/edit"} onClick={handleClose}>
                                 <BsPersonGear className="simple-icon me-2" />
                                 {t("edit-account-link")}
-                            </Button>
-                            <Button bsPrefix="btn-profile-menu" href="/group-members" onClick={handleClose}>
+                            </CustomLink>
+                            <CustomLink bsPrefix="btn-profile-menu" to="/group-members" onClick={handleClose}>
                                 <BsPeople className="simple-icon me-2" />
                                 {t("group-members-link")}
-                            </Button>
+                            </CustomLink>
                         </div >
                         <div className='mt-auto align-self-center'>
                             <LogoutFromGoogle handleLogout={handleLogout} text={t("btn-logout")} />
@@ -151,7 +151,7 @@ function AccountMenu() {
 
     return (
         <div>
-            {profile && Object.keys(profile).length > 1 ? renderUserProfile() : renderSingin()}
+            {profile && Object.keys(profile).length > 1 ? <UserProfile /> : <Singin />}
         </div>
     )
 }

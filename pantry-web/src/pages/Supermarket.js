@@ -6,7 +6,7 @@ import { CategoryDragDrop } from '../components/CategoryDragDrop';
 import useAlert from '../hooks/useAlert.js';
 import VariantType from '../components/VariantType.js';
 import Select from '../components/Select';
-import { getAccountGroupList } from '../api/mypantry/account/accountService.js';
+import { fetchAccountGroupList } from '../api/mypantry/account/accountService.js';
 import { getSupermarketsByGroup, createSupermarket, updateSupermarket, deleteSupermarket } from '../api/mypantry/purchase/purchaseService'
 import iconSupermarket from '../assets/images/supermarket-gradient.png';
 import Modal from 'react-bootstrap/Modal';
@@ -30,7 +30,7 @@ export function Supermarket() {
     const [supermarketToDelete, setSupermarketToDelete] = useState();
 
     const { showAlert } = useAlert();
-    const { isLoading, setIsLoading } = useGlobalLoading();
+    const { setIsLoading } = useGlobalLoading();
 
     useEffect(() => {
         fetchAccountGroups();
@@ -43,7 +43,7 @@ export function Supermarket() {
     async function fetchAccountGroups() {
         setIsLoading(true);
         try {
-            const res = await getAccountGroupList();
+            const res = await fetchAccountGroupList();
 
             var list = [];
             res.forEach(group => {

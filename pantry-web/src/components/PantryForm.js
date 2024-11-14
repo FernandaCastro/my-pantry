@@ -13,7 +13,6 @@ export default function PantryForm({ pantry, handleSave, accountGroupOptions }) 
 
     const [isActiveLabel, setIsActiveLabel] = useState(pantry.isActive ? t('active') : t('inactive'));
     const [accountGroupOption, setAccountGroupOption] = useState({ value: 0, label: "" });
-    const [isLoading] = useState(false);
     const [isProcessing, setIsProcessing] = useState(false);
     const [id] = useState(pantry.id);
     const [typeOptions] = useState([

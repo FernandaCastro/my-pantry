@@ -2,8 +2,8 @@ import { useEffect, useState } from 'react';
 import { Table } from 'react-bootstrap';
 import useAlert from '../hooks/useAlert.js';
 import VariantType from '../components/VariantType.js';
-import { getRoles } from '../api/mypantry/account/accountService.js'
-import { camelCase, fullCamelCase } from '../util/Utils.js';
+import { fetchRoles } from '../api/mypantry/account/accountService.js'
+import { fullCamelCase } from '../util/utils.js';
 import { useTranslation } from 'react-i18next';
 
 export default function PermissionsView() {
@@ -14,12 +14,12 @@ export default function PermissionsView() {
     const [roles, setRoles] = useState([]);
 
     useEffect(() => {
-        fetchRoles();
+        loadRoles();
     }, [])
 
-    async function fetchRoles() {
+    async function loadRoles() {
         try {
-            const res = await getRoles();
+            const res = await fetchRoles();
             setRoles(res);
         } catch (error) {
             showAlert(VariantType.DANGER, error.message);

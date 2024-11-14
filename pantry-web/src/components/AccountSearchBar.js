@@ -8,11 +8,11 @@ import Card from 'react-bootstrap/Card';
 import Stack from 'react-bootstrap/Stack';
 import CloseButton from 'react-bootstrap/CloseButton';
 import Collapse from 'react-bootstrap/Collapse';
-import { getFilteredAccountList } from '../api/mypantry/account/accountService.js';
+import { fetchFilteredAccountList } from '../api/mypantry/account/accountService.js';
 import RoleSelect from './RoleSelect';
 import AccountForm from './AccountForm';
 import { useTranslation } from 'react-i18next';
-import { maskEmail } from '../util/Utils.js'
+import { maskEmail } from '../util/utils.js'
 
 function AccountSearchBar({ handleSelectAction, handleClearAction, disabled }) {
 
@@ -27,10 +27,9 @@ function AccountSearchBar({ handleSelectAction, handleClearAction, disabled }) {
     const { showAlert } = useAlert();
 
     const [selectedRole, setSelectedRole] = useState();
-    const [account, setAccount] = useState({});
 
     function handleSearch() {
-        if (searchText.length > 2) fetchAccount(searchText);
+        if (searchText.length > 2) loadAccount(searchText);
     }
 
     function clearSearch() {
@@ -47,9 +46,9 @@ function AccountSearchBar({ handleSelectAction, handleClearAction, disabled }) {
         clearSearch();
     }
 
-    async function fetchAccount(value) {
+    async function loadAccount(value) {
         try {
-            const res = await getFilteredAccountList(value);
+            const res = await fetchFilteredAccountList(value);
             setNotFoundMessage(res.length === 0 ? notFound : "");
             setResults(res);
         } catch (error) {

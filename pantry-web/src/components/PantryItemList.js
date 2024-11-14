@@ -1,4 +1,4 @@
-import { getPantryItems, deletePantryItem, updatePantryItem } from '../api/mypantry/pantry/pantryService.js';
+import { deletePantryItem, updatePantryItem, fetchPantryItems } from '../api/mypantry/pantry/pantryService.js';
 import React, { useEffect, useRef, useState } from 'react';
 import VariantType from '../components/VariantType.js';
 import Button from 'react-bootstrap/Button';
@@ -7,7 +7,7 @@ import NumericField from './NumericField.js'
 import Form from 'react-bootstrap/Form';
 import Image from 'react-bootstrap/Image';
 import food from '../assets/images/healthy-food.png'
-import { camelCase } from '../util/Utils.js';
+import { camelCase } from '../util/utils.js';
 import useAlert from '../hooks/useAlert.js';
 import { useTranslation } from 'react-i18next';
 import { Card, Col, Row } from 'react-bootstrap';
@@ -31,7 +31,7 @@ function PantryItemList({ refetch, setRefetch, pantryId, setIsEmpty }) {
 
     useEffect(() => {
         if (pantryId && pantryId > 0 & refetch) {
-            fetchPantryItems();
+            loadPantryItems();
         }
     }, [pantryId, refetch])
 
@@ -40,14 +40,14 @@ function PantryItemList({ refetch, setRefetch, pantryId, setIsEmpty }) {
         setIsEmpty(!pantryItems || pantryItems.length === 0);
     }, [pantryItems])
 
-    async function fetchPantryItems() {
+    async function loadPantryItems() {
         //Avoid racing condition (TODO: check lib react-query )
         abortController.current?.abort();
         abortController.current = new AbortController();
 
         try {
             setIsLoading(true);
-            const res = await getPantryItems(pantryId, abortController.current?.signal);
+            const res = await fetchPantryItems(pantryId, abortController.current?.signal);
             setPantryItems(res);
             setRefetch(false);
         } catch (error) {

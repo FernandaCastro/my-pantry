@@ -1,21 +1,21 @@
 import { useEffect, useState } from 'react';
 import JSEncrypt from 'jsencrypt';
-import { getPublicKey } from '../api/mypantry/account/accountService'
+import { fetchPublicKey } from '../api/mypantry/account/accountService'
 
 const useRSAEncrypt = () => {
     const [publicKey, setPublicKey] = useState('');
 
     useEffect(() => {
-        const fetchPublicKey = async () => {
+        const loadPublicKey = async () => {
             try {
-                const res = await getPublicKey();
+                const res = await fetchPublicKey();
                 setPublicKey(res.data);
             } catch (error) {
                 console.error('Error fetching public key:', error);
             }
         };
 
-        fetchPublicKey();
+        loadPublicKey();
     }, []);
 
     const encrypt = new JSEncrypt();

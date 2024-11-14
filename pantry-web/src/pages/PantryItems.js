@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useState } from 'react';
 import { useParams } from 'react-router';
 import VariantType from '../components/VariantType.js';
 import useAlert from '../hooks/useAlert.js';
@@ -9,9 +9,10 @@ import { useTranslation } from 'react-i18next';
 import { Image, Stack } from 'react-bootstrap';
 import iconPantry from '../assets/images/cupboard-gradient.png';
 import { Loading } from '../components/Loading.js';
-import { useGetPantry, useAnalysePantry, useCreatePantryItem } from '../hooks/useApiPantry.js';
-import { useGetAccountGroups, useGetAccountGroupsOptions } from '../hooks/useApiAccount.js';
 import useProfile from '../hooks/useProfile.js';
+import { useGetAccountGroups, useGetAccountGroupsOptions } from '../hooks/fetchCacheApiAccount.js';
+import { useCreateNewPantryItem, useGetPantry, useAnalysePantry } from '../hooks/fetchCacheApiPantry.js';
+
 
 export default function PantryItems() {
 
@@ -51,7 +52,7 @@ export default function PantryItems() {
         showAlert(VariantType.DANGER, error.message);
     }
 
-    const { } = useAnalysePantry({ id: pantry?.id, runQuery: analysePantryClick },
+    useAnalysePantry({ id: pantry?.id, runQuery: analysePantryClick },
         {
             onSuccess: (data) => handleAnalysePantrySuccess(data),
             onError: (error) => handleAnalysePantryError(error)
@@ -68,7 +69,7 @@ export default function PantryItems() {
         showAlert(VariantType.DANGER, error);
     }
 
-    const { mutate } = useCreatePantryItem({ onSuccess: handleCreatePantryItemSuccess, onError: handleCreatePantryItemError })
+    const { mutate } = useCreateNewPantryItem({ onSuccess: handleCreatePantryItemSuccess, onError: handleCreatePantryItemError })
 
     function handleAddItem(product, itemQuantity) {
         const newItem = {

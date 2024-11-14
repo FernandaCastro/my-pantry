@@ -1,6 +1,4 @@
-const History = {
+export const history = {
     navigate: null,
-    push: (page, ...rest) => History.navigate(page, ...rest),
+    push: (page, ...rest) => history.navigate(page, ...rest),
 }
-
-export default History

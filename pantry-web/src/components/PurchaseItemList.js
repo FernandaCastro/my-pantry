@@ -8,7 +8,7 @@ import VariantType from '../components/VariantType.js';
 import useAlert from '../hooks/useAlert.js';
 import Select from '../components/Select.js';
 import Collapse from 'react-bootstrap/Collapse';
-import { camelCase } from '../util/Utils.js';
+import { camelCase } from '../util/utils.js';
 import { BsArrow90DegRight } from "react-icons/bs";
 import { Card, Col, FormCheck, Row } from "react-bootstrap";
 import { useTranslation } from 'react-i18next';
@@ -243,7 +243,7 @@ function PurchaseItemList({ selectedPurchase, selectedPantries, setOuterPurchase
             if (category !== i.product.category) {
 
                 category = i.product.category;
-                var found = categories.find(c => c.id == category);
+                var found = categories.find(c => c.id === category);
 
                 list = [...list,
                 {
@@ -274,7 +274,7 @@ function PurchaseItemList({ selectedPurchase, selectedPantries, setOuterPurchase
 
     function isSupermarketCategory(category) {
         if (supermarketOption.value > 0) {
-            var found = categories.find(c => c.id == category);
+            var found = categories.find(c => c.id === category);
             if (found) {
                 return found.isSupermarketCategory;
             }
@@ -292,7 +292,7 @@ function PurchaseItemList({ selectedPurchase, selectedPantries, setOuterPurchase
         var category = found ? found.product.category : "";
 
         while (category !== "" && index < filteredItems.length) {
-            var filteredCategory = filteredItems.filter(i => i.product.category === category);
+            var filteredCategory = filteredItems.filter((i) => i.product.category === category);
 
             elements.push(renderCategoryCard(category, filteredCategory))
 

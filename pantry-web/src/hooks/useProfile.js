@@ -1,41 +1,22 @@
-import { useMemo, useState } from 'react';
-import { useCachedState, useQueryWithCallbacks } from './useCustomQuery';
-
-const PROFILE_KEY = "profile";
-const DEFAULT_THEME = 'theme-mono-light';
-
-//const THEME_KEY = "theme";
+import { PROFILE_KEY, useProfileState } from '../state/profile';
 
 function useProfile() {
 
-    const { data: profile, isLoading, refetch: refetchProfile } = useQueryWithCallbacks(
-        [PROFILE_KEY],
-        () => getLocalStorageProfile(),
-        {
-            //enabled: refreshCacheProfile,
-            //staleTime: Infinity,
-            gcTime: Infinity,
-        }
-        , getLocalStorageProfile()
-    );
-
-    function getLocalStorageProfile() {
-
-        const localData = localStorage.getItem(PROFILE_KEY);
-        return !localData || localData === 'undefined' || Object.keys(localData).length === 0 ? { theme: DEFAULT_THEME } : JSON.parse(localData);
-    }
+    const { data: profile, setData, resetData } = useProfileState()
 
     function setProfile(profileData) {
 
         localStorage.setItem(PROFILE_KEY, JSON.stringify(profileData));
-        refetchProfile();
+        setData(profileData);
     }
 
-    // Memoize to prevent unnecessary re-renders
-    // const profile = useMemo(() => rawProfile, [rawProfile?.email]);
-    // const theme = useMemo(() => rawTheme, [rawTheme]);
+    function resetProfile() {
+        const cleanProfile = { theme: profile.theme }
+        localStorage.setItem(PROFILE_KEY, JSON.stringify(cleanProfile));
+        setData(cleanProfile);
+    }
 
-    return { DEFAULT_THEME, profile, isLoading, setProfile }
+    return { profile, setProfile, resetProfile }
 
 }
 

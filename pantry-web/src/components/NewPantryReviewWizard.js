@@ -1,10 +1,9 @@
-import { Button, Card, Col, Collapse, Form, FormCheck, Image, Row } from "react-bootstrap";
+import { Button, Card, Col, Collapse, FormCheck, Image, Row } from "react-bootstrap";
 import food from '../assets/images/healthy-food.png'
 import { useTranslation } from 'react-i18next';
 import { useEffect, useState } from "react";
 import i18n from 'i18next';
 import { BsArrow90DegRight } from "react-icons/bs";
-import { useLoading } from "../hooks/useGlobalLoading";
 
 function NewPantryReviewWizard({ pantry, productList, setFinalProductList, expandAll, setExpandAll, analysePantry, setAnalysePantry }) {
 

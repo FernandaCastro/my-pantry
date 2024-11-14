@@ -35,5 +35,6 @@
   "btn-close-password-answer": "Cancelar Edição",
   "title-reset-password": "Redefinição de senha",
   "placeholder-reset-question": "Pergunta",
-  "placeholder-reset-answer": "Resposta"
+  "placeholder-reset-answer": "Resposta",
+  "rememberMe": "Lembrar de mim"
 }
