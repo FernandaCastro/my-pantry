@@ -2,7 +2,7 @@
 
 # My Pantry
 
-<b>version: 0.9.9</b>
+<b>version: 0.10.0</b>
 
 - pantry-web: v.0.8.16
 - account-service: v0.4.11
@@ -11,9 +11,20 @@
 
 ### In this version:
 
-- <b>account-service:</b>  Use Redis to cache RBAC requests (permissions and access control)
+- <b>pantry-web:</b>
+    - Big refactoring replacing the use of React Context by React-Query as a global state manager
+    - Use of react-query cache to improve the dashbord graph generation, fetching fresh data only when it's stale.
+    - Totally refactoring of App.js, removing context dependencies and isolating routes to avoid unnecessary
+      re-rendering.
+    - Use of Link component from react-router-dom to correctly navigate among pages, avoiding complete re-render on
+      transitions.
+    - Apply theme based on the user logging in. It's no more based on the last theme saved on the browser LocalStorage.
 
-Plans:
+- <b>account-service:</b>
+    - Remember Me Logic. When it's active, JWT and AUTH Cookie are valid for 30 days, otherwise it's valid for only 24
+      hours.
+
+### In next versions:
 
 - Delete provisioned products from the shopping list (on Shopping List page)
 
@@ -121,6 +132,10 @@ Themes:
 - Listens to Kafka Topic (PurchaseCreateTopic) to manage a list of items to be purchased
 - Once the purchase is closed, an event is sent back to pantry-service through a Kafka Topic (PurchaseCompleteTopic)
 - Stores data in Postgres
+
+# Major Changelog
+
+### [See Changelog](CHANGELOG.md)
 
 # Credits
 
