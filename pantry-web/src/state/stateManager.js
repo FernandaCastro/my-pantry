@@ -2,7 +2,8 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 
 export function createGlobalState(
     queryKey,
-    initialData = null
+    initialData = null,
+    invalidate = false
 ) {
 
     return function () {
@@ -27,11 +28,12 @@ export function createGlobalState(
         function setData(data) {
             queryClient.setQueryData([queryKey], data);
 
-            queryClient.invalidateQueries({
-                queryKey: [queryKey],
-                refetchType: 'all',
-            });
-
+            if (invalidate) {
+                queryClient.invalidateQueries({
+                    queryKey: [queryKey],
+                    refetchType: 'all',
+                });
+            }
         }
 
         function resetData() {

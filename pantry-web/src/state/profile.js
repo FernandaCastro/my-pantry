@@ -16,4 +16,4 @@ function readLocalStorage() {
     return JSON.parse(localData);
 }
 
-export const useProfileState = createGlobalState(PROFILE_KEY, readLocalStorage());
+export const useProfileState = createGlobalState(PROFILE_KEY, readLocalStorage(), true);
