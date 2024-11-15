@@ -3,13 +3,13 @@ import Button from 'react-bootstrap/Button';
 import { useState } from 'react';
 import { BsEraser, BsCheck2All, BsChevronDown, BsPlusLg } from "react-icons/bs";
 import VariantType from './VariantType.js';
-import useAlert from '../hooks/useAlert.js';
-import { getFilteredProductList, createProduct } from '../api/mypantry/pantry/pantryService.js';
+import useAlert from '../state/useAlert.js';
+import { createProduct, fetchFilteredProductList } from '../api/mypantry/pantry/pantryService.js';
 import Card from 'react-bootstrap/Card';
 import Stack from 'react-bootstrap/Stack';
 import CloseButton from 'react-bootstrap/CloseButton';
 import ProductForm from './ProductForm.js';
-import { camelCase } from '../util/Utils.js';
+import { camelCase } from '../util/utils.js';
 import Collapse from 'react-bootstrap/Collapse';
 import { useTranslation } from 'react-i18next';
 import NumericField from './NumericField.js';
@@ -31,7 +31,7 @@ function ProductSearchBar({ accountGroupId, accountGroupOptions, handleSelectAct
     function handleSearch(e) {
         setSearchText(e.target.value);
         if (e.target.value.length < 3 && searchText.length < 4) setResults([]);
-        if (e.target.value.length > 2) fetchProduct(e.target.value);
+        if (e.target.value.length > 2) loadProduct(e.target.value);
     }
 
     function clearSearch() {
@@ -48,9 +48,9 @@ function ProductSearchBar({ accountGroupId, accountGroupOptions, handleSelectAct
         clearSearch();
     }
 
-    async function fetchProduct(value) {
+    async function loadProduct(value) {
         try {
-            const res = await getFilteredProductList(accountGroupId, value);
+            const res = await fetchFilteredProductList(accountGroupId, value);
             setNotFoundMessage(res.length === 0 ? notFound : "");
             setResults(res);
         } catch (error) {

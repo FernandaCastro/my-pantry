@@ -3,23 +3,23 @@
 // ============================================================
 import { Get, Post, Put, Delete, FetchAccountHeader } from './accountApiClient';
 
-export async function getUserInfo() {
+export async function fetchUserInfo() {
     return FetchAccountHeader(`auth/user-info`);
 }
 
-export async function postGoogleLogin(idToken) {
-    return Post('auth/google-login', idToken);
+export async function postGoogleLogin(idToken, rememberMe) {
+    return Post(`auth/google-login?rememberMe=${rememberMe}`, idToken);
 }
 
-export async function getPublicKey() {
+export async function fetchPublicKey() {
     return Get(`auth/public-key`);
 }
 
-export async function postLogin(account) {
-    return Post('auth/login', account);
+export async function postLogin(account, rememberMe) {
+    return Post(`auth/login?rememberMe=${rememberMe}`, account);
 }
 
-export async function getResetPassword(email) {
+export async function fetchResetPassword(email) {
     return Get(`auth/reset-password?email=${email}`);
 }
 
@@ -31,7 +31,7 @@ export async function postRegister(account) {
     return Post('auth/register', account);
 }
 
-export async function getAccount(id) {
+export async function fetchAccount(id) {
     return Get(`accounts/${id}`);
 }
 
@@ -39,15 +39,19 @@ export async function updateAccount(account) {
     return Put(`accounts/${account.id}`, account);
 }
 
+export async function updateTheme(id, theme) {
+    return Put(`accounts/${id}/theme?theme=${theme}`);
+}
+
 export async function postLogout() {
     return Post('auth/logout');
 }
 
-export async function getAccountGroupList(signal) {
+export async function fetchAccountGroupList(signal) {
     return Get('accountGroups', signal);
 }
 
-export async function getFilteredAccountList(text) {
+export async function fetchFilteredAccountList(text) {
     return Get(`accounts?searchParam=${text}`);
 }
 
@@ -67,7 +71,7 @@ export async function deleteAccountGroup(groupId) {
     return Delete(`accountGroups/${groupId}`);
 }
 
-export async function getAccountGroupMemberList(groupId) {
+export async function fetchAccountGroupMemberList(groupId) {
     return Get(`accountGroupMembers?groupId=${groupId}`);
 }
 
@@ -79,7 +83,7 @@ export async function deleteAccountMember(groupId, accountId) {
     return Delete(`accountGroupMembers/${groupId}/${accountId}`,);
 }
 
-export async function getRoles() {
+export async function fetchRoles() {
     return Get('roles');
 }
 

@@ -1,7 +1,6 @@
 import Image from 'react-bootstrap/Image';
 import iNoAccount from '../assets/images/no-login.png';
-import { ProfileContext } from '../context/AppContext';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button, Offcanvas } from 'react-bootstrap';
 import { LogoutFromGoogle } from './LoginWithGoogle.js';
 import { logout } from '../api/mypantry/account/loginService';
@@ -9,13 +8,23 @@ import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import Select from './Select';
 import { BsPalette, BsPeople, BsPersonGear } from 'react-icons/bs';
+import useProfile from '../state/useProfile';
+import { updateTheme } from '../api/mypantry/account/accountService';
+import useGlobalLoading from '../state/useLoading';
+import useAlert from '../state/useAlert';
+import VariantType from '../components/VariantType.js';
+import CustomLink from './CustomLink';
 
 function AccountMenu() {
 
     const { t } = useTranslation(['header']);
 
     const navigate = useNavigate();
-    const { profileCtx, setProfileCtx } = useContext(ProfileContext);
+
+    const { profile, setProfile, resetProfile } = useProfile();
+    const { isLoading, setIsLoading } = useGlobalLoading();
+    const { showAlert } = useAlert();
+
     const [expandMenu, setExpandMenu] = useState(false);
 
     const themes = [
@@ -26,70 +35,89 @@ function AccountMenu() {
 
     ]
     const [themeOption, setThemeOption] = useState(() => {
-        var theme = { value: 'theme-mono-light', label: 'Mono Light' };
-        if (profileCtx && profileCtx.theme) {
-            const found = themes.find(t => t.value === profileCtx.theme);
+        var optionData = { value: 'theme-mono-light', label: 'Mono Light' };
+        if (profile?.theme) {
+            const found = themes.find(t => t.value === profile.theme);
             if (found) {
-                theme = found;
+                optionData = found;
             }
         }
-        return theme;
+        return optionData;
     });
 
     const handleLogout = async () => {
         await logout();
-        setProfileCtx({ theme: themeOption.value });
-        setExpandMenu(!expandMenu)
+
+        resetProfile();
+        setExpandMenu(false)
         navigate('/login');
     };
 
     useEffect(() => {
-        if (themeOption.value !== profileCtx.theme) {
+        if (themeOption.value && profile?.theme && themeOption.value !== profile?.theme) {
             document.body.className = themeOption.value;
-            setProfileCtx(
-                {
-                    ...profileCtx,
-                    theme: themeOption.value
-                })
+
+            fetchUpdateTheme(profile.id, themeOption.value);
             handleClose();
 
         }
     }, [themeOption?.value]);
 
-    function handleClose() {
-        document.getElementsByClassName("btn-close")[0]?.click();
-        //document.getElementById("btn-close")?.click();
+    async function fetchUpdateTheme(id, themeData) {
+        if (!isLoading) {
+            setIsLoading(true);
+            try {
+                await updateTheme(id, themeData);
+
+                const newProfile = {
+                    ...profile,
+                    theme: themeData
+                }
+
+                setProfile(newProfile);
+
+            } catch (error) {
+                showAlert(VariantType.DANGER, error.message);
+            } finally {
+                setIsLoading(false);
+            }
+        }
     }
 
-    function renderSingin() {
+    function handleClose() {
+        //document.getElementsByClassName("btn-close")[0]?.click();
+        setExpandMenu(false);
+    }
+
+    function Singin() {
         return (
-            <Button variant='link' href="/login" >
+            <CustomLink to="/login" >
                 <Image className='hover-effect' width={30} height={30} roundedCircle referrerPolicy="no-referrer" src={iNoAccount} />
-            </Button>
+            </CustomLink>
         )
     }
 
-    function renderUserProfile() {
+    function UserProfile() {
 
         return (
             <div>
-                <Button variant='link' onClick={() => setExpandMenu(!expandMenu)} >
-                    {profileCtx.pictureUrl && profileCtx.pictureUrl.length > 0 ?
-                        <Image className='profile-icon hover-effect' width={40} height={40} roundedCircle referrerPolicy="no-referrer" src={profileCtx.pictureUrl} /> :
-                        <div className="gradient-profile-box hover-effect"><span className="gradient-icon-label">{profileCtx.initials}</span></div>
+                <Button variant='link' onClick={() => setExpandMenu(true)} >
+                    {profile.pictureUrl && profile.pictureUrl.length > 0 ?
+                        <Image className='profile-icon hover-effect' width={40} height={40} roundedCircle referrerPolicy="no-referrer" src={profile.pictureUrl} /> :
+                        <div className="gradient-profile-box hover-effect"><span className="gradient-icon-label">{profile.initials}</span></div>
                     }
                 </Button>
 
-                <Offcanvas className="slide-menu-box" show={expandMenu} placement="end" onHide={() => setExpandMenu(!expandMenu)}>
+                <Offcanvas className="slide-menu-box" show={expandMenu} placement="end" onHide={() => setExpandMenu(false)}>
                     <Offcanvas.Header closeButton className='align-items-start pb-0'>
                         <div className='d-flex flex-column justify-content-start align-items-center flex-grow-1'>
-                            {profileCtx.pictureUrl && profileCtx.pictureUrl.length > 0 ?
-                                <Image className='profile-icon' width={50} height={50} roundedCircle referrerPolicy="no-referrer" src={profileCtx.pictureUrl} /> :
-                                <div className='gradient-profile-box'><span className="gradient-icon-label">{profileCtx.initials}</span></div>
+                            {profile.pictureUrl && profile.pictureUrl.length > 0 ?
+                                <Image className='profile-icon' width={50} height={50} roundedCircle referrerPolicy="no-referrer" src={profile.pictureUrl} /> :
+                                <div className='gradient-profile-box'><span className="gradient-icon-label">{profile.initials}</span></div>
 
                             }
-                            <span className='title mt-2'>{profileCtx.name}</span>
-                            <span className='small'>{profileCtx.email}</span>
+                            <span className='title mt-2'>{profile.name}</span>
+                            <span className='small'>{profile.email}</span>
                         </div>
                     </Offcanvas.Header>
                     <Offcanvas.Body className="d-flex flex-column gap-3">
@@ -102,14 +130,14 @@ function AccountMenu() {
                                     options={themes}
                                     onChange={(e) => setThemeOption(e)} />
                             </div>
-                            <Button bsPrefix="btn-profile-menu" href={"/account/edit"} onClick={handleClose}>
+                            <CustomLink bsPrefix="btn-profile-menu" to={"/account/edit"} onClick={handleClose}>
                                 <BsPersonGear className="simple-icon me-2" />
                                 {t("edit-account-link")}
-                            </Button>
-                            <Button bsPrefix="btn-profile-menu" href="/group-members" onClick={handleClose}>
+                            </CustomLink>
+                            <CustomLink bsPrefix="btn-profile-menu" to="/group-members" onClick={handleClose}>
                                 <BsPeople className="simple-icon me-2" />
                                 {t("group-members-link")}
-                            </Button>
+                            </CustomLink>
                         </div >
                         <div className='mt-auto align-self-center'>
                             <LogoutFromGoogle handleLogout={handleLogout} text={t("btn-logout")} />
@@ -123,7 +151,7 @@ function AccountMenu() {
 
     return (
         <div>
-            {profileCtx && Object.keys(profileCtx).length > 1 ? renderUserProfile() : renderSingin()}
+            {profile && Object.keys(profile).length > 1 ? <UserProfile /> : <Singin />}
         </div>
     )
 }

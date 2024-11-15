@@ -5,17 +5,16 @@ import Button from 'react-bootstrap/Button';
 import Image from 'react-bootstrap/Image';
 import food from '../assets/images/healthy-food.png'
 import VariantType from '../components/VariantType.js';
-import useAlert from '../hooks/useAlert.js';
+import useAlert from '../state/useAlert.js';
 import Select from '../components/Select.js';
 import Collapse from 'react-bootstrap/Collapse';
-import { camelCase } from '../util/Utils.js';
+import { camelCase } from '../util/utils.js';
 import { BsArrow90DegRight } from "react-icons/bs";
 import { Card, Col, FormCheck, Row } from "react-bootstrap";
 import { useTranslation } from 'react-i18next';
 import NumericField from './NumericField';
-import { useLoading } from '../hooks/useLoading';
-import { PurchaseContext } from '../context/AppContext';
-import { RippleLoading } from './RippleLoading';
+import { PurchaseContext } from '../context/PurchaseProvider';
+import { Loading } from './Loading';
 
 function PurchaseItemList({ selectedPurchase, selectedPantries, setOuterPurchaseItems }, ref) {
 
@@ -244,7 +243,7 @@ function PurchaseItemList({ selectedPurchase, selectedPantries, setOuterPurchase
             if (category !== i.product.category) {
 
                 category = i.product.category;
-                var found = categories.find(c => c.id == category);
+                var found = categories.find(c => c.id === category);
 
                 list = [...list,
                 {
@@ -275,7 +274,7 @@ function PurchaseItemList({ selectedPurchase, selectedPantries, setOuterPurchase
 
     function isSupermarketCategory(category) {
         if (supermarketOption.value > 0) {
-            var found = categories.find(c => c.id == category);
+            var found = categories.find(c => c.id === category);
             if (found) {
                 return found.isSupermarketCategory;
             }
@@ -285,7 +284,7 @@ function PurchaseItemList({ selectedPurchase, selectedPantries, setOuterPurchase
     }
 
     function renderCards() {
-        if (isLoading) { return <RippleLoading /> }
+        if (isLoading) { return <Loading /> }
 
         var elements = [];
         var index = 0;
@@ -293,7 +292,7 @@ function PurchaseItemList({ selectedPurchase, selectedPantries, setOuterPurchase
         var category = found ? found.product.category : "";
 
         while (category !== "" && index < filteredItems.length) {
-            var filteredCategory = filteredItems.filter(i => i.product.category === category);
+            var filteredCategory = filteredItems.filter((i) => i.product.category === category);
 
             elements.push(renderCategoryCard(category, filteredCategory))
 

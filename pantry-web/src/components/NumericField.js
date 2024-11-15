@@ -1,9 +1,7 @@
 import Stack from 'react-bootstrap/Stack';
 import { BsCaretDown, BsCaretUp } from "react-icons/bs";
 import Button from 'react-bootstrap/Button';
-import { useState } from 'react';
-import { Form } from 'react-bootstrap';
-
+import { useState } from 'react'
 
 function NumericField({ object, attribute, onValueChange, disabled }) {
 

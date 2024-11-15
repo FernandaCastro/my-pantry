@@ -10,11 +10,11 @@ import ProductSelectionWizard from '../components/NewPantryProductWizard.js';
 import NewPantryReviewWizard from '../components/NewPantryReviewWizard.js';
 import NewPantryDetailsWizard from '../components/NewPantryDetailsWizard.js';
 import VariantType from '../components/VariantType.js';
-import useAlert from '../hooks/useAlert.js';
+import useAlert from '../state/useAlert.js';
 import { useNavigate } from 'react-router-dom';
 import { createPantryWizard } from '../api/mypantry/pantry/pantryService.js';
-import { getAccountGroupList } from '../api/mypantry/account/accountService.js';
-import { useLoading } from '../hooks/useLoading';
+import { fetchAccountGroupList } from '../api/mypantry/account/accountService.js';
+import useLoading from '../state/useLoading';
 
 function NewPantryWizard() {
 
@@ -36,14 +36,14 @@ function NewPantryWizard() {
 
     useEffect(() => {
         if (!accountGroupOptions || accountGroupOptions.length === 0) {
-            fetchAccountGroups();
+            loadAccountGroups();
         }
     }, [])
 
-    async function fetchAccountGroups() {
+    async function loadAccountGroups() {
         setIsLoading(true);
         try {
-            const res = await getAccountGroupList();
+            const res = await fetchAccountGroupList();
 
             var list = [];
             res.forEach(group => {

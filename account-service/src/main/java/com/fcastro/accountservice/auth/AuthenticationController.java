@@ -29,11 +29,11 @@ public class AuthenticationController {
     }
 
     @PostMapping("/google-login")
-    public ResponseEntity<AccountDto> loginWithGoogle(@RequestBody IdTokenDto request, HttpServletResponse response) {
+    public ResponseEntity<AccountDto> loginWithGoogle(@RequestBody IdTokenDto request, boolean rememberMe, HttpServletResponse response) {
 
         var account = authenticationService.loginOAuthGoogle(request);
 
-        var cookie = authenticationService.generateCookie(account);
+        var cookie = authenticationService.generateCookie(account, rememberMe);
 
         //Using includeCredential=true. When SameSite=None and Secure=true all cookies will be included anyway.
         response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
@@ -50,7 +50,7 @@ public class AuthenticationController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<AccountDto> login(@RequestBody AccountDto request, HttpServletResponse response) {
+    public ResponseEntity<AccountDto> login(@RequestBody AccountDto request, @RequestParam boolean rememberMe, HttpServletResponse response) {
 
         if (request.getEmail() == null || request.getEmail().isEmpty()) {
             throw new RequestParamExpectedException(MessageTranslator.getMessage("error.validation.email"));
@@ -62,7 +62,7 @@ public class AuthenticationController {
 //        try {
         var account = authenticationService.login(request.getEmail(), request.getPassword());
 
-        var cookie = authenticationService.generateCookie(account);
+        var cookie = authenticationService.generateCookie(account, rememberMe);
 
             //Using includeCredential=true. When SameSite=None and Secure=true all cookies will be included anyway.
             response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());

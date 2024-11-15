@@ -3,14 +3,14 @@ import { FormCheck, Stack, Button, Form, Image, Card, Col, Row } from "react-boo
 import { BsPencil, BsTrash, BsCheck2All, BsXLg } from "react-icons/bs";
 import { useTranslation } from 'react-i18next';
 import { CategoryDragDrop } from '../components/CategoryDragDrop';
-import useAlert from '../hooks/useAlert.js';
+import useAlert from '../state/useAlert.js';
 import VariantType from '../components/VariantType.js';
 import Select from '../components/Select';
-import { getAccountGroupList } from '../api/mypantry/account/accountService.js';
+import { fetchAccountGroupList } from '../api/mypantry/account/accountService.js';
 import { getSupermarketsByGroup, createSupermarket, updateSupermarket, deleteSupermarket } from '../api/mypantry/purchase/purchaseService'
 import iconSupermarket from '../assets/images/supermarket-gradient.png';
 import Modal from 'react-bootstrap/Modal';
-import { useLoading } from '../hooks/useLoading';
+import { useGlobalLoading } from '../state/useLoading';
 
 export function Supermarket() {
 
@@ -30,7 +30,7 @@ export function Supermarket() {
     const [supermarketToDelete, setSupermarketToDelete] = useState();
 
     const { showAlert } = useAlert();
-    const { setIsLoading } = useLoading();
+    const { setIsLoading } = useGlobalLoading();
 
     useEffect(() => {
         fetchAccountGroups();
@@ -43,7 +43,7 @@ export function Supermarket() {
     async function fetchAccountGroups() {
         setIsLoading(true);
         try {
-            const res = await getAccountGroupList();
+            const res = await fetchAccountGroupList();
 
             var list = [];
             res.forEach(group => {

@@ -1,5 +1,5 @@
 import Stack from 'react-bootstrap/Stack';
-import { BsCaretDown, BsCaretUp } from "react-icons/bs";
+import { BsCaretDown } from "react-icons/bs";
 import Button from 'react-bootstrap/Button';
 import { useState } from 'react';
 

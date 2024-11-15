@@ -16,4 +16,5 @@ public class AccountDto {
     private String password;
     private String passwordQuestion;
     private String passwordAnswer;
+    private String theme;
 }

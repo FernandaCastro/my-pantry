@@ -5,7 +5,7 @@ function useBreakpoint(minWidth) {
 
   useEffect(() => {
     const mediaQuery = window.matchMedia(`(min-width: ${minWidth}px)`);
-    
+
     const handleResize = (e) => {
       setIsAboveBreakpoint(e.matches);
     };

@@ -1,7 +1,7 @@
 import getResponseContent from '../getResponseContent.js';
 import RequestError from '../RequestError.js';
-import History from '../../../util/History.js';
-import Translator from '../../../util/Translator.js';
+import { history } from '../../../util/history.js';
+import { translator } from '../../../util/translator.js';
 
 const language = localStorage.getItem('i18nextLng');
 const headers = {
@@ -54,7 +54,7 @@ export async function Post(endpoint, body) {
 
         throw new RequestError(error.message, error.status)
     } finally {
-        if (redirecting) { History.navigate("/logout") }
+        if (redirecting) { history.navigate("/logout") }
     }
 
 }
@@ -98,7 +98,7 @@ export async function Delete(endpoint) {
         }
         throw new RequestError(error.message, error.status)
     } finally {
-        if (redirecting) { History.navigate("/logout") }
+        if (redirecting) { history.navigate("/logout") }
     }
 }
 
@@ -115,12 +115,12 @@ async function processResponse(res) {
     }
 
     if (res.status === 401) {
-        const error = Translator.translate('status-401')
+        const error = translator.translate('status-401')
         throw new RequestError(error, res.status);
     }
 
     if (res.status === 403) {
-        const error = Translator.translate('status-403');
+        const error = translator.translate('status-403');
         throw new RequestError(error, res.status);
     }
 

@@ -62,7 +62,7 @@ function NewPantryProductWizard({ pantrySize, productList, setProductList, selec
             if (category !== i.category) {
 
                 category = i.category;
-                var found = categories.find(c => c.id == category);
+                var found = categories.find(c => c.id === category);
 
                 list = [...list,
                 {

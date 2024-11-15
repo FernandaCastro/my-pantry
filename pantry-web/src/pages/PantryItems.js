@@ -1,22 +1,23 @@
-import React, { useContext, useState } from 'react';
+import React, { useState } from 'react';
 import { useParams } from 'react-router';
 import VariantType from '../components/VariantType.js';
-import useAlert from '../hooks/useAlert.js';
+import useAlert from '../state/useAlert.js';
 import ProductSearchBar from '../components/ProductSearchBar.js'
 import PantryItemList from '../components/PantryItemList.js';
 import Button from 'react-bootstrap/Button';
 import { useTranslation } from 'react-i18next';
 import { Image, Stack } from 'react-bootstrap';
 import iconPantry from '../assets/images/cupboard-gradient.png';
-import { RippleLoading } from '../components/RippleLoading.js';
-import { useGetPantry, useAnalysePantry, useCreatePantryItem } from '../hooks/usePantry.js';
-import { useGetAccountGroups, useGetAccountGroupsOptions } from '../hooks/useAccount.js';
-import { ProfileContext } from '../context/AppContext.js';
+import { Loading } from '../components/Loading.js';
+import useProfile from '../state/useProfile.js';
+import { useGetAccountGroups, useGetAccountGroupsOptions } from '../hooks/fetchCacheApiAccount.js';
+import { useCreateNewPantryItem, useGetPantry, useAnalysePantry } from '../hooks/fetchCacheApiPantry.js';
+
 
 export default function PantryItems() {
 
     const { t } = useTranslation(['pantry', 'common']);
-    const { profileCtx } = useContext(ProfileContext);
+    const { profile } = useProfile();
     const [isEmpty, setIsEmpty] = useState(true);
     const [refetch, setRefetch] = useState(true);
     const { showAlert } = useAlert();
@@ -30,11 +31,11 @@ export default function PantryItems() {
     );
 
     const { data: accountGroups } = useGetAccountGroups(
-        { email: profileCtx?.email },
+        { email: profile?.email },
         { onError: (error) => showAlert(VariantType.DANGER, error) }
     );
 
-    const { data: accountGroupOptions } = useGetAccountGroupsOptions({ email: profileCtx?.email, accountGroups: accountGroups })
+    const { data: accountGroupOptions } = useGetAccountGroupsOptions({ email: profile?.email, accountGroups: accountGroups })
 
     const [analysePantryClick, setAnalysePantryClick] = useState(false);
 
@@ -51,7 +52,7 @@ export default function PantryItems() {
         showAlert(VariantType.DANGER, error.message);
     }
 
-    const { } = useAnalysePantry({ id: pantry?.id, runQuery: analysePantryClick },
+    useAnalysePantry({ id: pantry?.id, runQuery: analysePantryClick },
         {
             onSuccess: (data) => handleAnalysePantrySuccess(data),
             onError: (error) => handleAnalysePantryError(error)
@@ -68,7 +69,7 @@ export default function PantryItems() {
         showAlert(VariantType.DANGER, error);
     }
 
-    const { mutate } = useCreatePantryItem({ onSuccess: handleCreatePantryItemSuccess, onError: handleCreatePantryItemError })
+    const { mutate } = useCreateNewPantryItem({ onSuccess: handleCreatePantryItemSuccess, onError: handleCreatePantryItemError })
 
     function handleAddItem(product, itemQuantity) {
         const newItem = {
@@ -84,7 +85,7 @@ export default function PantryItems() {
 
     function handleRebalance() {
         if (isLoading) return;
-        
+
         setIsLoading(true);
         setAnalysePantryClick(!analysePantryClick);
     }
@@ -105,7 +106,7 @@ export default function PantryItems() {
                     <Button className="align-self-end mb-3" bsPrefix='btn-custom' size="sm" onClick={handleRebalance} title={t('tooltip-btn-balance-inventory')} disabled={isEmpty}>
                         <span className="gradient-text">{t('btn-balance-inventtory')}</span>
                     </Button>
-                    {isLoading && <RippleLoading />}
+                    {isLoading && <Loading />}
                     <PantryItemList refetch={refetch} setRefetch={setRefetch} pantryId={pantry?.id} setIsEmpty={setIsEmpty} />
                 </div>
             </div>

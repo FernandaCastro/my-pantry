@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { Button, Form } from "react-bootstrap";
-import { BiShow, BiHide } from "react-icons/bi";
 import { BsEye, BsEyeSlash } from "react-icons/bs";
 
 export default function PasswordInput({ defaultValue, updatePassword }) {

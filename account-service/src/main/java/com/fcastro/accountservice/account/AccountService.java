@@ -83,6 +83,16 @@ public class AccountService {
         return accountList.stream().map(this::convertToDto).collect(Collectors.toList());
     }
 
+    public AccountDto updateAccountTheme(Long id, String theme) {
+        Account existingAccount = accountRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(MessageTranslator.getMessage("error.account.not.found")));
+
+        existingAccount.setTheme(theme);
+
+        var updatedAccount = accountRepository.save(existingAccount);
+        return convertToDto(updatedAccount);
+    }
+
     /**
      * Handles the update of an existing Account => Secured by a JWT
      **/
@@ -130,6 +140,7 @@ public class AccountService {
                 .email(account.getEmail())
                 .pictureUrl(account.getPictureUrl())
                 .passwordQuestion(account.getPasswordQuestion())
+                .theme(account.getTheme())
                 .build();
     }
 }

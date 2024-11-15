@@ -14,7 +14,7 @@ public interface AccountGroupRepository extends JpaRepository<AccountGroup, Long
             "where ag.id = aga.accountGroupId  " +
             "and aga.accountId = a.id  " +
             "and a.email = :email " +
-            "order by ag.name")
+            "order by ag.parentAccountGroup.id desc, ag.name")
     List<AccountGroup> findAllStrict(String email);
 
     @Query("select ag from accountGroup ag, accountGroupMember aga, account a " +

@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { getPantryItemsConsume, postPantryConsumeItem } from '../api/mypantry/pantry/pantryService.js';
+import { fetchPantryItemsConsume, postPantryConsumeItem } from '../api/mypantry/pantry/pantryService.js';
 import Stack from 'react-bootstrap/Stack';
 import Image from 'react-bootstrap/Image';
 import food from '../assets/images/healthy-food.png'
 import Form from 'react-bootstrap/Form';
-import { camelCase } from '../util/Utils.js';
+import { camelCase } from '../util/utils.js';
 import VariantType from '../components/VariantType.js';
-import useAlert from '../hooks/useAlert.js';
+import useAlert from '../state/useAlert.js';
 import PantrySelect from '../components/PantrySelect.js'
 import { Card, Col, FormCheck, Row } from "react-bootstrap";
 import { BsChevronDown } from "react-icons/bs";
@@ -14,7 +14,7 @@ import Collapse from 'react-bootstrap/Collapse';
 import { useTranslation } from 'react-i18next';
 import CurrentQuantityField from '../components/CurrentQuantityField.js'
 import iconConsume from '../assets/images/cook-gradient.png';
-import { RippleLoading } from '../components/RippleLoading.js';
+import { Loading } from '../components/Loading.js';
 
 export default function Consume() {
 
@@ -42,7 +42,7 @@ export default function Consume() {
   useEffect(() => {
     if (selectedPantries && selectedPantries.length > 0) {
       setIsLoading(true);
-      fetchPantryItem();
+      loadPantryItem();
     } else {
       setPantryItems([]);
     }
@@ -54,14 +54,14 @@ export default function Consume() {
     setReload(!reload);
   }, [pantryItems])
 
-  async function fetchPantryItem() {
+  async function loadPantryItem() {
 
     //Avoid racing condition (TODO: check lib react-query )
     abortController.current?.abort();
     abortController.current = new AbortController();
 
     try {
-      const res = await getPantryItemsConsume(selectedPantries, abortController.current?.signal);
+      const res = await fetchPantryItemsConsume(selectedPantries, abortController.current?.signal);
       setPantryItems(res);
 
       if (res != null && Object.keys(res).length === 0) {
@@ -75,7 +75,7 @@ export default function Consume() {
     }
   }
 
-  async function fetchSaveConsumeItem(consumedItem) {
+  async function saveConsumeItem(consumedItem) {
     try {
       setIsLoading(true)
       const res = await postPantryConsumeItem(consumedItem);
@@ -95,20 +95,20 @@ export default function Consume() {
 
   async function updateConsumedItem(item) {
 
-        //Debouncing: limita a quantidade de vezes que uma função pode ser chamada
-        setPendingQuantity(prev => prev + 1);
+    //Debouncing: limita a quantidade de vezes que uma função pode ser chamada
+    setPendingQuantity(prev => prev + 1);
 
-        if (timeoutId) { // clean the previous timeout, if exists
-          clearTimeout(timeoutId);
-      }
-  
-      const id = setTimeout(() => {
-        const consumedItem = { pantryId: item.pantry.id, productId: item.product.id, qty: pendingQuantity + 1 }
-        fetchSaveConsumeItem(consumedItem);
-        setPendingQuantity(0);
-      }, 300);
-  
-      setTimeoutId(id);
+    if (timeoutId) { // clean the previous timeout, if exists
+      clearTimeout(timeoutId);
+    }
+
+    const id = setTimeout(() => {
+      const consumedItem = { pantryId: item.pantry.id, productId: item.product.id, qty: pendingQuantity + 1 }
+      saveConsumeItem(consumedItem);
+      setPendingQuantity(0);
+    }, 300);
+
+    setTimeoutId(id);
 
     // const consumedItem = { pantryId: item.pantry.id, productId: item.product.id, qty: 1 }
     // fetchSaveConsumeItem(consumedItem);
@@ -116,13 +116,13 @@ export default function Consume() {
     //fetchPantryItem();
   }
 
-useEffect(() => {
+  useEffect(() => {
     return () => {
-        if (timeoutId) {
-            clearTimeout(timeoutId); //Clean the timeout when unloading the component
-        }
+      if (timeoutId) {
+        clearTimeout(timeoutId); //Clean the timeout when unloading the component
+      }
     };
-}, [timeoutId]);
+  }, [timeoutId]);
 
 
   function updatePantryItem(res) {
@@ -226,7 +226,7 @@ useEffect(() => {
       </div>
       <div>
         <Form.Control type="text" id="search" className="form-control mb-1 search-input" placeholder={t('placeholder-search-items', { ns: 'common' })} value={searchText} onChange={(e) => filter(e.target.value)} />
-        {isLoading && <RippleLoading />}
+        {isLoading && <Loading />}
         <Row xs={1} md={2} lg={3} xl={4} className='m-0'>
           {renderCards()}
         </Row>

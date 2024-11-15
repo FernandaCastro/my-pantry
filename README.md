@@ -2,18 +2,29 @@
 
 # My Pantry
 
-<b>version: 0.9.9</b>
+<b>version: 0.10.0</b>
 
 - pantry-web: v.0.8.16
-- account-service: v0.4.10
+- account-service: v0.4.11
 - pantry-service: v0.6.11
 - purchase-service: v0.4.8
 
 ### In this version:
 
-- <b>account-service:</b>  Use Redis to cache RBAC requests (permissions and access control)
+- <b>pantry-web:</b>
+    - Big refactoring replacing the use of React Context by React-Query as a global state manager
+    - Use of react-query cache to improve the dashbord graph generation, fetching fresh data only when it's stale.
+    - Totally refactoring of App.js, removing context dependencies and isolating routes to avoid unnecessary
+      re-rendering.
+    - Use of Link component from react-router-dom to correctly navigate among pages, avoiding complete re-render on
+      transitions.
+    - Apply theme based on the user logging in. It's no more based on the last theme saved on the browser LocalStorage.
 
-Plans:
+- <b>account-service:</b>
+    - Remember Me Logic. When it's active, JWT and AUTH Cookie are valid for 30 days, otherwise it's valid for only 24
+      hours.
+
+### In next versions:
 
 - Delete provisioned products from the shopping list (on Shopping List page)
 
@@ -26,17 +37,16 @@ consumption. <br/>
 
 ##### Simply tell My Pantry that you opened a new package of pasta. The app will analyse the ideal and current quantities in your pantry, and in case the current quantity is below 50%, it will add Pasta to the Shopping List. <br/>
 
-<b>RBAC</b> is implemented by the account-service and uses <b>Redis</b> as a cache support.You can also share your
+<b>RBAC</b> is managed by <i>account-service</i> and uses <b>Redis</b> as a cache support.You can also share your
 Pantries, Shopping Lists and Products with other users, by adding them to your Account Group.
 
 The Authentication is possible by either <b>Google Sign-in</b> (Google IDToken - configure it as localhost callback) or
-by the
-traditional user/password. A <b>JWT</b> is generated and stored as a http-only cookie.
+by the traditional user/password. A <b>JWT</b> is generated and stored as a http-only cookie.
 
 The frontend is developed in Reactjs and Javascript.
 
-Backend is written in Java 17, Spring Boot and Spring
-Security, accessing Postgres as database, Redis as cache and Kafka as prov/sub for asynch communication between
+Backend is written in Java 17, based on Spring Boot and Spring Security. It uses Postgres as database, Redis as cache
+for RBAC and Kafka as prov/sub for asynch communication between
 pantry-service and purchase-service.
 
 ### How to run it locally:
@@ -73,16 +83,16 @@ Screenshots: <br />
 <img height="400" width="200" src="./readme_images/purchase.png"/>
 <img height="400" width="200" src="./readme_images/products.png"/>
 <img height="400" width="200" src="./readme_images/supermarkets.png"/>
-<img height="400" width="200" src="./readme_images/groups-members.png"/>
+<img height="400" width="200" src="./readme_images/group-members.png"/>
 <img height="400" width="200" title="Login" src="./readme_images/new-account.png"/>
 <img height="400" width="200" title="Login" src="./readme_images/reset-password.png"/>
 <img height="400" width="200" src="./readme_images/slide-menu.png"/>
 
 Themes:
 
-| Default Light                                                           | Default Dark                                                           | Mono Light                                                           | Mono Dark                                                           |
-|:------------------------------------------------------------------------|:-----------------------------------------------------------------------|:---------------------------------------------------------------------|:--------------------------------------------------------------------|
-| <img height="400" width="200" src="./readme_images/default-light.png"/> | <img height="400" width="200" src="./readme_images/default-dark.png"/> | <img height="400" width="200" src="./readme_images/mono-light.png"/> | <img height="400" width="200" src="./readme_images/mono-dark.png"/> |
+| Mono Light  (default)                                                      | Mono Dark                                                                 | Lila Light                                                                 | Lila Dark                                                                 |
+|:---------------------------------------------------------------------------|:--------------------------------------------------------------------------|:---------------------------------------------------------------------------|:--------------------------------------------------------------------------|
+| <img height="400" width="200" src="./readme_images/theme-mono-light.png"/> | <img height="400" width="200" src="./readme_images/theme-mono-dark.png"/> | <img height="400" width="200" src="./readme_images/theme-lila-light.png"/> | <img height="400" width="200" src="./readme_images/theme-lila-dark.png"/> |
 
 ### pantry-web (localhost:3000) :
 
@@ -121,6 +131,10 @@ Themes:
 - Listens to Kafka Topic (PurchaseCreateTopic) to manage a list of items to be purchased
 - Once the purchase is closed, an event is sent back to pantry-service through a Kafka Topic (PurchaseCompleteTopic)
 - Stores data in Postgres
+
+# Major Changelog
+
+### [See Changelog](CHANGELOG.md)
 
 # Credits
 

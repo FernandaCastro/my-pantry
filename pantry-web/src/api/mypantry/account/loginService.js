@@ -1,8 +1,8 @@
-import { getUserInfo, postGoogleLogin, postLogout, postLogin, postRegister } from './accountService.js';
+import {postGoogleLogin, postLogout, postLogin, postRegister, fetchUserInfo } from './accountService.js';
 
 export async function initLogin() {
     try {
-        return await getUserInfo();
+        return await fetchUserInfo();
 
     } catch (error) {
         console.log(`initLogin Failed: ${error}`);
@@ -10,18 +10,18 @@ export async function initLogin() {
     }
 };
 
-export async function postLoginToken(credential) {
+export async function postLoginToken(credential, rememberMe) {
     try {
-        return await postGoogleLogin(credential);
+        return await postGoogleLogin(credential, rememberMe);
     } catch (error) {
         console.log(`postLoginToken Failed: ${error}`);
         throw error;
     }
 }
 
-export async function login(account) {
+export async function login(account, rememberMe) {
     try {
-        return await postLogin(account);
+        return await postLogin(account, rememberMe);
     } catch (error) {
         console.log(`login Failed: ${error}`);
         throw error;

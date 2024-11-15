@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { getAllPurchaseOrders } from '../api/mypantry/purchase/purchaseService.js';
 import VariantType from '../components/VariantType.js';
-import useAlert from '../hooks/useAlert.js';
+import useAlert from '../state/useAlert.js';
 import Table from 'react-bootstrap/Table';
 import { useTranslation } from 'react-i18next';
-import { RippleLoading } from './RippleLoading.js';
+import { Loading } from './Loading.js';
 
 export default function PurchaseOrderList({ selectedPantries, handleSelectedPurchase }) {
 
@@ -88,7 +88,7 @@ export default function PurchaseOrderList({ selectedPantries, handleSelectedPurc
 
     return (
         <>
-            {isLoading ? <RippleLoading /> :
+            {isLoading ? <Loading /> :
                 <div className="scroll-purchase mt-0 pt-0">
                     <Table size='sm'>
                         < thead >

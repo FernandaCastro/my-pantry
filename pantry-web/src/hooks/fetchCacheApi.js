@@ -8,13 +8,14 @@ import { useEffect } from "react";
  * @param {object} options - aditional options of useQuery like `enabled`, `refetchInterval`, etc.
  * @param {object} callbacks - Object containing optional `onSuccessCallback` and `onErrorCallback` callbacks.
  */
-export function useQueryWithCallbacks(queryKey, queryFn, options = {}, callbacks = {}) {
+export function useQueryWithCallbacks(queryKey, queryFn, options = {}, callbacks = {}, initialData) {
 
-    const { onSuccess, onError } = callbacks;  // Destructure the callbacks object
+    const { onSuccess, onError } = callbacks;
 
-    const { data, isLoading, isFetching, isSuccess, isError, error } = useQuery({
+    const { data, isLoading, isFetching, isSuccess, isError, error, refetch, status } = useQuery({
         queryKey,
         queryFn,
+        initialData,
         ...options,
     });
 
@@ -30,7 +31,7 @@ export function useQueryWithCallbacks(queryKey, queryFn, options = {}, callbacks
         }
     }, [isFetching, error])
 
-    return { data: data, isLoading: isLoading, isSuccess: isSuccess, isError: isError, error: error };
+    return { data, isLoading, isSuccess, isError, error, refetch, status };
 }
 
 /**
@@ -41,20 +42,20 @@ export function useQueryWithCallbacks(queryKey, queryFn, options = {}, callbacks
  */
 export function useMutationWithCallbacks(mutationFn, options = {}, callbacks = {}) {
 
-    const { onSuccess, onError } = callbacks;  // Destructure the callbacks object
+    const { onSuccess, onError } = callbacks;
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn,  // Mutation function (e.g., API call)
-        ...options,  // Additional options like refetching on success
+        mutationFn,
+        ...options,
         onSuccess: (data) => {
             if (options.invalidateQueriesKey) {
                 queryClient.invalidateQueries(options.invalidateQueriesKey);
             }
-            if (onSuccess) onSuccess(data);  // Call success callback if provided
+            if (onSuccess) onSuccess(data);
         },
         onError: (error) => {
-            if (onError) onError(error);  // Call error callback if provided
+            if (onError) onError(error);
         }
     });
 }

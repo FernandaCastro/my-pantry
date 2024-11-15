@@ -3,9 +3,9 @@ import { Button } from 'react-bootstrap';
 import { useRef, useEffect } from 'react';
 import useScript from '../hooks/useScript';
 import VariantType from '../components/VariantType.js';
-import useAlert from '../hooks/useAlert.js';
+import useAlert from '../state/useAlert.js';
 
-export function LoginWithGoogle({ handlePostLogin }) {
+export function LoginWithGoogle({ handlePostLogin, rememberMe }) {
 
     const GoogleSignInButton = useRef(null);
     const { showAlert } = useAlert();
@@ -21,7 +21,7 @@ export function LoginWithGoogle({ handlePostLogin }) {
         var profile;
 
         try {
-            profile = await postLoginToken(credential);
+            profile = await postLoginToken(credential, rememberMe);
 
         } catch (error) {
             showAlert(VariantType.DANGER, error);

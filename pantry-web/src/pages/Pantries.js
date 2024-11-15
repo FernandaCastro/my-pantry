@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { getPantryList, deletePantry } from '../api/mypantry/pantry/pantryService.js';
+import { deletePantry, fetchPantryList } from '../api/mypantry/pantry/pantryService.js';
 import Stack from 'react-bootstrap/Stack';
 import Button from 'react-bootstrap/Button';
 import VariantType from '../components/VariantType.js';
-import useAlert from '../hooks/useAlert.js';
+import useAlert from '../state/useAlert.js';
 import { BsPencil, BsTrash, BsCardChecklist } from "react-icons/bs";
 import Modal from 'react-bootstrap/Modal';
 import { useTranslation } from 'react-i18next';
@@ -11,7 +11,9 @@ import { Card, Col, OverlayTrigger, Row, Tooltip } from 'react-bootstrap';
 import iconPantry from '../assets/images/cupboard-gradient.png';
 import iconMagicWand from '../assets/images/magic-wand.png';
 import Image from 'react-bootstrap/Image';
-import { useLoading } from '../hooks/useLoading.js';
+import useGlobalLoading from '../state/useLoading.js';
+import { Link } from 'react-router-dom';
+import CustomLink from '../components/CustomLink.js';
 
 export default function Pantries() {
 
@@ -20,20 +22,20 @@ export default function Pantries() {
     const [refresh, setRefresh] = useState(true);
 
     const { showAlert } = useAlert();
-    const { setIsLoading } = useLoading();
+    const { setIsLoading } = useGlobalLoading();
 
     const [showModal, setShowModal] = useState(false);
     const [pantryToDelete, setPantryToDelete] = useState();
 
     useEffect(() => {
-        if (refresh) fetchPantries();
+        if (refresh) loadPantries();
     }, [refresh])
 
-    async function fetchPantries() {
+    async function loadPantries() {
         setRefresh(true);
         setIsLoading(true);
         try {
-            const res = await getPantryList();
+            const res = await fetchPantryList();
             setPantries(res);
             setRefresh(false);
         } catch (error) {
@@ -66,33 +68,27 @@ export default function Pantries() {
         setShowModal(false);
     }
 
-    function renderCards() {
+    function PantryCard({ item }) {
+
         return (
-            <Row xs={1} md={2} className="card-group">
-                {pantries?.map((item) => {
+            <Col key={item.id} className="d-flex flex-column g-3">
+                <Card className="card1 flex-fill">
+                    <Card.Body className='d-flex flex-row justify-content-between'>
+                        <div>
+                            <Card.Title as="h6"><span disabled={!item.isActive}>{item.name}</span></Card.Title>
+                            <span disabled={!item.isActive}>{item.accountGroup.name}</span>
+                        </div>
+                        <div>
+                            <Stack direction="horizontal" className="d-flex justify-content-end">
+                                <CustomLink to={"/pantries/" + item.id + "/edit"} className="ps-3"><BsPencil className='icon' /></CustomLink>
+                                <CustomLink to={"/pantries/" + item.id + "/items"} className="ps-3"><BsCardChecklist className='icon' /></CustomLink>
+                                <Button onClick={() => showConfirmDeletion(item)} variant="link"><BsTrash className='icon' /></Button>
+                            </Stack>
+                        </div>
 
-                    return (
-                        <Col key={item.id} className="d-flex flex-column g-3">
-                            <Card className="card1 flex-fill">
-                                <Card.Body className='d-flex flex-row justify-content-between'>
-                                    <div>
-                                        <Card.Title as="h6"><span disabled={!item.isActive}>{item.name}</span></Card.Title>
-                                        <span disabled={!item.isActive}>{item.accountGroup.name}</span>
-                                    </div>
-                                    <div>
-                                        <Stack direction="horizontal" className="d-flex justify-content-end">
-                                            <Button href={"/pantries/" + item.id + "/edit"} variant="link"><BsPencil className='icon' /></Button>
-                                            <Button href={"/pantries/" + item.id + "/items"} variant="link"><BsCardChecklist className='icon' /></Button>
-                                            <Button onClick={() => showConfirmDeletion(item)} variant="link"><BsTrash className='icon' /></Button>
-                                        </Stack>
-                                    </div>
-
-                                </Card.Body>
-                            </Card>
-                        </Col>
-                    )
-                })}
-            </Row>
+                    </Card.Body>
+                </Card>
+            </Col>
         )
     }
 
@@ -104,12 +100,14 @@ export default function Pantries() {
                     <h6 className='title'>{t('pantry-list-title')}</h6>
 
                     <OverlayTrigger placement="bottom" delay={{ show: 250, hide: 400 }} overlay={<Tooltip className="custom-tooltip">{t("tooltip-pantry-wizard")}</Tooltip>}>
-                        <Button variant="link" href={"/pantries/new-wizard"} className="pt-0 pb-0 ms-auto"><div className="bigger-icon gradient-icon-box-body"><Image src={iconMagicWand} className="bigger-icon" /></div></Button>
+                        <Link to={"/pantries/new-wizard"} className="pt-0 pb-0 pe-4 ms-auto"><div className="bigger-icon gradient-icon-box-body"><Image src={iconMagicWand} className="bigger-icon" /></div></Link>
                     </OverlayTrigger>
-                    <Button bsPrefix="btn-custom" href={"/pantries/new"} className="ms-2 pe-2 ps-2"><span>{t('btn-new-pantry')}</span></Button>
+                    <CustomLink bsPrefix="btn-custom" className="ms-2 pe-2 ps-2" to={"/pantries/new"} ><span>{t('btn-new-pantry')}</span></CustomLink>
                 </div>
                 <div>
-                    {renderCards()}
+                    <Row xs={1} md={2} className="card-group">
+                        {pantries?.map((item) => <PantryCard key={item.id} item={item} />)}
+                    </Row>
                 </div>
             </Stack>
             <Modal className='custom-alert' size='sm' show={showModal} onHide={() => setShowModal(false)} >

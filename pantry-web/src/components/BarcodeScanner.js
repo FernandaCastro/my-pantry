@@ -1,11 +1,11 @@
 import React, { useCallback, useEffect, useState } from "react";
 import Quagga from "quagga";
 import VariantType from './VariantType.js';
-import useAlert from '../hooks/useAlert.js';
+import useAlert from '../state/useAlert.js';
 import { Button, Image, Row } from "react-bootstrap";
 import food from '../assets/images/food-gradient.png';
 import { CiBarcode } from "react-icons/ci";
-import { RippleLoading } from "./RippleLoading.js";
+import { Loading } from "./Loading.js";
 import iBarcode from "../assets/images/barcode.png";
 import { getBarcodeInfo } from "../api/barcode/barcodeService.js";
 
@@ -49,7 +49,7 @@ export default function BarcodeScanner({ active, setActive }) {
                         width: width,
                         height: height,
                         facingMode: "environment", // Uses the back camera of mobile devices
-                        aspectRatio: isLandscape ? ( 5 / 9 ): ( 9 / 5 )
+                        aspectRatio: isLandscape ? (5 / 9) : (9 / 5)
                     },
                 },
                 // area: { // defines rectangle of the detection/localization area
@@ -94,9 +94,6 @@ export default function BarcodeScanner({ active, setActive }) {
                 }
                 console.log("QuaggaJS initialization succeeded");
                 Quagga.start(); // Start scanning
-
-                var drawingCtx = Quagga.canvas.ctx.overlay,
-                    drawingCanvas = Quagga.canvas.dom.overlay;
 
                 setIsInitialized(true);
             }
@@ -237,7 +234,7 @@ export default function BarcodeScanner({ active, setActive }) {
             </div>
 
             <div className='m-0 p-0 scanner-product-box'>
-                {processing ? <RippleLoading /> :
+                {processing ? <Loading /> :
                     <>
                         <span className='m-0 ms-3 pt-3 title'>Product Detail</span>
                         <Row className="ms-3 mb-3">
@@ -254,5 +251,3 @@ export default function BarcodeScanner({ active, setActive }) {
         </div>
     );
 };
-
-

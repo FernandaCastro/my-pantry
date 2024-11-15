@@ -3,37 +3,37 @@
 // ============================================================
 import { Get, Post, Put, Delete } from './pantryApiClient';
 
-export async function getPantryList() {
+export async function fetchPantryList() {
     return Get(`pantries/all`);
 }
-export async function getPantryListWithPermission(permission) {
+export async function fetchPantryListWithPermission(permission) {
     return Get(`pantries/all-with-permission?permission=${permission}`);
 }
-export async function getPantry(pantryId, signal) {
+export async function fetchPantry(pantryId, signal) {
     return Get(`pantries/${pantryId}`, signal);
 }
-export async function getPantryItems(pantryId, signal) {
+export async function fetchPantryItems(pantryId, signal) {
     return Get(`pantries/${pantryId}/items`, signal)
 }
-export async function getPantryItemsConsume(pantryIds, signal) {
+export async function fetchPantryItemsConsume(pantryIds, signal) {
     return Get(`pantries/items/consume?pantryIds=${pantryIds}`, signal)
 }
-export async function getAnalysePantry(pantryId, signal) {
+export async function fetchAnalysePantry(pantryId, signal) {
     return Get(`pantries/${pantryId}/items/balancing`, signal);
 }
-export async function getFilteredProductList(groupId, text) {
+export async function fetchFilteredProductList(groupId, text) {
     // const newText = text.replace(/%/g, "%25");
     // console.log(newText);
     return Get(`products?groupId=${groupId}&searchParam=${text}`);
 }
-export async function getProductList() {
+export async function fetchProductList() {
     return Get(`products`);
 }
-export async function getAssociatedPantries(groupId) {
+export async function fetchAssociatedPantries(groupId) {
     return Get(`pantries?groupId=${groupId}`);
 }
-export async function getPantryChartData() {
-    return Get(`pantries/charts-data`);
+export async function fetchPantryChartData(signal) {
+    return Get(`pantries/charts-data`, signal);
 }
 
 

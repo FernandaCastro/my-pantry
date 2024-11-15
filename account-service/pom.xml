@@ -10,7 +10,7 @@
     </parent>
 
     <artifactId>account-service</artifactId>
-    <version>0.4.10</version>
+    <version>0.4.11</version>
     <packaging>jar</packaging>
 
     <properties>

@@ -17,6 +17,7 @@ import com.fcastro.security.core.model.AccountDto;
 import com.fcastro.security.core.model.IdTokenDto;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
+import io.opencensus.common.Duration;
 import jakarta.transaction.Transactional;
 import org.apache.logging.log4j.util.Strings;
 import org.slf4j.Logger;
@@ -230,22 +231,25 @@ public class AuthenticationService {
         return convertToDto(account);
     }
 
-    public ResponseCookie generateCookie(AccountDto accountDto) {
-        var jwtToken = createJwtToken(accountDto);
-        return createCookie(jwtToken);
+    public ResponseCookie generateCookie(AccountDto accountDto, boolean rememberMe) {
+        var jwtToken = createJwtToken(accountDto, rememberMe);
+        return createCookie(jwtToken, rememberMe);
     }
 
-    private ResponseCookie createCookie(String jwtToken) {
+    private ResponseCookie createCookie(String jwtToken, boolean rememberMe) {
+
+        var interval = rememberMe ? JWTHandler.TOKEN_VALIDITY_REMEMBER : JWTHandler.TOKEN_VALIDITY;
+
         return ResponseCookie.from("AUTH-TOKEN", jwtToken)
                 .httpOnly(true)
-                .maxAge(7 * 24 * 3600)
+                .maxAge(Duration.fromMillis(interval).getSeconds())
                 .path("/")
                 .secure(securityProperties.isHttps())  //true= HTTPS only
                 .build();
     }
 
-    private String createJwtToken(AccountDto accountDto) {
-        return jwtHandler.createToken(accountDto.getEmail(), true);
+    private String createJwtToken(AccountDto accountDto, boolean rememberMe) {
+        return jwtHandler.createToken(accountDto.getEmail(), rememberMe);
     }
 
     private AccountDto convertToDto(Account account) {
@@ -255,6 +259,7 @@ public class AuthenticationService {
                 .email(account.getEmail())
                 .pictureUrl(account.getPictureUrl())
                 .passwordQuestion(account.getPasswordQuestion())
+                .theme(account.getTheme())
                 .build();
     }
 }

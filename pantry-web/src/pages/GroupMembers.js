@@ -3,20 +3,22 @@ import { FormCheck, Stack } from "react-bootstrap";
 import Button from 'react-bootstrap/Button';
 import VariantType from '../components/VariantType.js';
 import {
-    getAccountGroupList, createAccountGroup, editAccountGroup,
-    deleteAccountGroup, getAccountGroupMemberList, addAccountMember,
-    deleteAccountMember
+    createAccountGroup, editAccountGroup,
+    deleteAccountGroup, addAccountMember,
+    deleteAccountMember,
+    fetchAccountGroupMemberList,
+    fetchAccountGroupList
 } from '../api/mypantry/account/accountService.js';
 import Table from 'react-bootstrap/Table';
 import { BsPencil, BsTrash, BsCheck2All, BsXLg } from "react-icons/bs";
 import AccountSearchBar from '../components/AccountSearchBar';
 import Form from 'react-bootstrap/Form';
 import Modal from 'react-bootstrap/Modal';
-import { getAssociatedPantries } from '../api/mypantry/pantry/pantryService.js'
-import useAlert from '../hooks/useAlert.js';
+import { fetchAssociatedPantries } from '../api/mypantry/pantry/pantryService.js'
+import useAlert from '../state/useAlert.js';
 import PermissionsView from '../components/PermissionsView.js'
 import { useTranslation } from 'react-i18next';
-import { useLoading } from '../hooks/useLoading.js';
+import { useGlobalLoading } from '../state/useLoading.js';
 
 function GroupMembers() {
 
@@ -38,25 +40,25 @@ function GroupMembers() {
     const [showModal, setShowModal] = useState(false);
 
     const { showAlert } = useAlert();
-    const { setIsLoading } = useLoading();
+    const { setIsLoading } = useGlobalLoading();
 
     useEffect(() => {
-        if (refresh) fetchGroups();
+        if (refresh) loadGroups();
     }, [refresh])
 
     useEffect(() => {
-        fetchMembers();
+        loadMembers();
     }, [selectedGroup.id, refreshMembers])
 
     // useEffect(() => {
     //     if (refreshMembers) fetchMembers();
     // }, [refreshMembers])
 
-    async function fetchGroups() {
+    async function loadGroups() {
         setRefresh(true);
         setIsLoading(true);
         try {
-            const res = await getAccountGroupList();
+            const res = await fetchAccountGroupList();
             setGroups(res);
             if (res.length > 0 ? setSelectedGroup(res[0]) : "");
             setRefresh(false);
@@ -67,11 +69,11 @@ function GroupMembers() {
         }
     }
 
-    async function fetchMembers() {
+    async function loadMembers() {
         //setIsLoading(true);
         try {
             if (selectedGroup.id > 0) {
-                const res = await getAccountGroupMemberList(selectedGroup.id);
+                const res = await fetchAccountGroupMemberList(selectedGroup.id);
                 setMembers(res);
             } else {
                 setMembers([]);
@@ -83,9 +85,9 @@ function GroupMembers() {
         }
     }
 
-    async function fetchAssociatedPantries(groupId) {
+    async function loadAssociatedPantries(groupId) {
         try {
-            const res = await getAssociatedPantries(groupId);
+            const res = await fetchAssociatedPantries(groupId);
             setAssociatedPantries(res);
             return res;
         } catch (error) {
@@ -170,7 +172,7 @@ function GroupMembers() {
 
     async function handleRemoveGroup(id) {
         //Show modal to confirm deletion when there's any object associated to the group
-        const pantries = await fetchAssociatedPantries(id);
+        const pantries = await loadAssociatedPantries(id);
         (pantries && pantries.length > 0) ? setShowModal(true) : fetchDeleteGroup(id);
     }
 
@@ -202,19 +204,19 @@ function GroupMembers() {
         setEditGroup(0);
     }
 
-    function renderGroups() {
+    function Groups() {
 
         return (
             <Table size='sm' className='bordered'>
                 <tbody>
-                    {showNewGroup ? renderNewGroup() : <></>}
-                    {groups.map((item) => (renderGroup(item)))}
+                    {showNewGroup && <NewGroup />}
+                    {groups.map((item) => <Group item={item} />)}
                 </tbody>
             </Table>
         )
     }
 
-    function renderGroup(item) {
+    function Group({ item }) {
         return (
             <tr key={item.id} className="align-middle">
                 {editGroup === item.id ?
@@ -248,7 +250,7 @@ function GroupMembers() {
         )
     }
 
-    function renderNewGroup() {
+    function NewGroup() {
         return (
             <tr key={0}>
                 <td colSpan={2}>
@@ -263,18 +265,18 @@ function GroupMembers() {
         )
     }
 
-    function renderMembers() {
+    function Members() {
 
         return (
             <Table size='sm' className='bordered' key={selectedGroup?.id}>
                 <tbody>
-                    {members.map((item) => (renderMember(item)))}
+                    {members.map((item) => <Member item={item} />)}
                 </tbody>
             </Table>
         )
     }
 
-    function renderMember(item) {
+    function Member({ item }) {
         return (
             <tr key={item.accountId} className="align-middle">
                 <td >
@@ -300,14 +302,14 @@ function GroupMembers() {
                     <Button bsPrefix="btn-custom" size="sm" onClick={() => setShowNewGroup(true)} className="pe-2 ps-2"><span className="gradient-text">{t("btn-create-group")}</span></Button>
                 </div>
                 <div>
-                    {renderGroups()}
+                    <Groups />
                 </div>
                 <div>
                     <AccountSearchBar key={selectedGroup.id} handleSelectAction={handleAddMember} disabled={selectedGroup.id === 0} />
                 </div>
                 <div key={refreshMembers}>
                     <h6 className='title'>{t("members-title")}</h6>
-                    {renderMembers()}
+                    <Members />
                 </div>
                 <div hidden={!showPermissionsView}>
                     <h6 className='title pb-3'>{t("permissions-title")}</h6>

@@ -3,7 +3,7 @@ import { GrDrag } from "react-icons/gr";
 import { DragDropContext, Draggable } from "react-beautiful-dnd";
 import { StrictModeDroppable } from '../components/StrictModeDroppable'
 import VariantType from '../components/VariantType.js';
-import useAlert from '../hooks/useAlert.js';
+import useAlert from '../state/useAlert.js';
 import { getProperty } from '../api/mypantry/purchase/purchaseService.js';
 import i18n from 'i18next';
 import { useTranslation } from 'react-i18next';

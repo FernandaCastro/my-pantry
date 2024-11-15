@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { getProductList, deleteProduct } from '../api/mypantry/pantry/pantryService.js';
+import { deleteProduct, fetchProductList } from '../api/mypantry/pantry/pantryService.js';
 import VariantType from './VariantType.js';
-import useAlert from '../hooks/useAlert.js';
+import useAlert from '../state/useAlert.js';
 import Form from 'react-bootstrap/Form';
 import Image from 'react-bootstrap/Image';
 import food from '../assets/images/healthy-food.png';
 import Button from 'react-bootstrap/Button';
 import { BsPencil, BsTrash } from "react-icons/bs";
-import { camelCase } from '../util/Utils.js';
+import { camelCase } from '../util/utils.js';
 import { Card, Col, FormCheck, Row } from "react-bootstrap";
 import Modal from 'react-bootstrap/Modal';
 import { useTranslation } from 'react-i18next';
@@ -27,16 +27,16 @@ function ProductList({ hidden, disabled, onEdit, onRemove }) {
     const [productToDelete, setProductToDelete] = useState();
 
     useEffect(() => {
-        if (refresh) fetchProductList();
+        if (refresh) loadProductList();
     }, [refresh])
 
     useEffect(() => {
         filter(searchText);
     }, [productList])
 
-    async function fetchProductList() {
+    async function loadProductList() {
         try {
-            const res = await getProductList();
+            const res = await fetchProductList();
             setProductList(res);
             setRefresh(false);
         } catch (error) {
