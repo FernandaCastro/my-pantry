@@ -1,8 +1,8 @@
-import { useGlobalLoadingState } from '../state/loading';
+import { useLoadingState } from './loading';
 
 export function useGlobalLoading() {
 
-    const { data: isLoading, setData } = useGlobalLoadingState()
+    const { data: isLoading, setData } = useLoadingState();
 
     function setIsLoading(value) {
 

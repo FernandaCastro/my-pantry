@@ -2,7 +2,7 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 
 export function createGlobalState(
     queryKey,
-    initialData = null,
+    initialData = null
 ) {
 
     return function () {
@@ -14,25 +14,28 @@ export function createGlobalState(
             resolvedInitialData = initialData()
         }
 
-        const { data } = useQuery({
+        const { data, status, fetchStatus, refetch } = useQuery({
             queryKey: [queryKey],
             queryFn: () => Promise.resolve(resolvedInitialData),
-            refetchInterval: false,
             refetchOnMount: false,
             refetchOnWindowFocus: false,
             refetchOnReconnect: false,
+            refetchInterval: false,
             refetchIntervalInBackground: false,
         });
 
         function setData(data) {
             queryClient.setQueryData([queryKey], data);
+
         }
 
         function resetData() {
-            queryClient.invalidateQueries({
+
+            queryClient.refetchQueries({
                 queryKey: [queryKey],
             });
-            queryClient.refetchQueries({
+
+            queryClient.invalidateQueries({
                 queryKey: [queryKey],
             });
         }

@@ -5,8 +5,8 @@ import { Button, OverlayTrigger, Stack, Tooltip } from 'react-bootstrap';
 import iconMagicWand from '../assets/images/magic-wand.png';
 import Image from 'react-bootstrap/Image';
 import VariantType from '../components/VariantType.js';
-import useAlert from '../hooks/useAlert.js';
-import useProfile from '../hooks/useProfile.js';
+import useAlert from '../state/useAlert.js';
+import useProfile from '../state/useProfile.js';
 import { useGetPantryCharts } from '../hooks/fetchCacheApiPantry.js';
 import { Loading } from '../components/Loading.js';
 

@@ -1,6 +1,6 @@
-import { createGlobalState } from "./globalStateManager";
+import { createGlobalState } from "./stateManager";
 
 const GLOBAL_LOADING_KEY = "globalLoading";
 const INITIAL_STATE = false;
 
-export const useGlobalLoadingState = createGlobalState(GLOBAL_LOADING_KEY, INITIAL_STATE);
+export const useLoadingState = createGlobalState(GLOBAL_LOADING_KEY, INITIAL_STATE);

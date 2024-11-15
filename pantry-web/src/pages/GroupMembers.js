@@ -15,10 +15,10 @@ import AccountSearchBar from '../components/AccountSearchBar';
 import Form from 'react-bootstrap/Form';
 import Modal from 'react-bootstrap/Modal';
 import { fetchAssociatedPantries } from '../api/mypantry/pantry/pantryService.js'
-import useAlert from '../hooks/useAlert.js';
+import useAlert from '../state/useAlert.js';
 import PermissionsView from '../components/PermissionsView.js'
 import { useTranslation } from 'react-i18next';
-import { useGlobalLoading } from '../hooks/useGlobalLoading.js';
+import { useGlobalLoading } from '../state/useLoading.js';
 
 function GroupMembers() {
 

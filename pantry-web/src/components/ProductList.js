@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { deleteProduct, fetchProductList } from '../api/mypantry/pantry/pantryService.js';
 import VariantType from './VariantType.js';
-import useAlert from '../hooks/useAlert.js';
+import useAlert from '../state/useAlert.js';
 import Form from 'react-bootstrap/Form';
 import Image from 'react-bootstrap/Image';
 import food from '../assets/images/healthy-food.png';

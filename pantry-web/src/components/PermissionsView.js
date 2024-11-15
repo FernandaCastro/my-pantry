@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Table } from 'react-bootstrap';
-import useAlert from '../hooks/useAlert.js';
+import useAlert from '../state/useAlert.js';
 import VariantType from '../components/VariantType.js';
 import { fetchRoles } from '../api/mypantry/account/accountService.js'
 import { fullCamelCase } from '../util/utils.js';

@@ -5,7 +5,7 @@ import Button from 'react-bootstrap/Button';
 import Image from 'react-bootstrap/Image';
 import food from '../assets/images/healthy-food.png'
 import VariantType from '../components/VariantType.js';
-import useAlert from '../hooks/useAlert.js';
+import useAlert from '../state/useAlert.js';
 import Select from '../components/Select.js';
 import Collapse from 'react-bootstrap/Collapse';
 import { camelCase } from '../util/utils.js';

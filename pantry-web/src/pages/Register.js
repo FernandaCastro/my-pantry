@@ -4,14 +4,14 @@ import { register } from '../api/mypantry/account/loginService';
 import { useNavigate } from 'react-router-dom';
 import Form from 'react-bootstrap/Form';
 import VariantType from '../components/VariantType.js';
-import useAlert from '../hooks/useAlert.js';
+import useAlert from '../state/useAlert.js';
 import { fetchAccount, updateAccount } from '../api/mypantry/account/accountService';
 import { useTranslation } from 'react-i18next';
 import useEncrypt from '../hooks/useRSAEncrypt';
 import { BsChatDots } from 'react-icons/bs';
 import { TbMessageCircleOff } from 'react-icons/tb'
-import { useGlobalLoading } from '../hooks/useGlobalLoading';
-import useProfile from '../hooks/useProfile';
+import { useGlobalLoading } from '../state/useLoading';
+import useProfile from '../state/useProfile';
 
 export default function Register({ mode }) {
 
@@ -468,7 +468,9 @@ export default function Register({ mode }) {
                 </Form>
             </div>
             <div>
-                <Modal className='custom-alert' size='sm' show={showChangePassword} onHide={() => setShowChangePassword(false)} >
+                <Modal className='custom-alert' size='sm' show={showChangePassword} onHide={() => setShowChangePassword(false)}
+                    aria-labelledby="contained-modal-title-vcenter"
+                    centered>
                     <Modal.Body className='custom-alert-body-no-footer pb-2'>
                         <Form key={refresh} onSubmit={handleChangePasswordSubmit} className='w-100' noValidate>
                             {renderPasswordFields()}

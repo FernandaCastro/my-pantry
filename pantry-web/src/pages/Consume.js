@@ -6,7 +6,7 @@ import food from '../assets/images/healthy-food.png'
 import Form from 'react-bootstrap/Form';
 import { camelCase } from '../util/utils.js';
 import VariantType from '../components/VariantType.js';
-import useAlert from '../hooks/useAlert.js';
+import useAlert from '../state/useAlert.js';
 import PantrySelect from '../components/PantrySelect.js'
 import { Card, Col, FormCheck, Row } from "react-bootstrap";
 import { BsChevronDown } from "react-icons/bs";

@@ -5,11 +5,11 @@ import { login } from '../api/mypantry/account/loginService';
 import { useNavigate } from 'react-router-dom';
 import Form from 'react-bootstrap/Form';
 import VariantType from '../components/VariantType.js';
-import useAlert from '../hooks/useAlert.js';
+import useAlert from '../state/useAlert.js';
 import { useTranslation } from 'react-i18next';
 import useEncrypt from '../hooks/useRSAEncrypt';
 import PasswordInput from '../components/PasswordInput';
-import useProfile from '../hooks/useProfile';
+import useProfile from '../state/useProfile.js';
 import { updateTheme } from '../api/mypantry/account/accountService.js';
 import { DEFAULT_THEME } from '../state/profile.js';
 

@@ -1,4 +1,4 @@
-import { createGlobalState } from "./globalStateManager";
+import { createGlobalState } from "./stateManager";
 
 const ALERT_KEY = "alert";
 const INITIAL_STATE = {
@@ -6,6 +6,5 @@ const INITIAL_STATE = {
     type: "",
     message: ""
 };
-
 
 export const useAlertState = createGlobalState(ALERT_KEY, INITIAL_STATE);

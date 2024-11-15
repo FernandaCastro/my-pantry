@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import Quagga from "quagga";
 import VariantType from './VariantType.js';
-import useAlert from '../hooks/useAlert.js';
+import useAlert from '../state/useAlert.js';
 import { Button, Image, Row } from "react-bootstrap";
 import food from '../assets/images/food-gradient.png';
 import { CiBarcode } from "react-icons/ci";

@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 import { Overlay, Alert } from "react-bootstrap";
-import useAlert from "../hooks/useAlert";
+import useAlert from "../state/useAlert";
 
 function CustomAlert() {
 

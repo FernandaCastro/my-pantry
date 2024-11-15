@@ -2,7 +2,7 @@ import React, { useContext, useRef, useState } from 'react';
 import { postClosePurchaseOrder, postNewPurchaseOrder } from '../api/mypantry/purchase/purchaseService'
 import Button from 'react-bootstrap/Button';
 import VariantType from '../components/VariantType.js';
-import useAlert from '../hooks/useAlert.js';
+import useAlert from '../state/useAlert.js';
 import { BsChevronDown } from "react-icons/bs";
 import Collapse from 'react-bootstrap/Collapse';
 import PantrySelect from '../components/PantrySelect.js'

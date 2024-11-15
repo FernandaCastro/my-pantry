@@ -18,8 +18,9 @@ import { useTranslation } from 'react-i18next';
 
 import LanguageSelect from './LanguageSelect';
 import { Stack } from 'react-bootstrap';
-import useProfile from '../hooks/useProfile';
+import useProfile from '../state/useProfile';
 import { Link } from 'react-router-dom';
+import CustomLink from './CustomLink';
 
 export default function Header() {
     const { t } = useTranslation(['header', 'common']);
@@ -50,34 +51,36 @@ export default function Header() {
             <Navbar className="p-0" >
                 <div className="menu">
                     <OverlayTrigger placement="bottom" delay={{ show: 250, hide: 400 }} overlay={<Tooltip className="custom-tooltip">{t("tooltip-consume")}</Tooltip>}>
-                        <Nav.Item><Link to={"/pantries/consume"} className="menuItem" disabled={!(profile && Object.keys(profile).length > 1)} >
-                            <div className="gradient-icon-box-header"><Image src={iconConsume} className="menu-icon" /></div></Link>
+                        <Nav.Item><CustomLink to={"/pantries/consume"} className="menuItem" disabled={!(profile && Object.keys(profile).length > 1)} >
+                            <div className="gradient-icon-box-header"><Image src={iconConsume} className="menu-icon" /></div></CustomLink>
                         </Nav.Item>
                     </OverlayTrigger>
                     <OverlayTrigger placement="bottom" delay={{ show: 250, hide: 400 }} overlay={<Tooltip className="custom-tooltip">{t("tooltip-purchase")}</Tooltip>}>
                         <Nav.Item>
-                            <Link to="/purchase" className="menuItem" disabled={!(profile && Object.keys(profile).length > 1)}>
+                            <CustomLink to="/purchase" className="menuItem" disabled={!(profile && Object.keys(profile).length > 1)}>
                                 <div className="gradient-icon-box-header"><Image src={iconPurchase} className="menu-icon" /></div>
-                            </Link>
+                            </CustomLink>
                         </Nav.Item>
                     </OverlayTrigger>
 
                     <OverlayTrigger placement="bottom" delay={{ show: 250, hide: 400 }} overlay={<Tooltip className="custom-tooltip">{t("tooltip-pantries")}</Tooltip>}>
-                        <Nav.Item><Link to="/pantries"  className="menuItem" disabled={!(profile && Object.keys(profile).length > 1)}>
-                            <Image src={iconPantry} className="menu-icon" />
-                        </Link>
+                        <Nav.Item>
+                            <CustomLink to="/pantries" className="menuItem" disabled={!(profile && Object.keys(profile).length > 1)}>
+                                <Image src={iconPantry} className="menu-icon" />
+                            </CustomLink>
                         </Nav.Item>
                     </OverlayTrigger>
                     <OverlayTrigger placement="bottom" delay={{ show: 250, hide: 400 }} overlay={<Tooltip className="custom-tooltip">{t("tooltip-products")}</Tooltip>}>
-                        <Nav.Item><Link to="/product" className="menuItem" disabled={!(profile && Object.keys(profile).length > 1)}>
-                            <Image src={iconProduct} className="menu-icon" />
-                        </Link>
+                        <Nav.Item>
+                            <CustomLink to="/product" className="menuItem" disabled={!(profile && Object.keys(profile).length > 1)}>
+                                <Image src={iconProduct} className="menu-icon" />
+                            </CustomLink>
                         </Nav.Item>
                     </OverlayTrigger>
                     <OverlayTrigger placement="bottom" delay={{ show: 250, hide: 400 }} overlay={<Tooltip className="custom-tooltip">{t("tooltip-supermarkets")}</Tooltip>}>
-                        <Nav.Item><Link to="/supermarkets" className="menuItem" disabled={!(profile && Object.keys(profile).length > 1)}>
+                        <Nav.Item><CustomLink to="/supermarkets" className="menuItem" disabled={!(profile && Object.keys(profile).length > 1)}>
                             <Image src={iconSupermarket} className="menu-icon" />
-                        </Link>
+                        </CustomLink>
                         </Nav.Item>
                     </OverlayTrigger>
                 </div>

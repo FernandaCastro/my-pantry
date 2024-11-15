@@ -3,7 +3,7 @@ import { Row } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import i18n from 'i18next';
 import PantryPieChart from '../components/PantryPieChart.js';
-import useProfile from '../hooks/useProfile.js';
+import useProfile from '../state/useProfile.js';
 
 export default function PantryPieCharts({ chartData }) {
 

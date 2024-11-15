@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useParams } from 'react-router';
 import VariantType from '../components/VariantType.js';
-import useAlert from '../hooks/useAlert.js';
+import useAlert from '../state/useAlert.js';
 import ProductSearchBar from '../components/ProductSearchBar.js'
 import PantryItemList from '../components/PantryItemList.js';
 import Button from 'react-bootstrap/Button';
@@ -9,7 +9,7 @@ import { useTranslation } from 'react-i18next';
 import { Image, Stack } from 'react-bootstrap';
 import iconPantry from '../assets/images/cupboard-gradient.png';
 import { Loading } from '../components/Loading.js';
-import useProfile from '../hooks/useProfile.js';
+import useProfile from '../state/useProfile.js';
 import { useGetAccountGroups, useGetAccountGroupsOptions } from '../hooks/fetchCacheApiAccount.js';
 import { useCreateNewPantryItem, useGetPantry, useAnalysePantry } from '../hooks/fetchCacheApiPantry.js';
 

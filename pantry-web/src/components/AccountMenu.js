@@ -8,10 +8,10 @@ import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import Select from './Select';
 import { BsPalette, BsPeople, BsPersonGear } from 'react-icons/bs';
-import useProfile from '../hooks/useProfile';
+import useProfile from '../state/useProfile';
 import { updateTheme } from '../api/mypantry/account/accountService';
-import useGlobalLoading from '../hooks/useGlobalLoading';
-import useAlert from '../hooks/useAlert';
+import useGlobalLoading from '../state/useLoading';
+import useAlert from '../state/useAlert';
 import VariantType from '../components/VariantType.js';
 import CustomLink from './CustomLink';
 

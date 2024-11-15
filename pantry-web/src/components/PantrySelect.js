@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { FormCheck } from "react-bootstrap";
 import Table from 'react-bootstrap/Table';
 import VariantType from '../components/VariantType.js';
-import useAlert from '../hooks/useAlert.js';
+import useAlert from '../state/useAlert.js';
 import { fetchPantryListWithPermission } from '../api/mypantry/pantry/pantryService.js';
 
 export default function PantrySelect({ handleSelectedPantryList, permission, isSelected }) {

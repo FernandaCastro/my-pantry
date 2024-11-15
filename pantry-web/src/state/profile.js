@@ -1,8 +1,7 @@
-import { createGlobalState } from "./globalStateManager";
+import { createGlobalState } from "./stateManager";
 
 export const PROFILE_KEY = "profile";
 export const DEFAULT_THEME = 'theme-mono-light';
-
 const INITIAL_STATE = { theme: DEFAULT_THEME }
 
 function readLocalStorage() {

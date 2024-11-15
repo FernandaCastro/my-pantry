@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router';
 import { updatePantry, createPantry, fetchPantry } from '../api/mypantry/pantry/pantryService.js';
 import VariantType from '../components/VariantType.js';
-import useAlert from '../hooks/useAlert.js';
+import useAlert from '../state/useAlert.js';
 import PantryForm from '../components/PantryForm.js';
 import Button from 'react-bootstrap/Button';
 import { fetchAccountGroupList } from '../api/mypantry/account/accountService.js';
@@ -10,7 +10,7 @@ import { useTranslation } from 'react-i18next';
 import { Image, Stack } from 'react-bootstrap';
 import iconPantry from '../assets/images/cupboard-gradient.png';
 import { useNavigate } from 'react-router-dom';
-import { useGlobalLoading } from '../hooks/useGlobalLoading.js';
+import { useGlobalLoading } from '../state/useLoading.js';
 
 export default function Pantry({ mode }) {
 

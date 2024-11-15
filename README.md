@@ -83,16 +83,16 @@ Screenshots: <br />
 <img height="400" width="200" src="./readme_images/purchase.png"/>
 <img height="400" width="200" src="./readme_images/products.png"/>
 <img height="400" width="200" src="./readme_images/supermarkets.png"/>
-<img height="400" width="200" src="./readme_images/groups-members.png"/>
+<img height="400" width="200" src="./readme_images/group-members.png"/>
 <img height="400" width="200" title="Login" src="./readme_images/new-account.png"/>
 <img height="400" width="200" title="Login" src="./readme_images/reset-password.png"/>
 <img height="400" width="200" src="./readme_images/slide-menu.png"/>
 
 Themes:
 
-| Default Light                                                           | Default Dark                                                           | Mono Light                                                           | Mono Dark                                                           |
-|:------------------------------------------------------------------------|:-----------------------------------------------------------------------|:---------------------------------------------------------------------|:--------------------------------------------------------------------|
-| <img height="400" width="200" src="./readme_images/default-light.png"/> | <img height="400" width="200" src="./readme_images/default-dark.png"/> | <img height="400" width="200" src="./readme_images/mono-light.png"/> | <img height="400" width="200" src="./readme_images/mono-dark.png"/> |
+| Mono Light  (default)                                                      | Mono Dark                                                                 | Lila Light                                                                 | Lila Dark                                                                 |
+|:---------------------------------------------------------------------------|:--------------------------------------------------------------------------|:---------------------------------------------------------------------------|:--------------------------------------------------------------------------|
+| <img height="400" width="200" src="./readme_images/theme-mono-light.png"/> | <img height="400" width="200" src="./readme_images/theme-mono-dark.png"/> | <img height="400" width="200" src="./readme_images/theme-lila-light.png"/> | <img height="400" width="200" src="./readme_images/theme-lila-dark.png"/> |
 
 ### pantry-web (localhost:3000) :
 

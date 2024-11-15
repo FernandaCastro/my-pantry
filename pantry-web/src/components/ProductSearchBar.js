@@ -3,7 +3,7 @@ import Button from 'react-bootstrap/Button';
 import { useState } from 'react';
 import { BsEraser, BsCheck2All, BsChevronDown, BsPlusLg } from "react-icons/bs";
 import VariantType from './VariantType.js';
-import useAlert from '../hooks/useAlert.js';
+import useAlert from '../state/useAlert.js';
 import { createProduct, fetchFilteredProductList } from '../api/mypantry/pantry/pantryService.js';
 import Card from 'react-bootstrap/Card';
 import Stack from 'react-bootstrap/Stack';

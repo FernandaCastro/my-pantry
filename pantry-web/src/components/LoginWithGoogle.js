@@ -3,7 +3,7 @@ import { Button } from 'react-bootstrap';
 import { useRef, useEffect } from 'react';
 import useScript from '../hooks/useScript';
 import VariantType from '../components/VariantType.js';
-import useAlert from '../hooks/useAlert.js';
+import useAlert from '../state/useAlert.js';
 
 export function LoginWithGoogle({ handlePostLogin, rememberMe }) {
 

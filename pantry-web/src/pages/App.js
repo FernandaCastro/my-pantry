@@ -152,7 +152,7 @@ export default function App() {
       <Suspense>
         <RouterProvider router={router} />
       </Suspense>
-      <ReactQueryDevtools initialIsOpen={false} />
+      {/* <ReactQueryDevtools initialIsOpen={false} /> */}
     </QueryClientProvider>
   )
 

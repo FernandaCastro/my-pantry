@@ -3,7 +3,7 @@ import { deletePantry, fetchPantryList } from '../api/mypantry/pantry/pantryServ
 import Stack from 'react-bootstrap/Stack';
 import Button from 'react-bootstrap/Button';
 import VariantType from '../components/VariantType.js';
-import useAlert from '../hooks/useAlert.js';
+import useAlert from '../state/useAlert.js';
 import { BsPencil, BsTrash, BsCardChecklist } from "react-icons/bs";
 import Modal from 'react-bootstrap/Modal';
 import { useTranslation } from 'react-i18next';
@@ -11,7 +11,7 @@ import { Card, Col, OverlayTrigger, Row, Tooltip } from 'react-bootstrap';
 import iconPantry from '../assets/images/cupboard-gradient.png';
 import iconMagicWand from '../assets/images/magic-wand.png';
 import Image from 'react-bootstrap/Image';
-import useGlobalLoading from '../hooks/useGlobalLoading.js';
+import useGlobalLoading from '../state/useLoading.js';
 import { Link } from 'react-router-dom';
 import CustomLink from '../components/CustomLink.js';
 

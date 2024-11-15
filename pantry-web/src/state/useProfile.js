@@ -1,8 +1,8 @@
-import { PROFILE_KEY, useProfileState } from '../state/profile';
+import { PROFILE_KEY, useProfileState } from "./profile";
 
 function useProfile() {
 
-    const { data: profile, setData, resetData } = useProfileState()
+    const { data: profile, setData, resetData } = useProfileState();
 
     function setProfile(profileData) {
 
@@ -14,6 +14,7 @@ function useProfile() {
         const cleanProfile = { theme: profile.theme }
         localStorage.setItem(PROFILE_KEY, JSON.stringify(cleanProfile));
         setData(cleanProfile);
+
     }
 
     return { profile, setProfile, resetProfile }

@@ -3,7 +3,7 @@ import Button from 'react-bootstrap/Button';
 import { useState } from 'react';
 import { BsEraser, BsCheck2All, BsChevronDown, BsSearch, BsPersonPlus } from "react-icons/bs";
 import VariantType from './VariantType.js';
-import useAlert from '../hooks/useAlert.js';
+import useAlert from '../state/useAlert.js';
 import Card from 'react-bootstrap/Card';
 import Stack from 'react-bootstrap/Stack';
 import CloseButton from 'react-bootstrap/CloseButton';

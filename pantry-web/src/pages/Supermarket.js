@@ -3,14 +3,14 @@ import { FormCheck, Stack, Button, Form, Image, Card, Col, Row } from "react-boo
 import { BsPencil, BsTrash, BsCheck2All, BsXLg } from "react-icons/bs";
 import { useTranslation } from 'react-i18next';
 import { CategoryDragDrop } from '../components/CategoryDragDrop';
-import useAlert from '../hooks/useAlert.js';
+import useAlert from '../state/useAlert.js';
 import VariantType from '../components/VariantType.js';
 import Select from '../components/Select';
 import { fetchAccountGroupList } from '../api/mypantry/account/accountService.js';
 import { getSupermarketsByGroup, createSupermarket, updateSupermarket, deleteSupermarket } from '../api/mypantry/purchase/purchaseService'
 import iconSupermarket from '../assets/images/supermarket-gradient.png';
 import Modal from 'react-bootstrap/Modal';
-import { useGlobalLoading } from '../hooks/useGlobalLoading';
+import { useGlobalLoading } from '../state/useLoading';
 
 export function Supermarket() {
 
