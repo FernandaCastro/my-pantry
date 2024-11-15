@@ -27,16 +27,23 @@ export function createGlobalState(
         function setData(data) {
             queryClient.setQueryData([queryKey], data);
 
+            queryClient.invalidateQueries({
+                queryKey: [queryKey],
+                refetchType: 'all',
+            });
+
         }
 
         function resetData() {
 
             queryClient.refetchQueries({
                 queryKey: [queryKey],
+                type: 'all',
             });
 
             queryClient.invalidateQueries({
                 queryKey: [queryKey],
+                refetchType: 'all',
             });
         }
 
