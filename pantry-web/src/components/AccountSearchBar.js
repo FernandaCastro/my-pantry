@@ -12,7 +12,7 @@ import { fetchFilteredAccountList } from '../api/mypantry/account/accountService
 import RoleSelect from './RoleSelect';
 import AccountForm from './AccountForm';
 import { useTranslation } from 'react-i18next';
-import { maskEmail } from '../state/utils.js'
+import { maskEmail } from '../util/utils.js'
 
 function AccountSearchBar({ handleSelectAction, handleClearAction, disabled }) {
 

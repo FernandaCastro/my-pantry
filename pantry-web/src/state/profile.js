@@ -8,7 +8,7 @@ function readLocalStorage() {
 
     const localData = localStorage.getItem(PROFILE_KEY);
 
-    if (localData === undefined || localData === "{}" || Object.keys(localData).length === 0) {
+    if (localData === null || localData === undefined || localData === "{}" || Object.keys(localData).length === 0) {
         localStorage.setItem(PROFILE_KEY, JSON.stringify(INITIAL_STATE));
         return INITIAL_STATE;
     }

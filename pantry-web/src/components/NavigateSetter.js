@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom'
-import { history } from '../state/history.js'
+import { history } from '../util/history.js'
 import { useCallback, useEffect } from 'react';
 
 const NavigateSetter = () => {
