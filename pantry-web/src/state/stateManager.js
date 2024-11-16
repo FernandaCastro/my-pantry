@@ -15,7 +15,7 @@ export function createGlobalState(
             resolvedInitialData = initialData()
         }
 
-        const { data, status, fetchStatus, refetch } = useQuery({
+        const { data } = useQuery({
             queryKey: [queryKey],
             queryFn: () => Promise.resolve(resolvedInitialData),
             refetchOnMount: false,
@@ -23,17 +23,12 @@ export function createGlobalState(
             refetchOnReconnect: false,
             refetchInterval: false,
             refetchIntervalInBackground: false,
+            initialData: resolvedInitialData
         });
 
         function setData(data) {
             queryClient.setQueryData([queryKey], data);
 
-            if (invalidate) {
-                queryClient.invalidateQueries({
-                    queryKey: [queryKey],
-                    refetchType: 'all',
-                });
-            }
         }
 
         function resetData() {
