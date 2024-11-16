@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { translator } from '../util/translator'
+import { translator } from '../state/translator';
 
 const TranslationSetter = () => {
     const { t } = useTranslation('common');
