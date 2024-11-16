@@ -1,7 +1,7 @@
 import getResponseContent from '../getResponseContent.js';
 import RequestError from '../RequestError.js';
-import { history } from '../../../util/history.js';
-import { translator } from '../../../util/translator.js';
+import { history } from '../../../state/history.js';
+import { translator } from '../../../state/translator.js';
 
 const language = localStorage.getItem('i18nextLng');
 const headers = {

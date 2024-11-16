@@ -8,7 +8,7 @@ import VariantType from '../components/VariantType.js';
 import useAlert from '../state/useAlert.js';
 import Select from '../components/Select.js';
 import Collapse from 'react-bootstrap/Collapse';
-import { camelCase } from '../util/Utils.js';
+import { camelCase } from '../state/utils.js';
 import { BsArrow90DegRight } from "react-icons/bs";
 import { Card, Col, FormCheck, Row } from "react-bootstrap";
 import { useTranslation } from 'react-i18next';
