@@ -3,7 +3,7 @@ import { Table } from 'react-bootstrap';
 import useAlert from '../state/useAlert.js';
 import VariantType from '../components/VariantType.js';
 import { fetchRoles } from '../api/mypantry/account/accountService.js'
-import { fullCamelCase } from '../state/utils.js'
+import { fullCamelCase } from '../util/utils.js'
 import { useTranslation } from 'react-i18next';
 
 export default function PermissionsView() {
