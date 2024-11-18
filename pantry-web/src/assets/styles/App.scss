@@ -1534,3 +1534,24 @@ div.scroll-top-critical {
 .highlight-background {
     background-color: var(--highlight-background);
 }
+
+.modal-dialog {
+    position: fixed !important;
+    bottom: 0 !important;
+    left: 2% !important;
+    // right: 0% !important;
+    margin-bottom: 0 !important;
+
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    background-color: var(--background);
+    border-bottom: 0px;
+    border-bottom-left-radius: 0px;
+    border-bottom-right-radius: 0px;
+}
+
+.modal-body {
+    .p {
+        padding-bottom: 5 px !important;
+    }
+}

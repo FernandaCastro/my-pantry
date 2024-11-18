@@ -24,5 +24,7 @@
   "status-403": "Status 403: You do not have permission to execute this action.",
   "empty": "Empty",
   "good": "Good",
-  "full": "Full"
+  "full": "Full",
+  "essentail-cookie-msg": "This website uses essencial cookies to ensure you get the best experience.",
+  "btn-got-it": "Got it!"
 }

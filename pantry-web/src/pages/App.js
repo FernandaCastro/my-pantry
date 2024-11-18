@@ -26,6 +26,7 @@ import { PurchaseProvider } from '../context/PurchaseProvider';
 import GlobalLoading from '../components/GlobalLoading';
 import NavigateSetter from '../components/NavigateSetter';
 import TranslationSetter from '../components/TranslationSetter';
+import { CookiesProvider } from '../context/CookieProvider';
 
 const queryClient = new QueryClient(
   {
@@ -44,14 +45,19 @@ const Layout = () => {
   return (
     <>
       <Header />
+
       <CustomAlert />
+
       <Container className="content">
         <GlobalLoading />
         <NavigateSetter />
         <TranslationSetter />
         <Outlet />
       </Container>
-      <Footer />
+
+      <CookiesProvider>
+        <Footer />
+      </CookiesProvider>
     </>
   )
 }
