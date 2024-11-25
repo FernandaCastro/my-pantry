@@ -8,5 +8,7 @@
   "tooltip-purchase": "Lista de Compra",
   "tooltip-pantries": "Despensas",
   "tooltip-products": "Produtos",
-  "tooltip-supermarkets": "Supermercados"
+  "tooltip-supermarkets": "Supermercados",
+  "delete-account": "Apagar a minha Conta",
+  "delete-account-alert": "Todos s seus dados serão apagados permanentemente. Você realmente deseja continuar?"
 }
