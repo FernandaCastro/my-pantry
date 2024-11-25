@@ -1,7 +1,7 @@
 package com.fcastro.accountservice.security;
 
 import com.fcastro.accountservice.exception.KeyPairException;
-import com.fcastro.app.config.MessageTranslator;
+import com.fcastro.commons.config.MessageTranslator;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.Cipher;

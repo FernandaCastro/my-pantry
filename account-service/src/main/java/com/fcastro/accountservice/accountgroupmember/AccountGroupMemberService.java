@@ -1,20 +1,19 @@
 package com.fcastro.accountservice.accountgroupmember;
 
 import com.fcastro.accountservice.account.Account;
+import com.fcastro.accountservice.account.AccountDto;
 import com.fcastro.accountservice.account.AccountRepository;
 import com.fcastro.accountservice.accountgroup.AccountGroup;
 import com.fcastro.accountservice.cache.MemberCacheService;
 import com.fcastro.accountservice.exception.NotAllowedException;
 import com.fcastro.accountservice.exception.OneOwnerMemberMustExistException;
+import com.fcastro.accountservice.permission.PermissionDto;
 import com.fcastro.accountservice.role.Role;
+import com.fcastro.accountservice.role.RoleDto;
 import com.fcastro.accountservice.role.RoleEnum;
 import com.fcastro.accountservice.role.RoleService;
-import com.fcastro.app.config.MessageTranslator;
-import com.fcastro.app.exception.ResourceNotFoundException;
-import com.fcastro.security.core.model.AccountDto;
-import com.fcastro.security.core.model.AccountGroupMemberDto;
-import com.fcastro.security.core.model.PermissionDto;
-import com.fcastro.security.core.model.RoleDto;
+import com.fcastro.commons.config.MessageTranslator;
+import com.fcastro.commons.exception.ResourceNotFoundException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -138,9 +137,18 @@ public class AccountGroupMemberService {
         groupMemberCacheService.deleteFromCache(member.getAccount().getEmail(), member.getAccountGroup().getId(), member.getRole().getId());
     }
 
-    public void deleteAllByGroupId(long accountGroupId) {
-        var listEntity = repository.findAllByAccountGroupId(accountGroupId);
+    public AccountGroupMember deleteAccount(long accountGroupId, long accountId) {
 
+        var key = AccountGroupMemberKey.builder().accountGroupId(accountGroupId).accountId(accountId).build();
+
+        var member = repository.findById(key)
+                .orElseThrow(() -> new ResourceNotFoundException(MessageTranslator.getMessage("error.member.not.found")));
+
+        repository.delete(member);
+
+        groupMemberCacheService.deleteFromCache(member.getAccount().getEmail(), member.getAccountGroup().getId(), member.getRole().getId());
+
+        return member;
     }
 
     private AccountGroupMemberDto convertToDTO(AccountGroupMember entity) {

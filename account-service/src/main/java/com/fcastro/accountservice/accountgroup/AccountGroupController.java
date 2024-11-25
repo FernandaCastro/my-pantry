@@ -1,9 +1,8 @@
 package com.fcastro.accountservice.accountgroup;
 
 import com.fcastro.accountservice.account.AccountService;
-import com.fcastro.app.config.MessageTranslator;
-import com.fcastro.app.exception.ResourceNotFoundException;
-import com.fcastro.security.core.model.AccountGroupDto;
+import com.fcastro.commons.config.MessageTranslator;
+import com.fcastro.commons.exception.ResourceNotFoundException;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;

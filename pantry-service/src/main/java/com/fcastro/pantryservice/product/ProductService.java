@@ -1,16 +1,17 @@
 package com.fcastro.pantryservice.product;
 
-import com.fcastro.app.config.MessageTranslator;
-import com.fcastro.app.exception.ResourceNotFoundException;
-import com.fcastro.app.model.Action;
+import com.fcastro.commons.config.MessageTranslator;
+import com.fcastro.commons.exception.ResourceNotFoundException;
+import com.fcastro.kafka.model.AccountEventDto;
+import com.fcastro.kafka.model.Action;
 import com.fcastro.kafka.model.ProductEventDto;
 import com.fcastro.pantryservice.event.ProductEventProducer;
 import com.fcastro.pantryservice.exception.DatabaseConstraintException;
 import com.fcastro.pantryservice.exception.RequestParamExpectedException;
 import com.fcastro.pantryservice.pantryitem.PantryItemRepository;
 import com.fcastro.security.authorization.AuthorizationClient;
-import com.fcastro.security.core.model.AccessControlDto;
 import com.fcastro.security.exception.AccessControlNotDefinedException;
+import com.fcastro.security.modelclient.AccessControlDto;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -253,6 +254,20 @@ public class ProductService {
                 .action(Action.DELETE)
                 .id(id)
                 .build());
+    }
+
+    //When deleting an Account all products associated to the Account will be deleted
+    public void delete(AccountEventDto eventDto) {
+
+        eventDto.getProductIds().stream().forEach((id) -> {
+
+            repository.deleteById(id);
+            productEventProducer.send(ProductEventDto.builder()
+                    .action(Action.DELETE)
+                    .id(id)
+                    .build());
+        });
+
     }
 
     private ProductDto convertToDTO(Product entity) {

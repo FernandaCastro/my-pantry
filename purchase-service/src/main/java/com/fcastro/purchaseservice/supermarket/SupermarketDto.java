@@ -1,6 +1,6 @@
 package com.fcastro.purchaseservice.supermarket;
 
-import com.fcastro.security.core.model.AccountGroupDto;
+import com.fcastro.security.modelclient.AccountGroupDto;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;

@@ -1,8 +1,8 @@
 package com.fcastro.accountservice.auth;
 
+import com.fcastro.accountservice.accesscontrol.AccessControlDto;
 import com.fcastro.accountservice.accesscontrol.AccessControlService;
 import com.fcastro.accountservice.accountgroupmember.AccountGroupMemberService;
-import com.fcastro.security.core.model.AccessControlDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

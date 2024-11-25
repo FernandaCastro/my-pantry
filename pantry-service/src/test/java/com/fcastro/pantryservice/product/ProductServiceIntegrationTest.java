@@ -1,6 +1,6 @@
 package com.fcastro.pantryservice.product;
 
-import com.fcastro.kafka.config.KafkaConfigData;
+import com.fcastro.kafka.config.KafkaProperties;
 import com.fcastro.kafka.model.ProductEventDto;
 import com.fcastro.pantryservice.event.ProductEventProducer;
 import com.fcastro.pantryservice.event.PurchaseEventProducer;
@@ -63,7 +63,7 @@ public class ProductServiceIntegrationTest {
     PantryService pantryService;
 
     @Spy
-    KafkaConfigData kafkaConfigData;
+    KafkaProperties kafkaConfigData;
 
     PantryDto pantry;
     ProductDto product1;

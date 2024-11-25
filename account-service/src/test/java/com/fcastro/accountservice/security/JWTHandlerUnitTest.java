@@ -1,8 +1,8 @@
 package com.fcastro.accountservice.security;
 
+import com.fcastro.accountservice.account.AccountDto;
 import com.fcastro.security.core.config.SecurityPropertiesConfig;
 import com.fcastro.security.core.jwt.JWTHandler;
-import com.fcastro.security.core.model.AccountDto;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;

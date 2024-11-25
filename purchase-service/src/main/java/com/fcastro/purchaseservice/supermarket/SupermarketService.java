@@ -1,9 +1,9 @@
 package com.fcastro.purchaseservice.supermarket;
 
-import com.fcastro.app.exception.ResourceNotFoundException;
+import com.fcastro.commons.exception.ResourceNotFoundException;
 import com.fcastro.security.authorization.AuthorizationClient;
-import com.fcastro.security.core.model.AccessControlDto;
 import com.fcastro.security.exception.AccessControlNotDefinedException;
+import com.fcastro.security.modelclient.AccessControlDto;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

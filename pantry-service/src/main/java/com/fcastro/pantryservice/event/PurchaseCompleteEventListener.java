@@ -1,6 +1,6 @@
 package com.fcastro.pantryservice.event;
 
-import com.fcastro.kafka.config.KafkaConfigData;
+import com.fcastro.kafka.config.KafkaProperties;
 import com.fcastro.kafka.event.PurchaseCompleteEvent;
 import com.fcastro.kafka.exception.EventProcessingException;
 import com.fcastro.pantryservice.pantryitem.PantryItemService;
@@ -19,9 +19,9 @@ public class PurchaseCompleteEventListener {
 
     private final PantryItemService pantryItemService;
 
-    private final KafkaConfigData kafkaConfigData;
+    private final KafkaProperties kafkaConfigData;
 
-    public PurchaseCompleteEventListener(PantryItemService pantryItemService, KafkaConfigData kafkaConfigData) {
+    public PurchaseCompleteEventListener(PantryItemService pantryItemService, KafkaProperties kafkaConfigData) {
         this.pantryItemService = pantryItemService;
         this.kafkaConfigData = kafkaConfigData;
     }
@@ -34,6 +34,7 @@ public class PurchaseCompleteEventListener {
 
             if (event.getData() == null) {
                 LOG.error("purchaseCompleteTopic received, but attribute data is null.");
+                return;
             }
 
             LOG.info("Event Received: Topic[{}], Data[{}]", kafkaConfigData.getPurchaseCompleteTopic(), event.getData().toString());

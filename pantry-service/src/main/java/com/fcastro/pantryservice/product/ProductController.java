@@ -1,6 +1,6 @@
 package com.fcastro.pantryservice.product;
 
-import com.fcastro.app.exception.ResourceNotFoundException;
+import com.fcastro.commons.exception.ResourceNotFoundException;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

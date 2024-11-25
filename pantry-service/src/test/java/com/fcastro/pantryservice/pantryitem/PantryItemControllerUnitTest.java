@@ -1,7 +1,7 @@
 package com.fcastro.pantryservice.pantryitem;
 
-import com.fcastro.app.config.LocaleConfig;
-import com.fcastro.app.exception.ResourceNotFoundException;
+import com.fcastro.commons.config.LocaleConfig;
+import com.fcastro.commons.exception.ResourceNotFoundException;
 import com.fcastro.pantryservice.JsonUtil;
 import com.fcastro.pantryservice.exception.PantryNotActiveException;
 import com.fcastro.pantryservice.exception.QuantityNotAvailableException;

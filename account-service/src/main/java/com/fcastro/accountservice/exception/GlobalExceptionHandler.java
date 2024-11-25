@@ -1,8 +1,8 @@
 package com.fcastro.accountservice.exception;
 
-import com.fcastro.app.exception.ApplicationError;
-import com.fcastro.app.exception.RequestParamExpectedException;
-import com.fcastro.app.exception.ResourceNotFoundException;
+import com.fcastro.commons.exception.ApplicationError;
+import com.fcastro.commons.exception.RequestParamExpectedException;
+import com.fcastro.commons.exception.ResourceNotFoundException;
 import com.fcastro.security.core.exception.TokenVerifierException;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.http.HttpServletRequest;

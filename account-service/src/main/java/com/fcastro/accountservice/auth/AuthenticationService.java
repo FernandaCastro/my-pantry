@@ -1,20 +1,19 @@
 package com.fcastro.accountservice.auth;
 
 import com.fcastro.accountservice.account.Account;
+import com.fcastro.accountservice.account.AccountDto;
 import com.fcastro.accountservice.account.AccountRepository;
 import com.fcastro.accountservice.accountgroup.AccountGroupService;
 import com.fcastro.accountservice.exception.AccountAlreadyExistsException;
 import com.fcastro.accountservice.exception.PasswordAnswerNotMatchException;
 import com.fcastro.accountservice.security.KeyPairDto;
 import com.fcastro.accountservice.security.RSAUtil;
-import com.fcastro.app.config.MessageTranslator;
-import com.fcastro.app.exception.RequestParamExpectedException;
-import com.fcastro.app.exception.ResourceNotFoundException;
+import com.fcastro.commons.config.MessageTranslator;
+import com.fcastro.commons.exception.RequestParamExpectedException;
+import com.fcastro.commons.exception.ResourceNotFoundException;
 import com.fcastro.security.core.config.SecurityPropertiesConfig;
 import com.fcastro.security.core.exception.TokenVerifierException;
 import com.fcastro.security.core.jwt.JWTHandler;
-import com.fcastro.security.core.model.AccountDto;
-import com.fcastro.security.core.model.IdTokenDto;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
 import io.opencensus.common.Duration;

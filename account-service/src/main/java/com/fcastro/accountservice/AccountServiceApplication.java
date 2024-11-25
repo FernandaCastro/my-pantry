@@ -5,7 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @SpringBootApplication(
-		scanBasePackages = {"com.fcastro.app.config", "com.fcastro.security.core", "com.fcastro.accountservice"}
+		scanBasePackages = {"com.fcastro.commons", "com.fcastro.security.core", "com.fcastro.kafka", "com.fcastro.accountservice"}
 )
 @EnableJpaRepositories
 public class AccountServiceApplication {
