@@ -316,21 +316,20 @@ function GroupMembers() {
                     <PermissionsView />
                 </div>
             </Stack>
-            <Modal className='custom-alert' size='sm' show={showModal} onHide={() => setShowModal(false)} >
-                <Modal.Body className='custom-alert-body pb-0'>
-                    <span className='title text-small'>
+            <Modal className='custom-alert' size='md' show={showModal} onHide={() => setShowModal(false)} >
+                <Modal.Body className='custom-alert-body'>
+                    <span className='title text-center'>
                         <b>{t("delete-group-alert-header")}</b>
                         <br />
                         {t("delete-group-alert-body")}
-                        <br />
                     </span>
                     <ul className='pt-2'>
-                        {associatedPantries.map(p => (<li key={p.id} className='text-small'>{p.name}</li>))}
+                        {associatedPantries.map(p => (<li key={p.id} className='text-small pt-2'>{p.name}</li>))}
                     </ul>
                 </Modal.Body>
                 <Modal.Footer className='custom-alert-footer p-2'>
                     <Button bsPrefix='btn-custom' size='sm' onClick={() => setShowModal(false)}>
-                        {t("close")}
+                        <span className="gradient-text">{t("close")}</span>
                     </Button>
                 </Modal.Footer>
             </Modal >

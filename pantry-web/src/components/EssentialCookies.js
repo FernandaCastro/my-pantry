@@ -12,14 +12,10 @@ export default function EssentialCookiesAllowed() {
     return (
         <>
             {!cookieCtx &&
-                <Modal className="p-0" size='sm' show={true} onHide={() => setCookieCtx(true)}>
-                    <Modal.Body className="p-2">
-                        {/* <span className='title text-center'>
-                    {t('delete-item-alert', { item: camelCase(itemToDelete?.product.code) })}
-                </span> */}
-
+                <Modal className="p-0 cookie-message" dialogClassName="cookie-message" size='sm' show={true} onHide={() => setCookieCtx(true)}>
+                    <Modal.Body className="p-2 pt-3 pb-3">
                         <p> {t('essentail-cookie-msg')}</p>
-                        <Button bsPrefix='btn-custom' style={{ width: "100%" }} size='sm' onClick={() => setCookieCtx(true)}><span>{t("btn-got-it", { ns: "common" })}</span></Button>
+                        <Button bsPrefix='btn-custom' style={{ width: "100%" }} size='sm' onClick={() => setCookieCtx(true)}><span >{t("btn-got-it", { ns: "common" })}</span></Button>
                     </Modal.Body>
 
                 </Modal >
