@@ -1,13 +1,14 @@
 package com.fcastro.pantryservice.pantry;
 
-import com.fcastro.app.config.MessageTranslator;
-import com.fcastro.app.exception.ResourceNotFoundException;
+import com.fcastro.commons.config.MessageTranslator;
+import com.fcastro.commons.exception.ResourceNotFoundException;
+import com.fcastro.kafka.model.AccountEventDto;
 import com.fcastro.pantryservice.pantryitem.PantryItem;
 import com.fcastro.pantryservice.pantryitem.PantryItemService;
 import com.fcastro.security.authorization.AuthorizationClient;
-import com.fcastro.security.core.model.AccessControlDto;
-import com.fcastro.security.core.model.AccountGroupDto;
 import com.fcastro.security.exception.AccessControlNotDefinedException;
+import com.fcastro.security.modelclient.AccessControlDto;
+import com.fcastro.security.modelclient.AccountGroupDto;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -203,6 +204,18 @@ public class PantryService {
                 .collect(Collectors.toList());
 
         return pantryChartList;
+    }
+
+    //When deleting an Account all pantries associated to the Account will be deleted
+    public void delete(AccountEventDto eventDto) {
+
+        //delete all pantries
+        eventDto.getPantryIds().stream().forEach((id) -> {
+
+            pantryItemService.deleteAllItems(id);
+            repository.deleteById(id);
+        });
+
     }
 
     //It finds and attaches AccountGroup to the Pantry

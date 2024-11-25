@@ -46,6 +46,12 @@ management:
     web:
       exposure:
         include: ${ACTUATOR_WEB_EXPOSURE}
+kafka-config:
+  bootstrap-servers-config: ${KAFKA_SERVER}
+  account-topic: accountTopic
+  group: pantryGroup
+  partitions: ${PARTITIONS}
+  replicas: ${REPLICAS}
 security-config:
   secret: ${SECURITY_SECRET}
   allowedOrigin: ${ALLOWED_ORIGINS}

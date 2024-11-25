@@ -1,18 +1,19 @@
 package com.fcastro.accountservice.accountgroup;
 
+import com.fcastro.accountservice.accesscontrol.AccessControlDto;
 import com.fcastro.accountservice.accesscontrol.AccessControlService;
 import com.fcastro.accountservice.account.Account;
 import com.fcastro.accountservice.accountgroupmember.AccountGroupMemberService;
 import com.fcastro.accountservice.cache.MemberCacheService;
 import com.fcastro.accountservice.exception.NotAllowedException;
 import com.fcastro.accountservice.role.RoleEnum;
-import com.fcastro.app.config.MessageTranslator;
-import com.fcastro.app.exception.ResourceNotFoundException;
-import com.fcastro.security.core.model.AccountGroupDto;
+import com.fcastro.commons.config.MessageTranslator;
+import com.fcastro.commons.exception.ResourceNotFoundException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -112,6 +113,34 @@ public class AccountGroupService {
 
         //Update the cache
         groupMemberCacheService.deleteAllFromCache(accountGroupId);
+    }
+
+    public List<AccessControlDto> deleteAccount(Account account) {
+
+        var groups = repository.findAllOrderByChildGroupsFirst(account.getEmail());
+        var objectsToDelete = new ArrayList<AccessControlDto>();
+
+        groups.stream().forEach(
+                (group) -> {
+                    //Remove member from group and update cache
+                    var member = groupMemberService.deleteAccount(group.getId(), account.getId());
+
+                    //Remove group if member is OWNER
+                    if (RoleEnum.OWNER.value.equals(member.getRole().getId())) {
+
+                        //keep the list of objects to delete in the future
+                        objectsToDelete.addAll(accessControlService.getAll(group.getId()));
+
+                        //delete all access control entries for this account group
+                        accessControlService.deleteAll(group.getId());
+
+                        //delete the account group
+                        repository.deleteById(group.getId());
+                    }
+                }
+        );
+
+        return objectsToDelete;
     }
 
     private AccountGroupDto convertToDTO(AccountGroup entity) {
