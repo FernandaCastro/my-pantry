@@ -110,8 +110,8 @@ export default function Pantries() {
                     </Row>
                 </div>
             </Stack>
-            <Modal className='custom-alert' size='sm' show={showModal} onHide={() => setShowModal(false)} >
-                <Modal.Body className='custom-alert-body pb-0'>
+            <Modal className='custom-alert' size='md' show={showModal} onHide={() => setShowModal(false)} >
+                <Modal.Body className='custom-alert-body'>
                     <span className='title text-center'>
                         {t('delete-pantry-alert')}
                     </span>
