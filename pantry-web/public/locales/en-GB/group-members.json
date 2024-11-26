@@ -9,8 +9,8 @@
   "groups-title": "Groups",
   "members-title": "Members",
   "permissions-title": "Permissions",
-  "delete-group-alert-header": "Group cannot be deleted.",
-  "delete-group-alert-body": "There is at least one pantry associated to this group.",
+  "delete-group-alert-header": "This group cannot be deleted!",
+  "delete-group-alert-body": "There is at least one item associated to this group.",
   "btn-close": "Close",
   "account-not-found": "Account not found",
   "search-by-email-name": "Search by e-mail or name",
@@ -24,5 +24,9 @@
   "owner": "Owner",
   "admin": "Admin",
   "user": "User",
-  "placeholder-select-role": "Role"
+  "placeholder-select-role": "Role",
+  "pantry": "Pantry(ies)",
+  "supermarket": "Supermarket(s)",
+  "product": "Product(s)",
+  "empty-group": "This group is empty"
 }

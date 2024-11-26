@@ -7,10 +7,11 @@ import {
     deleteAccountGroup, addAccountMember,
     deleteAccountMember,
     fetchAccountGroupMemberList,
-    fetchAccountGroupList
+    fetchAccountGroupList,
+    fetchAccessControlByAccountGroup
 } from '../api/mypantry/account/accountService.js';
 import Table from 'react-bootstrap/Table';
-import { BsPencil, BsTrash, BsCheck2All, BsXLg } from "react-icons/bs";
+import { BsPencil, BsTrash, BsCheck2All, BsXLg, BsClipboardData } from "react-icons/bs";
 import AccountSearchBar from '../components/AccountSearchBar';
 import Form from 'react-bootstrap/Form';
 import Modal from 'react-bootstrap/Modal';
@@ -29,7 +30,7 @@ function GroupMembers() {
 
     const [groups, setGroups] = useState([]);
     const [members, setMembers] = useState([]);
-    const [associatedPantries, setAssociatedPantries] = useState([]);
+    const [associatedbjects, setAssociatedObjects] = useState([]);
 
     const [groupName, setGroupName] = useState("");
     const [selectedGroup, setSelectedGroup] = useState({ id: 0 });
@@ -38,6 +39,7 @@ function GroupMembers() {
     const [showPermissionsView, setShowPermissionsView] = useState(false);
     const [showNewGroup, setShowNewGroup] = useState(false);
     const [showModal, setShowModal] = useState(false);
+    const [showAlertMode, setShowAlertMode] = useState(true);
 
     const { showAlert } = useAlert();
     const { setIsLoading } = useGlobalLoading();
@@ -70,7 +72,6 @@ function GroupMembers() {
     }
 
     async function loadMembers() {
-        //setIsLoading(true);
         try {
             if (selectedGroup.id > 0) {
                 const res = await fetchAccountGroupMemberList(selectedGroup.id);
@@ -80,16 +81,28 @@ function GroupMembers() {
             }
         } catch (error) {
             showAlert(VariantType.DANGER, error.message);
-        } finally {
-            //setIsLoading(false);
         }
     }
 
-    async function loadAssociatedPantries(groupId) {
+    async function loadAssociatedObjects(groupId) {
         try {
-            const res = await fetchAssociatedPantries(groupId);
-            setAssociatedPantries(res);
-            return res;
+            const res = await fetchAccessControlByAccountGroup(groupId);
+
+            if (res) {
+                const grouped = Object.values(res.reduce((objType, item) => {
+                    // initialize counter
+                    if (!objType[item.clazz]) {
+                        objType[item.clazz] = { clazz: item.clazz, qty: 0 };
+                    }
+                    // Incrementa o total
+                    objType[item.clazz].qty++;
+                    return objType;
+                }, {}))
+
+                setAssociatedObjects(grouped);
+                return grouped;
+            }
+            return [];
         } catch (error) {
             showAlert(VariantType.DANGER, error.message);
         }
@@ -139,7 +152,7 @@ function GroupMembers() {
     async function fetchAddMember(accountMember) {
         try {
             setIsLoading(true);
-            setRefreshMembers(!refreshMembers);
+            setRefreshMembers(false);
             await addAccountMember(accountMember);
             showAlert(VariantType.SUCCESS, t("add-member-success"));
         } catch (error) {
@@ -153,7 +166,7 @@ function GroupMembers() {
     async function fetchDeleteMember(groupId, accountId) {
         try {
             setIsLoading(true);
-            setRefreshMembers(!refreshMembers);
+            setRefreshMembers(false);
             await deleteAccountMember(groupId, accountId);
             showAlert(VariantType.SUCCESS, t("delete-member-success"));
         } catch (error) {
@@ -170,10 +183,25 @@ function GroupMembers() {
         setShowNewGroup(false);
     }
 
+    async function handleViewGroupClick(groupId) {
+        const objects = await loadAssociatedObjects(groupId);
+        (objects && objects.length > 0) ? setShowModal(true) : showAlert(VariantType.INFO, t("empty-group"));
+        setShowAlertMode(false);
+    }
+
     async function handleRemoveGroup(id) {
         //Show modal to confirm deletion when there's any object associated to the group
-        const pantries = await loadAssociatedPantries(id);
-        (pantries && pantries.length > 0) ? setShowModal(true) : fetchDeleteGroup(id);
+        const objects = await loadAssociatedObjects(id);
+
+        if ((objects && objects.length > 0)) {
+
+            setShowAlertMode(true);
+            setShowModal(true);
+
+        } else {
+
+            fetchDeleteGroup(id);
+        }
     }
 
     function handleAddMember(newMember, selectedRole) {
@@ -192,6 +220,7 @@ function GroupMembers() {
 
     function handleEditButtonClick(item) {
         setEditGroup(item.id);
+        setGroupName(item.name);
         setSelectedGroup(item);
     }
 
@@ -204,49 +233,71 @@ function GroupMembers() {
         setEditGroup(0);
     }
 
+    function handleStopEditing() {
+        setEditGroup(0)
+        setGroupName("");
+    }
+
     function Groups() {
 
         return (
             <Table size='sm' className='bordered'>
                 <tbody>
-                    {showNewGroup && <NewGroup />}
-                    {groups.map((item) => <Group item={item} />)}
+
+                    {showNewGroup && NewGroup()}
+
+                    {groups.map((item) => (
+
+                        <tr key={item.id} className="align-middle">
+
+                            {editGroup === item.id ? EditGroup(item) : ViewGroup(item)}
+
+                        </tr >
+                    ))}
+
                 </tbody>
             </Table>
         )
     }
 
-    function Group({ item }) {
+    function ViewGroup(item) {
         return (
-            <tr key={item.id} className="align-middle">
-                {editGroup === item.id ?
-                    <td colSpan={3}>
-                        <Stack direction="horizontal" gap={1} className="d-flex justify-content-start">
-                            <div><FormCheck type="radio" checked={selectedGroup && selectedGroup.id === item.id}
-                                defaultChecked={selectedGroup && selectedGroup.id === item.id}
-                                disabled={true} name="groupId" onChange={() => setSelectedGroup(item)} /></div>
-                            <div className='w-100'><Form.Control size="sm" type="text" defaultValue={item.name} onChange={(e) => setGroupName(e.target.value)} /></div>
-                            <div><Button onClick={() => handleEditGroupSave(item, groupName)} variant="link" className='pe-3'><BsCheck2All className='icon' /></Button></div>
-                            <div><Button onClick={() => setEditGroup(0)} variant='link' title='Clear text'><BsXLg className='icon' /></Button></div>
-                        </Stack >
-                    </td >
-                    :
-                    <>
-                        <td><FormCheck type="radio" defaultValue={selectedGroup && selectedGroup.id === item.id}
+            <>
+                <td><FormCheck type="radio" defaultValue={selectedGroup && selectedGroup.id === item.id}
+                    defaultChecked={selectedGroup && selectedGroup.id === item.id}
+                    onChange={() => setSelectedGroup(item)} style={{ color: "hsl(219, 11%, 25%)" }}
+                    label={item.name} name="groupId" />
+                </td>
+                <td><span>{!item.parentAccountGroup ? t('parent') : t('child')}</span></td>
+                <td>
+                    <Stack direction="horizontal" gap={1} className="d-flex justify-content-end">
+                        <div><Button onClick={() => handleViewGroupClick(item.id)} variant="link"><BsClipboardData className='icon' /></Button></div>
+                        <div><Button onClick={() => handleEditButtonClick(item)} variant="link"><BsPencil className='icon' /></Button></div>
+                        <div><Button onClick={() => handleRemoveGroup(item.id)} variant="link" disabled={groups.length === 1}><BsTrash className='icon' /></Button></div>
+                    </Stack>
+                </td>
+            </>
+        )
+    }
+
+    function EditGroup(item) {
+        return (
+            <td colSpan={3}>
+                <Stack direction="horizontal" gap={1} className="d-flex justify-content-start">
+                    <div>
+                        <FormCheck type="radio" checked={selectedGroup && selectedGroup.id === item.id}
                             defaultChecked={selectedGroup && selectedGroup.id === item.id}
-                            onChange={() => setSelectedGroup(item)} style={{ color: "hsl(219, 11%, 25%)" }}
-                            label={item.name} name="groupId" />
-                        </td>
-                        <td><span>{!item.parentAccountGroup ? t('parent') : t('child')}</span></td>
-                        <td>
-                            <Stack direction="horizontal" gap={1} className="d-flex justify-content-end">
-                                <div><Button onClick={() => handleEditButtonClick(item)} variant="link"><BsPencil className='icon' /></Button></div>
-                                <div><Button onClick={() => handleRemoveGroup(item.id)} variant="link" disabled={groups.length === 1}><BsTrash className='icon' /></Button></div>
-                            </Stack>
-                        </td>
-                    </>
-                }
-            </tr >
+                            disabled={true} name="groupId" onChange={() => setSelectedGroup(item)} />
+                    </div>
+
+                    <div className='w-100'>
+                        <Form.Control size="sm" type="text" value={groupName} onChange={(e) => setGroupName(e.target.value)} />
+                    </div>
+
+                    <div><Button onClick={() => handleEditGroupSave(item, groupName)} variant="link" className='pe-3'><BsCheck2All className='icon' /></Button></div>
+                    <div><Button onClick={handleStopEditing} variant='link' title='Clear text'><BsXLg className='icon' /></Button></div>
+                </Stack >
+            </td >
         )
     }
 
@@ -256,7 +307,11 @@ function GroupMembers() {
                 <td colSpan={2}>
                     <Stack direction="horizontal" gap={1} className="d-flex justify-content-start">
                         <div><FormCheck type="radio" checked={false} disabled={true} /></div>
-                        <div className='w-50'><Form.Control size="sm" type="text" placeholder='Group Name' defaultValue={groupName} onChange={(e) => setGroupName(e.target.value)} /></div>
+
+                        <div className='w-50'>
+                            <Form.Control size="sm" type="text" placeholder='Group Name' value={groupName} onChange={(e) => setGroupName(prev => prev = e.target.value)} />
+                        </div>
+
                         <div><Button onClick={handleNewGroup} variant="link" className='pe-0' disabled={groupName.length === 0}><BsCheck2All className='icon' /></Button></div>
                         <div><Button onClick={() => setShowNewGroup(false)} variant='link' title='Clear text'><BsXLg className='icon' /></Button></div>
                     </Stack>
@@ -270,13 +325,13 @@ function GroupMembers() {
         return (
             <Table size='sm' className='bordered' key={selectedGroup?.id}>
                 <tbody>
-                    {members.map((item) => <Member item={item} />)}
+                    {members.map((item) => Member(item))}
                 </tbody>
             </Table>
         )
     }
 
-    function Member({ item }) {
+    function Member(item) {
         return (
             <tr key={item.accountId} className="align-middle">
                 <td >
@@ -302,14 +357,14 @@ function GroupMembers() {
                     <Button bsPrefix="btn-custom" size="sm" onClick={() => setShowNewGroup(true)} className="pe-2 ps-2"><span className="gradient-text">{t("btn-create-group")}</span></Button>
                 </div>
                 <div>
-                    <Groups />
+                    {Groups()}
                 </div>
                 <div>
                     <AccountSearchBar key={selectedGroup.id} handleSelectAction={handleAddMember} disabled={selectedGroup.id === 0} />
                 </div>
                 <div key={refreshMembers}>
                     <h6 className='title'>{t("members-title")}</h6>
-                    <Members />
+                    {Members()}
                 </div>
                 <div hidden={!showPermissionsView}>
                     <h6 className='title pb-3'>{t("permissions-title")}</h6>
@@ -318,13 +373,13 @@ function GroupMembers() {
             </Stack>
             <Modal className='custom-alert' size='md' show={showModal} onHide={() => setShowModal(false)} >
                 <Modal.Body className='custom-alert-body'>
-                    <span className='title text-center'>
+                    {showAlertMode && <span className='title text-center'>
                         <b>{t("delete-group-alert-header")}</b>
                         <br />
                         {t("delete-group-alert-body")}
-                    </span>
+                    </span>}
                     <ul className='pt-2'>
-                        {associatedPantries.map(p => (<li key={p.id} className='text-small pt-2'>{p.name}</li>))}
+                        {associatedbjects.map((p) => (<li key={`${p.clazz}-${p.qty}`} className='text-small pt-2'>{p.qty} {t(p.clazz.toLowerCase())}</li>))}
                     </ul>
                 </Modal.Body>
                 <Modal.Footer className='custom-alert-footer p-2'>
