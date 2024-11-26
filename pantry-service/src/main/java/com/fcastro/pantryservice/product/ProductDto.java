@@ -1,6 +1,6 @@
 package com.fcastro.pantryservice.product;
 
-import com.fcastro.security.core.model.AccountGroupDto;
+import com.fcastro.security.modelclient.AccountGroupDto;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 

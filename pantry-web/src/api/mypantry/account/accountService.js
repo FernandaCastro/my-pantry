@@ -87,4 +87,12 @@ export async function fetchRoles() {
     return Get('roles');
 }
 
+export async function deleteAccount(accountId) {
+    return Delete(`accounts/${accountId}`);
+}
+
+export async function fetchAccessControlByAccountGroup(groupId) {
+    return Get(`accessControl/all?accountGroupId=${groupId}`);
+}
+
 

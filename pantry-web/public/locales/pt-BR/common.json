@@ -24,6 +24,7 @@
   "status-403": "Status 403: Você não tem permissão para executar essa ação.",
   "empty": "Vazio",
   "good": "Bom",
-  "full": "Cheio"
-
+  "full": "Cheio",
+  "essentail-cookie-msg": "Este site usa cookies essenciais para garantir que você tenha a melhor experiência.",
+  "btn-got-it": "Entendi!"
 }

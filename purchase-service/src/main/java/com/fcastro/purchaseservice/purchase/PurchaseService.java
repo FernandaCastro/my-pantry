@@ -1,8 +1,9 @@
 package com.fcastro.purchaseservice.purchase;
 
-import com.fcastro.app.config.MessageTranslator;
-import com.fcastro.app.exception.ResourceNotFoundException;
-import com.fcastro.purchaseservice.config.PurchaseCompleteEventProducer;
+import com.fcastro.commons.config.MessageTranslator;
+import com.fcastro.commons.exception.ResourceNotFoundException;
+import com.fcastro.kafka.model.AccountEventDto;
+import com.fcastro.purchaseservice.event.PurchaseCompleteEventProducer;
 import com.fcastro.purchaseservice.exception.NoItemToPurchaseException;
 import com.fcastro.purchaseservice.exception.PurchaseAlreadyProcessedException;
 import com.fcastro.purchaseservice.exception.PurchaseItemsMissingException;
@@ -11,10 +12,11 @@ import com.fcastro.purchaseservice.purchaseItem.PurchaseItem;
 import com.fcastro.purchaseservice.purchaseItem.PurchaseItemDto;
 import com.fcastro.purchaseservice.purchaseItem.PurchaseItemService;
 import com.fcastro.security.authorization.AuthorizationClient;
-import com.fcastro.security.core.model.AccessControlDto;
+import com.fcastro.security.modelclient.AccessControlDto;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
@@ -41,7 +43,6 @@ public class PurchaseService {
 
     //List purchase orders where all pantries in it are accessible by the user.
     public List<PurchaseDto> listPurchaseOrder(String email, Set<Long> pantryIds) {
-        //var pantryIds = getAllPantriesAllowedToUser(email);
         var entities = repository.findAllOrderByDescCreateAt(pantryIds);
         return convertToDto(entities);
     }
@@ -58,7 +59,6 @@ public class PurchaseService {
 
     public PurchaseDto createPurchaseOrder(String email, Set<Long> pantryIds) {
         //return existing and pending purchase order
-        //var pantryIds = getPantryIdList(email);
         var entity = repository.getPending(pantryIds);
         if (entity != null) return convertToDto(entity);
 
@@ -110,6 +110,13 @@ public class PurchaseService {
         entity = repository.save(entity);
 
         return convertToDto(entity);
+    }
+
+    //When an Account is deleted all data related to that account will be deleted.
+    @Transactional(rollbackFor = Exception.class) //Rollback will also occur for checked exceptions
+    public void delete(AccountEventDto eventDto) {
+        purchaseItemService.delete(eventDto.getPantryIds());
+        repository.deleteOrphans();
     }
 
     private Set<Long> getAllPantriesAllowedToUser(String email) {

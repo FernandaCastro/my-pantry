@@ -29,8 +29,8 @@ export async function fetchFilteredProductList(groupId, text) {
 export async function fetchProductList() {
     return Get(`products`);
 }
-export async function fetchAssociatedPantries(groupId) {
-    return Get(`pantries?groupId=${groupId}`);
+export async function fetchAssociatedPantries(groupId, hierarchical = true) {
+    return Get(`pantries?groupId=${groupId}&hierarchical=${hierarchical}`);
 }
 export async function fetchPantryChartData(signal) {
     return Get(`pantries/charts-data`, signal);

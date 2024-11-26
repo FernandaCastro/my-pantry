@@ -1,10 +1,11 @@
 package com.fcastro.pantryservice.pantry;
 
-import com.fcastro.app.config.LocaleConfig;
+import com.fcastro.commons.config.LocaleConfig;
 import com.fcastro.pantryservice.JsonUtil;
 import com.fcastro.security.core.config.SecurityPropertiesConfig;
 import com.fcastro.security.core.jwt.JWTRequestFilter;
-import com.fcastro.security.core.model.*;
+import com.fcastro.security.modelclient.AccessControlDto;
+import com.fcastro.security.modelclient.AccountGroupDto;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
@@ -20,7 +21,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -151,9 +151,9 @@ public class PantryControllerUnitTest {
                 .clazzId(1L)
                 .accountGroup(AccountGroupDto.builder().id(10L).build())
                 .build();
-        var permissions = List.of(PermissionDto.builder().id("list_pantry").build());
-        var role = RoleDto.builder().permissions(permissions).build();
-        var member = AccountGroupMemberDto.builder().accountGroupId(10L).accountId(1L).role(role).build();
+//        var permissions = List.of(PermissionDto.builder().id("list_pantry").build());
+//        var role = RoleDto.builder().permissions(permissions).build();
+//        var member = AccountGroupMemberDto.builder().accountGroupId(10L).accountId(1L).role(role).build();
 
         doNothing().when(pantryService).delete(anyLong());
 

@@ -1,7 +1,7 @@
 package com.fcastro.pantryservice.pantry;
 
-import com.fcastro.app.config.MessageTranslator;
-import com.fcastro.app.exception.ResourceNotFoundException;
+import com.fcastro.commons.config.MessageTranslator;
+import com.fcastro.commons.exception.ResourceNotFoundException;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -44,8 +44,10 @@ public class PantryController {
 
     @GetMapping
     @PreAuthorize("hasPermissionInAGroup(#groupId, 'list_pantry')")
-    public ResponseEntity<List<PantryDto>> getAll(@P("groupId") @RequestParam Long groupId) {
-        return ResponseEntity.ok(service.getAll(SecurityContextHolder.getContext().getAuthentication().getName(), groupId));
+    public ResponseEntity<List<PantryDto>> getAll(@P("groupId") @RequestParam Long groupId, @RequestParam(defaultValue = "true") boolean hierarchical) {
+        return hierarchical ?
+                ResponseEntity.ok(service.getAll(SecurityContextHolder.getContext().getAuthentication().getName(), groupId)) :
+                ResponseEntity.ok(service.getAllNonHierarchical(SecurityContextHolder.getContext().getAuthentication().getName(), groupId));
     }
 
     @PostMapping

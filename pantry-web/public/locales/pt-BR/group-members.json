@@ -9,8 +9,8 @@
   "groups-title": "Grupos",
   "members-title": "Membros",
   "permissions-title": "Permissões",
-  "delete-group-alert-header": "Grupo não pode ser removido.",
-  "delete-group-alert-body": "Existe pelo menos uma despensa associada a este grupo.",
+  "delete-group-alert-header": "Este grupo não pode ser removido!",
+  "delete-group-alert-body": "Existe pelo menos um item associado a este grupo.",
   "btn-close": "Fechar",
   "account-not-found": "Conta não encontrada",
   "search-by-email-name": "Buscar por e-mail ou nome",
@@ -24,5 +24,9 @@
   "owner": "Proprietário",
   "admin": "Administrador",
   "user": "Usuário",
-  "placeholder-select-role": "Perfil ......."
+  "placeholder-select-role": "Perfil .......",
+  "pantry": "Despensa(s)",
+  "supermarket": "Supermercado(s)",
+  "product": "Produto(s)",
+  "empty-group": "Este grupo está vazio"
 }

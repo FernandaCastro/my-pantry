@@ -1,6 +1,7 @@
 package com.fcastro.purchaseservice.purchase;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
@@ -29,4 +30,11 @@ public interface PurchaseRepository extends JpaRepository<Purchase, Long> {
             "limit 5")
     List<Purchase> findAllOrderByDescCreateAt(Set<Long> pantryIds);
 
+    @Modifying
+    @Query("delete from purchase p " +
+            " where NOT EXISTS ( " +
+            "   select 1 from purchaseItem i" +
+            "   where i.purchase.id = p.id " +
+            " )")
+    int deleteOrphans();
 }

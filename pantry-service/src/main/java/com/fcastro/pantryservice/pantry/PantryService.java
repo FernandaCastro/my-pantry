@@ -1,13 +1,14 @@
 package com.fcastro.pantryservice.pantry;
 
-import com.fcastro.app.config.MessageTranslator;
-import com.fcastro.app.exception.ResourceNotFoundException;
+import com.fcastro.commons.config.MessageTranslator;
+import com.fcastro.commons.exception.ResourceNotFoundException;
+import com.fcastro.kafka.model.AccountEventDto;
 import com.fcastro.pantryservice.pantryitem.PantryItem;
 import com.fcastro.pantryservice.pantryitem.PantryItemService;
 import com.fcastro.security.authorization.AuthorizationClient;
-import com.fcastro.security.core.model.AccessControlDto;
-import com.fcastro.security.core.model.AccountGroupDto;
 import com.fcastro.security.exception.AccessControlNotDefinedException;
+import com.fcastro.security.modelclient.AccessControlDto;
+import com.fcastro.security.modelclient.AccountGroupDto;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -65,9 +66,14 @@ public class PantryService {
     }
 
     //TODO: Pageable
-    //Retrieves all pantries in the group
+    //Retrieves all pantries in the group, considering hierarchy
     public List<PantryDto> getAll(String email, Long accountGroupId) {
         var accessControlList = authorizationClient.listAccessControl(email, Pantry.class.getSimpleName(), null, accountGroupId, null);
+        return getAll(accessControlList);
+    }
+
+    public List<PantryDto> getAllNonHierarchical(String email, Long groupId) {
+        var accessControlList = authorizationClient.listAccessControlStrict(email, Pantry.class.getSimpleName(), groupId);
         return getAll(accessControlList);
     }
 
@@ -203,6 +209,19 @@ public class PantryService {
                 .collect(Collectors.toList());
 
         return pantryChartList;
+    }
+
+    //When deleting an Account all pantries associated to the Account will be deleted
+    @Transactional(rollbackFor = Exception.class) //Rollback will also occur for checked exceptions
+    public void delete(AccountEventDto eventDto) {
+
+        //delete all pantries
+        eventDto.getPantryIds().stream().forEach((id) -> {
+
+            pantryItemService.deleteAllItems(id);
+            repository.deleteById(id);
+        });
+
     }
 
     //It finds and attaches AccountGroup to the Pantry

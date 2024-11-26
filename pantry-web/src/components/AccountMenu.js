@@ -1,15 +1,15 @@
 import Image from 'react-bootstrap/Image';
 import iNoAccount from '../assets/images/no-login.png';
 import React, { useEffect, useState } from 'react';
-import { Button, Offcanvas } from 'react-bootstrap';
+import { Button, Modal, Offcanvas } from 'react-bootstrap';
 import { LogoutFromGoogle } from './LoginWithGoogle.js';
 import { logout } from '../api/mypantry/account/loginService';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import Select from './Select';
-import { BsPalette, BsPeople, BsPersonGear } from 'react-icons/bs';
+import { BsPalette, BsPeople, BsPersonGear, BsTrash } from 'react-icons/bs';
 import useProfile from '../state/useProfile';
-import { updateTheme } from '../api/mypantry/account/accountService';
+import { deleteAccount, updateTheme } from '../api/mypantry/account/accountService';
 import useGlobalLoading from '../state/useLoading';
 import useAlert from '../state/useAlert';
 import VariantType from '../components/VariantType.js';
@@ -26,6 +26,8 @@ function AccountMenu() {
     const { showAlert } = useAlert();
 
     const [expandMenu, setExpandMenu] = useState(false);
+    const [showModal, setShowModal] = useState(false);
+
 
     const themes = [
         { value: 'theme-mono-light', label: 'Mono Light' },
@@ -97,6 +99,34 @@ function AccountMenu() {
         )
     }
 
+    function handleDeleteAccount() {
+        setExpandMenu(false);
+        setShowModal(true);
+    }
+
+    async function fetchDeleteAccount() {
+        setShowModal(false);
+
+        if (!isLoading) {
+            setIsLoading(true);
+
+            try {
+                await deleteAccount(profile.id);
+
+                showAlert(VariantType.SUCCESS, t('delete-account-success'));
+                handleLogout();
+
+            } catch (error) {
+                showAlert(VariantType.DANGER, error.message);
+
+            } finally {
+                setIsLoading(false);
+            }
+            return;
+        }
+
+    }
+
     function UserProfile() {
 
         return (
@@ -122,7 +152,7 @@ function AccountMenu() {
                     </Offcanvas.Header>
                     <Offcanvas.Body className="d-flex flex-column gap-3">
                         <div className='section' />
-                        <div className="settings">
+                        <div className="settings gap-3">
                             <div className='d-flex flex-row'>
                                 <BsPalette className="simple-icon p-0 me-2 align-bottom" />
                                 <Select name="theme" key={themeOption?.value}
@@ -130,20 +160,40 @@ function AccountMenu() {
                                     options={themes}
                                     onChange={(e) => setThemeOption(e)} />
                             </div>
+
                             <CustomLink bsPrefix="btn-profile-menu" to={"/account/edit"} onClick={handleClose}>
                                 <BsPersonGear className="simple-icon me-2" />
                                 {t("edit-account-link")}
                             </CustomLink>
+
                             <CustomLink bsPrefix="btn-profile-menu" to="/group-members" onClick={handleClose}>
                                 <BsPeople className="simple-icon me-2" />
                                 {t("group-members-link")}
                             </CustomLink>
+
+                            <CustomLink bsPrefix="btn-profile-menu" onClick={handleDeleteAccount}>
+                                <BsTrash className="simple-icon me-2" />
+                                {t("delete-account")}
+                            </CustomLink>
+
                         </div >
                         <div className='mt-auto align-self-center'>
                             <LogoutFromGoogle handleLogout={handleLogout} text={t("btn-logout")} />
                         </div>
                     </Offcanvas.Body>
                 </Offcanvas>
+
+                <Modal className='custom-alert' size='md' show={showModal} onHide={() => setShowModal(false)} >
+                    <Modal.Body className='custom-alert-body'>
+                        <span className='title text-center'>
+                            {t('delete-account-alert')}
+                        </span>
+                    </Modal.Body>
+                    <Modal.Footer className='custom-alert-footer p-2'>
+                        <Button bsPrefix='btn-custom' size='sm' onClick={() => setShowModal(false)}><span>{t("btn-no", { ns: "common" })}</span></Button>
+                        <Button bsPrefix='btn-custom' size='sm' onClick={fetchDeleteAccount}><span>{t("btn-yes", { ns: "common" })}</span></Button>
+                    </Modal.Footer>
+                </Modal >
             </div>
         )
 

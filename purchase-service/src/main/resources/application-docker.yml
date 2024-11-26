@@ -29,14 +29,17 @@ spring:
     baselineVersion: 0
     encoding: ISO-8859-1
     defaultSchema: purchase
+
 kafka-config:
   bootstrap-servers-config: ${KAFKA_SERVER}
   purchase-create-topic: purchaseCreateTopic
   purchase-complete-topic: purchaseCompleteTopic
   product-topic: productTopic
-  group: pantryGroup
+  account-topic: accountTopic
+  group: purchaseGroup
   partitions: ${PARTITIONS}
   replicas: ${REPLICAS}
+
 security-config:
   secret: ${SECURITY_SECRET}
   allowedOrigin: ${ALLOWED_ORIGINS}

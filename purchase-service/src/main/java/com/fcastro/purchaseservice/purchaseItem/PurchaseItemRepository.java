@@ -32,4 +32,9 @@ public interface PurchaseItemRepository extends JpaRepository<PurchaseItem, Long
 
     @Query("select p from purchaseItem p where p.id = :id and p.purchase.id = :purchaseId")
     Optional<PurchaseItem> findByIdAndPurchaseId(Long id, Long purchaseId);
+
+    @Modifying
+    @Query("delete from purchaseItem i " +
+            "where i.pantryId in :pantryIds ")
+    int deleteAllByPantryIds(List<Long> pantryIds);
 }

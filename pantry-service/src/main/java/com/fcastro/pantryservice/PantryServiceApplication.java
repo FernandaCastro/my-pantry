@@ -5,7 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration;
 
 @SpringBootApplication(
-        scanBasePackages = {"com.fcastro.app.config", "com.fcastro.kafka", "com.fcastro.security", "com.fcastro.pantryservice"},
+        scanBasePackages = {"com.fcastro.commons.config", "com.fcastro.kafka", "com.fcastro.security", "com.fcastro.pantryservice"},
         exclude = UserDetailsServiceAutoConfiguration.class
 )
 public class PantryServiceApplication {

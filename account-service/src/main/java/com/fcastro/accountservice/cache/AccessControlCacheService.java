@@ -97,4 +97,20 @@ public class AccessControlCacheService {
             accessControlCache.evict(key); //Remove the entire key
         }
     }
+
+    public void removeAllFromCache(long accountGroupId) {
+        deleteAllFromCache(accountGroupId, "Pantry");
+        deleteAllFromCache(accountGroupId, "Product");
+    }
+
+    // Method to remove item from values  or delete the key completely.
+    private void deleteAllFromCache(long accountGroupId, String clazz) {
+        var key = encodeKey(accountGroupId, clazz);
+
+        // Check if the key exists
+        Cache.ValueWrapper valueWrapper = accessControlCache.get(key);
+        if (valueWrapper == null) return;
+
+        accessControlCache.evict(key); //Remove the entire key
+    }
 }

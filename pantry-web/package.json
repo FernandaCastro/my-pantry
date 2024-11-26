@@ -1,6 +1,6 @@
 {
   "name": "pantry-web",
-  "version": "0.9.0",
+  "version": "0.10.0",
   "private": true,
   "devDependencies": {
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
@@ -15,7 +15,6 @@
     "cross-env": "^7.0.3",
     "env-cmd": "^10.1.0",
     "node-env-run": "^4.0.2",
-    "node-polyfill-webpack-plugin": "^3.0.0",
     "react": "^18.2.0",
     "react-bootstrap": "^2.10.5",
     "react-dom": "^18.2.0",
@@ -32,7 +31,8 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "server": "serve -l 3000 -s ./build",
-    "prebuild": "rm -rf ./build"
+    "prebuild": "rm -rf ./build",
+    "clean": "rm -rf dist build node_modules/.cache"
   },
   "eslintConfig": {
     "extends": [
@@ -66,7 +66,6 @@
     "react-form-wizard-component": "^0.2.3",
     "react-i18next": "^14.1.1",
     "recharts": "^2.12.7",
-    "serve": "^14.2.1",
-    "universal-cookie": "^7.0.1"
+    "serve": "^14.2.1"
   }
 }

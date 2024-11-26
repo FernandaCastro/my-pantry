@@ -1,7 +1,7 @@
 package com.fcastro.pantryservice.exception;
 
-import com.fcastro.app.exception.ApplicationError;
-import com.fcastro.app.exception.ResourceNotFoundException;
+import com.fcastro.commons.exception.ApplicationError;
+import com.fcastro.commons.exception.ResourceNotFoundException;
 import com.fcastro.security.core.exception.TokenVerifierException;
 import com.fcastro.security.exception.AccessControlNotDefinedException;
 import io.jsonwebtoken.ExpiredJwtException;

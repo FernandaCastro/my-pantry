@@ -6,11 +6,11 @@
     <parent>
         <groupId>com.fcastro</groupId>
         <artifactId>my-pantry</artifactId>
-        <version>0.0.9</version>
+        <version>0.0.10</version>
     </parent>
 
     <artifactId>account-service</artifactId>
-    <version>0.4.11</version>
+    <version>0.5.0</version>
     <packaging>jar</packaging>
 
     <properties>
@@ -21,13 +21,19 @@
     <dependencies>
         <dependency>
             <groupId>com.fcastro</groupId>
-            <artifactId>common-config-data</artifactId>
-            <version>${common-config-data-version}</version>
+            <artifactId>commons</artifactId>
+            <version>${commons-version}</version>
         </dependency>
 
         <dependency>
             <groupId>com.fcastro</groupId>
-            <artifactId>security-core-config</artifactId>
+            <artifactId>kafka</artifactId>
+            <version>${kafka-version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.fcastro</groupId>
+            <artifactId>security-core</artifactId>
             <version>${security-core-version}</version>
         </dependency>
 

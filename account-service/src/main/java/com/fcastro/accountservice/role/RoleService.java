@@ -2,10 +2,9 @@ package com.fcastro.accountservice.role;
 
 import com.fcastro.accountservice.config.CustomCacheConfig;
 import com.fcastro.accountservice.permission.Permission;
-import com.fcastro.app.config.MessageTranslator;
-import com.fcastro.app.exception.ResourceNotFoundException;
-import com.fcastro.security.core.model.PermissionDto;
-import com.fcastro.security.core.model.RoleDto;
+import com.fcastro.accountservice.permission.PermissionDto;
+import com.fcastro.commons.config.MessageTranslator;
+import com.fcastro.commons.exception.ResourceNotFoundException;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 

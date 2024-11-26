@@ -1,11 +1,10 @@
 package com.fcastro.accountservice.auth;
 
+import com.fcastro.accountservice.account.AccountDto;
 import com.fcastro.accountservice.security.KeyPairDto;
-import com.fcastro.app.config.MessageTranslator;
-import com.fcastro.app.exception.RequestParamExpectedException;
-import com.fcastro.app.exception.ResourceNotFoundException;
-import com.fcastro.security.core.model.AccountDto;
-import com.fcastro.security.core.model.IdTokenDto;
+import com.fcastro.commons.config.MessageTranslator;
+import com.fcastro.commons.exception.RequestParamExpectedException;
+import com.fcastro.commons.exception.ResourceNotFoundException;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;

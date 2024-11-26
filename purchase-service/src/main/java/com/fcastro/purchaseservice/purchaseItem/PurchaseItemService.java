@@ -1,15 +1,15 @@
 package com.fcastro.purchaseservice.purchaseItem;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fcastro.app.config.MessageTranslator;
-import com.fcastro.app.exception.ResourceNotFoundException;
-import com.fcastro.app.model.Action;
+import com.fcastro.commons.config.MessageTranslator;
+import com.fcastro.commons.exception.ResourceNotFoundException;
+import com.fcastro.kafka.model.Action;
 import com.fcastro.kafka.model.PurchaseEventDto;
 import com.fcastro.purchaseservice.product.Product;
 import com.fcastro.purchaseservice.product.ProductService;
 import com.fcastro.purchaseservice.supermarket.SupermarketService;
 import com.fcastro.security.authorization.AuthorizationClient;
-import com.fcastro.security.core.model.AccessControlDto;
+import com.fcastro.security.modelclient.AccessControlDto;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -193,6 +193,10 @@ public class PurchaseItemService {
         }
 
         return purchaseEventList;
+    }
+
+    public void delete(List<Long> pantryIds) {
+        repository.deleteAllByPantryIds(pantryIds);
     }
 
     private void processPendingProvisioning(PurchaseItem purchasedItem) {

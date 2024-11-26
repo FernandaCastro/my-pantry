@@ -1,9 +1,9 @@
 package com.fcastro.pantryservice.pantryitem;
 
-import com.fcastro.app.config.MessageTranslator;
-import com.fcastro.app.exception.ResourceNotFoundException;
-import com.fcastro.app.model.Action;
+import com.fcastro.commons.config.MessageTranslator;
+import com.fcastro.commons.exception.ResourceNotFoundException;
 import com.fcastro.kafka.exception.EventProcessingException;
+import com.fcastro.kafka.model.Action;
 import com.fcastro.kafka.model.PurchaseEventDto;
 import com.fcastro.pantryservice.event.PurchaseEventProducer;
 import com.fcastro.pantryservice.exception.PantryAndProductAccountGroupInconsistentException;

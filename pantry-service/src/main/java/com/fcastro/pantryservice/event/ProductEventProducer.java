@@ -1,6 +1,6 @@
 package com.fcastro.pantryservice.event;
 
-import com.fcastro.kafka.config.KafkaConfigData;
+import com.fcastro.kafka.config.KafkaProperties;
 import com.fcastro.kafka.event.ProductEvent;
 import com.fcastro.kafka.model.ProductEventDto;
 import org.slf4j.Logger;
@@ -17,11 +17,11 @@ public class ProductEventProducer {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ProductEventProducer.class);
 
-    private final KafkaConfigData kafkaConfigData;
+    private final KafkaProperties kafkaConfigData;
 
     private final KafkaTemplate<String, ProductEvent> kafkaTemplate;
 
-    public ProductEventProducer(KafkaConfigData kafkaConfigData, KafkaTemplate<String, ProductEvent> kafkaTemplate) {
+    public ProductEventProducer(KafkaProperties kafkaConfigData, KafkaTemplate<String, ProductEvent> kafkaTemplate) {
         this.kafkaConfigData = kafkaConfigData;
         this.kafkaTemplate = kafkaTemplate;
     }

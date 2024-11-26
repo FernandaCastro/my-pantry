@@ -1,6 +1,6 @@
 package com.fcastro.pantryservice.pantryitem;
 
-import com.fcastro.kafka.config.KafkaConfigData;
+import com.fcastro.kafka.config.KafkaProperties;
 import com.fcastro.kafka.model.PurchaseEventDto;
 import com.fcastro.pantryservice.event.PurchaseEventProducer;
 import com.fcastro.pantryservice.exception.QuantityNotAvailableException;
@@ -10,7 +10,7 @@ import com.fcastro.pantryservice.product.Product;
 import com.fcastro.pantryservice.product.ProductDto;
 import com.fcastro.pantryservice.product.ProductRepository;
 import com.fcastro.pantryservice.product.ProductService;
-import com.fcastro.security.core.model.AccountGroupDto;
+import com.fcastro.security.modelclient.AccountGroupDto;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -69,7 +69,7 @@ public class PantryItemServiceIntegrationTest {
     ProductRepository productRepository;
 
     @Autowired
-    KafkaConfigData kafkaConfigData;
+    KafkaProperties kafkaConfigData;
 
     PantryDto pantry;
     ProductDto product1, product2;

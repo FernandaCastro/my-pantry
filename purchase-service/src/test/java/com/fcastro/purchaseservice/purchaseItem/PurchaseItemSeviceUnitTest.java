@@ -1,6 +1,6 @@
 package com.fcastro.purchaseservice.purchaseItem;
 
-import com.fcastro.app.model.Action;
+import com.fcastro.kafka.model.Action;
 import com.fcastro.kafka.model.PurchaseEventDto;
 import com.fcastro.purchaseservice.product.Product;
 import com.fcastro.purchaseservice.product.ProductDto;

@@ -1,14 +1,13 @@
 package com.fcastro.accountservice.accesscontrol;
 
 import com.fcastro.accountservice.accountgroup.AccountGroup;
+import com.fcastro.accountservice.accountgroup.AccountGroupDto;
 import com.fcastro.accountservice.cache.AccessControlCacheService;
 import com.fcastro.accountservice.cache.MemberCacheDto;
 import com.fcastro.accountservice.cache.MemberCacheService;
 import com.fcastro.accountservice.exception.AccessControlNotDefinedException;
 import com.fcastro.accountservice.role.RoleService;
-import com.fcastro.app.config.MessageTranslator;
-import com.fcastro.security.core.model.AccessControlDto;
-import com.fcastro.security.core.model.AccountGroupDto;
+import com.fcastro.commons.config.MessageTranslator;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -206,6 +205,12 @@ public class AccessControlService {
             var accessControl = found.get();
             accessControlCacheService.deleteFromCache(accessControl.getAccountGroup().getId(), accessControl.getClazz(), accessControl.getClazzId());
         }
+    }
+
+
+    public void deleteAll(Long accountGroupId) {
+        accessControlRepository.deleteAllByAccountGroupId(accountGroupId);
+        accessControlCacheService.removeAllFromCache(accountGroupId);
     }
 
     private AccessControlDto convertToDto(AccessControl entity) {

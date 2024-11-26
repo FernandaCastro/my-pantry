@@ -24,4 +24,12 @@ public interface AccountGroupRepository extends JpaRepository<AccountGroup, Long
             "and a.email = :email " +
             "order by ag.name")
     Optional<AccountGroup> findParentAccountGroup(String email);
+
+
+    @Query("select ag from accountGroup ag, accountGroupMember aga, account a " +
+            "where ag.id = aga.accountGroupId  " +
+            "and aga.accountId = a.id  " +
+            "and a.email = :email " +
+            "order by ag.parentAccountGroup.id asc")
+    List<AccountGroup> findAllOrderByChildGroupsFirst(String email);
 }

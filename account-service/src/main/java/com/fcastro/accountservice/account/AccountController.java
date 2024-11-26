@@ -1,8 +1,7 @@
 package com.fcastro.accountservice.account;
 
-import com.fcastro.app.config.MessageTranslator;
-import com.fcastro.app.exception.ResourceNotFoundException;
-import com.fcastro.security.core.model.AccountDto;
+import com.fcastro.commons.config.MessageTranslator;
+import com.fcastro.commons.exception.ResourceNotFoundException;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -55,6 +54,12 @@ public class AccountController {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(dto);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<AccountDto> delete(@PathVariable Long id) {
+        service.delete(id);
+        return ResponseEntity.noContent().build();
     }
 
 }

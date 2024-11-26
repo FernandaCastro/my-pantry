@@ -4,9 +4,10 @@ export default function CustomLink({ to, children, bsPrefix, className, onClick,
     return (
         <div className={bsPrefix} onClick={onClick} disabled={disabled}>
             {disabled ? children :
-                <Link to={to} className={className} style={{ textDecoration: 'none', color: 'inherit' }}>
-                    {children}
-                </Link>
+                !to ? children :
+                    <Link to={to} className={className} style={{ textDecoration: 'none', color: 'inherit' }}>
+                        {children}
+                    </Link>
             }
         </div>
     )

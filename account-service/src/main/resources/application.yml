@@ -53,6 +53,12 @@ management:
     metrics:
       enable:
         all: true
+kafka-config:
+  bootstrap-servers-config: ${KAFKA_SERVER}
+  account-topic: accountTopic
+  group: accountGroup
+  partitions: ${PARTITIONS:1}
+  replicas: ${REPLICAS:1}
 security-config:
   secret: ${SECURITY_SECRET}
   allowedOrigin: ${ALLOWED_ORIGINS}

@@ -33,6 +33,6 @@ public interface PantryItemRepository extends JpaRepository<PantryItem, PantryIt
     Integer countPantryItem(Long productId);
 
     @Modifying
-    @Query("delete pantryItem p where p.pantry.id = :pantryId")
+    @Query("delete from pantryItem p where p.pantry.id = :pantryId")
     void deleteByPantryId(@Param("pantryId") Long pantryId);
 }
