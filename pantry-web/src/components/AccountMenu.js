@@ -9,7 +9,7 @@ import { useTranslation } from 'react-i18next';
 import Select from './Select';
 import { BsPalette, BsPeople, BsPersonGear, BsTrash } from 'react-icons/bs';
 import useProfile from '../state/useProfile';
-import { updateTheme } from '../api/mypantry/account/accountService';
+import { deleteAccount, updateTheme } from '../api/mypantry/account/accountService';
 import useGlobalLoading from '../state/useLoading';
 import useAlert from '../state/useAlert';
 import VariantType from '../components/VariantType.js';
@@ -104,8 +104,27 @@ function AccountMenu() {
         setShowModal(true);
     }
 
-    function fetchDeleteAccount() {
-        console.log("delete account!")
+    async function fetchDeleteAccount() {
+        setShowModal(false);
+
+        if (!isLoading) {
+            setIsLoading(true);
+
+            try {
+                await deleteAccount(profile.id);
+
+                showAlert(VariantType.SUCCESS, t('delete-account-success'));
+                handleLogout();
+
+            } catch (error) {
+                showAlert(VariantType.DANGER, error.message);
+
+            } finally {
+                setIsLoading(false);
+            }
+            return;
+        }
+
     }
 
     function UserProfile() {
