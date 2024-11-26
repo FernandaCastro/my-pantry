@@ -38,7 +38,9 @@ public class KafkaEventConfig<V extends Serializable> {
         producerFactoryProperties.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaConfigData.getBootstrapServersConfig());
         producerFactoryProperties.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         producerFactoryProperties.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonDeserializer.class);
-        producerFactoryProperties.put(ProducerConfig.ACKS_CONFIG, "1"); //ACKS= 1 (ack only by  the leader)
+        producerFactoryProperties.put(ProducerConfig.ACKS_CONFIG, "all");
+        //ACKS= 1 (ack only by the leader)
+        //ACKS= all or -1 (the leader waits for the full set of in-sync replicas to acknowledge the record.)
     }
 
     private void setConsumerFactoryProperties() {
@@ -46,7 +48,10 @@ public class KafkaEventConfig<V extends Serializable> {
         consumerFactoryProperties.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaConfigData.getBootstrapServersConfig());
         consumerFactoryProperties.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         consumerFactoryProperties.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class);
+
+        //Isolates the consumption. Consumers with the same groupId will consume events parallelly
         consumerFactoryProperties.put(ConsumerConfig.GROUP_ID_CONFIG, kafkaConfigData.getGroup());
+
         consumerFactoryProperties.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, false);
         //consumerFactoryProperties.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
     }
