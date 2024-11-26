@@ -66,9 +66,14 @@ public class PantryService {
     }
 
     //TODO: Pageable
-    //Retrieves all pantries in the group
+    //Retrieves all pantries in the group, considering hierarchy
     public List<PantryDto> getAll(String email, Long accountGroupId) {
         var accessControlList = authorizationClient.listAccessControl(email, Pantry.class.getSimpleName(), null, accountGroupId, null);
+        return getAll(accessControlList);
+    }
+
+    public List<PantryDto> getAllNonHierarchical(String email, Long groupId) {
+        var accessControlList = authorizationClient.listAccessControlStrict(email, Pantry.class.getSimpleName(), groupId);
         return getAll(accessControlList);
     }
 
@@ -207,6 +212,7 @@ public class PantryService {
     }
 
     //When deleting an Account all pantries associated to the Account will be deleted
+    @Transactional(rollbackFor = Exception.class) //Rollback will also occur for checked exceptions
     public void delete(AccountEventDto eventDto) {
 
         //delete all pantries

@@ -44,8 +44,10 @@ public class PantryController {
 
     @GetMapping
     @PreAuthorize("hasPermissionInAGroup(#groupId, 'list_pantry')")
-    public ResponseEntity<List<PantryDto>> getAll(@P("groupId") @RequestParam Long groupId) {
-        return ResponseEntity.ok(service.getAll(SecurityContextHolder.getContext().getAuthentication().getName(), groupId));
+    public ResponseEntity<List<PantryDto>> getAll(@P("groupId") @RequestParam Long groupId, @RequestParam(defaultValue = "true") boolean hierarchical) {
+        return hierarchical ?
+                ResponseEntity.ok(service.getAll(SecurityContextHolder.getContext().getAuthentication().getName(), groupId)) :
+                ResponseEntity.ok(service.getAllNonHierarchical(SecurityContextHolder.getContext().getAuthentication().getName(), groupId));
     }
 
     @PostMapping
