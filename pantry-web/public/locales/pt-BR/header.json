@@ -10,5 +10,6 @@
   "tooltip-products": "Produtos",
   "tooltip-supermarkets": "Supermercados",
   "delete-account": "Apagar a minha Conta",
-  "delete-account-alert": "Todos s seus dados serão apagados permanentemente. Você realmente deseja continuar?"
+  "delete-account-alert": "Todos s seus dados serão apagados permanentemente. Você realmente deseja continuar?",
+  "delete-account-success": "Sua Conta foi apagada com sucesso. Esperamos vê-lo de volta em breve."
 }

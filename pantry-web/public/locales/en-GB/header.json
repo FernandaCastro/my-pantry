@@ -10,5 +10,6 @@
   "tooltip-products": "Products",
   "tooltip-supermarkets": "Supermarkets",
   "delete-account": "Delete my Account",
-  "delete-account-alert": "All your data will be deleted permanently! Do you really want to proceed?"
+  "delete-account-alert": "All your data will be deleted permanently! Do you really want to proceed?",
+  "delete-account-success": "Your Account has been deleted successfully. We hope to see you around soon."
 }
