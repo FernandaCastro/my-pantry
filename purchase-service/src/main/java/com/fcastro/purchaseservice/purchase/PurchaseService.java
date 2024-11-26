@@ -16,6 +16,7 @@ import com.fcastro.security.modelclient.AccessControlDto;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
@@ -112,9 +113,10 @@ public class PurchaseService {
     }
 
     //When an Account is deleted all data related to that account will be deleted.
+    @Transactional(rollbackFor = Exception.class) //Rollback will also occur for checked exceptions
     public void delete(AccountEventDto eventDto) {
         purchaseItemService.delete(eventDto.getPantryIds());
-        repository.deleteOrphanByPantryIds(eventDto.getPantryIds());
+        repository.deleteOrphans();
     }
 
     private Set<Long> getAllPantriesAllowedToUser(String email) {

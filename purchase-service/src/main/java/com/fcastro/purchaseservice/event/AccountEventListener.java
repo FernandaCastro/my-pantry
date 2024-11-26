@@ -3,12 +3,14 @@ package com.fcastro.purchaseservice.event;
 import com.fcastro.kafka.config.KafkaProperties;
 import com.fcastro.kafka.event.AccountEvent;
 import com.fcastro.kafka.exception.EventProcessingException;
+import com.fcastro.purchaseservice.product.ProductService;
 import com.fcastro.purchaseservice.purchase.PurchaseService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.support.Acknowledgment;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 @Component
 public class AccountEventListener {
@@ -16,16 +18,19 @@ public class AccountEventListener {
     private static final Logger LOG = LoggerFactory.getLogger(AccountEventListener.class);
 
     private final PurchaseService purchaseService;
+    private final ProductService productService;
 
     private final KafkaProperties kafkaConfigData;
 
-    public AccountEventListener(PurchaseService purchaseService, KafkaProperties kafkaConfigData) {
+    public AccountEventListener(PurchaseService purchaseService, ProductService productService, KafkaProperties kafkaConfigData) {
         this.purchaseService = purchaseService;
+        this.productService = productService;
         this.kafkaConfigData = kafkaConfigData;
     }
 
     //TODO: HOW TO define <topics> getting value from configuration files?
     @KafkaListener(topics = "accountTopic", containerFactory = "kafkaListenerContainerFactory")
+    @Transactional
     protected void listener(AccountEvent event, Acknowledgment acknowledgment) {
 
         try {
@@ -35,8 +40,9 @@ public class AccountEventListener {
                 return;
             }
 
-            LOG.info("Event Received: Topic[{}], Data[{}]", kafkaConfigData.getAccountTopic(), event.getData().toString());
+            LOG.info("Event Received: Topic[{}], Data[{}]", "accountTopic", event.getData().toString());
             purchaseService.delete(event.getData());
+            productService.delete(event.getData());
 
         } catch (EventProcessingException ex) {
             //TODO: What should be done? Save to reprocess later or manually?

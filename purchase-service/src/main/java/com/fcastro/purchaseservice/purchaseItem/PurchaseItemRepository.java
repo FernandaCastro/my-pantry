@@ -34,7 +34,7 @@ public interface PurchaseItemRepository extends JpaRepository<PurchaseItem, Long
     Optional<PurchaseItem> findByIdAndPurchaseId(Long id, Long purchaseId);
 
     @Modifying
-    @Query("delete purchaseItem i " +
+    @Query("delete from purchaseItem i " +
             "where i.pantryId in :pantryIds ")
-    void deleteAllByPantryIds(List<Long> pantryIds);
+    int deleteAllByPantryIds(List<Long> pantryIds);
 }

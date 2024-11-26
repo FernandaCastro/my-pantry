@@ -1,10 +1,12 @@
 package com.fcastro.purchaseservice.product;
 
 import com.fcastro.kafka.exception.EventProcessingException;
+import com.fcastro.kafka.model.AccountEventDto;
 import com.fcastro.kafka.model.ProductEventDto;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -47,6 +49,13 @@ public class ProductService {
         } catch (Throwable ex) {
             throw new EventProcessingException("Error occurred while processing a ProductEvent.", ex);
         }
+    }
+
+    //When deleting an Account all products associated to the Account will be deleted
+    @Transactional(rollbackFor = Exception.class) //Rollback will also occur for checked exceptions
+    public void delete(AccountEventDto eventDto) {
+
+        repository.deleteAllById(eventDto.getProductIds());
     }
 
     private Product convertToEntity(ProductEventDto eventDto) {

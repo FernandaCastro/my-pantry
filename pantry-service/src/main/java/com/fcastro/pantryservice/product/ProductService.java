@@ -259,15 +259,7 @@ public class ProductService {
     //When deleting an Account all products associated to the Account will be deleted
     public void delete(AccountEventDto eventDto) {
 
-        eventDto.getProductIds().stream().forEach((id) -> {
-
-            repository.deleteById(id);
-            productEventProducer.send(ProductEventDto.builder()
-                    .action(Action.DELETE)
-                    .id(id)
-                    .build());
-        });
-
+        repository.deleteAllById(eventDto.getProductIds());
     }
 
     private ProductDto convertToDTO(Product entity) {

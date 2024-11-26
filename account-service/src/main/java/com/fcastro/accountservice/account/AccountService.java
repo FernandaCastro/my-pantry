@@ -17,6 +17,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -130,6 +131,7 @@ public class AccountService {
         return convertToDto(updatedAccount);
     }
 
+    @Transactional(rollbackFor = Exception.class) //Rollback will also occur for checked exceptions
     public void delete(Long id) {
         Account existingAccount = accountRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(MessageTranslator.getMessage("error.account.not.found")));
@@ -144,24 +146,28 @@ public class AccountService {
 
         accountRepository.delete(existingAccount);
 
-        //Extract pantry and product Ids
-        var pantries = objectsToDelete.stream()
-                .filter((ac) -> ac.getClazz().equals("Pantry"))
-                .map(AccessControlDto::getClazzId)
-                .collect(Collectors.toList());
+        //Send Event if there's any object to be deleted
+        if (objectsToDelete.size() > 0) {
 
-        var products = objectsToDelete.stream()
-                .filter((ac) -> ac.getClazz().equals("Product"))
-                .map(AccessControlDto::getClazzId)
-                .collect(Collectors.toList());
+            //Extract pantry and product Ids
+            var pantries = objectsToDelete.stream()
+                    .filter((ac) -> ac.getClazz().equals("Pantry"))
+                    .map(AccessControlDto::getClazzId)
+                    .collect(Collectors.toList());
 
-        //Notify Pantry and Purchase to remove all data related to this account
-        accountEventProducer.send(AccountEventDto.builder()
-                .action(Action.DELETE)
-                .email(existingAccount.getEmail())
-                .pantryIds(pantries)
-                .productIds(products)
-                .build());
+            var products = objectsToDelete.stream()
+                    .filter((ac) -> ac.getClazz().equals("Product"))
+                    .map(AccessControlDto::getClazzId)
+                    .collect(Collectors.toList());
+
+            //Notify Pantry and Purchase to remove all data related to this account
+            accountEventProducer.send(AccountEventDto.builder()
+                    .action(Action.DELETE)
+                    .email(existingAccount.getEmail())
+                    .pantryIds(pantries)
+                    .productIds(products)
+                    .build());
+        }
 
     }
 

@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.support.Acknowledgment;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 @Component
 public class AccountEventListener {
@@ -28,6 +29,7 @@ public class AccountEventListener {
 
     //TODO: HOW TO define <topics> getting value from configuration files?
     @KafkaListener(topics = "accountTopic", containerFactory = "kafkaListenerContainerFactory")
+    @Transactional
     protected void listener(AccountEvent event, Acknowledgment acknowledgment) {
 
         try {
@@ -37,7 +39,7 @@ public class AccountEventListener {
                 return;
             }
 
-            LOG.info("Event Received: Topic[{}], Data[{}]", kafkaConfigData.getAccountTopic(), event.getData().toString());
+            LOG.info("Event Received: Topic[{}], Data[{}]", "accountTopic", event.getData().toString());
             pantryService.delete(event.getData());
             productService.delete(event.getData());
 

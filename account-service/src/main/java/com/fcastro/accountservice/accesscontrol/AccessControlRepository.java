@@ -34,7 +34,7 @@ public interface AccessControlRepository extends JpaRepository<AccessControl, Ac
     void deleteAllByClazzAndClazzId(String clazz, Long clazzId);
 
     @Modifying
-    @Query("delete accessControl a " +
+    @Query("delete from accessControl a " +
             "where a.accountGroup.id = :accountGroupId ")
     void deleteAllByAccountGroupId(Long accountGroupId);
 
