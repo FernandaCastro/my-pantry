@@ -1,28 +1,29 @@
-<img height="700" width="700" title="Diagram" src="./readme_images/my-pantry_v0.9.5.jpg"/>
+<img height="500" width="700" title="Diagram" src="./readme_images/mypantry_v0.11.0.jpg"/>
 
 # My Pantry
 
-<b>version: 0.10.0</b>
+<b>version: 0.11.0</b>
 
-- pantry-web: v.0.8.16
-- account-service: v0.4.11
-- pantry-service: v0.6.11
-- purchase-service: v0.4.8
+- pantry-web: v.0.10.0
+- account-service: v0.5.0
+- pantry-service: v0.7.0
+- purchase-service: v0.5.0
 
 ### In this version:
 
 - <b>pantry-web:</b>
-    - Big refactoring replacing the use of React Context by React-Query as a global state manager
-    - Use of react-query cache to improve the dashbord graph generation, fetching fresh data only when it's stale.
-    - Totally refactoring of App.js, removing context dependencies and isolating routes to avoid unnecessary
-      re-rendering.
-    - Use of Link component from react-router-dom to correctly navigate among pages, avoiding complete re-render on
-      transitions.
-    - Apply theme based on the user logging in. It's no more based on the last theme saved on the browser LocalStorage.
+    - Add alert to inform the use of essencial cookie
+    - Remove unused libraries
+    - Add "Delete Account" to the slide menu
+    - Add "View items" to Account Group in Group Members page
 
 - <b>account-service:</b>
-    - Remember Me Logic. When it's active, JWT and AUTH Cookie are valid for 30 days, otherwise it's valid for only 24
-      hours.
+- <b>pantry-service:</b>
+- <b>purchase-service:</b>
+    - Delete Account data
+
+- <b>lib-dependencies:</b>
+    - Refactoring
 
 ### In next versions:
 

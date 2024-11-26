@@ -56,7 +56,7 @@ management:
 kafka-config:
   bootstrap-servers-config: ${KAFKA_SERVER}
   account-topic: accountTopic
-  group: pantryGroup
+  group: accountGroup
   partitions: ${PARTITIONS:1}
   replicas: ${REPLICAS:1}
 security-config:

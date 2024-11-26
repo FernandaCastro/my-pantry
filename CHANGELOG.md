@@ -5,6 +5,29 @@
 - Delete provisioned products from the shopping list (on Shopping List page)
 - CRUD for Role and Permissions
 
+### version: [0.11.x] : 2024-11-25
+
+- <b>pantry-web:</b>
+    - [added]:
+        - Add alert to inform the use of essencial cookie
+        - Add "Delete Account" to the slide menu
+        - Add "View items" to Account Group in Group Members page
+    - [change]:
+        - Remove unused libraries
+
+- <b>account-service:</b>
+- <b>pantry-service:</b>
+- <b>purchase-service:</b>
+    - [added]:
+        - Delete Account data
+
+- <b>lib-dependencies:</b>
+    - [change]:
+        - Refactoring:
+            - split lib commons-config-data into commons and kafka
+            - share only essential DTOs (AccessControlDto and AccountGroupDto) through security lib
+            - rename lib security-config to security
+
 ### version: [0.10.x] : 2024-11-15
 
 - <b>pantry-web:</b>

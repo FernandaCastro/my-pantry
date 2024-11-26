@@ -7,24 +7,30 @@
     <parent>
         <groupId>com.fcastro</groupId>
         <artifactId>my-pantry</artifactId>
-        <version>0.0.9</version>
+        <version>0.0.10</version>
     </parent>
 
     <artifactId>pantry-service</artifactId>
-    <version>0.6.11</version>
+    <version>0.7.0</version>
     <packaging>jar</packaging>
 
     <dependencies>
         <dependency>
             <groupId>com.fcastro</groupId>
-            <artifactId>common-config-data</artifactId>
-            <version>${common-config-data-version}</version>
+            <artifactId>commons</artifactId>
+            <version>${commons-version}</version>
         </dependency>
 
         <dependency>
             <groupId>com.fcastro</groupId>
-            <artifactId>security-config</artifactId>
-            <version>${security-config-version}</version>
+            <artifactId>kafka</artifactId>
+            <version>${kafka-version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.fcastro</groupId>
+            <artifactId>security</artifactId>
+            <version>${security-version}</version>
         </dependency>
 
 

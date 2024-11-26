@@ -49,7 +49,7 @@ management:
 kafka-config:
   bootstrap-servers-config: ${KAFKA_SERVER}
   account-topic: accountTopic
-  group: pantryGroup
+  group: accountGroup
   partitions: ${PARTITIONS}
   replicas: ${REPLICAS}
 security-config:

@@ -5,7 +5,7 @@
 
     <groupId>com.fcastro</groupId>
     <artifactId>my-pantry</artifactId>
-    <version>0.0.9</version>
+    <version>0.0.10</version>
 
     <description>It manages the pantry inventory and creates shopping list</description>
     <packaging>pom</packaging>
@@ -18,9 +18,10 @@
     </parent>
 
     <properties>
-        <common-config-data-version>0.3.0</common-config-data-version>
-        <security-core-version>0.1.2</security-core-version>
-        <security-config-version>0.2.2</security-config-version>
+        <commons-version>0.4.0</commons-version>
+        <kafka-version>0.1.0</kafka-version>
+        <security-core-version>0.2.0</security-core-version>
+        <security-version>0.3.0</security-version>
 
         <lombok-version>1.18.30</lombok-version>
         <modelmapper-version>3.1.1</modelmapper-version>
@@ -34,12 +35,13 @@
     </properties>
 
     <modules>
-        <module>common-config-data</module>
+        <module>commons</module>
+        <module>kafka</module>
+        <module>security</module>
+        <module>security-core</module>
         <module>pantry-service</module>
         <module>purchase-service</module>
         <module>account-service</module>
-        <module>security-config</module>
-        <module>security-core-config</module>
     </modules>
 
     <build>

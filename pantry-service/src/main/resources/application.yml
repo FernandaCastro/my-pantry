@@ -39,6 +39,7 @@ kafka-config:
   purchase-create-topic: purchaseCreateTopic
   purchase-complete-topic: purchaseCompleteTopic
   product-topic: productTopic
+  account-topic: accountTopic
   group: pantryGroup
   partitions: ${PARTITIONS:1}
   replicas: ${REPLICAS:1}
