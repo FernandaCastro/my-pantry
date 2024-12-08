@@ -20,6 +20,7 @@ public class KafkaProperties {
     private String purchaseCompleteTopic;
     private String productTopic;
     private String accountTopic;
+    private String commandTopic;
 
     private String group;
 

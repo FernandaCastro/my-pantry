@@ -19,7 +19,7 @@
 
     <properties>
         <commons-version>0.4.0</commons-version>
-        <kafka-version>0.1.0</kafka-version>
+        <kafka-version>0.2.0</kafka-version>
         <security-core-version>0.2.0</security-core-version>
         <security-version>0.3.0</security-version>
 
