@@ -1,5 +1,6 @@
 package com.fcastro.accountservice.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fcastro.security.core.config.SecurityPropertiesConfig;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
 import com.google.api.client.http.javanet.NetHttpTransport;
@@ -21,5 +22,11 @@ public class AccountServiceConfig {
         return new GoogleIdTokenVerifier.Builder(transport, jsonFactory)
                 .setAudience(Collections.singletonList(propertiesConfig.getGoogleClientId()))
                 .build();
+    }
+
+    @Bean
+    public ObjectMapper objectMapper() {
+        ObjectMapper objectMapper = new ObjectMapper();
+        return objectMapper;
     }
 }

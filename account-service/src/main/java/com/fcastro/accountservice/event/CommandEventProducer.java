@@ -1,8 +1,8 @@
 package com.fcastro.accountservice.event;
 
 import com.fcastro.kafka.config.KafkaProperties;
-import com.fcastro.kafka.event.AccountEvent;
-import com.fcastro.kafka.model.AccountEventDto;
+import com.fcastro.kafka.event.CommandEvent;
+import com.fcastro.kafka.model.CommandEventDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -13,27 +13,27 @@ import java.time.ZonedDateTime;
 import java.util.concurrent.CompletableFuture;
 
 @Component
-public class AccountEventProducer {
+public class CommandEventProducer {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(AccountEventProducer.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(CommandEventProducer.class);
 
     private final KafkaProperties kafkaProperties;
 
-    private final KafkaTemplate<String, AccountEvent> kafkaTemplate;
+    private final KafkaTemplate<String, CommandEvent> kafkaTemplate;
 
-    public AccountEventProducer(KafkaProperties kafkaProperties, KafkaTemplate<String, AccountEvent> kafkaTemplate) {
+    public CommandEventProducer(KafkaProperties kafkaProperties, KafkaTemplate<String, CommandEvent> kafkaTemplate) {
         this.kafkaProperties = kafkaProperties;
         this.kafkaTemplate = kafkaTemplate;
     }
 
-    public void send(AccountEventDto dto) {
-        var event = AccountEvent.builder()
-                .key("account:" + dto.getEmail()) //account:<email>
+    public void send(CommandEventDto dto) {
+        var event = CommandEvent.builder()
+                .key(dto.getCommand()) //account:<email>
                 .data(dto)
                 .createdAt(ZonedDateTime.now())
                 .build();
 
-        CompletableFuture<SendResult<String, AccountEvent>> future = kafkaTemplate.send(kafkaProperties.getAccountTopic(), event);
+        CompletableFuture<SendResult<String, CommandEvent>> future = kafkaTemplate.send(kafkaProperties.getCommandTopic(), event);
 
         future.whenComplete((result, ex) -> {
             if (ex == null) {
@@ -45,7 +45,7 @@ public class AccountEventProducer {
                         event.getData().toString()
                 );
             } else {
-                LOGGER.error("Unable to send AccoountEvent to {}: {}", kafkaProperties.getAccountTopic(), event.toString());
+                LOGGER.error("Unable to send CommandEvent to {}: {}", kafkaProperties.getCommandTopic(), event.toString());
                 //throw new KafkaException("Unable to send AccountEvent: " + ex.getMessage(), ex);
                 //TODO: How to treat this async exception? Save to try again later? Kafka has it available?
             }

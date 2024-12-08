@@ -45,6 +45,11 @@ spring:
     baselineVersion: 0
     encoding: ISO-8859-1
     defaultSchema: account
+
+openai:
+  api:
+    key: ${OPENAI_API_KEY}
+
 management:
   endpoints:
     web:
@@ -56,13 +61,14 @@ management:
 kafka-config:
   bootstrap-servers-config: ${KAFKA_SERVER}
   account-topic: accountTopic
+  command-topic: commandTopic
   group: accountGroup
   partitions: ${PARTITIONS:1}
   replicas: ${REPLICAS:1}
 security-config:
   secret: ${SECURITY_SECRET}
   allowedOrigin: ${ALLOWED_ORIGINS}
-  googleClientId: ${DV_GOOGLE_CLIENT_ID}
+  googleClientId: ${GOOGLE_CLIENT_ID}
   googleClientSecret: ${GOOGLE_CLIENT_SECRET}
 cache-config:
   role_TTL: ${ROLE_TTL:5}

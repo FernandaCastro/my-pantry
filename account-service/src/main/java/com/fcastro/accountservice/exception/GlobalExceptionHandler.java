@@ -61,6 +61,7 @@ public class GlobalExceptionHandler {
         exceptionTypes.put(NotAllowedException.class, "application-error");
         exceptionTypes.put(RequestParamExpectedException.class, "application-error");
         exceptionTypes.put(AccessControlNotDefinedException.class, "application-error");
+        exceptionTypes.put(InvalidCommandException.class, "application-error");
     }
 
     @ExceptionHandler(value = {
@@ -72,7 +73,8 @@ public class GlobalExceptionHandler {
             OneOwnerMemberMustExistException.class,
             NotAllowedException.class,
             RequestParamExpectedException.class,
-            AccessControlNotDefinedException.class})
+            AccessControlNotDefinedException.class,
+            InvalidCommandException.class})
     public ResponseEntity<?> badRequest(final Exception ex, final HttpServletRequest request) {
 
         final var error = ApplicationError.builder()

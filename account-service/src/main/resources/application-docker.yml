@@ -41,6 +41,11 @@ spring:
     baselineVersion: 0
     encoding: ISO-8859-1
     defaultSchema: account
+
+openai:
+  api:
+    key: ${OPENAI_API_KEY}
+
 management:
   endpoints:
     web:
