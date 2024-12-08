@@ -2,28 +2,25 @@
 
 # My Pantry
 
-<b>version: 0.11.0</b>
+<b>version: 0.12.0</b>
 
-- pantry-web: v.0.10.0
-- account-service: v0.5.0
-- pantry-service: v0.7.0
-- purchase-service: v0.5.0
+- pantry-web: v.0.11.0
+- account-service: v0.6.0
+- pantry-service: v0.8.0
+- purchase-service: v0.6.0
 
 ### In this version:
 
 - <b>pantry-web:</b>
-    - Add alert to inform the use of essencial cookie
-    - Remove unused libraries
-    - Add "Delete Account" to the slide menu
-    - Add "View items" to Account Group in Group Members page
+    - Add "microphone" icon to the Header in order to listen to commands
 
 - <b>account-service:</b>
 - <b>pantry-service:</b>
 - <b>purchase-service:</b>
-    - Delete Account data
+    - Handle SpeechCommand [consume], ie: "consume 2 bottles of Ice Tea"
 
-- <b>lib-dependencies:</b>
-    - Refactoring
+- <b>lib-dependencies (kafka):</b>
+    - new CommandEvent and CommandEventDto
 
 ### In next versions:
 
