@@ -21,6 +21,7 @@ import { Stack } from 'react-bootstrap';
 import useProfile from '../state/useProfile';
 import { Link } from 'react-router-dom';
 import CustomLink from './CustomLink';
+import CommandSpeech from './CommandSpeech';
 
 export default function Header() {
     const { t } = useTranslation(['header', 'common']);
@@ -57,7 +58,7 @@ export default function Header() {
                     </OverlayTrigger>
                     <OverlayTrigger placement="bottom" delay={{ show: 250, hide: 400 }} overlay={<Tooltip className="custom-tooltip">{t("tooltip-purchase")}</Tooltip>}>
                         <Nav.Item>
-                            <CustomLink to="/purchase" className="menuItem" disabled={!(profile && Object.keys(profile).length > 1)}>
+                            <CustomLink to="/purchase" className="menuItem pe-2" disabled={!(profile && Object.keys(profile).length > 1)}>
                                 <div className="gradient-icon-box-header"><Image src={iconPurchase} className="menu-icon" /></div>
                             </CustomLink>
                         </Nav.Item>
@@ -78,9 +79,14 @@ export default function Header() {
                         </Nav.Item>
                     </OverlayTrigger>
                     <OverlayTrigger placement="bottom" delay={{ show: 250, hide: 400 }} overlay={<Tooltip className="custom-tooltip">{t("tooltip-supermarkets")}</Tooltip>}>
-                        <Nav.Item><CustomLink to="/supermarkets" className="menuItem" disabled={!(profile && Object.keys(profile).length > 1)}>
+                        <Nav.Item><CustomLink to="/supermarkets" className="menuItem pe-2" disabled={!(profile && Object.keys(profile).length > 1)}>
                             <Image src={iconSupermarket} className="menu-icon" />
                         </CustomLink>
+                        </Nav.Item>
+                    </OverlayTrigger>
+                    <OverlayTrigger placement="bottom" delay={{ show: 250, hide: 400 }} overlay={<Tooltip className="custom-tooltip">{t("tooltip-speech")}</Tooltip>}>
+                        <Nav.Item >
+                            <CommandSpeech className="menuItem" />
                         </Nav.Item>
                     </OverlayTrigger>
                 </div>

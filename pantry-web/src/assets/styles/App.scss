@@ -179,8 +179,8 @@
     display: flex;
     direction: row;
     align-items: center;
-    justify-content: space-around;
-    gap: 50px;
+    justify-content: space-evenly;
+    gap: 30px;
 }
 
 .menuItem {
@@ -1561,5 +1561,45 @@ div.scroll-top-critical {
         .p {
             padding-bottom: 5 px !important;
         }
+    }
+}
+
+.microphone-icon {
+
+    color: var(--icon-color);
+    width: 35px;
+    height: 35px;
+
+    transition: transform 0.3s ease, color 0.3s ease;
+}
+
+.microphone-icon:hover {
+    border-color: var(--link-color);
+    color: var(--link-color);
+    transform: scale(1.4);
+}
+
+.microphone-icon.active {
+    color: rgb(201, 115, 224);
+    animation: pulse 1.8s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgb(224, 110, 255);
+        border-radius: 50%;
+    }
+
+    50% {
+        transform: scale(1.2);
+        box-shadow: 0 0 20px 20px rgba(255, 0, 0, 0);
+        border-radius: 50%;
+    }
+
+    100% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(255, 0, 0, 0);
+        border-radius: 50%;
     }
 }

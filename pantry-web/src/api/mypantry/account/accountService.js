@@ -95,4 +95,8 @@ export async function fetchAccessControlByAccountGroup(groupId) {
     return Get(`accessControl/all?accountGroupId=${groupId}`);
 }
 
+export async function postCommand(commantTranscript) {
+    return Post('commandSpeech', commantTranscript);
+}
+
 

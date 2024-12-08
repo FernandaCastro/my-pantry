@@ -1,0 +1,10 @@
+{
+  "yes": "yes",
+  "no": "no",
+  "stop": "stop",
+  "you-said": "You said: {{transcript}}?",
+  "repeat-please": "Please, say it again.",
+  "cannot-understand": "Sorry. I don't understand.",
+  "command-success": "Command was successfully processed.",
+  "command-fail": "This command is not valid."
+}
