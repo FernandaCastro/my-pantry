@@ -130,19 +130,9 @@ Here’s a quick guide to the main icons used in the UI:
 
 Here’s how the main interface looks, with icons for:
 
-<img height="400" width="200" title="Login" src="./readme_images/login.png"/>
-<img height="400" width="200" src="./readme_images/pantry-piechart.png"/>
-<img height="400" width="200" src="./readme_images/pantries.png"/>
-<img height="400" width="200" src="./readme_images/pantry.png"/>
-<img height="400" width="200" src="./readme_images/pantry-items.png"/>
-<img height="400" width="200" src="./readme_images/consume.png"/>
-<img height="400" width="200" src="./readme_images/purchase.png"/>
-<img height="400" width="200" src="./readme_images/products.png"/>
-<img height="400" width="200" src="./readme_images/supermarkets.png"/>
-<img height="400" width="200" src="./readme_images/group-members.png"/>
-<img height="400" width="200" title="Login" src="./readme_images/new-account.png"/>
-<img height="400" width="200" title="Login" src="./readme_images/reset-password.png"/>
-<img height="400" width="200" src="./readme_images/slide-menu.png"/>
+<img height="400" width="200" title="Login" src="./readme_images/login.png"/> <img height="400" width="200" src="./readme_images/pantry-piechart.png"/> <img height="400" width="200" src="./readme_images/pantries.png"/>
+<img height="400" width="200" src="./readme_images/pantry.png"/> <img height="400" width="200" src="./readme_images/pantry-items.png"/> <img height="400" width="200" src="./readme_images/consume.png"/> <img height="400" width="200" src="./readme_images/purchase.png"/> <img height="400" width="200" src="./readme_images/products.png"/> <img height="400" width="200" src="./readme_images/supermarkets.png"/>
+<img height="400" width="200" src="./readme_images/group-members.png"/> <img height="400" width="200" title="Login" src="./readme_images/new-account.png"/> <img height="400" width="200" title="Login" src="./readme_images/reset-password.png"/> <img height="400" width="200" src="./readme_images/slide-menu.png"/>
 
 ## 🎨 Themes
 
