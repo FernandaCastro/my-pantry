@@ -51,6 +51,10 @@ management:
     web:
       exposure:
         include: ${ACTUATOR_WEB_EXPOSURE}
+  metrics:
+    binders:
+      processor:
+        enabled: ${PROCESSOR_METRICS_ENABLED:false} # Disable processor metrics to avoid cgroup detection issues in some containers
 logging:
   level:
     root: ${ROOT_LOG_LEVEL}
