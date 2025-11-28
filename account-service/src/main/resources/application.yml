@@ -53,6 +53,10 @@ management:
     metrics:
       enable:
         all: true
+  metrics:
+    binders:
+      processor:
+        enabled: ${PROCESSOR_METRICS_ENABLED:false} # Disable processor metrics to avoid cgroup detection issues in some containers
 kafka-config:
   bootstrap-servers-config: ${KAFKA_SERVER}
   account-topic: accountTopic
@@ -74,6 +78,5 @@ logging:
     org.hibernate.SQL: ${HIBERNATE_LOG_LEVEL:OFF}
     org.springframework.web: ${WEB_LOG_LEVEL:ERROR}
     org.springframework.security: ${SECURITY_LOG_LEVEL:ERROR}
-
 
 
