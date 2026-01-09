@@ -1,0 +1,46 @@
+spring:
+  datasource:
+    platform: postgres
+    url: jdbc:postgresql://localhost:5432/mypantry-db
+    username: mypantry
+    password: mypantry
+  jpa:
+    hibernate:
+      ddl-auto: validate
+      defer-datasource-initialization: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+  sql:
+    init:
+      mode: always
+  flyway:
+    enabled: true
+    encoding: ISO-8859-1
+    baselineOnMigrate: false  #Set to true when schema is not empty
+    baselineVersion: 0
+    create-schemas: true
+    schemas: account
+    default-schema: account
+    locations: classpath:db/migration,classpath:db/migration-account
+
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      timeout: 30000
+      client-type: ${REDIS_CLIENT_TYPE:lettuce}
+      repositories:
+        enabled: false
+  cache:
+    type: redis
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,mappings
+  endpoint:
+    mappings:
+      enabled: true

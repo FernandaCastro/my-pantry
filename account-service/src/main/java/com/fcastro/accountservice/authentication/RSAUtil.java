@@ -1,4 +1,4 @@
-package com.fcastro.accountservice.security;
+package com.fcastro.accountservice.authentication;
 
 import com.fcastro.accountservice.exception.KeyPairException;
 import com.fcastro.commons.config.MessageTranslator;

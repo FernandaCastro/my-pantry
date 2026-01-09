@@ -7,7 +7,7 @@ import lombok.*;
 import java.util.List;
 
 @Entity(name = "permission")
-@Table(name = "PERMISSION")
+@Table(name = "PERMISSION", schema = "account")
 @Builder
 @Getter
 @Setter

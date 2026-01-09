@@ -11,26 +11,22 @@
     </parent>
 
     <artifactId>pantry-service</artifactId>
-    <version>0.8.0</version>
     <packaging>jar</packaging>
 
     <dependencies>
         <dependency>
             <groupId>com.fcastro</groupId>
             <artifactId>commons</artifactId>
-            <version>${commons-version}</version>
         </dependency>
 
         <dependency>
             <groupId>com.fcastro</groupId>
             <artifactId>kafka</artifactId>
-            <version>${kafka-version}</version>
         </dependency>
 
         <dependency>
             <groupId>com.fcastro</groupId>
             <artifactId>security</artifactId>
-            <version>${security-version}</version>
         </dependency>
 
 

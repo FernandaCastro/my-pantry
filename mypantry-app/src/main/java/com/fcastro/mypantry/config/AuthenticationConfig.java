@@ -1,15 +1,15 @@
-package com.fcastro.accountservice.security;
+package com.fcastro.mypantry.config;
 
 
+import com.fcastro.accountservice.authentication.UserDetailsServiceImpl;
 import com.fcastro.security.core.config.SecurityPropertiesConfig;
 import com.fcastro.security.core.handler.CustomAccessDeniedHandler;
 import com.fcastro.security.core.handler.CustomAuthenticationEntryPointHandler;
 import com.fcastro.security.core.jwt.JWTRequestFilter;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpHeaders;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -24,11 +24,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.security.web.authentication.logout.HeaderWriterLogoutHandler;
 import org.springframework.security.web.header.writers.ClearSiteDataHeaderWriter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-
-import java.util.Arrays;
 
 import static jakarta.servlet.DispatcherType.ERROR;
 import static jakarta.servlet.DispatcherType.FORWARD;
@@ -36,34 +31,37 @@ import static jakarta.servlet.DispatcherType.FORWARD;
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
-@ConditionalOnProperty(prefix = "spring", value = "security.enabled", matchIfMissing = true, havingValue = "true")
-public class AccountServiceSecurityConfig {
+public class AuthenticationConfig {
 
     private final JWTRequestFilter jwtRequestFilter;
     private final CustomAccessDeniedHandler customAccessDeniedHandler;
     private final CustomAuthenticationEntryPointHandler customAuthenticationEntryPointHandler;
     private final SecurityPropertiesConfig propertiesConfig;
     private final UserDetailsServiceImpl userDetailsService;
+    private final CorsConfig corsConfig;
 
-    public AccountServiceSecurityConfig(JWTRequestFilter jwtRequestFilter,
-                                        CustomAccessDeniedHandler customAccessDeniedHandler,
-                                        CustomAuthenticationEntryPointHandler customAuthenticationEntryPointHandler,
-                                        SecurityPropertiesConfig propertiesConfig,
-                                        UserDetailsServiceImpl userDetailsService) {
+    public AuthenticationConfig(JWTRequestFilter jwtRequestFilter,
+                                CustomAccessDeniedHandler customAccessDeniedHandler,
+                                CustomAuthenticationEntryPointHandler customAuthenticationEntryPointHandler,
+                                SecurityPropertiesConfig propertiesConfig,
+                                UserDetailsServiceImpl userDetailsService,
+                                CorsConfig corsConfig) {
         this.jwtRequestFilter = jwtRequestFilter;
         this.customAccessDeniedHandler = customAccessDeniedHandler;
         this.customAuthenticationEntryPointHandler = customAuthenticationEntryPointHandler;
         this.propertiesConfig = propertiesConfig;
         this.userDetailsService = userDetailsService;
+        this.corsConfig = corsConfig;
     }
 
     @Bean
+    @Order(1)
     public SecurityFilterChain authenticationFilterChain(HttpSecurity http) throws Exception {
         HeaderWriterLogoutHandler clearSiteData = new HeaderWriterLogoutHandler(new ClearSiteDataHeaderWriter(ClearSiteDataHeaderWriter.Directive.STORAGE));
 
         http
                 .cors((cors) -> cors
-                        .configurationSource(corsConfigurationSource()))
+                        .configurationSource(corsConfig.corsConfigurationSource()))
 
                 //As it's an SPA stateless there's no need to protect against CSRF
                 //TODO: Need to confirm this!!!
@@ -100,18 +98,6 @@ public class AccountServiceSecurityConfig {
                         .anyRequest().authenticated());
 
         return http.build();
-    }
-
-    @Bean
-    CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList(propertiesConfig.getAllowedOrigin()));
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "OPTIONS", "DELETE", "PUT", "PATCH"));
-        configuration.setAllowedHeaders(Arrays.asList(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, HttpHeaders.ACCESS_CONTROL_ALLOW_CREDENTIALS, HttpHeaders.ORIGIN, HttpHeaders.CONTENT_TYPE, HttpHeaders.ACCEPT, "language"));
-        configuration.setAllowCredentials(true);
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);
-        return source;
     }
 
     @Bean

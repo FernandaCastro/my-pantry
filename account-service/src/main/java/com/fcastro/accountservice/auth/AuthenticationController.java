@@ -1,7 +1,7 @@
 package com.fcastro.accountservice.auth;
 
 import com.fcastro.accountservice.account.AccountDto;
-import com.fcastro.accountservice.security.KeyPairDto;
+import com.fcastro.accountservice.authentication.KeyPairDto;
 import com.fcastro.commons.config.MessageTranslator;
 import com.fcastro.commons.exception.RequestParamExpectedException;
 import com.fcastro.commons.exception.ResourceNotFoundException;

@@ -10,7 +10,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity(name = "accessControl")
-@Table(name = "access_control")
+@Table(name = "access_control", schema = "account")
 @IdClass(AccessControlKey.class)
 public class AccessControl {
 

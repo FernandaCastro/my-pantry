@@ -1,4 +1,4 @@
-package com.fcastro.accountservice.security;
+package com.fcastro.accountservice.authentication;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

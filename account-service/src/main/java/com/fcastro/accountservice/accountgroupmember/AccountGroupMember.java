@@ -12,7 +12,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity(name = "accountGroupMember")
-@Table(name = "account_group_member")
+@Table(name = "account_group_member", schema = "account")
 @IdClass(AccountGroupMemberKey.class)
 public class AccountGroupMember {
 

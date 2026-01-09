@@ -6,7 +6,7 @@ import com.fcastro.accountservice.accountgroupmember.AccountGroupMemberService;
 import com.fcastro.accountservice.event.AccountEventProducer;
 import com.fcastro.accountservice.exception.AccountAlreadyExistsException;
 import com.fcastro.accountservice.exception.NotAllowedException;
-import com.fcastro.accountservice.security.RSAUtil;
+import com.fcastro.accountservice.authentication.RSAUtil;
 import com.fcastro.commons.config.MessageTranslator;
 import com.fcastro.commons.exception.RequestParamExpectedException;
 import com.fcastro.commons.exception.ResourceNotFoundException;

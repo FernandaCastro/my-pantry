@@ -10,7 +10,6 @@
     </parent>
 
     <artifactId>account-service</artifactId>
-    <version>0.6.0</version>
     <packaging>jar</packaging>
 
     <properties>
@@ -22,19 +21,16 @@
         <dependency>
             <groupId>com.fcastro</groupId>
             <artifactId>commons</artifactId>
-            <version>${commons-version}</version>
         </dependency>
 
         <dependency>
             <groupId>com.fcastro</groupId>
             <artifactId>kafka</artifactId>
-            <version>${kafka-version}</version>
         </dependency>
 
         <dependency>
             <groupId>com.fcastro</groupId>
             <artifactId>security-core</artifactId>
-            <version>${security-core-version}</version>
         </dependency>
 
         <dependency>
@@ -153,30 +149,33 @@
         </dependency>
     </dependencies>
 
-    <!--This says this module has a Main Class to be used in its jar packaging-->
     <build>
         <plugins>
+            <!-- default JAR-->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+            </plugin>
+
+            <!-- MUITO IMPORTANTE:
+                 Se o account-service tem o spring-boot-maven-plugin herdado de algum lugar,
+                 aqui você desliga para NÃO reempacotar. -->
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
             </plugin>
         </plugins>
+
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+            </resource>
+        </resources>
     </build>
 
-    <!--This says this module is able to be packaged and pushed to docker-->
-    <profiles>
-        <profile>
-            <id>build-publish-image</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>com.google.cloud.tools</groupId>
-                        <artifactId>jib-maven-plugin</artifactId>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
 
 
 </project>

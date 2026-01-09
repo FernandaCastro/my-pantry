@@ -9,7 +9,7 @@ import java.io.Serializable;
 import java.util.List;
 
 @Entity(name = "role")
-@Table(name = "ROLE")
+@Table(name = "ROLE", schema = "account")
 @Builder
 @Getter
 @Setter
@@ -26,7 +26,7 @@ public class Role implements Serializable {
 
     @ManyToMany
     @JoinTable(
-            name = "role_permission",
+            name = "role_permission", schema = "account",
             joinColumns = @JoinColumn(name = "role_id", nullable = false),
             inverseJoinColumns = @JoinColumn(name = "permission_id", nullable = false))
     private List<Permission> permissions;
