@@ -42,6 +42,7 @@
         <module>pantry-service</module>
         <module>purchase-service</module>
         <module>account-service</module>
+        <module>mypantry-app</module>
     </modules>
 
     <build>
