@@ -1,4 +1,7 @@
 spring:
+  config:
+    import: optional:file:.dev.env[.properties]
+
   datasource:
     platform: postgres
     url: jdbc:postgresql://localhost:5432/mypantry-db
@@ -35,6 +38,27 @@ spring:
         enabled: false
   cache:
     type: redis
+
+security-config:
+  secret: ${SECURITY_SECRET}
+  allowedOrigin: ${ALLOWED_ORIGINS}
+  googleClientId: ${DV_GOOGLE_CLIENT_ID}
+  googleClientSecret: ${GOOGLE_CLIENT_SECRET}
+
+cache-config:
+  role_TTL: ${ROLE_TTL:5}
+  members_TTL: ${MEMBERS_TTL:5}
+  acl_TTL: ${ACL_TTL:5}
+
+kafka-config:
+  bootstrap-servers-config: localhost:29092
+  purchase-create-topic: purchaseCreateTopic
+  purchase-complete-topic: purchaseCompleteTopic
+  product-topic: productTopic
+  account-topic: accountTopic
+  group: pantryGroup
+  partitions: ${PARTITIONS:1}
+  replicas: ${REPLICAS:1}
 
 management:
   endpoints:

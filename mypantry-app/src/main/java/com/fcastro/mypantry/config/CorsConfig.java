@@ -2,6 +2,7 @@ package com.fcastro.mypantry.config;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,6 +15,7 @@ import java.util.Arrays;
 
 
 @Configuration
+@ConfigurationProperties(prefix = "security-config")
 @ConfigurationPropertiesScan
 @Getter
 @Setter

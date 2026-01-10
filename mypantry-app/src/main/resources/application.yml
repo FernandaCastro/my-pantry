@@ -3,19 +3,6 @@ spring:
     name: my-pantry
   profiles:
     active: local
-  config:
-    import: optional:file:.dev.env[.properties]
-
-security-config:
-  secret: ${SECURITY_SECRET}
-  allowedOrigin: ${ALLOWED_ORIGINS}
-  googleClientId: ${DV_GOOGLE_CLIENT_ID}
-  googleClientSecret: ${GOOGLE_CLIENT_SECRET}
-
-cache-config:
-  role_TTL: ${ROLE_TTL:5}
-  members_TTL: ${MEMBERS_TTL:5}
-  acl_TTL: ${ACL_TTL:5}
 
 logging:
     level:
